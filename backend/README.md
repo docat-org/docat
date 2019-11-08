@@ -19,11 +19,11 @@ FLASK_DEBUG=1 FLASK_APP=app.py flask run -h 0.0.0.0
 Upload the file `sim.zip` as version `1.1.6` for simulacrum.
 
 ```
-curl -X POST -H "Content-Type: multipart/form-data" -F "file=@sim.zip" http://docat.host:5000/api/add/simulacrum/1.1.6
+curl -X POST -H "Content-Type: multipart/form-data" -F "file=@sim.zip" http://docat.host:5000/api/simulacrum/1.1.6
 ```
 
 Tag the version `1.1.3` as `latest` for simulacrum.
 
 ```
-curl -X POST -H "Content-Type: application/json" --data '{"tag": "latest"}' http://docat.host:5000/api/tag/simulacrum/1.1.3
+curl -X PUT http://docat.host:5000/api/simulacrum/1.1.3/tags/latest
 ```
