@@ -67,7 +67,8 @@ def tag(project, version):
     src = version
     dst = os.path.join(app.config['UPLOAD_FOLDER'], project, request.json['tag'])
 
-    os.unlink(dst)
+    if os.path.exists(dst):
+        os.unlink(dst)
     os.symlink(src, dst)
 
     msg = 'Tag {} -> {} successfully created'.format(request.json['tag'], version)
