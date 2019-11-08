@@ -1,13 +1,15 @@
 <template>
-  <md-card>
-    <md-card-header>
-      <md-avatar>
-        <img :alt="`${name} project logo`" :src="logo" />
-      </md-avatar>
+  <router-link :to="`/${name}`">
+    <md-card>
+      <md-card-header>
+        <md-avatar>
+          <img :alt="`${name} project logo`" :src="logo" />
+        </md-avatar>
 
-      <div class="md-title">{{ name }}</div>
-    </md-card-header>
-  </md-card>
+        <div class="md-title">{{ name }}</div>
+      </md-card-header>
+    </md-card>
+  </router-link>
 </template>
 
 <script>
@@ -19,10 +21,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-md-avatar img {
-  height: var(--avatar-dimensions);
-  width: var(--avatar-dimensions);
-}
-</style>

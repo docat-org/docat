@@ -2,11 +2,12 @@ import Vue from 'vue'
 import App from '@/App.vue'
 
 // configure vue material (https://vuematerial.io/getting-started/)
-import { MdCard } from 'vue-material/dist/components'
+import { MdCard, MdAvatar } from 'vue-material/dist/components'
 import 'vue-material/dist/vue-material.min.css'
 import 'vue-material/dist/theme/default.css'
 
 Vue.use(MdCard)
+Vue.use(MdAvatar)
 
 // configure vue router (https://router.vuejs.org/installation.html)
 import VueRouter from 'vue-router'

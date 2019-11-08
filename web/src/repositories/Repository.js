@@ -1,5 +1,5 @@
 import axios from 'axios'
 
 export default axios.create({
-    baseURL: 'https://simulacrum.rok.roche.com/doc'
+    baseURL: 'http://10.39.91.205/doc'
 })
