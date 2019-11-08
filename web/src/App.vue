@@ -1,7 +1,6 @@
 <template>
   <div id="app">
-    <img alt="docat logo" src="./assets/logo.png">
-    <ProjectOverview msg="Welcome to docat!"/>
+    <ProjectOverview/>
   </div>
 </template>
 
