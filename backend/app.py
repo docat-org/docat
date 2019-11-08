@@ -1,8 +1,9 @@
 import os
 import tempfile
 from zipfile import ZipFile
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from werkzeug.utils import secure_filename
+from subprocess import call
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = "./upload"
@@ -22,9 +23,6 @@ def upload(project, version):
         resp.status_code = 400
         return resp
 
-    print(project)
-    print(version)
-
     filename = secure_filename(file.filename)
     file_ext = filename.rsplit('.', 1)[1].lower()
     base_path = os.path.join(app.config['UPLOAD_FOLDER'], project, version)
@@ -41,6 +39,18 @@ def upload(project, version):
                 zipf.extractall(path=base_path)
     else:
         file.save(os.path.join(base_path, filename))
+
+    # ensure nginx config
+    nginx_location = "/etc/nginx/locations.d"
+    nginx_config = os.path.join(nginx_location, "{}-doc.conf".format(project))
+    if not os.path.exists(nginx_config):
+        project_base_path = os.path.join(app.config['UPLOAD_FOLDER'], project)
+        out_parsed_template = render_template("nginx-doc.conf",
+                                              project=project,
+                                              dir_path=project_base_path)
+        with open(nginx_config, "w") as f:
+                f.write(out_parsed_template)
+        call(["systemctl", "reload nginx"])
 
     resp = jsonify({'message': 'File successfully uploaded'})
     resp.status_code = 201
