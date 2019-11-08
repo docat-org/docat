@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import ProjectOverview from './components/ProjectOverview.vue'
+import ProjectOverview from '@/components/ProjectOverview.vue'
 
 export default {
   name: 'app',
@@ -23,5 +23,9 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+
+:root {
+  --avatar-dimensions: 150px;
 }
 </style>

@@ -4,14 +4,14 @@
       v-for="project of projects"
       v-bind:key="project.name"
       :name="project.name"
-      logo="assets/logo.png"
+      :logo="project.logo"
     />
   </div>
 </template>
 
 <script>
-import Project from './Project.vue'
-import ProjectRepository from '../repositories/ProjectRepository'
+import Project from '@/components/Project.vue'
+import ProjectRepository from '@/repositories/ProjectRepository'
 
 export default {
   name: 'ProjectOverview',
@@ -24,14 +24,14 @@ export default {
     }
   },
   async created() {
-    const { data } = await ProjectRepository.get()
-    this.projects = data
+    const { data: projects } = await ProjectRepository.get()
+    this.projects = await Promise.all(projects.map(async (project) => {
+      return {
+        ...project,
+        logo: await ProjectRepository.getProjectLogoURL(project.name)
+      }
+    }))
   }
 }
 </script>
 
-<style scoped>
-h3 {
-  margin: 40px 0 0;
-}
-</style>

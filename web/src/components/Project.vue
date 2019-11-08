@@ -1,8 +1,13 @@
 <template>
-  <div>
-    <img :alt="`${name} - logo`" :src="logo" />
-    <strong>{{ name }}</strong>
-  </div>
+  <md-card>
+    <md-card-header>
+      <md-avatar>
+        <img :alt="`${name} project logo`" :src="logo" />
+      </md-avatar>
+
+      <div class="md-title">{{ name }}</div>
+    </md-card-header>
+  </md-card>
 </template>
 
 <script>
@@ -16,7 +21,8 @@ export default {
 </script>
 
 <style scoped>
-h3 {
-  margin: 40px 0 0;
+md-avatar img {
+  height: var(--avatar-dimensions);
+  width: var(--avatar-dimensions);
 }
 </style>
