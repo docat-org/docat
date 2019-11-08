@@ -3,7 +3,7 @@ import tempfile
 from zipfile import ZipFile
 from flask import Flask, request, jsonify, render_template
 from werkzeug.utils import secure_filename
-from subprocess import call
+from subprocess import run
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = "./upload"
@@ -50,7 +50,7 @@ def upload(project, version):
                                               dir_path=project_base_path)
         with open(nginx_config, "w") as f:
                 f.write(out_parsed_template)
-        call(["systemctl", "reload nginx"])
+        run(["sudo", "/bin/systemctl", "reload", "nginx.service"])
 
     resp = jsonify({'message': 'File successfully uploaded'})
     resp.status_code = 201
