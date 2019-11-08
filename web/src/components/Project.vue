@@ -1,12 +1,13 @@
 <template>
-  <router-link :to="`/${name}`">
+  <router-link :to="`/${project.name}`">
     <md-card>
       <md-card-header>
         <md-avatar>
-          <img :alt="`${name} project logo`" :src="logo" />
+          <img :alt="`${project.name} project logo`" :src="project.logo" />
         </md-avatar>
 
-        <div class="md-title">{{ name }}</div>
+        <div class="md-title">{{ project.name }}</div>
+        <div class="md-subhead">{{ project.versions.length }} Versions </div>
       </md-card-header>
     </md-card>
   </router-link>
@@ -16,8 +17,7 @@
 export default {
   name: 'Project',
   props: {
-    name: String,
-    logo: String
+    project: Object
   }
 }
 </script>
