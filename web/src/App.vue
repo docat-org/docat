@@ -1,31 +1,9 @@
 <template>
-  <div id="app">
-    <ProjectOverview/>
-  </div>
+  <router-view></router-view>
 </template>
 
 <script>
-import ProjectOverview from '@/components/ProjectOverview.vue'
-
 export default {
-  name: 'app',
-  components: {
-    ProjectOverview
-  }
+  name: 'app'
 }
 </script>
-
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-
-:root {
-  --avatar-dimensions: 150px;
-}
-</style>

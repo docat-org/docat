@@ -8,8 +8,28 @@ import 'vue-material/dist/theme/default.css'
 
 Vue.use(MdCard)
 
+// configure vue router (https://router.vuejs.org/installation.html)
+import VueRouter from 'vue-router'
+
+Vue.use(VueRouter)
+
+// configure the app's routing
+import Home from '@/pages/Home.vue'
+import Project from '@/pages/Project.vue'
+
+const routes = [
+  { path: '/', component: Home },
+  { path: '/:project', component: Project }
+]
+
+const router = new VueRouter({
+  routes
+})
+
+// configure vue
 Vue.config.productionTip = false
 
 new Vue({
-  render: h => h(App),
-}).$mount('#app')
+  router,
+  render: h => h(App)
+}).$mount('#app-container')
