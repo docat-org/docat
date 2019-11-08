@@ -10,7 +10,7 @@ app.config['UPLOAD_FOLDER'] = "./upload"
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB
 
 
-@app.route("/api/add/<project>/<version>", methods=['POST'])
+@app.route("/api/<project>/<version>", methods=['POST'])
 def upload(project, version):
     if 'file' not in request.files:
         resp = jsonify({'message': 'No file part in the request'})
@@ -49,7 +49,7 @@ def upload(project, version):
                                               project=project,
                                               dir_path=project_base_path)
         with open(nginx_config, "w") as f:
-                f.write(out_parsed_template)
+            f.write(out_parsed_template)
         run(["sudo", "/bin/systemctl", "reload", "nginx.service"])
 
     resp = jsonify({'message': 'File successfully uploaded'})
@@ -57,21 +57,16 @@ def upload(project, version):
     return resp
 
 
-@app.route("/api/tag/<project>/<version>", methods=['POST', 'PUT'])
-def tag(project, version):
-    if 'tag' not in request.json:
-        resp = jsonify({'message': 'No tag name in the request'})
-        resp.status_code = 400
-        return resp
-
+@app.route("/api/<project>/<version>/tags/<new_tag>", methods=['PUT'])
+def tag(project, version, new_tag):
     src = version
-    dst = os.path.join(app.config['UPLOAD_FOLDER'], project, request.json['tag'])
+    dst = os.path.join(app.config['UPLOAD_FOLDER'], project, new_tag)
 
     if os.path.exists(dst):
         os.unlink(dst)
     os.symlink(src, dst)
 
-    msg = 'Tag {} -> {} successfully created'.format(request.json['tag'], version)
+    msg = 'Tag {} -> {} successfully created'.format(new_tag, version)
     resp = jsonify({'message': msg})
     resp.status_code = 201
     return resp
