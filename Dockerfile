@@ -6,14 +6,19 @@ RUN yarn build
 
 # production
 FROM python:3.7
-
-ADD . /app
-WORKDIR /app/backend
-
-RUN apt-get update && apt-get install -y \
-        nginx
-RUN cp nginx/default /etc/nginx/sites-available/default
+COPY --from=build-deps /dist /var/www/html
+COPY backend /app
+WORKDIR /app
 
 RUN pip install -r requirements.txt
+
+RUN apt-get update && apt-get install -y \
+        nginx \
+        sudo
+RUN cp nginx/default /etc/nginx/sites-available/default
+
+RUN mkdir -p /etc/nginx/locations.d
+RUN mkdir -p /var/docat/doc
+RUN chown -R www-data /var/docat /etc/nginx/locations.d
 
 CMD ["./start.sh"]

@@ -6,7 +6,7 @@ from werkzeug.utils import secure_filename
 from subprocess import run
 
 app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = "./upload"
+app.config['UPLOAD_FOLDER'] = "/var/docat/doc"
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB
 
 
@@ -50,7 +50,8 @@ def upload(project, version):
                                               dir_path=project_base_path)
         with open(nginx_config, "w") as f:
             f.write(out_parsed_template)
-        run(["sudo", "/bin/systemctl", "reload", "nginx.service"])
+
+        run(["sudo", "nginx", "-s reload"])
 
     resp = jsonify({'message': 'File successfully uploaded'})
     resp.status_code = 201
