@@ -10,7 +10,7 @@ app.config['UPLOAD_FOLDER'] = "./upload"
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB
 
 
-@app.route("/api/<project>/<version>", methods=['POST'])
+@app.route("/api/add/<project>/<version>", methods=['POST'])
 def upload(project, version):
     if 'file' not in request.files:
         resp = jsonify({'message': 'No file part in the request'})
@@ -53,5 +53,24 @@ def upload(project, version):
         run(["sudo", "/bin/systemctl", "reload", "nginx.service"])
 
     resp = jsonify({'message': 'File successfully uploaded'})
+    resp.status_code = 201
+    return resp
+
+
+@app.route("/api/tag/<project>/<version>", methods=['POST', 'PUT'])
+def tag(project, version):
+    if 'tag' not in request.json:
+        resp = jsonify({'message': 'No tag name in the request'})
+        resp.status_code = 400
+        return resp
+
+    src = version
+    dst = os.path.join(app.config['UPLOAD_FOLDER'], project, request.json['tag'])
+
+    os.unlink(dst)
+    os.symlink(src, dst)
+
+    msg = 'Tag {} -> {} successfully created'.format(request.json['tag'], version)
+    resp = jsonify({'message': msg})
     resp.status_code = 201
     return resp
