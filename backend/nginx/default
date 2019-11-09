@@ -1,4 +1,4 @@
-upstream uwsgi {
+upstream python_backend {
     server 127.0.0.1:5000;
 }
 
@@ -20,7 +20,7 @@ server {
     }
 
     location /api {
-        proxy_pass http://uwsgi;
+        proxy_pass http://python_backend;
     }
 
     location / {

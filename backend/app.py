@@ -51,7 +51,7 @@ def upload(project, version):
         with open(nginx_config, "w") as f:
             f.write(out_parsed_template)
 
-        run(["sudo", "nginx", "-s reload"])
+        run(["sudo", "nginx", "-s" "reload"])
 
     resp = jsonify({'message': 'File successfully uploaded'})
     resp.status_code = 201
