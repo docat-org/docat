@@ -1,12 +1,13 @@
 import Repository from '@/repositories/Repository'
 
+const resource = '/doc'
 export default {
 
   /**
    * Returns all projects
    */
   get() {
-    return Repository.get()
+    return Repository.get(`${Repository.defaults.baseURL}/${resource}/`)
   },
 
   /**
@@ -14,7 +15,7 @@ export default {
    * @param {string} projectName Name of the project
    */
   getProjectLogoURL(projectName) {
-    return `${Repository.defaults.baseURL}/${projectName}/logo.jpg`
+    return `${Repository.defaults.baseURL}/${resource}/${projectName}/logo.jpg`
   },
 
   /**
@@ -23,6 +24,6 @@ export default {
    * @param {string} projectName Name of the project
    */
   getVersions(projectName) {
-    return Repository.get(`/${projectName}`)
+    return Repository.get(`${Repository.defaults.baseURL}/${resource}/${projectName}/`)
   }
 }

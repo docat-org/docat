@@ -1,5 +1,6 @@
 import axios from 'axios'
 
+const port = '8000';
 export default axios.create({
-    baseURL: 'http://10.39.91.205/doc'
+	baseURL: `${location.protocol}//${location.hostname}:${port}`
 })
