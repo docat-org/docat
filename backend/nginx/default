@@ -1,0 +1,28 @@
+upstream uwsgi {
+    server 127.0.0.1:5000;
+}
+
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+
+    root /var/www/html;
+
+    # Add index.php to the list if you are using PHP
+    index index.html index.htm index.nginx-debian.html;
+
+    server_name _;
+
+    location /doc {
+        root /var/docat;
+        autoindex on;
+        autoindex_format json;
+    }
+
+    location /api {
+        proxy_pass http://uwsgi;
+    }
+
+    location / {
+    }
+}
