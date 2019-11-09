@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const port = '8000';
+const port = process.env.VUE_APP_BACKEND_PORT || location.port
 export default axios.create({
 	baseURL: `${location.protocol}//${location.hostname}:${port}`
 })

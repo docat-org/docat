@@ -6,8 +6,12 @@ yarn install
 ```
 
 ### Compiles and hot-reloads for development
+
+Configure the backend connection by setting the
+port in a `.env.development.local` with the `VUE_APP_BACKEND_PORT` variable.
+
 ```
-yarn serve
+yarn serve [--mode development]
 ```
 
 ### Compiles and minifies for production
