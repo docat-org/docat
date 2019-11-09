@@ -25,4 +25,4 @@ RUN cp nginx/default /etc/nginx/sites-available/default
 RUN pip install pipenv
 RUN pipenv install --ignore-pipfile
 
-CMD ["./start.sh"]
+CMD ["sh", "-c", "nginx && pipenv run -- flask run -h 0.0.0.0"]
