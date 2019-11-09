@@ -8,8 +8,9 @@ RUN yarn build
 FROM python:3.7
 
 # set up the system
-RUN apt update
-RUN apt install --yes nginx sudo
+RUN apt update && \
+	apt install --yes nginx sudo && \
+	rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p /etc/nginx/locations.d
 RUN mkdir -p /var/docat/doc
