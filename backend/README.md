@@ -18,8 +18,10 @@ pipenv install
 
 ## Usage
 
-You can uppload any static html site by zipping it and then
-posting the file to the backend.
+### Add documentation
+
+You can uppload any static html site by zipping it and 
+then posting the file to the backend. 
 
 For example to upload the file `docs.zip` as version `1.0.0` for awesome-project.
 
@@ -27,8 +29,14 @@ For example to upload the file `docs.zip` as version `1.0.0` for awesome-project
 curl -X POST -H "Content-Type: multipart/form-data" -F "file=@docs.zip" http://docat.host:5000/api/awesome-project/1.0.0
 ```
 
-After this you can tag a versino, this can be usefull when you always want
-the latest version to be available under `http://docat.host:5000/docs/awesome-project/latest`
+Any other file type is uploaded as well. 
+An uploaded pdf would be available as 
+`http://docat.host:5000/api/awesome-project/1.0.0/my_awesome.pdf` 
+
+### Tag documentation
+
+After this you can tag a version, this can be usefull when
+the latest version should be available as `http://docat.host:5000/docs/awesome-project/latest`
 
 If you want to tag the version `1.0.0` as `latest` for awesome-project.
 
