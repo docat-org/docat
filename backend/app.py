@@ -10,12 +10,13 @@ Host your docs. Simple. Versioned. Fancy.
 
 import os
 import tempfile
+from http import HTTPStatus
 from subprocess import run
 from zipfile import ZipFile
 
 from werkzeug.utils import secure_filename
 
-from flask import Flask, jsonify, render_template, request
+from flask import Flask, render_template, request
 
 app = Flask(__name__)
 app.config["UPLOAD_FOLDER"] = "/var/docat/doc"
@@ -25,15 +26,11 @@ app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024  # 16MB
 @app.route("/api/<project>/<version>", methods=["POST"])
 def upload(project, version):
     if "file" not in request.files:
-        resp = jsonify({"message": "No file part in the request"})
-        resp.status_code = 400
-        return resp
-    uploaded_file = request.files["file"]
+        return {"message": "No file part in the request"}, HTTPStatus.BAD_REQUEST
 
+    uploaded_file = request.files["file"]
     if uploaded_file.filename == "":
-        resp = jsonify({"message": "No file selected for uploading"})
-        resp.status_code = 400
-        return resp
+        return {"message": "No file selected for uploading"}, HTTPStatus.BAD_REQUEST
 
     filename = secure_filename(uploaded_file.filename)
     file_ext = filename.rsplit(".", 1)[1].lower()
@@ -65,9 +62,7 @@ def upload(project, version):
 
         run(["sudo", "nginx", "-s" "reload"])
 
-    resp = jsonify({"message": "File successfully uploaded"})
-    resp.status_code = 201
-    return resp
+    return {"message": "File successfully uploaded"}, HTTPStatus.CREATED
 
 
 @app.route("/api/<project>/<version>/tags/<new_tag>", methods=["PUT"])
@@ -80,6 +75,4 @@ def tag(project, version, new_tag):
     os.symlink(src, dst)
 
     msg = "Tag {} -> {} successfully created".format(new_tag, version)
-    resp = jsonify({"message": msg})
-    resp.status_code = 201
-    return resp
+    return {"message": msg}, HTTPStatus.CREATED
