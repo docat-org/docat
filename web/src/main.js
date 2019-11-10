@@ -7,13 +7,15 @@ import {
   MdAvatar,
   MdApp,
   MdToolbar,
-  MdContent
+  MdContent,
+  MdList
 } from 'vue-material/dist/components'
 import 'vue-material/dist/vue-material.min.css'
 import 'vue-material/dist/theme/default.css'
 
 Vue.use(MdApp)
 Vue.use(MdContent)
+Vue.use(MdList)
 Vue.use(MdToolbar)
 Vue.use(MdCard)
 Vue.use(MdAvatar)

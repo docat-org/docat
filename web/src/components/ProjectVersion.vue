@@ -1,7 +1,5 @@
 <template>
-  <a :href="docURL">
-    <div>{{ version }}</div>
-  </a>
+  <md-list-item :href="docURL">{{ version }}</md-list-item>
 </template>
 
 <script>
