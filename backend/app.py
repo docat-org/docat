@@ -14,9 +14,8 @@ from pathlib import Path
 from subprocess import run
 from zipfile import ZipFile
 
-from werkzeug.utils import secure_filename
-
 from flask import Flask, render_template, request
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 app.config["UPLOAD_FOLDER"] = "/var/docat/doc"
