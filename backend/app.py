@@ -13,8 +13,9 @@ import tempfile
 from subprocess import run
 from zipfile import ZipFile
 
-from flask import Flask, jsonify, render_template, request
 from werkzeug.utils import secure_filename
+
+from flask import Flask, jsonify, render_template, request
 
 app = Flask(__name__)
 app.config["UPLOAD_FOLDER"] = "/var/docat/doc"
@@ -27,14 +28,14 @@ def upload(project, version):
         resp = jsonify({"message": "No file part in the request"})
         resp.status_code = 400
         return resp
-    file = request.files["file"]
+    uploaded_file = request.files["file"]
 
-    if file.filename == "":
+    if uploaded_file.filename == "":
         resp = jsonify({"message": "No file selected for uploading"})
         resp.status_code = 400
         return resp
 
-    filename = secure_filename(file.filename)
+    filename = secure_filename(uploaded_file.filename)
     file_ext = filename.rsplit(".", 1)[1].lower()
     base_path = os.path.join(app.config["UPLOAD_FOLDER"], project, version)
 
@@ -44,12 +45,12 @@ def upload(project, version):
     if file_ext == "zip":
         with tempfile.TemporaryDirectory() as temp_dir:
             zip_path = os.path.join(temp_dir, filename)
-            file.save(zip_path)
+            uploaded_file.save(zip_path)
 
             with ZipFile(zip_path, "r") as zipf:
                 zipf.extractall(path=base_path)
     else:
-        file.save(os.path.join(base_path, filename))
+        uploaded_file.save(os.path.join(base_path, filename))
 
     # ensure nginx config
     nginx_location = "/etc/nginx/locations.d"
