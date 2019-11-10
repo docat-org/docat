@@ -1,3 +1,13 @@
+"""
+docat
+~~~~~
+
+Host your docs. Simple. Versioned. Fancy.
+
+:copyright: (c) 2019 by docat, https://github.com/randombenj/docat
+:license: MIT, see LICENSE for more details.
+"""
+
 import os
 import tempfile
 from subprocess import run
