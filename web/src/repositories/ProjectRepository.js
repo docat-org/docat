@@ -19,6 +19,15 @@ export default {
   },
 
   /**
+   * Returns the project documentatino URL
+   * @param {string} projectName Name of the project
+   * @param {string} version Version name
+   */
+  getProjectDocsURL(projectName, version) {
+    return `${Repository.defaults.baseURL}/${resource}/${projectName}/${version}/`
+  },
+
+  /**
    * Returns information about the Project
    * this includes mainly the existing versions
    * @param {string} projectName Name of the project
