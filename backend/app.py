@@ -8,9 +8,9 @@ Host your docs. Simple. Versioned. Fancy.
 :license: MIT, see LICENSE for more details.
 """
 
-import os
 import tempfile
 from http import HTTPStatus
+from pathlib import Path
 from subprocess import run
 from zipfile import ZipFile
 
@@ -34,30 +34,30 @@ def upload(project, version):
 
     filename = secure_filename(uploaded_file.filename)
     file_ext = filename.rsplit(".", 1)[1].lower()
-    base_path = os.path.join(app.config["UPLOAD_FOLDER"], project, version)
+    project_base_path = Path(app.config["UPLOAD_FOLDER"]) / project
+    base_path = project_base_path / version
 
-    if not os.path.exists(base_path):
-        os.makedirs(base_path)
+    # ensure directory for the uploaded doc exists
+    base_path.mkdir(parents=True, exist_ok=True)
 
     if file_ext == "zip":
         with tempfile.TemporaryDirectory() as temp_dir:
-            zip_path = os.path.join(temp_dir, filename)
-            uploaded_file.save(zip_path)
+            zip_path = Path(temp_dir) / filename
+            uploaded_file.save(str(zip_path))
 
             with ZipFile(zip_path, "r") as zipf:
                 zipf.extractall(path=base_path)
     else:
-        uploaded_file.save(os.path.join(base_path, filename))
+        uploaded_file.save(str(base_path / filename))
 
     # ensure nginx config
-    nginx_location = "/etc/nginx/locations.d"
-    nginx_config = os.path.join(nginx_location, "{}-doc.conf".format(project))
-    if not os.path.exists(nginx_config):
-        project_base_path = os.path.join(app.config["UPLOAD_FOLDER"], project)
+    nginx_location = Path("/etc/nginx/locations.d")
+    nginx_config = nginx_location / f"{project}-doc.conf"
+    if not nginx_config.exists():
         out_parsed_template = render_template(
-            "nginx-doc.conf", project=project, dir_path=project_base_path
+            "nginx-doc.conf", project=project, dir_path=str(project_base_path)
         )
-        with open(nginx_config, "w") as f:
+        with nginx_config.open("w") as f:
             f.write(out_parsed_template)
 
         run(["sudo", "nginx", "-s" "reload"])
@@ -68,11 +68,10 @@ def upload(project, version):
 @app.route("/api/<project>/<version>/tags/<new_tag>", methods=["PUT"])
 def tag(project, version, new_tag):
     src = version
-    dst = os.path.join(app.config["UPLOAD_FOLDER"], project, new_tag)
+    dst = Path(app.config["UPLOAD_FOLDER"]) / project / new_tag
 
-    if os.path.exists(dst):
-        os.unlink(dst)
-    os.symlink(src, dst)
+    if dst.exists():
+        dst.symlink_to(src)
 
-    msg = "Tag {} -> {} successfully created".format(new_tag, version)
+    msg = f"Tag {new_tag} -> {version} successfully created"
     return {"message": msg}, HTTPStatus.CREATED
