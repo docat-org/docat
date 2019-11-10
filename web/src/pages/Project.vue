@@ -1,21 +1,23 @@
 <template>
-  <div>
+  <Layout>
     <ProjectVersion
-        v-for="version of versions"
-        v-bind:key="version"
-        :version="version"
+      v-for="version of versions"
+      v-bind:key="version"
+      :version="version"
     />
-  </div>
+  </Layout>
 </template>
 
 <script>
 import ProjectVersion from '@/components/ProjectVersion.vue'
+import Layout from '@/components/Layout.vue'
 import ProjectRepository from '@/repositories/ProjectRepository'
 
 export default {
   name: 'project',
   components: {
-    ProjectVersion
+    ProjectVersion,
+    Layout
   },
   data() {
     return {

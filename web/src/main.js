@@ -2,10 +2,19 @@ import Vue from 'vue'
 import App from '@/App.vue'
 
 // configure vue material (https://vuematerial.io/getting-started/)
-import { MdCard, MdAvatar } from 'vue-material/dist/components'
+import {
+  MdCard,
+  MdAvatar,
+  MdApp,
+  MdToolbar,
+  MdContent
+} from 'vue-material/dist/components'
 import 'vue-material/dist/vue-material.min.css'
 import 'vue-material/dist/theme/default.css'
 
+Vue.use(MdApp)
+Vue.use(MdContent)
+Vue.use(MdToolbar)
 Vue.use(MdCard)
 Vue.use(MdAvatar)
 

@@ -1,14 +1,18 @@
 <template>
+  <Layout>
     <ProjectOverview/>
+  </Layout>
 </template>
 
 <script>
 import ProjectOverview from '@/components/ProjectOverview.vue'
+import Layout from '@/components/Layout.vue'
 
 export default {
   name: 'home',
   components: {
-    ProjectOverview
+    ProjectOverview,
+    Layout
   }
 }
 </script>

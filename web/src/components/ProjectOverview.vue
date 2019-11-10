@@ -1,5 +1,5 @@
 <template>
-  <div class="md-layout md-gutter">
+  <div class="md-layout">
     <Project
       class="md-layout-item md-size-25"
       v-for="project of projects"
