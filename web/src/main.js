@@ -28,10 +28,12 @@ Vue.use(VueRouter)
 // configure the app's routing
 import Home from '@/pages/Home.vue'
 import Project from '@/pages/Project.vue'
+import Docs from '@/pages/Docs.vue'
 
 const routes = [
   { path: '/', component: Home },
-  { path: '/:project', component: Project }
+  { path: '/:project', component: Project },
+  { path: '/:project/:version/:location?', component: Docs }
 ]
 
 const router = new VueRouter({

@@ -14,11 +14,11 @@
     </md-app-toolbar>
     <md-app-content>
       <div class="md-layout">
-        <div class="md-layout-item md-size-15 md-small-hide"></div>
+        <div v-if="!fullscreen" class="md-layout-item md-size-15 md-small-hide"></div>
         <div class="md-layout-item">
           <slot></slot>
         </div>
-        <div class="md-layout-item md-size-15 md-small-hide"></div>
+        <div v-if="!fullscreen" class="md-layout-item md-size-15 md-small-hide"></div>
       </div>
     </md-app-content>
   </md-app>
@@ -26,7 +26,10 @@
 
 <script>
 export default {
-  name: 'layout'
+  name: 'layout',
+  props: {
+    fullscreen: Boolean,
+  }
 }
 </script>
 
@@ -54,6 +57,11 @@ export default {
     margin-top: 25px;
     margin-left: 10px;
   }
+}
+
+html,
+body {
+  height: 100%;
 }
 
 </style>

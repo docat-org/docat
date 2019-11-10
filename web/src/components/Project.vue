@@ -19,7 +19,7 @@ import ProjectRepository from '@/repositories/ProjectRepository'
 export default {
   name: 'Project',
   props: {
-    project: Object
+    project: String
   },
   data() {
     return {
