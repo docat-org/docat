@@ -5,7 +5,7 @@ RUN yarn install
 RUN yarn build
 
 # production
-FROM python:3.7
+FROM python:3.8
 
 # set up the system
 RUN apt update && \
@@ -24,6 +24,6 @@ WORKDIR /app
 RUN cp nginx/default /etc/nginx/sites-available/default
 
 RUN pip install pipenv
-RUN pipenv install --ignore-pipfile
+RUN pipenv install --ignore-pipfile --deploy --system
 
 CMD ["sh", "-c", "nginx && pipenv run -- flask run -h 0.0.0.0"]
