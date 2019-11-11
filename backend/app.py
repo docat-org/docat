@@ -19,7 +19,7 @@ from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 app.config["UPLOAD_FOLDER"] = "/var/docat/doc"
-app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024  # 16MB
+app.config["MAX_CONTENT_LENGTH"] = 100 * 1024 * 1024  # 100M
 
 
 @app.route("/api/<project>/<version>", methods=["POST"])
@@ -69,8 +69,15 @@ def tag(project, version, new_tag):
     src = version
     dst = Path(app.config["UPLOAD_FOLDER"]) / project / new_tag
 
-    if dst.exists():
+    if not dst.exists() or (dst.exists() and dst.is_symlink()):
+        if dst.is_symlink():
+            # overwrite the tag
+            dst.unlink()
         dst.symlink_to(src)
-
-    msg = f"Tag {new_tag} -> {version} successfully created"
-    return {"message": msg}, HTTPStatus.CREATED
+        return {
+            "message": f"Tag {new_tag} -> {version} successfully created"
+        }, HTTPStatus.CREATED
+    else:
+        return {
+            "message": f"Tag {new_tag} could not be created, because it would overwrite a version!"
+        }, HTTPStatus.CONFLICT
