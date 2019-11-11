@@ -8,6 +8,7 @@
             <img class="logo" alt="docat logo" src="../assets/logo.png" />
             <h1>DOCAT</h1>
           </router-link>
+          <slot name="toolbar"></slot>
         </div>
         <div class="md-layout-item md-size-15 md-small-hide"></div>
       </div>
@@ -37,7 +38,7 @@ export default {
 @import "~vue-material/dist/theme/engine"; // Import the theme engine
 
 @include md-register-theme("default", (
-  primary: #43001d, // The primary color of your application
+  primary: #ececec, // The primary color of your application
   accent: #3a5600 // The accent or secondary color
 ));
 
@@ -53,7 +54,7 @@ export default {
 
   h1 {
     float: left;
-    color: white;
+    color: #742a47;
     margin-top: 25px;
     margin-left: 10px;
   }
