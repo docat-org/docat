@@ -7,8 +7,15 @@ yarn install
 
 ### Compiles and hot-reloads for development
 
-Configure the backend connection by setting the
-port in a `.env.development.local` with the `VUE_APP_BACKEND_PORT` variable.
+Configure the backend connection by setting 
+port and host in `.env.development.local`.
+Like this configuration for the host `127.0.0.1`
+and the port `1337`.
+
+```
+VUE_APP_BACKEND_PORT=1337
+VUE_APP_BACKEND_HOST=127.0.0.1
+```
 
 ```
 yarn serve [--mode development]
