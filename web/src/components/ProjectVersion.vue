@@ -1,21 +1,12 @@
 <template>
-  <a :href="docURL">
-    <div>{{ version }}</div>
-  </a>
+  <md-list-item :to="`/${$route.params.project}/${version}`">{{ version }}</md-list-item>
 </template>
 
 <script>
-import ProjectRepository from '@/repositories/ProjectRepository'
-
 export default {
   name: 'ProjectVersion',
   props: {
     version: String,
-  },
-  data() {
-    return {
-      docURL: ProjectRepository.getProjectDocsURL(this.$route.params.project, this.version)
-    }
   }
 }
 </script>

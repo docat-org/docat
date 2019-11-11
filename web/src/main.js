@@ -7,13 +7,15 @@ import {
   MdAvatar,
   MdApp,
   MdToolbar,
-  MdContent
+  MdContent,
+  MdList
 } from 'vue-material/dist/components'
 import 'vue-material/dist/vue-material.min.css'
 import 'vue-material/dist/theme/default.css'
 
 Vue.use(MdApp)
 Vue.use(MdContent)
+Vue.use(MdList)
 Vue.use(MdToolbar)
 Vue.use(MdCard)
 Vue.use(MdAvatar)
@@ -26,10 +28,12 @@ Vue.use(VueRouter)
 // configure the app's routing
 import Home from '@/pages/Home.vue'
 import Project from '@/pages/Project.vue'
+import Docs from '@/pages/Docs.vue'
 
 const routes = [
   { path: '/', component: Home },
-  { path: '/:project', component: Project }
+  { path: '/:project', component: Project },
+  { path: '/:project/:version/:location?', component: Docs }
 ]
 
 const router = new VueRouter({

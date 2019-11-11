@@ -4,7 +4,7 @@
       class="md-layout-item md-size-25"
       v-for="project of projects"
       v-bind:key="project.name"
-      :project="project"
+      :project="project.name"
     />
   </div>
 </template>
@@ -24,14 +24,7 @@ export default {
     }
   },
   async created() {
-    const { data: projects } = await ProjectRepository.get()
-    this.projects = await Promise.all(projects.map(async (project) => {
-      return {
-        ...project,
-        logo: await ProjectRepository.getProjectLogoURL(project.name),
-        versions: (await ProjectRepository.getVersions(project.name)).data
-      }
-    }))
+    this.projects = (await ProjectRepository.get()).data
   }
 }
 </script>
