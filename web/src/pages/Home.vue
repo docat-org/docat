@@ -1,6 +1,6 @@
 <template>
   <Layout>
-    <ProjectOverview/>
+    <ProjectOverview class="spacing" />
   </Layout>
 </template>
 
@@ -25,5 +25,9 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+
+.spacing {
+  padding-top: 20px;
 }
 </style>

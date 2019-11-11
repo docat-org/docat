@@ -1,9 +1,9 @@
 <template>
-  <router-link :to="`/${project}`">
+  <router-link :to="`/${project}/${latestVersion}`">
     <md-card>
       <md-card-header>
         <md-avatar>
-          <img :alt="`${project} project logo`" :src="project.logo" />
+          <img :alt="`${project} project logo`" :src="logoURL" />
         </md-avatar>
 
         <div class="md-title">{{ project }}</div>
@@ -23,13 +23,15 @@ export default {
   },
   data() {
     return {
-      logo: "",
-      versions: []
+      logoURL: '',
+      latestVersion: '',
+      versions: [],
     }
   },
   async created() {
-    this.logo = ProjectRepository.getProjectLogoURL(this.project)
+    this.logoURL = ProjectRepository.getProjectLogoURL(this.project)
     this.versions = (await ProjectRepository.getVersions(this.project)).data
+    this.latestVersion = (this.versions.find((version) => version.name == 'latest') || this.versions[0]).name
   }
 }
 </script>

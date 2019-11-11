@@ -61,7 +61,8 @@ export default {
 }
 
 html,
-body {
+body,
+.md-app {
   height: 100%;
 }
 
