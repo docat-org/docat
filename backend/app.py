@@ -69,8 +69,15 @@ def tag(project, version, new_tag):
     src = version
     dst = Path(app.config["UPLOAD_FOLDER"]) / project / new_tag
 
-    if dst.exists():
+    if not dst.exists() or (dst.exists() and dst.is_symlink()):
+        if dst.is_symlink():
+            # overwrite the tag
+            dst.unlink()
         dst.symlink_to(src)
-
-    msg = f"Tag {new_tag} -> {version} successfully created"
-    return {"message": msg}, HTTPStatus.CREATED
+        return {
+            "message": f"Tag {new_tag} -> {version} successfully created"
+        }, HTTPStatus.CREATED
+    else:
+        return {
+            "message": f"Tag {new_tag} could not be created, because it would overwrite a version!"
+        }, HTTPStatus.CONFLICT
