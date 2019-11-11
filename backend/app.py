@@ -19,7 +19,7 @@ from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 app.config["UPLOAD_FOLDER"] = "/var/docat/doc"
-app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024  # 16MB
+app.config["MAX_CONTENT_LENGTH"] = 100 * 1024 * 1024  # 100M
 
 
 @app.route("/api/<project>/<version>", methods=["POST"])
