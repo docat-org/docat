@@ -74,10 +74,15 @@ def tag(project, version, new_tag):
             # overwrite the tag
             dst.unlink()
         dst.symlink_to(src)
-        return {
-            "message": f"Tag {new_tag} -> {version} successfully created"
-        }, HTTPStatus.CREATED
+        return (
+            {"message": f"Tag {new_tag} -> {version} successfully created"},
+            HTTPStatus.CREATED,
+        )
     else:
-        return {
-            "message": f"Tag {new_tag} could not be created, because it would overwrite a version!"
-        }, HTTPStatus.CONFLICT
+        msg = (
+            f"Tag {new_tag} could not be created, because it would overwrite a version!"
+        )
+        return (
+            {"message": msg},
+            HTTPStatus.CONFLICT,
+        )
