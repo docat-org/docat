@@ -9,7 +9,7 @@ FROM python:3.8
 
 # set up the system
 RUN apt update && \
-	apt install --yes nginx sudo && \
+	apt install --yes nginx sudo dumb-init && \
 	rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p /etc/nginx/locations.d
@@ -26,4 +26,5 @@ RUN cp nginx/default /etc/nginx/sites-available/default
 RUN pip install pipenv
 RUN pipenv install --ignore-pipfile --deploy --system
 
+ENTRYPOINT ["/usr/bin/dumb-init", "--"]
 CMD ["sh", "-c", "nginx && pipenv run -- flask run -h 0.0.0.0"]
