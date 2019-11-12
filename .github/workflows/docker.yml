@@ -13,6 +13,7 @@ jobs:
     - name: build docker image
       run: |
         docker build . --tag randombenj/docat:${{ github.sha }}
+        docker tag randombenj/docat:${{ github.sha }} randombenj/docat:unstable
 
     - name: tag latest and version on release
       run: |
