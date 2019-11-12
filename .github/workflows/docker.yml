@@ -1,0 +1,29 @@
+name: docker ci
+
+on: [push]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: build docker image
+      run: |
+        docker build . --tag randombenj/docat:${{ github.sha }}
+
+    - name: tag latest and version on release
+      run: |
+        docker tag randombenj/docat:${{ github.sha }} randombenj/docat:$(git describe --tags)
+        docker tag randombenj/docat:${{ github.sha }} randombenj/docat:latest
+      if: startsWith(github.event.ref, 'refs/tags')
+
+    - name: publish docker image
+      run: |
+        docker login --username randombenj --password $DOCKERHUB
+        docker push randombenj/docat
+      env:
+        DOCKERHUB: ${{ secrets.DOCKERHUB }}
+
