@@ -45,7 +45,7 @@ export default {
   async created() {
     this.versions = (await ProjectRepository.getVersions(
       this.$route.params.project
-    )).data.map((version) => version.name)
+    )).map((version) => version.name)
     this.docURL = this.$route.params.location || ProjectRepository.getProjectDocsURL(
       this.$route.params.project,
       this.$route.params.version

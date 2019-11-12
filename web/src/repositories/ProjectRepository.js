@@ -32,7 +32,9 @@ export default {
    * this includes mainly the existing versions
    * @param {string} projectName Name of the project
    */
-  getVersions(projectName) {
-    return Repository.get(`${Repository.defaults.baseURL}/${resource}/${projectName}/`)
+  async getVersions(projectName) {
+    return (await Repository.get(`${Repository.defaults.baseURL}/${resource}/${projectName}/`))
+      .data
+      .filter((version) => version.type == 'directory')
   }
 }
