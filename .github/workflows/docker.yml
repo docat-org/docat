@@ -20,7 +20,7 @@ jobs:
         docker tag randombenj/docat:${{ github.sha }} randombenj/docat:latest
       if: startsWith(github.event.ref, 'refs/tags')
 
-    - uses: azure/container-actions/docker-login@master
+    - uses: azure/docker-login@v1
       with:
         username: 'randombenj'
         password: ${{ secrets.DOCKERHUB }}
