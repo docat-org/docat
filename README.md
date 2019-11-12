@@ -9,6 +9,7 @@ you can optionally use volumes to save state:
 
 ```sh
 # run container in background and persist data (docs, nginx configs)
+# use 'randombenj/docat:unstable' to get the latest changes
 docker run \
   --detach \
   --volume /path/to/doc:/var/docat/doc/ \
