@@ -26,7 +26,7 @@ then posting the file to the backend.
 For example to upload the file `docs.zip` as version `1.0.0` for awesome-project.
 
 ```sh
-curl -X POST -H "Content-Type: multipart/form-data" -F "file=@docs.zip" http://docat.host:5000/api/awesome-project/1.0.0
+curl -X POST -F "file=@docs.zip" http://docat.host:5000/api/awesome-project/1.0.0
 ```
 
 Any other file type is uploaded as well. 
