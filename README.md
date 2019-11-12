@@ -8,14 +8,13 @@ The simplest way is to build and run the docker container,
 you can optionally use volumes to save state:
 
 ```sh
-docker build -t docat .
 # run container in background and persist data (docs, nginx configs)
 docker run \
   --detach \
   --volume /path/to/doc:/var/docat/doc/ \
   --volume /path/to/locations:/etc/nginx/locations.d/ \
   --publish 8000:80 \
-  docat
+  randombenj/docat
 ```
 
 Go to [localhost:8000](http://localhost:8000) to view your docat instance:
