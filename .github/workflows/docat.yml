@@ -1,11 +1,44 @@
-name: docker ci
+name: docat ci
 
 on: [push]
 
 jobs:
 
-  build:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version: [3.8]
 
+    steps:
+    - uses: actions/checkout@v1
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v1
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install tox
+
+    - name: lint with flake8
+      working-directory: backend
+      run: |
+        tox -e flake8
+
+    - name: lint with black
+      working-directory: backend
+      run: |
+        tox -e black
+
+    - name: lint with isort
+      working-directory: backend
+      run: |
+        tox -e isort
+
+  docker:
     runs-on: ubuntu-latest
 
     steps:
