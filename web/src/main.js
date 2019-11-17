@@ -10,7 +10,7 @@ import {
   MdContent,
   MdList,
   MdField,
-  MdMenu
+  MdMenu,
 } from 'vue-material/dist/components'
 import 'vue-material/dist/vue-material.min.css'
 import 'vue-material/dist/theme/default.css'
@@ -32,10 +32,14 @@ Vue.use(VueRouter)
 // configure the app's routing
 import Home from '@/pages/Home.vue'
 import Docs from '@/pages/Docs.vue'
+import Help from '@/pages/Help.vue'
+import Upload from '@/pages/Upload.vue'
 
 const routes = [
   { path: '/', component: Home },
-  { path: '/:project/:version/:location?', component: Docs }
+  { path: '/:project/:version/:location?', component: Docs },
+  { path: '/help', component: Help },
+  { path: '/upload', component: Upload },
 ]
 
 const router = new VueRouter({

@@ -36,5 +36,16 @@ export default {
     return (await Repository.get(`${Repository.defaults.baseURL}/${resource}/${projectName}/`))
       .data
       .filter((version) => version.type == 'directory')
+  },
+
+  upload(projectName, version, formData) {
+    const url = `${Repository.defaults.baseURL}/api/${projectName}/${version}`;
+    Repository.post(
+        url, 
+        formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+    })
   }
 }
