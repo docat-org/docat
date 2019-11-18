@@ -4,6 +4,7 @@ import App from '@/App.vue'
 // configure vue material (https://vuematerial.io/getting-started/)
 import {
   MdCard,
+  MdButton,
   MdAvatar,
   MdApp,
   MdToolbar,
@@ -11,6 +12,8 @@ import {
   MdList,
   MdField,
   MdMenu,
+  MdProgress,
+  MdSnackbar
 } from 'vue-material/dist/components'
 import 'vue-material/dist/vue-material.min.css'
 import 'vue-material/dist/theme/default.css'
@@ -23,6 +26,9 @@ Vue.use(MdList)
 Vue.use(MdToolbar)
 Vue.use(MdCard)
 Vue.use(MdAvatar)
+Vue.use(MdProgress)
+Vue.use(MdSnackbar)
+Vue.use(MdButton)
 
 // configure vue router (https://router.vuejs.org/installation.html)
 import VueRouter from 'vue-router'

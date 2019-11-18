@@ -66,4 +66,9 @@ body,
   height: 100%;
 }
 
+a {
+  /* TODO: remove hack */
+  color: #742a47 !important;
+}
+
 </style>
