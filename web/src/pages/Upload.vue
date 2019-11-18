@@ -1,14 +1,13 @@
 <template>
    <Layout>
     <form novalidate @submit.prevent="validateUpload" class="uppload-form">
-      <h1 class="uppload-title">Uppload documentation</h1>
+      <h1 class="uppload-title">Upload documentation</h1>
 
       <p>
         If you want to automate the upload of your documentation consider using <code>curl</code>
         to post it to the server.
         There are some examples in the <a href="https://github.com/randombenj/docat/" target="_blank">docat repository</a>.
       </p>
-      <code>curl -X POST -F "file=@docs.zip" http://localhost:8000/api/PROJECT/VERSION</code>
 
       <md-field :class="getValidationClass('project')">
         <label>Projectname</label>
@@ -24,8 +23,8 @@
 
       <md-field :class="getValidationClass('documentation')">
         <label >Documentation (zip file)</label>
-        <md-file id="documentation" name="documentation" v-model="form.documentation" :disabled="sending" accept="zip,application/octet-stream,application/zip,application/x-zip,application/x-zip-compressed" />
-        <span class="md-error" v-if="!$v.form.documentation.required">The documentation is required</span>
+        <md-file id="documentation" @change="onFileUpload($event)" :disabled="sending" accept="zip,application/octet-stream,application/zip,application/x-zip,application/x-zip-compressed" />
+        <span class="md-error">The documentation is required</span>
       </md-field>
 
       <md-progress-bar md-mode="indeterminate" class="md-accent" v-if="sending" />
@@ -56,8 +55,7 @@ export default {
     return {
       form: {
         project: null,
-        version: null,
-        documentation: null
+        version: null
       },
       sending: false,
       error: '',
@@ -68,14 +66,14 @@ export default {
     form: {
       project: { required },
       version: { required },
-      documentation: { required }
+      file: ''
     }
   },
   methods: {
     async upload() {
       this.sending = true
       const formData = new FormData();
-      formData.append("file", this.documentation);
+      formData.append("file", this.form.file);
 
       try {
         await ProjectRepository.upload(this.form.project, this.form.version, formData);
@@ -87,6 +85,12 @@ export default {
       }
 
       this.sending = false
+    },
+    onFileUpload(e) {
+      var files = e.target.files || e.dataTransfer.files;
+      if (!files.length)
+        return;
+      this.form.file = files[0];
     },
     getValidationClass(fieldName) {
       const field = this.$v.form[fieldName]
