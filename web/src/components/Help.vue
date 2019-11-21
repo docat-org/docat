@@ -7,7 +7,7 @@
 <script>
 import VueMarkdown from 'vue-markdown'
 
-import README from '@/assets/README.md'
+import README from '@/assets/Help.md'
 
 export default {
   name: 'help',
