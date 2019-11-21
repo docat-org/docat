@@ -7,7 +7,7 @@
 <script>
 import VueMarkdown from 'vue-markdown'
 
-import README from '@/assets/Help.md'
+import help from '@/assets/getting-started.md'
 
 export default {
   name: 'help',
@@ -16,7 +16,7 @@ export default {
   },
   data() {
     return {
-      help: README,
+      help,
     }
   }
 }

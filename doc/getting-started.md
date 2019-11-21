@@ -1,21 +1,22 @@
-## Usage
+## Getting started with DOCAT
 
-### Add documentation
+### Uppload your documentation
 
 You can uppload any static html site by zipping it and
 then posting the file to the backend.
 
-For example to upload the file `docs.zip` as version `1.0.0` for awesome-project.
+For example to upload the file `docs.zip` as version `1.0.0` for `awesome-project`.
 
 ```sh
-curl -X POST -F "file=@docs.zip" http://localhost:5000/api/awesome-project/1.0.0
+curl -X POST -F "file=@docs.zip" http://localhost:8000/api/awesome-project/1.0.0
 ```
 
 Any other file type is uploaded as well.
-An uploaded pdf would be available as
-`http://localhost:5000/api/awesome-project/1.0.0/my_awesome.pdf`
+An upploaded pdf could be viewed like this:
 
+`http://localhost/#/awesome-project/1.0.0/my_awesome.pdf`
 
+You can also manually upload your documentation.
 A very simple web form can be found under [upload](#/upload).
 
 ### Tag documentation

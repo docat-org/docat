@@ -1,6 +1,8 @@
 # building frontend
 FROM node:13.1 as build-deps
 COPY web ./
+# fix docker not following symlinks
+COPY doc/getting-started.md ./src/assets/
 RUN yarn install
 RUN yarn lint
 RUN yarn build
