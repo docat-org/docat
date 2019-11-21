@@ -1,18 +1,18 @@
 <template>
    <Layout>
-    <h1>Help</h1>
-    <code>curl -X POST -F "file=@docs.zip" http://localhost:8000/api/PROJECT/VERSION</code>
-
+    <Help />
   </Layout>
 </template>
 
 <script>
 import Layout from '@/components/Layout.vue'
+import Help from '@/components/Help.vue'
 
 export default {
-  name: 'Help',
+  name: 'help-page',
   components: {
-    Layout
+    Layout,
+    Help
   }
 }
 </script>

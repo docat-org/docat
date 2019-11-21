@@ -30,6 +30,11 @@ Vue.use(MdProgress)
 Vue.use(MdSnackbar)
 Vue.use(MdButton)
 
+// configure to use vue-markdown (https://github.com/miaolz123/vue-markdown)
+import VueMarkdown from 'vue-markdown'
+
+Vue.use(VueMarkdown);
+
 // configure vue router (https://router.vuejs.org/installation.html)
 import VueRouter from 'vue-router'
 
