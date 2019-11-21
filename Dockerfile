@@ -2,6 +2,7 @@
 FROM node:13.1 as build-deps
 COPY web ./
 RUN yarn install
+RUN yarn lint
 RUN yarn build
 
 # production
