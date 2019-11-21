@@ -18,6 +18,9 @@
         <div v-if="!fullscreen" class="md-layout-item md-size-15 md-small-hide"></div>
         <div class="md-layout-item">
           <slot></slot>
+          <div class="help">
+            <router-link to="/help" v-if="!fullscreen">help</router-link>
+          </div>
         </div>
         <div v-if="!fullscreen" class="md-layout-item md-size-15 md-small-hide"></div>
       </div>
@@ -71,4 +74,14 @@ a {
   color: #742a47 !important;
 }
 
+.help {
+  width: 100%;
+  border-top: 1px solid #e8e8e8;
+  padding-top: 16px;
+  margin-top: 16px;
+
+  a {
+    margin-left: 50%;
+  }
+}
 </style>
