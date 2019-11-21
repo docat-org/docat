@@ -13,7 +13,9 @@ import {
   MdField,
   MdMenu,
   MdProgress,
-  MdSnackbar
+  MdSnackbar,
+  MdIcon,
+  MdTooltip
 } from 'vue-material/dist/components'
 import 'vue-material/dist/vue-material.min.css'
 import 'vue-material/dist/theme/default.css'
@@ -29,6 +31,8 @@ Vue.use(MdAvatar)
 Vue.use(MdProgress)
 Vue.use(MdSnackbar)
 Vue.use(MdButton)
+Vue.use(MdIcon)
+Vue.use(MdTooltip)
 
 // configure to use vue-markdown (https://github.com/miaolz123/vue-markdown)
 import VueMarkdown from 'vue-markdown'
