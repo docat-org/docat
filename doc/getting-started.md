@@ -1,6 +1,6 @@
 ## Getting started with DOCAT
 
-### Uppload your documentation
+### Upload your documentation
 
 You can uppload any static html site by zipping it and
 then posting the file to the backend.
