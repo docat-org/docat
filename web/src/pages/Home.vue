@@ -3,7 +3,7 @@
     <Layout>
       <ProjectOverview class="spacing" />
     </Layout>
-    <UploadButton class="uppload-button" />
+    <UploadButton class="upload-button" />
   </div>
 </template>
 
@@ -36,18 +36,18 @@ export default {
   padding-top: 20px;
 }
 
-.uppload-button {
+.upload-button {
   position: fixed;
   bottom: 16px;
 }
 
 @media all and (max-width: 959px) {
-  .uppload-button {
+  .upload-button {
     right: 16px;
   }
 }
 @media all and (min-width: 959px) {
-  .uppload-button {
+  .upload-button {
     right: 15%;
   }
 }

@@ -1,7 +1,7 @@
 <template>
    <Layout>
-    <form novalidate @submit.prevent="validateUpload" class="uppload-form">
-      <h1 class="uppload-title">Upload documentation</h1>
+    <form novalidate @submit.prevent="validateUpload" class="upload-form">
+      <h1 class="upload-title">Upload documentation</h1>
 
       <p>
         If you want to automate the upload of your documentation consider using <code>curl</code>
@@ -119,11 +119,11 @@ export default {
 </script>
 
 <style scoped>
-.uppload-title {
+.upload-title {
   margin-bottom: 16px;
 }
 
-.uppload-form {
+.upload-form {
   margin-top: 48px;
   padding-right: 16px;
   padding-left: 16px;

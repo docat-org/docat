@@ -2,7 +2,7 @@
 
 ### Upload your documentation
 
-You can uppload any static html site by zipping it and
+You can upload any static html site by zipping it and
 then posting the file to the backend.
 
 For example to upload the file `docs.zip` as version `1.0.0` for `awesome-project`.
@@ -12,7 +12,7 @@ curl -X POST -F "file=@docs.zip" http://localhost:8000/api/awesome-project/1.0.0
 ```
 
 Any other file type is uploaded as well.
-An upploaded pdf could be viewed like this:
+An uploaded pdf could be viewed like this:
 
 `http://localhost/#/awesome-project/1.0.0/my_awesome.pdf`
 
