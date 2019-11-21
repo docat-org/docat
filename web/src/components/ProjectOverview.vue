@@ -6,17 +6,21 @@
       v-bind:key="project.name"
       :project="project.name"
     />
+    <Help v-if="!projects.length" />
   </div>
 </template>
 
 <script>
+import Help from '@/components/Help.vue'
 import Project from '@/components/Project.vue'
+
 import ProjectRepository from '@/repositories/ProjectRepository'
 
 export default {
   name: 'ProjectOverview',
   components: {
-    Project
+    Project,
+    Help
   },
   data() {
     return {

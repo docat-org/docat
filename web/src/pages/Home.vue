@@ -1,18 +1,23 @@
 <template>
-  <Layout>
-    <ProjectOverview class="spacing" />
-  </Layout>
+  <div>
+    <Layout>
+      <ProjectOverview class="spacing" />
+    </Layout>
+    <UploadButton class="upload-button" />
+  </div>
 </template>
 
 <script>
 import ProjectOverview from '@/components/ProjectOverview.vue'
 import Layout from '@/components/Layout.vue'
+import UploadButton from '@/components/UploadButton.vue'
 
 export default {
   name: 'home',
   components: {
     ProjectOverview,
-    Layout
+    Layout,
+    UploadButton
   }
 }
 </script>
@@ -29,5 +34,21 @@ export default {
 
 .spacing {
   padding-top: 20px;
+}
+
+.upload-button {
+  position: fixed;
+  bottom: 16px;
+}
+
+@media all and (max-width: 959px) {
+  .upload-button {
+    right: 16px;
+  }
+}
+@media all and (min-width: 959px) {
+  .upload-button {
+    right: 15%;
+  }
 }
 </style>

@@ -8,10 +8,14 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "babel-runtime": "^6.26.0",
     "core-js": "^3.3.2",
+    "html-loader": "^0.5.5",
     "node-sass": "^4.13.0",
     "sass-loader": "^8.0.0",
-    "vue": "^2.6.10"
+    "vue": "^2.6.10",
+    "vue-markdown": "^2.2.4",
+    "vuelidate": "^0.7.4"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^4.0.0",

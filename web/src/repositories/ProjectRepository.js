@@ -36,5 +36,13 @@ export default {
     return (await Repository.get(`${Repository.defaults.baseURL}/${resource}/${projectName}/`))
       .data
       .filter((version) => version.type == 'directory')
+  },
+
+  async upload(projectName, version, formData) {
+    await Repository.post(
+      `${Repository.defaults.baseURL}/api/${projectName}/${version}`,
+      formData,
+      { headers: { 'Content-Type': 'multipart/form-data' } }
+    )
   }
 }
