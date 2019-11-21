@@ -72,11 +72,11 @@ export default {
   methods: {
     async upload() {
       this.sending = true
-      const formData = new FormData();
-      formData.append("file", this.form.file);
+      const formData = new FormData()
+      formData.append("file", this.form.file)
 
       try {
-        await ProjectRepository.upload(this.form.project, this.form.version, formData);
+        await ProjectRepository.upload(this.form.project, this.form.version, formData)
         this.clearForm()
       } catch(err) {
         // something went wrong while
@@ -87,10 +87,11 @@ export default {
       this.sending = false
     },
     onFileUpload(e) {
-      var files = e.target.files || e.dataTransfer.files;
-      if (!files.length)
-        return;
-      this.form.file = files[0];
+      const files = e.target.files || e.dataTransfer.files
+
+      if (files.length) {
+        this.form.file = files[0]
+      }
     },
     getValidationClass(fieldName) {
       const field = this.$v.form[fieldName]
