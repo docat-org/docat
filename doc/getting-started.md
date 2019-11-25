@@ -14,7 +14,7 @@ curl -X POST -F "file=@docs.zip" http://localhost:8000/api/awesome-project/1.0.0
 Any other file type is uploaded as well.
 An uploaded pdf could be viewed like this:
 
-`http://localhost/#/awesome-project/1.0.0/my_awesome.pdf`
+`http://localhost:8000/#/awesome-project/1.0.0/my_awesome.pdf`
 
 You can also manually upload your documentation.
 A very simple web form can be found under [upload](#/upload).
@@ -22,10 +22,10 @@ A very simple web form can be found under [upload](#/upload).
 ### Tag documentation
 
 After this you can tag a version, this can be usefull when
-the latest version should be available as `http://localhost:5000/docs/awesome-project/latest`
+the latest version should be available as `http://localhost:8000/docs/awesome-project/latest`
 
 If you want to tag the version `1.0.0` as `latest` for awesome-project.
 
 ```sh
-curl -X PUT http://localhost:5000/api/awesome-project/1.0.0/tags/latest
+curl -X PUT http://localhost:8000/api/awesome-project/1.0.0/tags/latest
 ```

@@ -18,4 +18,4 @@ pipenv install
 
 ## Usage
 
-See [Help.md](Help.md)
+See [getting-started.md](../doc/getting-started.md)
