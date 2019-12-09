@@ -18,8 +18,8 @@
         <div v-if="!fullscreen" class="md-layout-item md-size-15 md-small-hide"></div>
         <div class="md-layout-item">
           <slot></slot>
-          <div class="help">
-            <router-link to="/help" v-if="!fullscreen">help</router-link>
+          <div class="help" v-if="!fullscreen">
+            <router-link to="/help">help</router-link>
           </div>
         </div>
         <div v-if="!fullscreen" class="md-layout-item md-size-15 md-small-hide"></div>
