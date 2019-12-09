@@ -1,6 +1,7 @@
 <template>
   <Layout class="docs-layout" :fullscreen="true">
     <template v-slot:toolbar>
+      <span class="project-name">{{ $route.params.project }}</span>
       <md-field class="version-select">
         <md-select
           @md-selected="load()"
@@ -110,5 +111,12 @@ body,
 
 .md-app-content {
   padding: 0px;
+}
+
+.project-name {
+  margin-left: 16px;
+  margin-top: 26px;
+  font-size: 16px;
+  display: inline-block;
 }
 </style>
