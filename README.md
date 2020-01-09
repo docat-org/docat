@@ -2,6 +2,8 @@
 
 **Host your docs. Simple. Versioned. Fancy.**
 
+[![Gitter](https://badges.gitter.im/docat-docs-hosting/community.svg)](https://gitter.im/docat-docs-hosting/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+
 ## Getting started
 
 The simplest way is to build and run the docker container,
