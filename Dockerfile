@@ -21,8 +21,8 @@ RUN chown -R www-data /var/docat /etc/nginx/locations.d
 
 # install the application
 COPY --from=build-deps /dist /var/www/html
-COPY backend /app
-WORKDIR /app
+COPY docat /app/docat
+WORKDIR /app/docat
 
 RUN cp nginx/default /etc/nginx/sites-available/default
 

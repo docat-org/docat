@@ -24,17 +24,17 @@ jobs:
         pip install tox
 
     - name: lint with flake8
-      working-directory: backend
+      working-directory: docat
       run: |
         tox -e flake8
 
     - name: lint with black
-      working-directory: backend
+      working-directory: docat
       run: |
         tox -e black
 
     - name: lint with isort
-      working-directory: backend
+      working-directory: docat
       run: |
         tox -e isort
 
