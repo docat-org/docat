@@ -25,7 +25,7 @@ Go to [localhost:8000](http://localhost:8000) to view your docat instance:
 ![docat screenshot](doc/assets/docat-screenshot.png)
 
 If you want to run the application different than in a docker container, look at the
-[backend](backend/README.md) and [web](web/README.md) docs.
+[backend](docat/README.md) and [web](web/README.md) docs.
 
 ### Push documentation to docat
 

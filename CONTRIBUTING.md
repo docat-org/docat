@@ -23,7 +23,7 @@ this should document api breaks
 fixes # (if any)
 ```
 
-Type could be one of *feat, docs, fix, ...* and scope could be *backend, web, ...*
+Type could be one of *feat, docs, fix, ...* and scope could be *docat, web, ...*
 you don't have to provide a scope when the change is for the whole repository like README updates.
 
 Execute linters by running `tox` in the backand or `yarn lint`.

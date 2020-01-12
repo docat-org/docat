@@ -1,4 +1,4 @@
-# Backend
+# docat backend
 
 The backend hosts the documentation and an api to push documentation and
 tag versions of the documentation.
