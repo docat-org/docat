@@ -1,0 +1,7 @@
+.git
+*.pyc
+docat/env
+docat/__pycache__
+docat/upload
+docat/.tox
+web/node_modules

@@ -8,23 +8,24 @@ RUN yarn lint
 RUN yarn build
 
 # production
-FROM python:3.8
+FROM python:3.8-alpine
 
 # set up the system
-RUN apt update && \
-	apt install --yes nginx sudo dumb-init && \
-	rm -rf /var/lib/apt/lists/*
+RUN apk update && \
+    apk add nginx dumb-init && \
+    mkdir /run/nginx
 
 RUN mkdir -p /etc/nginx/locations.d
 RUN mkdir -p /var/docat/doc
-RUN chown -R www-data /var/docat /etc/nginx/locations.d
+RUN chown -R nginx /var/docat /etc/nginx/locations.d
 
 # install the application
+RUN mkdir -p /var/www/html
 COPY --from=build-deps /dist /var/www/html
 COPY docat /app/docat
 WORKDIR /app/docat
 
-RUN cp nginx/default /etc/nginx/sites-available/default
+RUN cp nginx/default /etc/nginx/conf.d/default.conf
 
 RUN pip install pipenv
 RUN pipenv install --ignore-pipfile --deploy --system
