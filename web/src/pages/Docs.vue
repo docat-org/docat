@@ -47,10 +47,11 @@ export default {
     this.versions = (await ProjectRepository.getVersions(
       this.$route.params.project
     )).map((version) => version.name)
-    this.docURL = this.$route.params.location || ProjectRepository.getProjectDocsURL(
-      this.$route.params.project,
-      this.$route.params.version
-    )
+    // listen on anchor tag changes
+    const component = this
+    document.getElementById("docs")
+      .contentWindow.addEventListener("hashchange", (event) =>
+        component.load(event.newURL))
   },
   methods: {
     onChange() {
@@ -68,11 +69,6 @@ export default {
           location
         }
       })
-      // load the correct documentation
-      this.docURL = ProjectRepository.getProjectDocsURL(
-        this.$route.params.project,
-        this.$route.params.version
-      )
     }
   }
 }
