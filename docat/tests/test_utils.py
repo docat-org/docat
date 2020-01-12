@@ -1,6 +1,6 @@
 from mock import MagicMock
 
-from docat.utils import create_nginx_config, create_symlink, extract_archive
+from docat.utils import create_symlink
 
 
 def test_symlink_creation():
@@ -14,9 +14,7 @@ def test_symlink_creation():
 
     assert create_symlink(source, destination)
 
-    destination.symlink_to.assert_called_once_with(
-        source
-    )
+    destination.symlink_to.assert_called_once_with(source)
 
 
 def test_symlink_creation_overwrite_destination():
@@ -33,9 +31,7 @@ def test_symlink_creation_overwrite_destination():
     assert create_symlink(source, destination)
 
     destination.unlink.assert_called_once()
-    destination.symlink_to.assert_called_once_with(
-        source
-    )
+    destination.symlink_to.assert_called_once_with(source)
 
 
 def test_symlink_creation_do_not_overwrite_destination():
