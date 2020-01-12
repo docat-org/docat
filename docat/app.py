@@ -8,14 +8,13 @@ Host your docs. Simple. Versioned. Fancy.
 :license: MIT, see LICENSE for more details.
 """
 
-import tempfile
 from http import HTTPStatus
 from pathlib import Path
-from subprocess import run
-from zipfile import ZipFile
 
-from flask import Flask, render_template, request
+from flask import Flask, request
 from werkzeug.utils import secure_filename
+
+from docat.utils import create_nginx_config, create_symlink, extract_archive
 
 app = Flask(__name__)
 app.config["UPLOAD_FOLDER"] = "/var/docat/doc"
@@ -31,58 +30,34 @@ def upload(project, version):
     if uploaded_file.filename == "":
         return {"message": "No file selected for uploading"}, HTTPStatus.BAD_REQUEST
 
-    filename = secure_filename(uploaded_file.filename)
-    file_ext = filename.rsplit(".", 1)[1].lower()
     project_base_path = Path(app.config["UPLOAD_FOLDER"]) / project
     base_path = project_base_path / version
+    target_file = base_path / secure_filename(uploaded_file.filename)
 
     # ensure directory for the uploaded doc exists
     base_path.mkdir(parents=True, exist_ok=True)
 
-    if file_ext == "zip":
-        with tempfile.TemporaryDirectory() as temp_dir:
-            zip_path = Path(temp_dir) / filename
-            uploaded_file.save(str(zip_path))
+    # save the upploaded documentation
+    uploaded_file.save(str(target_file))
+    extract_archive(target_file, base_path)
 
-            with ZipFile(zip_path, "r") as zipf:
-                zipf.extractall(path=base_path)
-    else:
-        uploaded_file.save(str(base_path / filename))
-
-    # ensure nginx config
-    nginx_location = Path("/etc/nginx/locations.d")
-    nginx_config = nginx_location / f"{project}-doc.conf"
-    if not nginx_config.exists():
-        out_parsed_template = render_template(
-            "nginx-doc.conf", project=project, dir_path=str(project_base_path)
-        )
-        with nginx_config.open("w") as f:
-            f.write(out_parsed_template)
-
-        run(["sudo", "nginx", "-s" "reload"])
+    create_nginx_config(project, project_base_path)
 
     return {"message": "File successfully uploaded"}, HTTPStatus.CREATED
 
 
 @app.route("/api/<project>/<version>/tags/<new_tag>", methods=["PUT"])
 def tag(project, version, new_tag):
-    src = version
-    dst = Path(app.config["UPLOAD_FOLDER"]) / project / new_tag
+    source = version
+    destination = Path(app.config["UPLOAD_FOLDER"]) / project / new_tag
 
-    if not dst.exists() or (dst.exists() and dst.is_symlink()):
-        if dst.is_symlink():
-            # overwrite the tag
-            dst.unlink()
-        dst.symlink_to(src)
+    if create_symlink(source, destination):
         return (
             {"message": f"Tag {new_tag} -> {version} successfully created"},
             HTTPStatus.CREATED,
         )
     else:
-        msg = (
-            f"Tag {new_tag} could not be created, because it would overwrite a version!"
-        )
         return (
-            {"message": msg},
+            {"message": f"Tag {new_tag} would overwrite an existing version!"},
             HTTPStatus.CONFLICT,
         )
