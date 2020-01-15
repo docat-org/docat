@@ -2,7 +2,7 @@
 
 **Host your docs. Simple. Versioned. Fancy.**
 
-![build](https://github.com/randombenj/docat/workflows/docat%20ci/badge.svg)
+[![build](https://github.com/randombenj/docat/workflows/docat%20ci/badge.svg)](https://github.com/randombenj/docat/actions)
 [![Gitter](https://badges.gitter.im/docat-docs-hosting/community.svg)](https://gitter.im/docat-docs-hosting/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 ## Getting started
