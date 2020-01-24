@@ -23,23 +23,19 @@ jobs:
         python -m pip install --upgrade pip
         pip install tox
 
-    - name: lint with flake8
+    - name: run backend linter
       working-directory: docat
       run: |
-        tox -e flake8
+        tox -e lint
 
-    - name: lint with black
+    - name: run backend tests
       working-directory: docat
       run: |
-        tox -e black
-
-    - name: lint with isort
-      working-directory: docat
-      run: |
-        tox -e isort
+        tox -e test
 
   docker:
     runs-on: ubuntu-latest
+    needs: test
 
     steps:
     - uses: actions/checkout@v1

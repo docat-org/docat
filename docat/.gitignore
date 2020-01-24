@@ -3,3 +3,4 @@ env
 __pycache__
 upload
 .tox
+.coverage
