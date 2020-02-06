@@ -1,6 +1,7 @@
 """
     docat utilities
 """
+import os
 import subprocess
 from pathlib import Path
 from zipfile import ZipFile
@@ -57,6 +58,9 @@ def extract_archive(target_file, destination):
         destination: (pathlib.Path): destination of the extracted archive
     """
     if target_file.suffix == ".zip":
+        # this is required to extract zip files created
+        # on windows machines (https://stackoverflow.com/a/52091659/12356463)
+        os.path.altsep = "\\"
         with ZipFile(target_file, "r") as zipf:
             zipf.extractall(path=destination)
         target_file.unlink()  # remove the zip file
