@@ -14,7 +14,7 @@ from pathlib import Path
 from flask import Flask, request
 from werkzeug.utils import secure_filename
 
-from docat.utils import create_nginx_config, create_symlink, extract_archive
+from docat.docat.utils import create_nginx_config, create_symlink, extract_archive
 
 app = Flask(__name__)
 app.config["UPLOAD_FOLDER"] = "/var/docat/doc"
