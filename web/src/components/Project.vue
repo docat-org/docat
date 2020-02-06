@@ -2,8 +2,12 @@
   <router-link :to="`/${project}/${latestVersion}`">
     <md-card>
       <md-card-header>
-        <md-avatar>
-          <img :alt="`${project} project logo`" :src="logoURL" />
+        <md-avatar :class="{ hidden: hideAvatar }">
+          <img
+            :alt="`${project} project logo`"
+            :src="logoURL"
+            @error="() => hideAvatar = true"
+          />
         </md-avatar>
 
         <div class="md-title">{{ project }}</div>
@@ -26,6 +30,7 @@ export default {
       logoURL: '',
       latestVersion: '',
       versions: [],
+      hideAvatar: false
     }
   },
   async created() {
@@ -35,3 +40,8 @@ export default {
   }
 }
 </script>
+<style lang="scss">
+.md-avatar.hidden {
+  display: none;
+}
+</style>
