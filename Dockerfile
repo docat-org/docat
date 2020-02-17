@@ -13,6 +13,7 @@ FROM python:3.8-alpine
 # set up the system
 RUN apk update && \
     apk add nginx dumb-init && \
+    rm -rf /var/cache/apk/* && \
     mkdir /run/nginx
 
 RUN mkdir -p /etc/nginx/locations.d
