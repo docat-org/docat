@@ -43,6 +43,13 @@ export default {
       )
     }
   },
+  beforeRouteUpdate(to, from, next) {
+    this.docURL = ProjectRepository.getProjectDocsURL(
+      to.params.project,
+      to.params.version
+    )
+    next()
+  },
   async created() {
     this.versions = (await ProjectRepository.getVersions(
       this.$route.params.project
