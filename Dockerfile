@@ -5,6 +5,7 @@ COPY web ./
 COPY doc/getting-started.md ./src/assets/
 RUN yarn install --frozen-lockfile
 RUN yarn lint
+RUN yarn run test:unit
 RUN yarn build
 
 # production
