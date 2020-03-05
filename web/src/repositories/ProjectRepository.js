@@ -1,6 +1,6 @@
 import Repository from '@/repositories/Repository'
 
-const resource = '/doc'
+const resource = 'doc'
 export default {
 
   /**
