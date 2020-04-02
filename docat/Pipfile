@@ -5,7 +5,6 @@ verify_ssl = true
 
 [dev-packages]
 flake8 = "*"
-flake8-isort = "*"
 flake8-black = "*"
 pytest = "*"
 pytest-cov = "*"
