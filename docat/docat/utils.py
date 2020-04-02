@@ -92,4 +92,4 @@ def remove_docs(project, version):
             if nginx_config.exists():
                 nginx_config.unlink()
     else:
-        raise Exception(f"Could not find version '{docs}'")
+        return f"Could not find version '{docs}'"

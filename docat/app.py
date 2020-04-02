@@ -18,7 +18,9 @@ from docat.docat.utils import (
     create_nginx_config,
     create_symlink,
     extract_archive,
+    remove_docs,
 )
+
 
 app = Flask(__name__)
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
@@ -64,4 +66,19 @@ def tag(project, version, new_tag):
         return (
             {"message": f"Tag {new_tag} would overwrite an existing version!"},
             HTTPStatus.CONFLICT,
+        )
+
+
+@app.route("/api/<project>/<version>", methods=["DELETE"])
+def delete(project, version):
+    message = remove_docs(project, version)
+    if message:
+        return (
+            {"message": message},
+            HTTPStatus.NOT_FOUND,
+        )
+    else:
+        return (
+            {"message": f"Successfully deleted version '{version}'"},
+            HTTPStatus.OK,
         )
