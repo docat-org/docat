@@ -9,15 +9,19 @@ Host your docs. Simple. Versioned. Fancy.
 """
 
 from http import HTTPStatus
-from pathlib import Path
 
 from flask import Flask, request
 from werkzeug.utils import secure_filename
 
-from docat.docat.utils import create_nginx_config, create_symlink, extract_archive
+from docat.docat.utils import (
+    UPLOAD_FOLDER,
+    create_nginx_config,
+    create_symlink,
+    extract_archive,
+)
 
 app = Flask(__name__)
-app.config["UPLOAD_FOLDER"] = "/var/docat/doc"
+app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 app.config["MAX_CONTENT_LENGTH"] = 100 * 1024 * 1024  # 100M
 
 
@@ -30,7 +34,7 @@ def upload(project, version):
     if uploaded_file.filename == "":
         return {"message": "No file selected for uploading"}, HTTPStatus.BAD_REQUEST
 
-    project_base_path = Path(app.config["UPLOAD_FOLDER"]) / project
+    project_base_path = app.config["UPLOAD_FOLDER"] / project
     base_path = project_base_path / version
     target_file = base_path / secure_filename(uploaded_file.filename)
 
@@ -49,7 +53,7 @@ def upload(project, version):
 @app.route("/api/<project>/<version>/tags/<new_tag>", methods=["PUT"])
 def tag(project, version, new_tag):
     source = version
-    destination = Path(app.config["UPLOAD_FOLDER"]) / project / new_tag
+    destination = app.config["UPLOAD_FOLDER"] / project / new_tag
 
     if create_symlink(source, destination):
         return (

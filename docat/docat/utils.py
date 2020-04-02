@@ -2,11 +2,15 @@
     docat utilities
 """
 import os
+import shutil
 import subprocess
 from pathlib import Path
 from zipfile import ZipFile
 
 from jinja2 import Template
+
+NGINX_CONFIG_PATH = Path("/etc/nginx/locations.d")
+UPLOAD_FOLDER = Path("/var/docat/doc")
 
 
 def create_symlink(source, destination):
@@ -36,8 +40,7 @@ def create_nginx_config(project, project_base_path):
         project (str): name of the project
         project_base_path (pathlib.Path): base path of the project
     """
-    nginx_location = Path("/etc/nginx/locations.d")
-    nginx_config = nginx_location / f"{project}-doc.conf"
+    nginx_config = NGINX_CONFIG_PATH / f"{project}-doc.conf"
     if not nginx_config.exists():
         out_parsed_template = Template(open("templates/nginx-doc.conf").read()).render(
             project=project, dir_path=str(project_base_path)
@@ -64,3 +67,29 @@ def extract_archive(target_file, destination):
         with ZipFile(target_file, "r") as zipf:
             zipf.extractall(path=destination)
         target_file.unlink()  # remove the zip file
+
+
+def remove_docs(project, version):
+    """
+    Delete documentation
+
+    Args:
+        project (str): name of the project
+        version (str): project version
+    """
+    docs = UPLOAD_FOLDER / project / version
+    if docs.exists():
+        shutil.rmtree(docs)
+        # remove dead symlinks
+        for link in (s for s in docs.parent.iterdir() if s.is_symlink()):
+            if not link.resolve().exists():
+                link.unlink()
+
+        # remove empty projects
+        if not [d for d in docs.parent.iterdir() if d.is_dir()]:
+            docs.parent.rmdir()
+            nginx_config = NGINX_CONFIG_PATH / f"{project}-doc.conf"
+            if nginx_config.exists():
+                nginx_config.unlink()
+    else:
+        raise Exception(f"Could not find version '{docs}'")
