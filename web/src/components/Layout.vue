@@ -5,8 +5,7 @@
         <div class="md-layout-item md-size-15 md-small-hide"></div>
         <div class="md-layout-item">
           <router-link to="/">
-            <img class="logo" alt="docat logo" src="../assets/logo.png" />
-            <h1>DOCAT</h1>
+            <div v-html="header" />
           </router-link>
           <slot name="toolbar"></slot>
         </div>
@@ -33,6 +32,12 @@ export default {
   name: 'layout',
   props: {
     fullscreen: Boolean,
+  },
+  data() {
+    const defaultHeader = '<img class="logo" alt="docat logo" src="' + require('../assets/logo.png') + '" /><h1>DOCAT</h1>';
+    return {
+      header: process.env.VUE_APP_HEADER_HTML || defaultHeader,
+    }
   }
 }
 </script>
