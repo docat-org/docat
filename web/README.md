@@ -34,10 +34,10 @@ yarn lint
 ### Basic Header Theeming
 
 Not happy with the default Docat logo and header?
-Just add your custom html header with `VUE_APP_HEADER_HTML`.
+Just add your custom html header to the `/var/www/html/config.json` file.
 
 ```
-VUE_APP_HEADER_HTML="<h1>MyCompany</h1>"
+{"headerHTML": "<h1>MyCompany</h1>"}
 ```
 
 ### Customize configuration

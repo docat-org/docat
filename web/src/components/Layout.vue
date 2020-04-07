@@ -28,15 +28,23 @@
 </template>
 
 <script>
+import ProjectRepository from '@/repositories/ProjectRepository'
+
 export default {
   name: 'layout',
   props: {
     fullscreen: Boolean,
   },
   data() {
-    const defaultHeader = '<img class="logo" alt="docat logo" src="' + require('../assets/logo.png') + '" /><h1>DOCAT</h1>';
+    const defaultHeader = '<img class="logo" alt="docat logo" src="' + require('../assets/logo.png') + '" /><h1>DOCAT</h1>'
     return {
-      header: process.env.VUE_APP_HEADER_HTML || defaultHeader,
+      header: defaultHeader,
+    }
+  },
+  async created() {
+    const config = ProjectRepository.getConfig()
+    if (config.hasOwnProperty('headerHTML')){
+      this.header = config.headerHTML
     }
   }
 }
