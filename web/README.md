@@ -31,5 +31,14 @@ yarn build
 yarn lint
 ```
 
+### Basic Header Theeming
+
+Not happy with the default Docat logo and header?
+Just add your custom html header to the `/var/www/html/config.json` file.
+
+```
+{"headerHTML": "<h1>MyCompany</h1>"}
+```
+
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).

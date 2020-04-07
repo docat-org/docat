@@ -4,6 +4,18 @@ const resource = 'doc'
 export default {
 
   /**
+  * Get Config
+  */
+  async getConfig() {
+    try {
+      const result = await Repository.get(`${Repository.defaults.baseURL}/config.json`)
+      return result.data;
+    } catch {
+      return {}
+    }
+  },
+
+  /**
    * Returns all projects
    */
   get() {

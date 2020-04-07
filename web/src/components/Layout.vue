@@ -5,8 +5,7 @@
         <div class="md-layout-item md-size-15 md-small-hide"></div>
         <div class="md-layout-item">
           <router-link to="/">
-            <img class="logo" alt="docat logo" src="../assets/logo.png" />
-            <h1>DOCAT</h1>
+            <div v-html="header" />
           </router-link>
           <slot name="toolbar"></slot>
         </div>
@@ -29,10 +28,24 @@
 </template>
 
 <script>
+import ProjectRepository from '@/repositories/ProjectRepository'
+
 export default {
   name: 'layout',
   props: {
     fullscreen: Boolean,
+  },
+  data() {
+    const defaultHeader = '<img class="logo" alt="docat logo" src="' + require('../assets/logo.png') + '" /><h1>DOCAT</h1>'
+    return {
+      header: defaultHeader,
+    }
+  },
+  async created() {
+    const config = ProjectRepository.getConfig()
+    if (config.hasOwnProperty('headerHTML')){
+      this.header = config.headerHTML
+    }
   }
 }
 </script>
