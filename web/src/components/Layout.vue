@@ -42,7 +42,7 @@ export default {
     }
   },
   async created() {
-    const config = ProjectRepository.getConfig()
+    const config = await ProjectRepository.getConfig()
     if (config.hasOwnProperty('headerHTML')){
       this.header = config.headerHTML
     }

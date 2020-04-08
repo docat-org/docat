@@ -47,3 +47,15 @@ When you have multiple versions you may want to tag some version as **latest**:
 # tag the version VERSION of project PROJECT as latest
 curl -X PUT http://localhost:8000/api/PROJECT/VERSION/tags/latest
 ```
+
+
+## Advanced config.json
+
+It is possible to configure some things after the fact.
+
+1. Create a `config.json` file
+2. Mount it inside your docker container `--volume /path/to/config.json:/var/www/html/config.json`
+
+Supported config options:
+
+* headerHTML
