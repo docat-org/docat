@@ -54,6 +54,7 @@ export default {
     this.versions = (await ProjectRepository.getVersions(
       this.$route.params.project
     )).map((version) => version.name)
+
     // listen on anchor tag changes
     const component = this
     document.getElementById("docs")
@@ -62,18 +63,25 @@ export default {
   },
   methods: {
     onChange() {
-      const location = document.getElementById("docs")
-        .contentWindow.location.href
-      if (location) {
-        this.load(location)
+      const docsFrame = document.getElementById("docs")
+      docsFrame.contentWindow.document.querySelectorAll('a').forEach((a) => {
+        if (!a.href.startsWith(location.origin)) {
+          // open all foreign links in a new tab
+          a.setAttribute('target', '_blank')
+        }
+      })
+
+      const docsLocation = docsFrame.contentWindow.location.href
+      if (docsLocation) {
+        this.load(docsLocation)
       }
     },
-    load(location) {
+    load(docsLocation) {
       this.$router.replace({
         params: {
           project: this.$route.params.project,
           version: this.selectedVersion,
-          location
+          location: docsLocation
         }
       })
     }
