@@ -3,8 +3,19 @@
     <template v-slot:toolbar>
       <span class="project-name">{{ $route.params.project }}</span>
       <md-field class="version-select">
-        <md-select @md-selected="load()" v-model="selectedVersion" name="version" id="version">
-          <md-option v-for="version of versions" v-bind:key="version" :value="version">{{ version }}</md-option>
+        <md-select
+          @md-selected="load()"
+          v-model="selectedVersion"
+          name="version"
+          id="version"
+        >
+          <md-option
+            v-for="version of versions"
+            v-bind:key="version"
+            :value="version"
+          >
+            {{ version }}
+          </md-option>
         </md-select>
       </md-field>
     </template>
@@ -13,12 +24,12 @@
 </template>
 
 <script>
-import Layout from "@/components/Layout.vue";
+import Layout from '@/components/Layout.vue'
 
-import ProjectRepository from "@/repositories/ProjectRepository";
+import ProjectRepository from '@/repositories/ProjectRepository'
 
 export default {
-  name: "docs",
+  name: 'docs',
   components: {
     Layout
   },
@@ -29,9 +40,9 @@ export default {
       docURL: ProjectRepository.getProjectDocsURL(
         this.$route.params.project,
         this.$route.params.version,
-        (this.$route.params.location || "") + (this.$route.hash || "")
+        (this.$route.params.location || '') + (this.$route.hash || '')
       )
-    };
+    }
   },
   beforeRouteUpdate(to, from, next) {
     if (to.params.version !== from.params.version) {
@@ -39,35 +50,34 @@ export default {
       this.docURL = ProjectRepository.getProjectDocsURL(
         to.params.project,
         to.params.version
-      );
+      )
     }
-    next();
+    next()
   },
   async created() {
-    this.versions = (
-      await ProjectRepository.getVersions(this.$route.params.project)
-    ).map(version => version.name);
+    this.versions = (await ProjectRepository.getVersions(
+      this.$route.params.project
+    )).map((version) => version.name)
   },
   methods: {
     onChange() {
-      const docsFrame = document.getElementById("docs");
-      docsFrame.contentWindow.document.querySelectorAll("a").forEach(a => {
+      const docsFrame = document.getElementById('docs')
+      docsFrame.contentWindow.document.querySelectorAll('a').forEach((a) => {
         if (!a.href.startsWith(location.origin)) {
           // open all foreign links in a new tab
-          a.setAttribute("target", "_blank");
+          a.setAttribute('target', '_blank')
         }
-      });
+      })
 
-      this.load(docsFrame.contentWindow.location.href);
+      this.load(docsFrame.contentWindow.location.href)
     },
     load(docPath) {
+
       // listen on anchor tag changes
-      const component = this;
-      document
-        .getElementById("docs")
-        .contentWindow.addEventListener("hashchange", event =>
-          component.load(event.newURL)
-        );
+      const component = this
+      document.getElementById('docs')
+        .contentWindow.addEventListener('hashchange', (event) =>
+          component.load(event.newURL))
 
       // set document path in actual url
       if (docPath) {
@@ -75,17 +85,14 @@ export default {
           this.$route.params.project,
           this.selectedVersion,
           docPath
-        );
-      }
-      this.$router
-        .replace(
-          `/${this.$route.params.project}/${this.selectedVersion}/${docPath ||
-            ""}`
         )
-        .catch(() => {}); // NavigationDuplicate
+      }
+      this.$router.replace(
+        `/${this.$route.params.project}/${this.selectedVersion}/${docPath || ''}`
+      ).catch(() => {})  // NavigationDuplicate
     }
   }
-};
+}
 </script>
 
 <style lang="scss">

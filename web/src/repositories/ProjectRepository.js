@@ -1,16 +1,19 @@
-import Repository from '@/repositories/Repository'
 
+const port = process.env.VUE_APP_BACKEND_PORT || location.port
+const host = process.env.VUE_APP_BACKEND_HOST || location.hostname
+
+const resource = 'doc'
 export default {
 
-  resource: 'doc',
+  baseURL: `${location.protocol}//${host}:${port}`,
 
   /**
   * Get Config
   */
   async getConfig() {
     try {
-      const result = await Repository.get(`${Repository.defaults.baseURL}/config.json`)
-      return result.data;
+      const resp = await fetch(`${this.baseURL}/config.json`)
+      return await resp.json();
     } catch {
       return {}
     }
@@ -19,8 +22,9 @@ export default {
   /**
    * Returns all projects
    */
-  get() {
-    return Repository.get(`${Repository.defaults.baseURL}/${this.resource}/`)
+  async get() {
+    const resp = await fetch(`${this.baseURL}/${resource}/`)
+    return await resp.json()
   },
 
   /**
@@ -28,7 +32,7 @@ export default {
    * @param {string} projectName Name of the project
    */
   getProjectLogoURL(projectName) {
-    return `${Repository.defaults.baseURL}/${this.resource}/${projectName}/logo.jpg`
+    return `${this.baseURL}/${resource}/${projectName}/logo.jpg`
   },
 
   /**
@@ -38,7 +42,7 @@ export default {
    * @param {string?} docsPath Path to the documentation page
    */
   getProjectDocsURL(projectName, version, docsPath) {
-    return `${Repository.defaults.baseURL}/${this.resource}/${projectName}/${version}/${docsPath || ''}`
+    return `${this.baseURL}/${resource}/${projectName}/${version}/${docsPath || ''}`
   },
 
   /**
@@ -64,22 +68,24 @@ export default {
    * @param {string} projectName Name of the project
    */
   async getVersions(projectName) {
-    return (await Repository.get(`${Repository.defaults.baseURL}/${this.resource}/${projectName}/`))
-      .data
+    const resp = await fetch(`${this.baseURL}/${resource}/${projectName}/`)
+    return (await resp.json())
       .filter((version) => version.type == 'directory')
   },
 
   /**
-   * Upload a new project (as zip)
+   * Uploads new project documentation
    * @param {string} projectName Name of the project
-   * @param {string} version Version of the project
-   * @param {formData} formData Zip archive to upload
+   * @param {string} version Name of the version
+   * @param {string} body Data to upload
    */
-  async upload(projectName, version, formData) {
-    await Repository.post(
-      `${Repository.defaults.baseURL}/api/${projectName}/${version}`,
-      formData,
-      { headers: { 'Content-Type': 'multipart/form-data' } }
+  async upload(projectName, version, body) {
+    await fetch(`${this.baseURL}/api/${projectName}/${version}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'multipart/form-data' },
+        body
+      }
     )
   }
 }
