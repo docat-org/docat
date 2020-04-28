@@ -37,29 +37,27 @@ export default {
     return {
       selectedVersion: this.$route.params.version,
       versions: [],
-      docURL: this.$route.params.location || ProjectRepository.getProjectDocsURL(
+      docURL: ProjectRepository.getProjectDocsURL(
         this.$route.params.project,
-        this.$route.params.version
+        this.$route.params.version,
+        (this.$route.params.location || '') + (this.$route.hash || '')
       )
     }
   },
   beforeRouteUpdate(to, from, next) {
-    this.docURL = ProjectRepository.getProjectDocsURL(
-      to.params.project,
-      to.params.version
-    )
+    if (to.params.version !== from.params.version) {
+      // hard reload iframe only when switching versions
+      this.docURL = ProjectRepository.getProjectDocsURL(
+        to.params.project,
+        to.params.version
+      )
+    }
     next()
   },
   async created() {
     this.versions = (await ProjectRepository.getVersions(
       this.$route.params.project
     )).map((version) => version.name)
-
-    // listen on anchor tag changes
-    const component = this
-    document.getElementById("docs")
-      .contentWindow.addEventListener("hashchange", (event) =>
-        component.load(event.newURL))
   },
   methods: {
     onChange() {
@@ -71,19 +69,27 @@ export default {
         }
       })
 
-      const docsLocation = docsFrame.contentWindow.location.href
-      if (docsLocation) {
-        this.load(docsLocation)
-      }
+      this.load(docsFrame.contentWindow.location.href)
     },
-    load(docsLocation) {
-      this.$router.replace({
-        params: {
-          project: this.$route.params.project,
-          version: this.selectedVersion,
-          location: docsLocation
-        }
-      })
+    load(docPath) {
+
+      // listen on anchor tag changes
+      const component = this
+      document.getElementById("docs")
+        .contentWindow.addEventListener("hashchange", (event) =>
+          component.load(event.newURL))
+
+      // set document path in actual url
+      if (docPath) {
+        docPath = ProjectRepository.getDocsPath(
+          this.$route.params.project,
+          this.selectedVersion,
+          docPath
+        )
+      }
+      this.$router.replace(
+        `/${this.$route.params.project}/${this.selectedVersion}/${docPath || ''}`
+      ).catch(() => {})  // NavigationDuplicate
     }
   }
 }

@@ -52,7 +52,7 @@ import Upload from '@/pages/Upload.vue'
 
 const routes = [
   { path: '/', component: Home },
-  { path: '/:project/:version/:location?', component: Docs },
+  { path: '/:project/:version/:location(.*)?', component: Docs },
   { path: '/help', component: Help },
   { path: '/upload', component: Upload },
 ]
