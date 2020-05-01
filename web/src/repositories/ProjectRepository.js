@@ -53,7 +53,7 @@ export default {
    */
   getDocsPath(projectName, version, fullDocsPath) {
     const match = decodeURIComponent(fullDocsPath).match(new RegExp(
-      String.raw`(.*)/${this.resource}/${projectName}/${version}/(.*)`
+      String.raw`(.*)/${resource}/${projectName}/${version}/(.*)`
     ))
     if (match && match.length > 2) {
       return match[2] || ""

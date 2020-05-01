@@ -12,15 +12,18 @@ const mockFetchData = (fetchData) => {
 
 describe('ProjectRepository', () => {
 
+
   it('should return the correct logo URL', () => {
     expect(ProjectRepository.getProjectLogoURL('awesome-project'))
       .toMatch('https://do.cat/doc/awesome-project/logo.jpg')
   })
 
+
   it('should return the correct docs URL', () => {
     expect(ProjectRepository.getProjectDocsURL('pet-project', '1.0.0'))
       .toMatch('https://do.cat/doc/pet-project/1.0.0/')
   })
+
 
   it('should get all projects', async () => {
     const projects = [
@@ -35,6 +38,17 @@ describe('ProjectRepository', () => {
     expect(result).toEqual(projects)
   })
 
+
+  it('correctly get relative docs path', () => {
+    const [project, version, expectedPath] = ['project', '1.0', 'index.html']
+    const absoluteDocsPath = `https://do.cat/doc/${project}/${version}/${expectedPath}`
+
+    const relativeDocsPath = ProjectRepository.getDocsPath('project', '1.0', absoluteDocsPath)
+
+    expect(relativeDocsPath).toEqual(expectedPath)
+  })
+
+
   it('should get all versions of a project', async () => {
     const versions = [
       { name: '1.0', type: 'directory' },
@@ -48,6 +62,7 @@ describe('ProjectRepository', () => {
     expect(global.fetch).toHaveBeenCalledTimes(1)
     expect(result).toEqual(versions.filter((version) => version.type == 'directory'))
   })
+
 
   it('should upload new documentation', async () => {
     mockFetchData({})
