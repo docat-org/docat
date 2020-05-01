@@ -1,12 +1,17 @@
-import mockAxios from 'axios'
 
 import ProjectRepository from '@/repositories/ProjectRepository'
 
-afterEach(() => {
-  mockAxios.get.mockClear()
-})
+ProjectRepository.baseURL = 'https://do.cat'
+
+const mockFetchData = (fetchData) => {
+  global.fetch = jest.fn().mockImplementation(() => Promise.resolve({
+    json: () => Promise.resolve(fetchData)
+  }))
+}
+
 
 describe('ProjectRepository', () => {
+
   it('should return the correct logo URL', () => {
     expect(ProjectRepository.getProjectLogoURL('awesome-project'))
       .toMatch('https://do.cat/doc/awesome-project/logo.jpg')
@@ -22,13 +27,11 @@ describe('ProjectRepository', () => {
       { name: 'awesome-project' },
       { name: 'pet-project' }
     ]
-    mockAxios.get.mockImplementationOnce(() =>
-      Promise.resolve({ data: projects })
-    )
+    mockFetchData(projects)
 
-    const result = (await ProjectRepository.get()).data
+    const result = await ProjectRepository.get()
 
-    expect(mockAxios.get).toHaveBeenCalledTimes(1)
+    expect(global.fetch).toHaveBeenCalledTimes(1)
     expect(result).toEqual(projects)
   })
 
@@ -38,21 +41,26 @@ describe('ProjectRepository', () => {
       { name: '2.0', type: 'directory' },
       { name: 'image.png', type: 'file' }
     ]
-    mockAxios.get.mockImplementationOnce(() =>
-      Promise.resolve({ data: versions })
-    )
+    mockFetchData(versions)
 
     const result = await ProjectRepository.getVersions('awesome--project')
 
-    expect(mockAxios.get).toHaveBeenCalledTimes(1)
+    expect(global.fetch).toHaveBeenCalledTimes(1)
     expect(result).toEqual(versions.filter((version) => version.type == 'directory'))
   })
 
   it('should upload new documentation', async () => {
-    mockAxios.post.mockImplementationOnce()
+    mockFetchData({})
 
-    await ProjectRepository.upload('awesome--project', '4.0', { data: true })
+    await ProjectRepository.upload('awesome-project', '4.0', { data: true })
 
-    expect(mockAxios.post).toHaveBeenCalledTimes(1)
+    expect(global.fetch).toHaveBeenCalledTimes(1)
+    expect(global.fetch).toHaveBeenCalledWith('https://do.cat/api/awesome-project/4.0',
+      {
+        'body': {'data': true},
+        'headers': {'Content-Type': 'multipart/form-data'},
+        'method': 'POST'
+      }
+    )
   })
 })

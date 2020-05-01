@@ -61,7 +61,7 @@ export default {
   },
   methods: {
     onChange() {
-      const docsFrame = document.getElementById("docs")
+      const docsFrame = document.getElementById('docs')
       docsFrame.contentWindow.document.querySelectorAll('a').forEach((a) => {
         if (!a.href.startsWith(location.origin)) {
           // open all foreign links in a new tab
@@ -75,8 +75,8 @@ export default {
 
       // listen on anchor tag changes
       const component = this
-      document.getElementById("docs")
-        .contentWindow.addEventListener("hashchange", (event) =>
+      document.getElementById('docs')
+        .contentWindow.addEventListener('hashchange', (event) =>
           component.load(event.newURL))
 
       // set document path in actual url

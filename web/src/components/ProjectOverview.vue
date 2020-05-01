@@ -28,7 +28,7 @@ export default {
     }
   },
   async created() {
-    this.projects = (await ProjectRepository.get()).data
+    this.projects = await ProjectRepository.get()
   }
 }
 </script>
