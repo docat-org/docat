@@ -8,10 +8,11 @@ Host your docs. Simple. Versioned. Fancy.
 :license: MIT, see LICENSE for more details.
 """
 
+import os
 from http import HTTPStatus
 from pathlib import Path
 
-from flask import Flask, request
+from flask import Flask, request, send_from_directory
 from werkzeug.utils import secure_filename
 
 from docat.docat.utils import create_nginx_config, create_symlink, extract_archive
@@ -61,3 +62,11 @@ def tag(project, version, new_tag):
             {"message": f"Tag {new_tag} would overwrite an existing version!"},
             HTTPStatus.CONFLICT,
         )
+
+
+# serve_local_docs for local testing without a nginx
+if os.environ.get("DOCAT_SERVE_FILES"):
+
+    @app.route("/doc/<path:path>")
+    def serve_local_docs(path):
+        return send_from_directory(app.config["UPLOAD_FOLDER"], path)
