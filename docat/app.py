@@ -18,7 +18,7 @@ from werkzeug.utils import secure_filename
 from docat.docat.utils import create_nginx_config, create_symlink, extract_archive
 
 app = Flask(__name__)
-app.config["UPLOAD_FOLDER"] = "/var/docat/doc"
+app.config["UPLOAD_FOLDER"] = os.getenv("DOCAT_DOC_PATH", "/var/docat/doc")
 app.config["MAX_CONTENT_LENGTH"] = 100 * 1024 * 1024  # 100M
 
 
