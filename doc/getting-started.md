@@ -5,6 +5,9 @@
 You can upload any static html site by zipping it and
 then posting the file to the backend.
 
+> Note: if a `index.html` file is present in the root of the zip file
+  most web server will serve the file by default.
+
 For example to upload the file `docs.zip` as version `1.0.0` for `awesome-project`.
 
 ```sh
