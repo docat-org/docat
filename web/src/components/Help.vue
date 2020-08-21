@@ -1,6 +1,6 @@
 <template>
   <vue-markdown>
-    {{ help }}
+    {{ help() }}
   </vue-markdown>
 </template>
 
@@ -14,9 +14,15 @@ export default {
   components: {
     VueMarkdown
   },
-  data() {
-    return {
-      help,
+  methods: {
+    help() {
+      const port = process.env.VUE_APP_BACKEND_PORT || location.port
+      const host = process.env.VUE_APP_BACKEND_HOST || location.hostname
+
+      return help.replace(
+        /http:\/\/localhost:8000/g,
+        `${location.protocol}//${host}${port !== '' ? ':' + port : ''}`
+      );
     }
   }
 }
