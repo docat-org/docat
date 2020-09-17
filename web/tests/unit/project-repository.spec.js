@@ -72,8 +72,7 @@ describe('ProjectRepository', () => {
     expect(global.fetch).toHaveBeenCalledTimes(1)
     expect(global.fetch).toHaveBeenCalledWith('https://do.cat/api/awesome-project/4.0',
       {
-        'body': {'data': true},
-        'headers': {'Content-Type': 'multipart/form-data'},
+        'body': { 'data': true },
         'method': 'POST'
       }
     )
