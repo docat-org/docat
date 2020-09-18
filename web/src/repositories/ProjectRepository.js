@@ -83,7 +83,6 @@ export default {
     await fetch(`${this.baseURL}/api/${projectName}/${version}`,
       {
         method: 'POST',
-        headers: { 'Content-Type': 'multipart/form-data' },
         body
       }
     )
