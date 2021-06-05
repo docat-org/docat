@@ -2,7 +2,7 @@ from pathlib import Path
 
 from mock import MagicMock, mock_open, patch
 
-from docat.utils import create_nginx_config, create_symlink, extract_archive
+from docat.docat.utils import create_nginx_config, create_symlink, extract_archive
 
 
 def test_symlink_creation():
@@ -90,7 +90,7 @@ def test_not_overwrite_nginx_config():
 def test_archive_artifact():
     target_file = Path("/some/zipfile.zip")
     destination = "/tmp/null"
-    with patch.object(Path, "unlink") as mock_unlink, patch("docat.utils.ZipFile") as mock_zip:
+    with patch.object(Path, "unlink") as mock_unlink, patch("docat.docat.utils.ZipFile") as mock_zip:
         mock_zip_open = MagicMock()
         mock_zip.return_value.__enter__.return_value.extractall = mock_zip_open
 

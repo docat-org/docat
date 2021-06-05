@@ -9,10 +9,12 @@ Host your docs. Simple. Versioned. Fancy.
 """
 
 import os
+import secrets
 from http import HTTPStatus
 from pathlib import Path
 
 from flask import Flask, request, send_from_directory
+from tinydb import Query, TinyDB
 from werkzeug.utils import secure_filename
 
 from docat.docat.utils import create_nginx_config, create_symlink, extract_archive
@@ -20,6 +22,7 @@ from docat.docat.utils import create_nginx_config, create_symlink, extract_archi
 app = Flask(__name__)
 app.config["UPLOAD_FOLDER"] = os.getenv("DOCAT_DOC_PATH", "/var/docat/doc")
 app.config["MAX_CONTENT_LENGTH"] = 100 * 1024 * 1024  # 100M
+app.db = TinyDB('db.json')
 
 
 @app.route("/api/<project>/<version>", methods=["POST"])
@@ -62,6 +65,22 @@ def tag(project, version, new_tag):
             {"message": f"Tag {new_tag} would overwrite an existing version!"},
             HTTPStatus.CONFLICT,
         )
+
+@app.route("/api/<project>/claim", methods=["GET"])
+def claim(project):
+    Project = Query()
+    table = app.db.table('claims')
+    result = table.search(Project.name == project)
+    if result:
+        return (
+            {"message": f"Project {project} is already claimed!"},
+            HTTPStatus.CONFLICT,
+        )
+
+    token = secrets.token_hex(16)  
+    table.insert({"name": project, "token": token})
+    return {"message": f"Project {project} successfully claimed", "token": token}, HTTPStatus.CREATED
+
 
 
 # serve_local_docs for local testing without a nginx

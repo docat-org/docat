@@ -17,6 +17,7 @@ docker run \
   --detach \
   --volume /path/to/doc:/var/docat/doc/ \
   --volume /path/to/locations:/etc/nginx/locations.d/ \
+  --volume /path/to/db.json:/app/docat/db.json
   --publish 8000:80 \
   randombenj/docat
 ```

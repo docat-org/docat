@@ -8,6 +8,7 @@ license = "MIT"
 [tool.poetry.dependencies]
 python = ">=3.6"
 flask = "*"
+tinydb = "*"
 
 [tool.poetry.dev-dependencies]
 flake8 = "*"
