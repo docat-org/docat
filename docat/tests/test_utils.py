@@ -60,11 +60,9 @@ def test_create_nginx_config():
     Tests the creation of the nginx config
     """
     jinja_template_mock = "{{ project }}:{{ dir_path }}"
-    with patch("builtins.open", mock_open(read_data=jinja_template_mock)), patch.object(
-        Path, "exists"
-    ) as mock_exists, patch.object(Path, "open", mock_open()) as mock_config, patch(
-        "subprocess.run"
-    ):
+    with patch("builtins.open", mock_open(read_data=jinja_template_mock)), patch.object(Path, "exists") as mock_exists, patch.object(
+        Path, "open", mock_open()
+    ) as mock_config, patch("subprocess.run"):
         mock_exists.return_value = False
 
         create_nginx_config("awesome-project", "/some/dir")
@@ -79,11 +77,9 @@ def test_not_overwrite_nginx_config():
     overwritten
     """
     jinja_template_mock = "{{ project }}:{{ dir_path }}"
-    with patch("builtins.open", mock_open(read_data=jinja_template_mock)), patch.object(
-        Path, "exists"
-    ) as mock_exists, patch.object(Path, "open", mock_open()) as mock_config, patch(
-        "subprocess.run"
-    ):
+    with patch("builtins.open", mock_open(read_data=jinja_template_mock)), patch.object(Path, "exists") as mock_exists, patch.object(
+        Path, "open", mock_open()
+    ) as mock_config, patch("subprocess.run"):
         mock_exists.return_value = True
 
         create_nginx_config("awesome-project", "/some/dir")
@@ -94,9 +90,7 @@ def test_not_overwrite_nginx_config():
 def test_archive_artifact():
     target_file = Path("/some/zipfile.zip")
     destination = "/tmp/null"
-    with patch.object(Path, "unlink") as mock_unlink, patch(
-        "docat.utils.ZipFile"
-    ) as mock_zip:
+    with patch.object(Path, "unlink") as mock_unlink, patch("docat.utils.ZipFile") as mock_zip:
         mock_zip_open = MagicMock()
         mock_zip.return_value.__enter__.return_value.extractall = mock_zip_open
 
