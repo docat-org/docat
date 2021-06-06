@@ -11,16 +11,15 @@ Host your docs. Simple. Versioned. Fancy.
 import os
 import secrets
 from http import HTTPStatus
-from pathlib import Path
 
 from flask import Flask, request, send_from_directory
 from tinydb import Query, TinyDB
 from werkzeug.utils import secure_filename
 
-from docat.docat.utils import create_nginx_config, create_symlink, extract_archive
+from docat.docat.utils import UPLOAD_FOLDER, create_nginx_config, create_symlink, extract_archive, remove_docs
 
 app = Flask(__name__)
-app.config["UPLOAD_FOLDER"] = os.getenv("DOCAT_DOC_PATH", "/var/docat/doc")
+app.config["UPLOAD_FOLDER"] = os.getenv("DOCAT_DOC_PATH", UPLOAD_FOLDER)
 app.config["MAX_CONTENT_LENGTH"] = 100 * 1024 * 1024  # 100M
 app.db = TinyDB('db.json')
 
@@ -34,7 +33,7 @@ def upload(project, version):
     if uploaded_file.filename == "":
         return {"message": "No file selected for uploading"}, HTTPStatus.BAD_REQUEST
 
-    project_base_path = Path(app.config["UPLOAD_FOLDER"]) / project
+    project_base_path = app.config["UPLOAD_FOLDER"] / project
     base_path = project_base_path / version
     target_file = base_path / secure_filename(uploaded_file.filename)
 
@@ -53,7 +52,7 @@ def upload(project, version):
 @app.route("/api/<project>/<version>/tags/<new_tag>", methods=["PUT"])
 def tag(project, version, new_tag):
     source = version
-    destination = Path(app.config["UPLOAD_FOLDER"]) / project / new_tag
+    destination = app.config["UPLOAD_FOLDER"] / project / new_tag
 
     if create_symlink(source, destination):
         return (
@@ -81,6 +80,27 @@ def claim(project):
     table.insert({"name": project, "token": token})
     return {"message": f"Project {project} successfully claimed", "token": token}, HTTPStatus.CREATED
 
+
+@app.route("/api/<project>/<version>", methods=["DELETE"])
+def delete(project, version):
+    headers = request.headers
+    auth = headers.get("X-Docat-Api-Key")
+
+    Project = Query()
+    table = app.db.table('claims')
+    result = table.search(Project.name == project)
+
+    if result and result[0]["token"] == auth:
+        message = remove_docs(project, version)
+        if message:
+            return ({"message": message}, HTTPStatus.NOT_FOUND)
+        else:
+            return (
+                {"message": f"Successfully deleted version '{version}'"},
+                HTTPStatus.OK,
+            )
+    else:
+        return ({"message": f"Please provide a header with a valid X-Docat-Api-Key token for {project}"}, HTTPStatus.UNAUTHORIZED) 
 
 
 # serve_local_docs for local testing without a nginx

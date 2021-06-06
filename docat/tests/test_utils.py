@@ -2,7 +2,7 @@ from pathlib import Path
 
 from mock import MagicMock, mock_open, patch
 
-from docat.docat.utils import create_nginx_config, create_symlink, extract_archive
+from docat.docat.utils import create_nginx_config, create_symlink, extract_archive, remove_docs
 
 
 def test_symlink_creation():
@@ -99,3 +99,15 @@ def test_archive_artifact():
         mock_zip.assert_called_once_with(target_file, "r")
         mock_zip_open.assert_called_once()
         mock_unlink.assert_called_once()
+
+
+def test_remove_version(temp_project_version):
+
+    docs, config = temp_project_version("project", "1.0")
+    with patch("docat.docat.utils.UPLOAD_FOLDER", docs), patch("docat.docat.utils.NGINX_CONFIG_PATH", config):
+        remove_docs("project", "1.0")
+
+        assert docs.exists()
+        assert not (docs / "project").exists()
+        assert config.exists()
+        assert not (config / "project-doc.conf").exists()
