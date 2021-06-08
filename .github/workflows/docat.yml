@@ -59,7 +59,7 @@ jobs:
 
     - name: publish docker image
       run: |
-        docker push randombenj/docat
+        docker image push --all-tags randombenj/docat
       env:
         DOCKERHUB: ${{ secrets.DOCKERHUB }}
 
