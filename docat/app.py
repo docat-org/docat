@@ -8,6 +8,7 @@ Host your docs. Simple. Versioned. Fancy.
 :license: MIT, see LICENSE for more details.
 """
 
+import hashlib
 import os
 import secrets
 from http import HTTPStatus
@@ -76,8 +77,10 @@ def claim(project):
             HTTPStatus.CONFLICT,
         )
 
-    token = secrets.token_hex(16)  
-    table.insert({"name": project, "token": token})
+    token = secrets.token_hex(16)
+    salt = os.urandom(32)
+    token_hash = hashlib.pbkdf2_hmac("sha256", token.encode("utf-8"), salt, 100000)
+    table.insert({"name": project, "token": token_hash, "salt": salt})
     return {"message": f"Project {project} successfully claimed", "token": token}, HTTPStatus.CREATED
 
 
@@ -90,17 +93,19 @@ def delete(project, version):
     table = app.db.table('claims')
     result = table.search(Project.name == project)
 
-    if result and result[0]["token"] == auth:
-        message = remove_docs(project, version)
-        if message:
-            return ({"message": message}, HTTPStatus.NOT_FOUND)
-        else:
-            return (
-                {"message": f"Successfully deleted version '{version}'"},
-                HTTPStatus.OK,
-            )
-    else:
-        return ({"message": f"Please provide a header with a valid X-Docat-Api-Key token for {project}"}, HTTPStatus.UNAUTHORIZED) 
+    if result and auth:
+        token_hash = hashlib.pbkdf2_hmac("sha256", auth.encode("utf-8"), result[0]["salt"], 100000)
+        print(f"stored hash: {result[0]['token']} calculated hash: {token_hash}")
+        if result[0]["token"] == token_hash:
+            message = remove_docs(project, version)
+            if message:
+                return ({"message": message}, HTTPStatus.NOT_FOUND)
+            else:
+                return (
+                    {"message": f"Successfully deleted version '{version}'"},
+                    HTTPStatus.OK,
+                )
+    return ({"message": f"Please provide a header with a valid X-Docat-Api-Key token for {project}"}, HTTPStatus.UNAUTHORIZED) 
 
 
 # serve_local_docs for local testing without a nginx
