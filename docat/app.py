@@ -87,7 +87,7 @@ def claim(project):
 @app.route("/api/<project>/<version>", methods=["DELETE"])
 def delete(project, version):
     headers = request.headers
-    auth = headers.get("X-Docat-Api-Key")
+    auth = headers.get("Docat-Api-Key")
 
     Project = Query()
     table = app.db.table('claims')
@@ -105,7 +105,7 @@ def delete(project, version):
                     {"message": f"Successfully deleted version '{version}'"},
                     HTTPStatus.OK,
                 )
-    return ({"message": f"Please provide a header with a valid X-Docat-Api-Key token for {project}"}, HTTPStatus.UNAUTHORIZED) 
+    return ({"message": f"Please provide a header with a valid Docat-Api-Key token for {project}"}, HTTPStatus.UNAUTHORIZED)
 
 
 # serve_local_docs for local testing without a nginx

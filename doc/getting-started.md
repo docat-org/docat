@@ -45,10 +45,10 @@ curl -X GET http://localhost:8000/api/awesome-project/claim
 
 ### Authentication
 
-To make an authenticated call a header with the key `X-DOCAT-API-KEY` and your token is required.
+To make an authenticated call a header with the key `Docat-Api-Key` and your token is required.
 
 ```sh
-curl -X DELETE --header "X-DOCAT-API-KEY: <token>" http://localhost:8000/api/awesome-project/1.0.0
+curl -X DELETE --header "Docat-Api-Key: <token>" http://localhost:8000/api/awesome-project/1.0.0
 ```
 
 ### Delete Version
@@ -58,5 +58,5 @@ To delete a Project version you need to be authenticated.
 If you want to remove the version `1.0.0` from awesome-project.
 
 ```sh
-curl -X DELETE --header "X-DOCAT-API-KEY: <token>" http://localhost:8000/api/awesome-project/1.0.0
+curl -X DELETE --header "Docat-Api-Key: <token>" http://localhost:8000/api/awesome-project/1.0.0
 ```
