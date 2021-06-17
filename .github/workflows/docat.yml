@@ -9,36 +9,38 @@ jobs:
     strategy:
       max-parallel: 4
       matrix:
-        python-version: [3.8]
+        python-version: [3.8, 3.9]
 
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v1
       with:
         python-version: ${{ matrix.python-version }}
 
     - name: install dependencies
+      working-directory: docat
       run: |
         python -m pip install --upgrade pip
-        pip install tox
+        python -m pip install poetry==1.1.5
+        python -m poetry install
 
     - name: run backend linter
       working-directory: docat
       run: |
-        tox -e lint
+        python -m poetry run flake8 docat tests
 
     - name: run backend tests
       working-directory: docat
       run: |
-        tox -e test
+        python -m poetry run pytest
 
   docker:
     runs-on: ubuntu-latest
     needs: test
 
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - name: build docker image
       run: |
         docker build . --tag randombenj/docat:${{ github.sha }}
@@ -57,7 +59,7 @@ jobs:
 
     - name: publish docker image
       run: |
-        docker push randombenj/docat
+        docker image push --all-tags randombenj/docat
       env:
         DOCKERHUB: ${{ secrets.DOCKERHUB }}
 

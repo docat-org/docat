@@ -5,15 +5,15 @@ tag versions of the documentation.
 
 ## development enviroment
 
-You will need to install [pipenv](https://github.com/pypa/pipenv) `pip install pipenv`.
+You will need to install [poetry](https://python-poetry.org/docs/#installation) `pip install poetry==1.1.5`.
 
 Install the dependencies and run the application:
 
 ```sh
 # install dependencies
-pipenv install
+poetry install
 # run the app
-[DOCAT_SERVE_FILES=1] [FLASK_DEBUG=1] pipenv run -- flask run -h 0.0.0.0
+[DOCAT_SERVE_FILES=1] [FLASK_DEBUG=1] poetry run flask run -h 0.0.0.0
 ```
 
 ### Config Options

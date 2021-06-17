@@ -8,8 +8,28 @@ RUN yarn lint
 RUN yarn run test:unit
 RUN yarn build
 
+# setup Python
+FROM python:3.9-alpine AS backend
+
+# configure docker container
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    # make poetry create the virtual environment in the project's root
+    # it gets named `.venv`
+    POETRY_VIRTUALENVS_IN_PROJECT=true \
+    # do not ask any interactive question
+    POETRY_NO_INTERACTION=1
+
+RUN apk update && \
+    apk add gcc musl-dev python3-dev libffi-dev openssl-dev cargo
+RUN pip install poetry==1.1.5
+COPY /docat/pyproject.toml /docat/poetry.lock /app/
+
+# Install the application
+WORKDIR /app/docat
+RUN poetry install --no-root --no-ansi --no-dev
+
 # production
-FROM python:3.8-alpine
+FROM python:3.9-alpine
 
 # set up the system
 RUN apk update && \
@@ -29,8 +49,8 @@ WORKDIR /app/docat
 
 RUN cp nginx/default /etc/nginx/conf.d/default.conf
 
-RUN pip install pipenv
-RUN pipenv install --ignore-pipfile --deploy --system
+# Copy the build artifact
+COPY --from=backend /app /app/docat
 
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]
-CMD ["sh", "-c", "nginx && pipenv run -- flask run -h 0.0.0.0"]
+CMD ["sh", "-c", "nginx && .venv/bin/python -m flask run -h 0.0.0.0"]
