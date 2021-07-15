@@ -34,8 +34,7 @@ FROM python:3.9-alpine
 # set up the system
 RUN apk update && \
     apk add nginx dumb-init && \
-    rm -rf /var/cache/apk/* && \
-    mkdir /run/nginx
+    rm -rf /var/cache/apk/*
 
 RUN mkdir -p /etc/nginx/locations.d
 RUN mkdir -p /var/docat/doc
@@ -47,7 +46,7 @@ COPY --from=build-deps /dist /var/www/html
 COPY docat /app/docat
 WORKDIR /app/docat
 
-RUN cp nginx/default /etc/nginx/conf.d/default.conf
+RUN cp nginx/default /etc/nginx/http.d/default.conf
 
 # Copy the build artifact
 COPY --from=backend /app /app/docat
