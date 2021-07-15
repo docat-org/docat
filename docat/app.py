@@ -7,8 +7,6 @@ Host your docs. Simple. Versioned. Fancy.
 :copyright: (c) 2019 by docat, https://github.com/randombenj/docat
 :license: MIT, see LICENSE for more details.
 """
-
-import hashlib
 import os
 import secrets
 from http import HTTPStatus
@@ -17,7 +15,7 @@ from flask import Flask, request, send_from_directory
 from tinydb import Query, TinyDB
 from werkzeug.utils import secure_filename
 
-from docat.docat.utils import UPLOAD_FOLDER, create_nginx_config, create_symlink, extract_archive, remove_docs
+from docat.docat.utils import UPLOAD_FOLDER, calculate_token, create_nginx_config, create_symlink, extract_archive, remove_docs
 
 app = Flask(__name__)
 app.config["UPLOAD_FOLDER"] = os.getenv("DOCAT_DOC_PATH", UPLOAD_FOLDER)
@@ -41,7 +39,7 @@ def upload(project, version):
     # ensure directory for the uploaded doc exists
     base_path.mkdir(parents=True, exist_ok=True)
 
-    # save the upploaded documentation
+    # save the uploaded documentation
     uploaded_file.save(str(target_file))
     extract_archive(target_file, base_path)
 
@@ -79,33 +77,43 @@ def claim(project):
 
     token = secrets.token_hex(16)
     salt = os.urandom(32)
-    token_hash = hashlib.pbkdf2_hmac("sha256", token.encode("utf-8"), salt, 100000)
+    token_hash = calculate_token(token, salt)
     table.insert({"name": project, "token": token_hash, "salt": salt})
+
     return {"message": f"Project {project} successfully claimed", "token": token}, HTTPStatus.CREATED
 
 
-@app.route("/api/<project>/<version>", methods=["DELETE"])
-def delete(project, version):
-    headers = request.headers
-    auth = headers.get("Docat-Api-Key")
-
+def check_token_for_project(token, project):
     Project = Query()
     table = app.db.table('claims')
     result = table.search(Project.name == project)
 
-    if result and auth:
-        token_hash = hashlib.pbkdf2_hmac("sha256", auth.encode("utf-8"), result[0]["salt"], 100000)
-        print(f"stored hash: {result[0]['token']} calculated hash: {token_hash}")
+    if result and token:
+        token_hash = calculate_token(token, result[0]["salt"])
         if result[0]["token"] == token_hash:
-            message = remove_docs(project, version)
-            if message:
-                return ({"message": message}, HTTPStatus.NOT_FOUND)
-            else:
-                return (
-                    {"message": f"Successfully deleted version '{version}'"},
-                    HTTPStatus.OK,
-                )
-    return ({"message": f"Please provide a header with a valid Docat-Api-Key token for {project}"}, HTTPStatus.UNAUTHORIZED)
+            return True
+        else:
+            return ({"message": f"Docat-Api-Key token is not valid for {project}"}, HTTPStatus.UNAUTHORIZED)
+    else:
+        return ({"message": f"Please provide a header with a valid Docat-Api-Key token for {project}"}, HTTPStatus.UNAUTHORIZED)
+
+
+@app.route("/api/<project>/<version>", methods=["DELETE"])
+def delete(project, version):
+    token = request.headers.get("Docat-Api-Key")
+
+    result = check_token_for_project(token, project)
+    if result is True:
+        message = remove_docs(project, version)
+        if message:
+            return ({"message": message}, HTTPStatus.NOT_FOUND)
+        else:
+            return (
+                {"message": f"Successfully deleted version '{version}'"},
+                HTTPStatus.OK,
+            )
+    else:
+        return result
 
 
 # serve_local_docs for local testing without a nginx
