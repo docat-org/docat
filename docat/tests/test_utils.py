@@ -102,7 +102,6 @@ def test_archive_artifact():
 
 
 def test_remove_version(temp_project_version):
-
     docs, config = temp_project_version("project", "1.0")
     with patch("docat.docat.utils.UPLOAD_FOLDER", docs), patch("docat.docat.utils.NGINX_CONFIG_PATH", config):
         remove_docs("project", "1.0")

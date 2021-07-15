@@ -1,3 +1,6 @@
+import tempfile
+from pathlib import Path
+
 import pytest
 from tinydb import TinyDB
 from tinydb.storages import MemoryStorage
@@ -8,10 +11,13 @@ from docat.docat.utils import create_symlink
 
 @pytest.fixture
 def client():
+    temp_dir = tempfile.TemporaryDirectory()
+    app.config["UPLOAD_FOLDER"] = Path(temp_dir.name)
     app.config["TESTING"] = True
     app.db = TinyDB(storage=MemoryStorage)
     yield app.test_client()
     app.db = None
+    temp_dir.cleanup()
 
 
 @pytest.fixture
