@@ -1,6 +1,7 @@
 """
 docat utilities
 """
+import hashlib
 import os
 import shutil
 import subprocess
@@ -33,7 +34,7 @@ def create_symlink(source, destination):
 
 def create_nginx_config(project, project_base_path):
     """
-    Creates an nginx configuration for an upploaded project
+    Creates an Nginx configuration for an uploaded project
     version.
 
     Args:
@@ -70,6 +71,7 @@ def extract_archive(target_file, destination):
 def remove_docs(project, version):
     """
     Delete documentation
+
     Args:
         project (str): name of the project
         version (str): project version
@@ -90,3 +92,15 @@ def remove_docs(project, version):
                 nginx_config.unlink()
     else:
         return f"Could not find version '{docs}'"
+
+
+def calculate_token(password, salt):
+    """
+    Wrapper function for pbkdf2_hmac to ensure consistent use of
+    hash digest algorithm and iteration count.
+
+    Args:
+        password (str): the password to hash
+        salt (str): the salt used for the password
+    """
+    return hashlib.pbkdf2_hmac("sha256", password.encode("utf-8"), salt, 100000)
