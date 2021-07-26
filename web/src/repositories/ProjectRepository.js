@@ -86,5 +86,33 @@ export default {
         body
       }
     )
+  },
+
+  /**
+   * Claim the project token
+   * @param {string} projectName Name of the project
+   */
+  async claim(projectName) {
+    const resp = await fetch(`${this.baseURL}/api/${projectName}/claim`)
+    const json = await resp.json()
+    if (!resp.ok) {
+      throw new Error(json.message)
+    }
+    return json
+  },
+
+  /**
+   * Deletes existing project documentation
+   * @param {string} projectName Name of the project
+   * @param {string} version Name of the version
+   */
+  async delete_doc(projectName, version, token) {
+    const headers = { "Docat-Api-Key": token }
+    await fetch(`${this.baseURL}/api/${projectName}/${version}`,
+      {
+        method: 'DELETE',
+	headers: headers
+      }
+    )
   }
 }
