@@ -4,6 +4,7 @@
       <Help class="spacing" />
     </Layout>
     <UploadButton class="upload-button" />
+    <DeleteButton class="delete-button" />
   </div>
 </template>
 
@@ -11,13 +12,15 @@
 import Layout from '@/components/Layout.vue'
 import Help from '@/components/Help.vue'
 import UploadButton from '@/components/UploadButton.vue'
+import DeleteButton from '@/components/DeleteButton.vue'
 
 export default {
   name: 'help-page',
   components: {
     Layout,
     Help,
-    UploadButton
+    UploadButton,
+    DeleteButton
   }
 }
 </script>

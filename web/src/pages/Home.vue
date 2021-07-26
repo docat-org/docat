@@ -4,6 +4,8 @@
       <ProjectOverview class="spacing" />
     </Layout>
     <UploadButton class="upload-button" />
+    <ClaimButton class="claim-button" />
+    <DeleteButton class="delete-button" />
   </div>
 </template>
 
@@ -11,13 +13,17 @@
 import ProjectOverview from '@/components/ProjectOverview.vue'
 import Layout from '@/components/Layout.vue'
 import UploadButton from '@/components/UploadButton.vue'
+import ClaimButton from '@/components/ClaimButton.vue'
+import DeleteButton from '@/components/DeleteButton.vue'
 
 export default {
   name: 'home',
   components: {
     ProjectOverview,
     Layout,
-    UploadButton
+    UploadButton,
+    ClaimButton,
+    DeleteButton
   }
 }
 </script>
@@ -40,15 +46,24 @@ export default {
   position: fixed;
   bottom: 16px;
 }
-
-@media all and (max-width: 959px) {
-  .upload-button {
-    right: 16px;
-  }
+.claim-button {
+  position: fixed;
+  bottom: 16px;
 }
-@media all and (min-width: 959px) {
+.delete-button {
+  position: fixed;
+  bottom: 16px;
+}
+
+@media all {
   .upload-button {
-    right: 15%;
+    right: 144px;
+  }
+  .claim-button {
+    right: 80px;
+  }
+  .delete-button {
+    right: 16px;
   }
 }
 </style>
