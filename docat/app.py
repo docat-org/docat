@@ -87,7 +87,7 @@ def claim(project):
     token = secrets.token_hex(16)
     salt = os.urandom(32)
     token_hash = calculate_token(token, salt)
-    table.insert({"name": project, "token": token_hash, "salt": salt})
+    table.insert({"name": project, "token": token_hash, "salt": salt.hex()})
 
     return {"message": f"Project {project} successfully claimed", "token": token}, HTTPStatus.CREATED
 
@@ -116,7 +116,7 @@ def check_token_for_project(token, project):
     result = table.search(Project.name == project)
 
     if result and token:
-        token_hash = calculate_token(token, result[0]["salt"])
+        token_hash = calculate_token(token, bytes.fromhex(result[0]["salt"]))
         if result[0]["token"] == token_hash:
             return True
         else:
