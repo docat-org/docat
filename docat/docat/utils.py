@@ -101,6 +101,6 @@ def calculate_token(password, salt):
 
     Args:
         password (str): the password to hash
-        salt (str): the salt used for the password
+        salt (byte): the salt used for the password
     """
-    return hashlib.pbkdf2_hmac("sha256", password.encode("utf-8"), salt, 100000)
+    return hashlib.pbkdf2_hmac("sha256", password.encode("utf-8"), salt, 100000).hex()
