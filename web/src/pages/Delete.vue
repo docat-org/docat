@@ -3,16 +3,22 @@
     <form novalidate @submit.prevent="validateDelete" class="delete-form">
       <h1 class="delete-title">Delete documentation</h1>
 
-      <md-field :class="getValidationClass('project')">
+      <md-field>
         <label>Projectname</label>
-        <md-input type="text" id="project" name="project" v-model="form.project" :disabled="sending" />
-        <span class="md-error" v-if="!$v.form.project.required">The projectname is required</span>
+        <md-select type="text" id="project" name="project" v-model="form.project" :disabled="sending" @md-selected="load_versions">
+          <md-option v-for="project of projects" v-bind:key="project" :value="project">
+            {{ project }}
+          </md-option>
+        </md-select>
       </md-field>
 
-      <md-field :class="getValidationClass('version')">
+      <md-field>
         <label>Version</label>
-        <md-input type="text" id="version" name="version" v-model="form.version" :disabled="sending" />
-        <span class="md-error" v-if="!$v.form.version.required">The version is required</span>
+        <md-select type="text" id="version" name="version" v-model="form.version" :disabled="sending">
+          <md-option v-for="version of versions" v-bind:key="version" :value="version">
+            {{ version }}
+          </md-option>
+        </md-select>
       </md-field>
 
       <md-field :class="getValidationClass('token')">
@@ -52,10 +58,16 @@ export default {
         version: null,
         token: null
       },
+      projects: [],
+      versions: [],
       sending: false,
       error: '',
       showError: false
     }
+  },
+  async created() {
+    this.projects = (await ProjectRepository.get()).map((project) => project.name)
+    this.versions = []
   },
   validations: {
     form: {
@@ -81,6 +93,10 @@ export default {
       }
 
       this.sending = false
+    },
+    async load_versions() {
+        this.versions = (await ProjectRepository.getVersions(this.form.project)).map((version) => version.name)
+        this.form.version = ''
     },
     getValidationClass(fieldName) {
       const field = this.$v.form[fieldName]
