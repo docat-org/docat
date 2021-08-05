@@ -87,7 +87,7 @@ describe('ProjectRepository', () => {
     expect(global.fetch).toHaveBeenCalledWith('https://do.cat/api/awesome-project/1.2',
       {
         'method': 'DELETE',
-	'headers': { 'Docat-Api-Key': '1234' }
+        'headers': { 'Docat-Api-Key': '1234' }
       }
     )
   })
