@@ -111,7 +111,7 @@ export default {
     await fetch(`${this.baseURL}/api/${projectName}/${version}`,
       {
         method: 'DELETE',
-	headers: headers
+        headers: headers
       }
     )
   }
