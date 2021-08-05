@@ -94,7 +94,7 @@ export default {
 
       this.sending = false
     },
-    async load_versions() {
+    async loadVersions() {
         this.versions = (await ProjectRepository.getVersions(this.form.project)).map((version) => version.name)
         this.form.version = ''
     },
