@@ -5,7 +5,7 @@
 
       <md-field>
         <label>Projectname</label>
-        <md-select type="text" id="project" name="project" v-model="form.project" :disabled="sending" @md-selected="load_versions">
+        <md-select type="text" id="project" name="project" v-model="form.project" :disabled="sending" @md-selected="loadVersions">
           <md-option v-for="project of projects" v-bind:key="project" :value="project">
             {{ project }}
           </md-option>
