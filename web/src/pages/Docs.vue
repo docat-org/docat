@@ -20,23 +20,17 @@
       </md-field>
     </template>
     <iframe id="docs" :src="docURL" @load="onChange()"></iframe>
-    <ClaimButton class="docs-claim-button" />
-    <DeleteButton class="docs-delete-button" />
   </Layout>
 </template>
 
 <script>
 import Layout from '@/components/Layout.vue'
 import ProjectRepository from '@/repositories/ProjectRepository'
-import ClaimButton from '@/components/ClaimButton.vue'
-import DeleteButton from '@/components/DeleteButton.vue'
 
 export default {
   name: 'docs',
   components: {
-    Layout,
-    ClaimButton,
-    DeleteButton
+    Layout
   },
   data() {
     return {
