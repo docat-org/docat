@@ -52,4 +52,4 @@ RUN cp nginx/default /etc/nginx/http.d/default.conf
 COPY --from=backend /app /app/docat
 
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]
-CMD ["sh", "-c", "nginx && .venv/bin/python -m flask run -h 0.0.0.0"]
+CMD ["sh", "-c", "nginx && .venv/bin/python -m gunicorn -b 0.0.0.0 app:app"]

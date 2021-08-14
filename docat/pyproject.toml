@@ -9,6 +9,7 @@ license = "MIT"
 python = ">=3.6"
 flask = "*"
 tinydb = "*"
+gunicorn = "*"
 
 [tool.poetry.dev-dependencies]
 flake8 = "*"

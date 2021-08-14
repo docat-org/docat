@@ -16,7 +16,7 @@ from flask import Flask, request, send_from_directory
 from tinydb import Query, TinyDB
 from werkzeug.utils import secure_filename
 
-from docat.docat.utils import UPLOAD_FOLDER, calculate_token, create_nginx_config, create_symlink, extract_archive, remove_docs
+from docat.utils import UPLOAD_FOLDER, calculate_token, create_nginx_config, create_symlink, extract_archive, remove_docs
 
 app = Flask(__name__)
 app.config["UPLOAD_FOLDER"] = Path(os.getenv("DOCAT_DOC_PATH", UPLOAD_FOLDER))
