@@ -13,7 +13,7 @@ Install the dependencies and run the application:
 # install dependencies
 poetry install
 # run the app
-[DOCAT_SERVE_FILES=1] [FLASK_DEBUG=1] poetry run flask run -h 0.0.0.0
+[DOCAT_SERVE_FILES=1] [FLASK_DEBUG=1] [PORT=8888] poetry run python -m docat
 ```
 
 ### Config Options

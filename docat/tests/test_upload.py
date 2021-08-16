@@ -3,7 +3,7 @@ from unittest.mock import call, patch
 
 
 def test_successfully_upload(client):
-    with patch("app.remove_docs"), patch("app.create_nginx_config"):
+    with patch("docat.app.remove_docs"), patch("docat.app.create_nginx_config"):
         data = {"file": (io.BytesIO(b"<h1>Hello World</h1>"), "index.html")}
         rv = client.post("/api/some-project/1.0.0", data=data, content_type="multipart/form-data")
 
@@ -12,7 +12,7 @@ def test_successfully_upload(client):
 
 
 def test_successfully_override(client_with_claimed_project):
-    with patch("app.remove_docs") as remove_mock, patch("app.create_nginx_config"):
+    with patch("docat.app.remove_docs") as remove_mock, patch("docat.app.create_nginx_config"):
         data = {"file": (io.BytesIO(b"<h1>Hello World</h1>"), "index.html")}
         rv = client_with_claimed_project.post("/api/some-project/1.0.0", data=data, content_type="multipart/form-data")
         assert 201 == rv.status_code
@@ -28,7 +28,7 @@ def test_successfully_override(client_with_claimed_project):
 
 
 def test_tags_are_not_overwritten_without_api_key(client_with_claimed_project):
-    with patch("app.remove_docs") as remove_mock, patch("app.create_nginx_config"):
+    with patch("docat.app.remove_docs") as remove_mock, patch("docat.app.create_nginx_config"):
         data = {"file": (io.BytesIO(b"<h1>Hello World</h1>"), "index.html")}
         rv = client_with_claimed_project.post("/api/some-project/1.0.0", data=data, content_type="multipart/form-data")
         assert 201 == rv.status_code
@@ -45,7 +45,7 @@ def test_tags_are_not_overwritten_without_api_key(client_with_claimed_project):
 
 
 def test_fails_with_invalid_token(client_with_claimed_project):
-    with patch("app.remove_docs") as remove_mock, patch("app.create_nginx_config"):
+    with patch("docat.app.remove_docs") as remove_mock, patch("docat.app.create_nginx_config"):
         data = {"file": (io.BytesIO(b"<h1>Hello World</h1>"), "index.html")}
         rv = client_with_claimed_project.post("/api/some-project/1.0.0", data=data, content_type="multipart/form-data")
         assert 201 == rv.status_code

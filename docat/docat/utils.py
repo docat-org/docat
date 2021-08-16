@@ -43,7 +43,9 @@ def create_nginx_config(project, project_base_path):
     """
     nginx_config = NGINX_CONFIG_PATH / f"{project}-doc.conf"
     if not nginx_config.exists():
-        out_parsed_template = Template(open("templates/nginx-doc.conf").read()).render(project=project, dir_path=str(project_base_path))
+        out_parsed_template = Template((Path(__file__).parent / "templates" / "nginx-doc.conf").read_text()).render(
+            project=project, dir_path=str(project_base_path)
+        )
         with nginx_config.open("w") as f:
             f.write(out_parsed_template)
 

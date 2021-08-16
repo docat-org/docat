@@ -23,8 +23,7 @@ mock = "*"
 minversion = "6.0"
 addopts = "--ff -ra -v"
 testpaths = [
-    "tests",
-    "docat",
+    "tests"
 ]
 
 [build-system]

@@ -46,10 +46,10 @@ COPY --from=build-deps /dist /var/www/html
 COPY docat /app/docat
 WORKDIR /app/docat
 
-RUN cp nginx/default /etc/nginx/http.d/default.conf
+RUN cp docat/nginx/default /etc/nginx/http.d/default.conf
 
-# Copy the build artifact
+# Copy the build artifact (.venv)
 COPY --from=backend /app /app/docat
 
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]
-CMD ["sh", "-c", "nginx && .venv/bin/python -m gunicorn -b 0.0.0.0 app:app"]
+CMD ["sh", "-c", "nginx && .venv/bin/python -m gunicorn --access-logfile - --bind=0.0.0.0:5000 docat.app:app"]
