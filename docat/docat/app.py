@@ -16,12 +16,12 @@ from flask import Flask, request, send_from_directory
 from tinydb import Query, TinyDB
 from werkzeug.utils import secure_filename
 
-from docat.docat.utils import UPLOAD_FOLDER, calculate_token, create_nginx_config, create_symlink, extract_archive, remove_docs
+from docat.utils import UPLOAD_FOLDER, calculate_token, create_nginx_config, create_symlink, extract_archive, remove_docs
 
 app = Flask(__name__)
 app.config["UPLOAD_FOLDER"] = Path(os.getenv("DOCAT_DOC_PATH", UPLOAD_FOLDER))
 app.config["MAX_CONTENT_LENGTH"] = 100 * 1024 * 1024  # 100M
-app.db = TinyDB('db.json')
+app.db = TinyDB("db.json")
 
 
 @app.route("/api/<project>/<version>", methods=["POST"])
@@ -73,10 +73,11 @@ def tag(project, version, new_tag):
             HTTPStatus.CONFLICT,
         )
 
+
 @app.route("/api/<project>/claim", methods=["GET"])
 def claim(project):
     Project = Query()
-    table = app.db.table('claims')
+    table = app.db.table("claims")
     result = table.search(Project.name == project)
     if result:
         return (
@@ -112,7 +113,7 @@ def delete(project, version):
 
 def check_token_for_project(token, project):
     Project = Query()
-    table = app.db.table('claims')
+    table = app.db.table("claims")
     result = table.search(Project.name == project)
 
     if result and token:

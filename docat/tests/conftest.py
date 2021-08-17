@@ -5,8 +5,8 @@ import pytest
 from tinydb import TinyDB
 from tinydb.storages import MemoryStorage
 
-from app import app
-from docat.docat.utils import create_symlink
+from docat.app import app
+from docat.utils import create_symlink
 
 
 @pytest.fixture
