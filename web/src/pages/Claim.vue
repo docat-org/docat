@@ -4,11 +4,6 @@
       <h1 class="claim-title">Claim Token</h1>
 
       <md-field>
-        <label>Token</label>
-        <md-input id="token" name="token" v-model="form.token" readonly />
-      </md-field>
-
-      <md-field>
         <label>Projectname</label>
         <md-select type="text" id="project" name="project" v-model="form.project" :disabled="sending" >
           <md-option
@@ -19,6 +14,11 @@
             {{ project }}
           </md-option>
         </md-select>
+      </md-field>
+
+      <md-field v-if="form.token">
+        <label>Token</label>
+        <md-input id="token" name="token" v-model="form.token" readonly />
       </md-field>
 
       <md-progress-bar md-mode="indeterminate" class="md-accent" v-if="sending" />
