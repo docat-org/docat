@@ -77,4 +77,18 @@ describe('ProjectRepository', () => {
       }
     )
   })
+
+  it('should delete an existing documentation', async () => {
+    mockFetchData({})
+
+    await ProjectRepository.delete_doc('awesome-project', '1.2', '1234')
+
+    expect(global.fetch).toHaveBeenCalledTimes(1)
+    expect(global.fetch).toHaveBeenCalledWith('https://do.cat/api/awesome-project/1.2',
+      {
+        'method': 'DELETE',
+        'headers': { 'Docat-Api-Key': '1234' }
+      }
+    )
+  })
 })

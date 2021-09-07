@@ -25,7 +25,6 @@
 
 <script>
 import Layout from '@/components/Layout.vue'
-
 import ProjectRepository from '@/repositories/ProjectRepository'
 
 export default {
@@ -136,5 +135,27 @@ body,
   margin-top: 26px;
   font-size: 16px;
   display: inline-block;
+}
+
+.docs-claim-button {
+  position: fixed;
+  bottom: 16px;
+}
+
+@media all {
+  .docs-claim-button {
+    right: 80px;
+  }
+}
+
+.docs-delete-button {
+  position: fixed;
+  bottom: 16px;
+}
+
+@media all {
+  .docs-delete-button {
+    right: 16px;
+  }
 }
 </style>

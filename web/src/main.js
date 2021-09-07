@@ -49,12 +49,16 @@ import Home from '@/pages/Home.vue'
 import Docs from '@/pages/Docs.vue'
 import Help from '@/pages/Help.vue'
 import Upload from '@/pages/Upload.vue'
+import Claim from '@/pages/Claim.vue'
+import Delete from '@/pages/Delete.vue'
 
 const routes = [
   { path: '/', component: Home },
   { path: '/:project/:version/:location(.*)?', component: Docs },
   { path: '/help', component: Help },
   { path: '/upload', component: Upload },
+  { path: '/claim', component: Claim },
+  { path: '/delete', component: Delete },
 ]
 
 const router = new VueRouter({
