@@ -66,7 +66,7 @@ export default {
     }
   },
   async created() {
-    document.title = "Delete"
+    document.title = "Delete | docat"
     this.projects = (await ProjectRepository.get()).map((project) => project.name)
     this.versions = []
   },

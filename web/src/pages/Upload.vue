@@ -52,7 +52,7 @@ export default {
     Layout,
   },
   async created() {
-    document.title = "Upload"
+    document.title = "Upload | docat"
   },
   data() {
     return {

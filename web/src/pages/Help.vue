@@ -23,7 +23,7 @@ export default {
     DeleteButton
   },
   async created() {
-    document.title = "Help"
+    document.title = "Help | docat"
   }
 }
 </script>

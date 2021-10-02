@@ -26,7 +26,7 @@ export default {
     DeleteButton
   },
   async created() {
-    document.title = "Home"
+    document.title = "Home | docat"
   }
 }
 </script>
