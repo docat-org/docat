@@ -80,7 +80,13 @@ def remove_docs(project, version):
     """
     docs = UPLOAD_FOLDER / project / version
     if docs.exists():
-        shutil.rmtree(docs)
+        # remove the requested version
+        # rmtree can not remove a symlink
+        if docs.is_symlink():
+            docs.unlink()
+        else:
+            shutil.rmtree(docs)
+
         # remove dead symlinks
         for link in (s for s in docs.parent.iterdir() if s.is_symlink()):
             if not link.resolve().exists():

@@ -110,3 +110,15 @@ def test_remove_version(temp_project_version):
         assert not (docs / "project").exists()
         assert config.exists()
         assert not (config / "project-doc.conf").exists()
+
+
+def test_remove_symlink_version(temp_project_version):
+    project = "project"
+    docs, config = temp_project_version(project, "1.0")
+    symlink_to_latest = docs / project / "latest"
+    assert symlink_to_latest.is_symlink()
+
+    with patch("docat.utils.UPLOAD_FOLDER", docs), patch("docat.utils.NGINX_CONFIG_PATH", config):
+        remove_docs(project, "latest")
+
+        assert not symlink_to_latest.exists()
