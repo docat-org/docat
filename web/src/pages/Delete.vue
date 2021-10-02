@@ -66,6 +66,7 @@ export default {
     }
   },
   async created() {
+    document.title = "Delete"
     this.projects = (await ProjectRepository.get()).map((project) => project.name)
     this.versions = []
   },

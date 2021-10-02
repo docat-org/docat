@@ -34,6 +34,7 @@ export default {
     }
   },
   async created() {
+    document.title = this.project
     this.logoURL = ProjectRepository.getProjectLogoURL(this.project)
     this.versions = await ProjectRepository.getVersions(this.project)
     this.latestVersion = (this.versions.find((version) => version.name == 'latest') || this.versions[0]).name

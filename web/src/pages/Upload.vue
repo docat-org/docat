@@ -51,6 +51,9 @@ export default {
   components: {
     Layout,
   },
+  async created() {
+    document.title = "Upload"
+  },
   data() {
     return {
       form: {
