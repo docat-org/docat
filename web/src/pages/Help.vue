@@ -21,6 +21,9 @@ export default {
     Help,
     UploadButton,
     DeleteButton
+  },
+  async created() {
+    document.title = "Help | docat"
   }
 }
 </script>

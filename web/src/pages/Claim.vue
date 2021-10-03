@@ -57,6 +57,7 @@ export default {
     }
   },
   async created() {
+    document.title = "Claim Token | docat"
     this.projects = (await ProjectRepository.get()).map((project) => project.name)
   },
   validations: {

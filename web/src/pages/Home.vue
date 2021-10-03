@@ -24,6 +24,9 @@ export default {
     UploadButton,
     ClaimButton,
     DeleteButton
+  },
+  async created() {
+    document.title = "Home | docat"
   }
 }
 </script>

@@ -54,6 +54,7 @@ export default {
     next()
   },
   async created() {
+    document.title = this.$route.params.project + " | docat"
     this.versions = (await ProjectRepository.getVersions(
       this.$route.params.project
     )).map((version) => version.name)
