@@ -31,6 +31,17 @@ If you want to run the application different than in a docker container, look at
 
 ### Push documentation to docat
 
+The preferred way to push documentation to a docat server is using the [docatl](https://github.com/docat-org/docatl)
+command line application:
+
+```sh
+docatl push --host http://localhost:8000 /path/to/your/docs PROJECT VERSION
+```
+
+There are also docker images available for CI systems.
+
+#### Using standard UNIX command line tools
+
 If you have static html documentation or use something like
 [mkdocs](https://www.mkdocs.org/), [sphinx](http://www.sphinx-doc.org/en/master/), ...
 to generate your documentation, you can push it to docat:
