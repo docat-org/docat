@@ -2,7 +2,7 @@
 
 **Host your docs. Simple. Versioned. Fancy.**
 
-[![build](https://github.com/randombenj/docat/workflows/docat%20ci/badge.svg)](https://github.com/randombenj/docat/actions)
+[![build](https://github.com/docat-org/docat/workflows/docat%20ci/badge.svg)](https://github.com/docat-org/docat/actions)
 [![Gitter](https://badges.gitter.im/docat-docs-hosting/community.svg)](https://gitter.im/docat-docs-hosting/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 ## Getting started
@@ -12,7 +12,7 @@ you can optionally use volumes to save state:
 
 ```sh
 # run container in background and persist data (docs, nginx configs)
-# use 'randombenj/docat:unstable' to get the latest changes
+# use 'ghcr.io/docat-org/docat:unstable' to get the latest changes
 docker run \
   --detach \
   --volume $PWD/docat-run/doc:/var/docat/doc/ \

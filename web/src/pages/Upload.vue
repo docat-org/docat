@@ -6,7 +6,7 @@
       <p>
         If you want to automate the upload of your documentation consider using <code>curl</code>
         to post it to the server.
-        There are some examples in the <a href="https://github.com/randombenj/docat/" target="_blank">docat repository</a>.
+        There are some examples in the <a href="https://github.com/docat-org/docat/" target="_blank">docat repository</a>.
       </p>
 
       <md-field :class="getValidationClass('project')">

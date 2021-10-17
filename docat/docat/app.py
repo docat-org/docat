@@ -4,7 +4,7 @@ docat
 
 Host your docs. Simple. Versioned. Fancy.
 
-:copyright: (c) 2019 by docat, https://github.com/randombenj/docat
+:copyright: (c) 2019 by docat, https://github.com/docat-org/docat
 :license: MIT, see LICENSE for more details.
 """
 import os
