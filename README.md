@@ -15,11 +15,11 @@ you can optionally use volumes to save state:
 # use 'randombenj/docat:unstable' to get the latest changes
 docker run \
   --detach \
-  --volume /path/to/doc:/var/docat/doc/ \
-  --volume /path/to/locations:/etc/nginx/locations.d/ \
-  --volume /path/to/db.json:/app/docat/db.json \
+  --volume $PWD/docat-run/doc:/var/docat/doc/ \
+  --volume $PWD/docat-run/locations:/etc/nginx/locations.d/ \
+  --volume $PWD/docat-run/db/db.json:/app/docat/db.json \
   --publish 8000:80 \
-  randombenj/docat
+  ghcr.io/docat-org/docat
 ```
 
 Go to [localhost:8000](http://localhost:8000) to view your docat instance:
