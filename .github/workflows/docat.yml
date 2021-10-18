@@ -34,30 +34,41 @@ jobs:
         run: |
           python -m poetry run pytest
 
-  docker:
+  container-image:
     runs-on: ubuntu-latest
     needs: test
 
+    strategy:
+      max-parallel: 2
+      matrix:
+        registry:
+          - name: ghcr.io
+            org: ${{ github.repository_owner }}
+            token: GITHUB_TOKEN
+          - name: docker.io
+            org: randombenj
+            token: DOCKERHUB
+
     steps:
       - uses: actions/checkout@v2
-      - name: build docker image
+      - name: Build Image
         run: |
-          docker build . --tag ghcr.io/docat-org/docat:${{ github.sha }}
-          docker tag ghcr.io/docat-org/docat:${{ github.sha }} ghcr.io/docat-org/docat:unstable
+          docker build . --tag ${{ matrix.registry.name }}/${{ matrix.registry.org }}/docat:${{ github.sha }}
+          docker tag ${{ matrix.registry.name }}/${{ matrix.registry.org }}/docat:${{ github.sha }} ${{ matrix.registry.name }}/${{ matrix.registry.org }}/docat:unstable
 
       - name: tag latest and version on release
         run: |
-          docker tag ghcr.io/docat-org/docat:${{ github.sha }} ghcr.io/docat-org/docat:$(git describe --tags)
-          docker tag ghcr.io/docat-org/docat:${{ github.sha }} ghcr.io/docat-org/docat:latest
+          docker tag ${{ matrix.registry.name }}/${{ matrix.registry.org }}/docat:${{ github.sha }} ${{ matrix.registry.name }}/${{ matrix.registry.org }}/docat:$(git describe --tags)
+          docker tag ${{ matrix.registry.name }}/${{ matrix.registry.org }}/docat:${{ github.sha }} ${{ matrix.registry.name }}/${{ matrix.registry.org }}/docat:latest
         if: startsWith(github.event.ref, 'refs/tags')
 
-      - name: Docker Login
+      - name: Registry Login
         uses: docker/login-action@v1
         with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: ${{ matrix.registry.name }}
+          username: ${{ matrix.registry.org }}
+          password: ${{ secrets[matrix.registry.token] }}
 
-      - name: publish docker image
+      - name: Publish Image
         run: |
-          docker push --all-tags ghcr.io/docat-org/docat
+          docker push --all-tags ${{ matrix.registry.name }}/${{ matrix.registry.org }}/docat
