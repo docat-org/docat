@@ -2,7 +2,7 @@
 
 **Host your docs. Simple. Versioned. Fancy.**
 
-[![build](https://github.com/randombenj/docat/workflows/docat%20ci/badge.svg)](https://github.com/randombenj/docat/actions)
+[![build](https://github.com/docat-org/docat/workflows/docat%20ci/badge.svg)](https://github.com/docat-org/docat/actions)
 [![Gitter](https://badges.gitter.im/docat-docs-hosting/community.svg)](https://gitter.im/docat-docs-hosting/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 ## Getting started
@@ -12,14 +12,14 @@ you can optionally use volumes to save state:
 
 ```sh
 # run container in background and persist data (docs, nginx configs)
-# use 'randombenj/docat:unstable' to get the latest changes
+# use 'ghcr.io/docat-org/docat:unstable' to get the latest changes
 docker run \
   --detach \
-  --volume /path/to/doc:/var/docat/doc/ \
-  --volume /path/to/locations:/etc/nginx/locations.d/ \
-  --volume /path/to/db.json:/app/docat/db.json \
+  --volume $PWD/docat-run/doc:/var/docat/doc/ \
+  --volume $PWD/docat-run/locations:/etc/nginx/locations.d/ \
+  --volume $PWD/docat-run/db/db.json:/app/docat/db.json \
   --publish 8000:80 \
-  randombenj/docat
+  ghcr.io/docat-org/docat
 ```
 
 Go to [localhost:8000](http://localhost:8000) to view your docat instance:
