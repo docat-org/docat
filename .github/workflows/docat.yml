@@ -29,6 +29,11 @@ jobs:
         run: |
           python -m poetry run flake8 docat tests
 
+      - name: run backend static code analysis
+        working-directory: docat
+        run: |
+          python -m poetry run mypy .
+
       - name: run backend tests
         working-directory: docat
         run: |

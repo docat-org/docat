@@ -1,6 +1,5 @@
 from pathlib import Path
-
-from mock import MagicMock, mock_open, patch
+from unittest.mock import MagicMock, mock_open, patch
 
 from docat.utils import create_nginx_config, create_symlink, extract_archive, remove_docs
 

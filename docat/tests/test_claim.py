@@ -1,12 +1,16 @@
 def test_successfully_claim_token(client):
 
-    rv = client.get("/api/some-project/claim")
-    assert b"Project some-project successfully claimed" in rv.data
-    assert b"token" in rv.data
+    response = client.get("/api/some-project/claim")
+    response_data = response.json()
+    assert response.status_code == 201
+    assert response_data["message"] == "Project some-project successfully claimed"
+    assert "token" in response_data
 
 
 def test_already_claimed(client):
 
-    rv = client.get("/api/some-project/claim")
-    rv = client.get("/api/some-project/claim")
-    assert b"Project some-project is already claimed!" in rv.data
+    client.get("/api/some-project/claim")
+    response = client.get("/api/some-project/claim")
+    response_data = response.json()
+    assert response.status_code == 409
+    assert response_data["message"] == "Project some-project is already claimed!"
