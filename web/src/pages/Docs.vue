@@ -1,7 +1,12 @@
 <template>
-  <Layout class="docs-layout" :fullscreen="true">
-    <template v-slot:toolbar>
-      <span class="project-name">{{ $route.params.project }}</span>
+  <div class="container">
+    <iframe id="docs" :src="docURL" @load="onChange()"></iframe>
+    <div class="controls">
+      <md-button to="/" class="home-button md-fab md-primary">
+        <md-icon>home</md-icon>
+        <md-tooltip md-direction="left">docs overview</md-tooltip>
+      </md-button>
+
       <md-field class="version-select">
         <md-select
           @md-selected="load()"
@@ -18,20 +23,15 @@
           </md-option>
         </md-select>
       </md-field>
-    </template>
-    <iframe id="docs" :src="docURL" @load="onChange()"></iframe>
-  </Layout>
+    </div>
+  </div>
 </template>
 
 <script>
-import Layout from '@/components/Layout.vue'
 import ProjectRepository from '@/repositories/ProjectRepository'
 
 export default {
   name: 'docs',
-  components: {
-    Layout
-  },
   data() {
     return {
       selectedVersion: this.$route.params.version,
@@ -112,9 +112,40 @@ body,
 .version-select {
   width: 200px;
   float: right;
+  background: white;
+  border-radius: 7px;
+  padding: 9px;
+  margin-bottom: 0px;
+  border: 1px solid rgba(0, 0, 0, 0.42);
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
 }
 
-#docs {
+.md-field {
+  &:after {
+    display: none;
+  }
+}
+
+.controls {
+  position: absolute;
+  bottom: 32px;
+  right: 50px;
+}
+
+.home-button {
+  border-radius: 7px;
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+  margin-right: -1px;
+  height: 52px;
+  margin-top: 4px;
+  box-shadow: none;
+  border: 1px solid rgba(0, 0, 0, 0.42);
+}
+
+#docs,
+.container {
   width: 100%;
   height: 100%;
   border: none;
@@ -129,13 +160,6 @@ body,
 .md-app-content {
   padding: 0px;
   height: 100%;
-}
-
-.project-name {
-  margin-left: 16px;
-  margin-top: 26px;
-  font-size: 16px;
-  display: inline-block;
 }
 
 .docs-claim-button {
