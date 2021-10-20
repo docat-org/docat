@@ -6,18 +6,21 @@ authors = ["Felix <hi@l33t.name>", "Benj <randombenj@gmail.com>"]
 license = "MIT"
 
 [tool.poetry.dependencies]
-python = ">=3.6"
-flask = "*"
-tinydb = "*"
-gunicorn = "*"
+python = ">=3.9"
+tinydb = "^3.15.2"
+fastapi = "^0.70.0"
+Jinja2 = "^3.0.2"
+python-multipart = "^0.0.5"
+uvicorn = "^0.15.0"
 
 [tool.poetry.dev-dependencies]
-flake8 = "*"
-flake8-isort = "*"
-flake8-black = "*"
-pytest = "*"
-pytest-cov = "*"
-mock = "*"
+flake8 = "^4.0.1"
+flake8-isort = "^4.1.1"
+flake8-black = "^0.2.3"
+pytest = "^6.2.5"
+pytest-cov = "^3.0.0"
+requests = "^2.26.0"
+mypy = "^0.910"
 
 [tool.pytest.ini_options]
 minversion = "6.0"
@@ -37,6 +40,14 @@ force_grid_wrap = 0
 use_parentheses = true
 ensure_newline_before_comments = true
 line_length = 140
+
+[[tool.mypy.overrides]]
+module = [
+    "tinydb",
+    "tinydb.storages",
+    "uvicorn"
+]
+ignore_missing_imports = true
 
 [tool.black]
 line-length = 140

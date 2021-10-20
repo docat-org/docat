@@ -21,6 +21,10 @@ Use `docatl --help` to discover all other commands to manage your docat document
 
 The following sections document the RAW API endpoints you can `curl`.
 
+The API specification is exposed as OpenAPI at http://localhost:8000/api/v1/openapi.json
+and available with Swagger UI at http://localhost:8000/api/docs and a pure documentation
+is available with redoc at http://localhost:8000/api/redoc.
+
 #### Upload your documentation
 
 You can upload any static HTML site by zipping it and

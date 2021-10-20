@@ -52,4 +52,4 @@ RUN cp docat/nginx/default /etc/nginx/http.d/default.conf
 COPY --from=backend /app /app/docat
 
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]
-CMD ["sh", "-c", "nginx && .venv/bin/python -m gunicorn --access-logfile - --bind=0.0.0.0:5000 docat.app:app"]
+CMD ["sh", "-c", "nginx && .venv/bin/python -m uvicorn --host 0.0.0.0 --port 5000 docat.app:app"]

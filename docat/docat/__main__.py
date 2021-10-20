@@ -1,5 +1,7 @@
 import os
 
+import uvicorn
+
 from docat.app import app
 
 if __name__ == "__main__":
@@ -8,4 +10,4 @@ if __name__ == "__main__":
     except ValueError:
         port = 5000
 
-    app.run("0.0.0.0", port=port)
+    uvicorn.run(app, host="0.0.0.0", port=port)

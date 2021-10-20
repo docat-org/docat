@@ -2,30 +2,30 @@ import tempfile
 from pathlib import Path
 
 import pytest
+from fastapi.testclient import TestClient
 from tinydb import TinyDB
 from tinydb.storages import MemoryStorage
 
-from docat.app import app
+import docat.app as docat
 from docat.utils import create_symlink
 
 
 @pytest.fixture
 def client():
     temp_dir = tempfile.TemporaryDirectory()
-    app.config["UPLOAD_FOLDER"] = Path(temp_dir.name)
-    app.config["TESTING"] = True
-    app.db = TinyDB(storage=MemoryStorage)
-    yield app.test_client()
-    app.db = None
+    docat.DOCAT_UPLOAD_FOLDER = Path(temp_dir.name)
+    docat.db = TinyDB(storage=MemoryStorage)
+    yield TestClient(docat.app)
+    docat.app.db = None
     temp_dir.cleanup()
 
 
 @pytest.fixture
 def client_with_claimed_project(client):
-    table = app.db.table("claims")
+    table = docat.db.table("claims")
     token_hash_1234 = b"\xe0\x8cS\xa3)\xb4\xb5\xa5\xda\xc3K\x96\xf6).\xdd-\xacR\x8e3Q\x17\x87\xfb\x94\x0c-\xc2h\x1c\xf3"
     table.insert({"name": "some-project", "token": token_hash_1234.hex(), "salt": ""})
-    return app.test_client()
+    yield client
 
 
 @pytest.fixture
