@@ -13,6 +13,7 @@ you can optionally use volumes to save state:
 ```sh
 # run container in background and persist data (docs, nginx configs)
 # use 'ghcr.io/docat-org/docat:unstable' to get the latest changes
+mkdir -p docat-run/db && touch docat-run/db/db.json
 docker run \
   --detach \
   --volume $PWD/docat-run/doc:/var/docat/doc/ \
