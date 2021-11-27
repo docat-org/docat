@@ -36,15 +36,11 @@ export default {
     return {
       selectedVersion: this.$route.params.version,
       versions: [],
-      docURL: ProjectRepository.getProjectDocsURL(
-        this.$route.params.project,
-        this.$route.params.version,
-        (this.$route.params.location || '') + (this.$route.hash || '')
-      )
+      docURL: undefined
     }
   },
   beforeRouteUpdate(to, from, next) {
-    if (to.params.version !== from.params.version) {
+    if (to.params.version && to.params.version !== from.params.version) {
       // hard reload iframe only when switching versions
       this.docURL = ProjectRepository.getProjectDocsURL(
         to.params.project,
@@ -58,6 +54,16 @@ export default {
     this.versions = (await ProjectRepository.getVersions(
       this.$route.params.project
     )).map((version) => version.name)
+
+    if (!this.selectedVersion) {
+      this.selectedVersion = (this.versions.find((version) => version == 'latest') || this.versions[0]);
+    }
+
+    this.docURL = ProjectRepository.getProjectDocsURL(
+      this.$route.params.project,
+      this.selectedVersion,
+      (this.$route.params.location || '') + (this.$route.hash || '')
+    )
   },
   methods: {
     onChange() {
@@ -68,8 +74,10 @@ export default {
           a.setAttribute('target', '_blank')
         }
       })
-
-      this.load(docsFrame.contentWindow.location.href)
+      
+      if(this.docURL) {
+        this.load(docsFrame.contentWindow.location.href)
+      }
     },
     load(docPath) {
 
