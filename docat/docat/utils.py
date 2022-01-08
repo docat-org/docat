@@ -49,7 +49,7 @@ def create_nginx_config(project, project_base_path):
         with nginx_config.open("w") as f:
             f.write(out_parsed_template)
 
-        subprocess.run(["nginx", "-s" "reload"])
+        subprocess.run(["nginx", "-s", "reload"])
 
 
 def extract_archive(target_file, destination):

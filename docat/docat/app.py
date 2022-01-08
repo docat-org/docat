@@ -41,7 +41,7 @@ def get_db():
     return db
 
 
-@dataclass
+@dataclass(frozen=True)
 class TokenStatus:
     valid: bool
     reason: Optional[str] = None
