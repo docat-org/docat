@@ -29,7 +29,7 @@ WORKDIR /app/docat
 RUN poetry install --no-root --no-ansi --no-dev
 
 # production
-FROM python:3.9-alpine
+FROM python:3.9.10-alpine3.15
 
 # set up the system
 RUN apk update && \
