@@ -59,6 +59,7 @@ const routes = [
   { path: '/upload', component: Upload },
   { path: '/claim', component: Claim },
   { path: '/delete', component: Delete },
+  { path: '/:project', redirect: '/:project/latest' },
 ]
 
 const router = new VueRouter({
