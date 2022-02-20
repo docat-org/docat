@@ -53,7 +53,7 @@ export default {
     document.title = this.$route.params.project + " | docat"
     this.versions = (await ProjectRepository.getVersions(
       this.$route.params.project
-    )).map((version) => version.name)
+    )).map((version) => version.name).sort(ProjectRepository.compareVersions)
 
     if (!this.selectedVersion) {
       this.selectedVersion = (this.versions.find((version) => version == 'latest') || this.versions[0]);

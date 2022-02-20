@@ -91,4 +91,18 @@ describe('ProjectRepository', () => {
       }
     )
   })
+
+  it('should sort doc versions as semantic versions', async () => {
+    expect(ProjectRepository.compareVersions('0.0.0', '0.0.1')).toBeLessThan(0);
+    expect(ProjectRepository.compareVersions('a', 'b')).toBeLessThan(0);
+    expect(ProjectRepository.compareVersions('z', 'latest')).toBeLessThan(0);
+    expect(ProjectRepository.compareVersions('0.0.10', '0.1.1')).toBeLessThan(0);
+    expect(ProjectRepository.compareVersions('0.0.1', '0.0.22')).toBeLessThan(0);
+    expect(ProjectRepository.compareVersions('0.0.2', '0.0.22')).toBeLessThan(0);
+    expect(ProjectRepository.compareVersions('0.0.22', '0.0.2')).toBeGreaterThan(0);
+    expect(ProjectRepository.compareVersions('0.0.3', '0.0.22')).toBeLessThan(0);
+    expect(ProjectRepository.compareVersions('0.0.2a', '0.0.10')).toBeLessThan(0);
+    expect(ProjectRepository.compareVersions('0.0.0', '0.0.0.0')).toBeLessThan(0);
+    expect(ProjectRepository.compareVersions('0.0.0.0', '0.0.0')).toBeGreaterThan(0);
+  })
 })
