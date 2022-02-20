@@ -6,7 +6,7 @@ authors = ["Felix <hi@l33t.name>", "Benj <randombenj@gmail.com>"]
 license = "MIT"
 
 [tool.poetry.dependencies]
-python = ">=3.9"
+python = ">=3.10"
 tinydb = "^3.15.2"
 fastapi = "^0.70.0"
 Jinja2 = "^3.0.2"

@@ -9,7 +9,7 @@ RUN yarn run test:unit
 RUN yarn build
 
 # setup Python
-FROM python:3.9-alpine AS backend
+FROM python:3.10.2-alpine3.15 AS backend
 
 # configure docker container
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -21,7 +21,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 RUN apk update && \
     apk add gcc musl-dev python3-dev libffi-dev openssl-dev cargo
-RUN pip install poetry==1.1.5
+RUN pip install poetry==1.1.13
 COPY /docat/pyproject.toml /docat/poetry.lock /app/
 
 # Install the application
@@ -29,7 +29,7 @@ WORKDIR /app/docat
 RUN poetry install --no-root --no-ansi --no-dev
 
 # production
-FROM python:3.9.10-alpine3.15
+FROM python:3.10.2-alpine3.15
 
 # set up the system
 RUN apk update && \
