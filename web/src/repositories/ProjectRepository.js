@@ -1,6 +1,7 @@
 
 const port = process.env.VUE_APP_BACKEND_PORT || location.port
 const host = process.env.VUE_APP_BACKEND_HOST || location.hostname
+const semver = require('semver')
 
 const resource = 'doc'
 export default {
@@ -114,5 +115,25 @@ export default {
         headers: headers
       }
     )
-  }
+  },
+
+  /**
+   * Compare two versions according to semantic version (semver library)
+   * Will always consider the version latest as higher version
+   * 
+   * @param {string} versionNameA Name of the version one
+   * @param {string} versionNameB Name of the version two
+   */
+  compareVersions(versionNameA, versionNameB) {
+  if (versionNameA == "latest") return 1;
+      else if (versionNameB == "latest") return -1;
+      else {
+          const versionA = semver.coerce(versionNameA);
+          const versionB = semver.coerce(versionNameB);
+          if (!versionA || !versionB) {
+              return versionNameA.localeCompare(versionNameB);
+          }
+          return semver.compare(versionA, versionB);
+      }
+   },
 }
