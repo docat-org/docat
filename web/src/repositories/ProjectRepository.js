@@ -114,5 +114,53 @@ export default {
         headers: headers
       }
     )
-  }
+  },
+
+  /**
+   * Compare two versions according to semantic version
+   * Will always consider the version latest as higher version
+   * Limited support of mixed letters with digits. 
+   * 
+   * @param {string} version_name_a Name of the version one
+   * @param {string} version_name_b Name of the version two
+   */
+   compareVersions(version_name_a, version_name_b) {
+    // Trying to separate the version into version levels (digits or letters) separated by .
+    if (version_name_a.includes(".") && version_name_b.includes(".")) {
+      const a_levels = version_name_a.split(".")
+      const b_levels = version_name_b.split(".")
+      for (var i = 0; i < a_levels.length; ++i) {
+        if (i < b_levels.length) {
+          var level_a = a_levels[i]
+          var level_b = b_levels[i]
+          if (level_a != level_b) {
+            let a_number = parseInt(level_a)
+            let b_number = parseInt(level_b)
+            if (isNaN(a_number) || isNaN(b_number)) {
+              return level_a > level_b ? 1 : -1;
+            } else {
+              return a_number > b_number ? 1 : -1;
+            }
+          }
+        } else {
+          // The a version is longer, it should be the higher version
+          return 1;
+        }
+      }
+      // The b version is longer, it should be the higher version
+      return -1;
+    } else if (version_name_a.includes(".")) {
+      // If no meaningful point separation on one of the version, then r 
+      return -1;
+    } else if (version_name_b.includes(".")) {
+      return 1;
+    } else if (version_name_a == "latest") {
+      // If both version have no meaningful point separation, just apply string comparison, unless one version is "latest"
+      return 1;
+    } else if (version_name_b == "latest") {
+      return -1;
+    } else {
+      return (version_name_a > version_name_b) ? 1 : -1;
+    }
+  },
 }
