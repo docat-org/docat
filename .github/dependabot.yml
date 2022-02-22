@@ -14,7 +14,7 @@ updates:
       interval: "daily"
 
   # Maintain dependencies for poetry
-  - package-ecosystem: "poetry"
+  - package-ecosystem: "pip"
     directory: "/docat"
     schedule:
       interval: "daily"
