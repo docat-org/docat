@@ -54,11 +54,11 @@ import Delete from '@/pages/Delete.vue'
 
 const routes = [
   { path: '/', component: Home },
-  { path: '/:project/:version/:location(.*)?', component: Docs },
   { path: '/help', component: Help },
   { path: '/upload', component: Upload },
   { path: '/claim', component: Claim },
   { path: '/delete', component: Delete },
+  { path: '/:project/:version?/:location(.*)?', component: Docs }
 ]
 
 const router = new VueRouter({
