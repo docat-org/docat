@@ -14,6 +14,7 @@
     "html-loader": "^0.5.5",
     "node-sass": "^4.13.0",
     "sass-loader": "^8.0.0",
+    "semver": "^7.3.5",
     "vue": "^2.6.10",
     "vue-markdown": "^2.2.4",
     "vuelidate": "^0.7.4"
