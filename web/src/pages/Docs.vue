@@ -1,41 +1,28 @@
 <template>
   <div class="container">
-    <iframe id="docs" :src="docURL" @load="onChange()"></iframe>
-    <div class="controls">
-      <md-button to="/" class="home-button md-fab md-primary">
-        <md-icon>home</md-icon>
-        <md-tooltip md-direction="left">docs overview</md-tooltip>
-      </md-button>
 
-      <md-field class="version-select">
-        <md-select
-          @md-selected="load()"
-          v-model="selectedVersion"
-          name="version"
-          id="version"
-        >
-          <md-option
-            v-for="version of versions"
-            v-bind:key="version"
-            :value="version"
-          >
-            {{ version }}
-          </md-option>
-        </md-select>
-      </md-field>
-    </div>
+    <iframe id="docs" :src="docURL" @load="onChange()"></iframe>
+
+    <HomeButton class="home-button floating-button"/>
+    <VersionsButton class="versions-button floating-button"/>
+
   </div>
 </template>
 
 <script>
 import ProjectRepository from '@/repositories/ProjectRepository'
+import HomeButton from '@/components/HomeButton.vue'
+import VersionsButton from '@/components/VersionsButton.vue'
 
 export default {
   name: 'docs',
+  components: {
+    HomeButton,
+    VersionsButton,
+  },
   data() {
     return {
       selectedVersion: this.$route.params.version,
-      versions: [],
       docURL: undefined
     }
   },
@@ -51,13 +38,6 @@ export default {
   },
   async created() {
     document.title = this.$route.params.project + " | docat"
-    this.versions = (await ProjectRepository.getVersions(
-      this.$route.params.project
-    )).map((version) => version.name).sort(ProjectRepository.compareVersions)
-
-    if (!this.selectedVersion) {
-      this.selectedVersion = (this.versions.find((version) => version == 'latest') || this.versions[0]);
-    }
 
     this.docURL = ProjectRepository.getProjectDocsURL(
       this.$route.params.project,
@@ -110,46 +90,18 @@ body,
   height: 100%;
 }
 
-.docs-layout {
-  .md-layout,
-  .md-layout-item {
-    height: 100%;
+@media all {
+  .home-button {
+    right: 80px;
+  }
+  .versions-button {
+    right: 16px;
   }
 }
 
-.version-select {
-  width: 200px;
-  float: right;
-  background: white;
-  border-radius: 7px;
-  padding: 9px;
-  margin-bottom: 0px;
-  border: 1px solid rgba(0, 0, 0, 0.42);
-  border-top-left-radius: 0px;
-  border-bottom-left-radius: 0px;
-}
-
-.md-field {
-  &:after {
-    display: none;
-  }
-}
-
-.controls {
-  position: absolute;
-  bottom: 32px;
-  right: 50px;
-}
-
-.home-button {
-  border-radius: 7px;
-  border-top-right-radius: 0px;
-  border-bottom-right-radius: 0px;
-  margin-right: -1px;
-  height: 52px;
-  margin-top: 4px;
-  box-shadow: none;
-  border: 1px solid rgba(0, 0, 0, 0.42);
+.floating-button {
+  position: fixed;
+  bottom: 16px;
 }
 
 #docs,
@@ -157,38 +109,5 @@ body,
   width: 100%;
   height: 100%;
   border: none;
-}
-
-.md-list-item.md-selected {
-  .md-list-item-text {
-    color: #a2a2a2;
-  }
-}
-
-.md-app-content {
-  padding: 0px;
-  height: 100%;
-}
-
-.docs-claim-button {
-  position: fixed;
-  bottom: 16px;
-}
-
-@media all {
-  .docs-claim-button {
-    right: 80px;
-  }
-}
-
-.docs-delete-button {
-  position: fixed;
-  bottom: 16px;
-}
-
-@media all {
-  .docs-delete-button {
-    right: 16px;
-  }
 }
 </style>
