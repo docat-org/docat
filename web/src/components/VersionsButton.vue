@@ -5,7 +5,7 @@
             <md-tooltip md-direction="left">select the version of the project</md-tooltip>
         </md-button>
         <md-menu-content>
-            <md-menu-item v-for="version of versions" v-bind:key="version" :href="projectName + '/' + version">{{ version }}</md-menu-item>
+            <md-menu-item v-for="version of versions" v-bind:key="version" :href="createRedirection(version)" >{{ version }}</md-menu-item>
         </md-menu-content>
     </md-menu>
 </template>
@@ -33,6 +33,14 @@ export default {
     }
   },
   methods: {
+    createRedirection(newVersion) {
+      let docPath = ProjectRepository.getDocsPath(
+          this.$route.params.project,
+          this.selectedVersion,
+          window.location.href
+        )
+      return ProjectRepository.getProjectDocsURL(this.$route.params.project, newVersion, docPath || '', "#")
+    },
   }
 }
 </script>

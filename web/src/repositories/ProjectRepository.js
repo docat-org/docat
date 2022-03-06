@@ -3,8 +3,9 @@ const port = process.env.VUE_APP_BACKEND_PORT || location.port
 const host = process.env.VUE_APP_BACKEND_HOST || location.hostname
 const semver = require('semver')
 
-const resource = 'doc'
 export default {
+
+  resource: 'doc',
 
   baseURL: `${location.protocol}//${host}:${port}`,
 
@@ -24,7 +25,7 @@ export default {
    * Returns all projects
    */
   async get() {
-    const resp = await fetch(`${this.baseURL}/${resource}/`)
+    const resp = await fetch(`${this.baseURL}/${this.resource}/`)
     return await resp.json()
   },
 
@@ -33,7 +34,7 @@ export default {
    * @param {string} projectName Name of the project
    */
   getProjectLogoURL(projectName) {
-    return `${this.baseURL}/${resource}/${projectName}/logo.jpg`
+    return `${this.baseURL}/${this.resource}/${projectName}/logo.jpg`
   },
 
   /**
@@ -42,8 +43,8 @@ export default {
    * @param {string} version Version name
    * @param {string?} docsPath Path to the documentation page
    */
-  getProjectDocsURL(projectName, version, docsPath) {
-    return `${this.baseURL}/${resource}/${projectName}/${version}/${docsPath || ''}`
+  getProjectDocsURL(projectName, version, docsPath, resource) {
+    return `${this.baseURL}/${resource || this.resource}/${projectName}/${version}/${docsPath || ''}`
   },
 
   /**
@@ -53,13 +54,15 @@ export default {
    * @param {string} fullDocsPath Full path to the docs including prefix, project and version
    */
   getDocsPath(projectName, version, fullDocsPath) {
+    let escapedProjectName = projectName.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')
+    let escapedVersion = version.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')
     const match = decodeURIComponent(fullDocsPath).match(new RegExp(
-      String.raw`(.*)/${resource}/${projectName}/${version}/(.*)`
+      `(?<=${escapedProjectName}/${escapedVersion}/)(.*)`
     ))
-    if (match && match.length > 2) {
-      return match[2] || ""
+    if (match && match.length > 0) {
+      return match[0] || ""
     } else {
-      return fullDocsPath
+      return ""
     }
   },
 
@@ -69,7 +72,7 @@ export default {
    * @param {string} projectName Name of the project
    */
   async getVersions(projectName) {
-    const resp = await fetch(`${this.baseURL}/${resource}/${projectName}/`)
+    const resp = await fetch(`${this.baseURL}/${this.resource}/${projectName}/`)
     return (await resp.json())
       .filter((version) => version.type == 'directory')
   },

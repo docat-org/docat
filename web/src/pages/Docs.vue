@@ -28,6 +28,7 @@ export default {
   },
   beforeRouteUpdate(to, from, next) {
     if (to.params.version && to.params.version !== from.params.version) {
+      this.selectedVersion = to.params.version
       // hard reload iframe only when switching versions
       this.docURL = ProjectRepository.getProjectDocsURL(
         to.params.project,

@@ -40,12 +40,23 @@ describe('ProjectRepository', () => {
 
 
   it('correctly get relative docs path', () => {
-    const [project, version, expectedPath] = ['project', '1.0', 'index.html']
-    const absoluteDocsPath = `https://do.cat/doc/${project}/${version}/${expectedPath}`
+    const [project, version, expectedPath] = ['my_project', '0.0.0', 'thing/thing']
+    const absoluteDocsPath = `https://do.cat/#/${project}/${version}/${expectedPath}`
+    const absoluteDocsPathLocal = `http://localhost:8082/#/${project}/${version}/${expectedPath}`
+    const absoluteDocsPathDoc = `https://do.cat/${ProjectRepository.resource}/${project}/${version}/${expectedPath}`
 
-    const relativeDocsPath = ProjectRepository.getDocsPath('project', '1.0', absoluteDocsPath)
+    const relativeDocsPath = ProjectRepository.getDocsPath(project, version, absoluteDocsPath)
+    const relativeDocsPathLocal = ProjectRepository.getDocsPath(project, version, absoluteDocsPathLocal)
+    const relativeDocsPathDoc = ProjectRepository.getDocsPath(project, version, absoluteDocsPathDoc)
+    
+    const [projectB, versionB, expectedPathB] = ['my_project*() char', '0.0.0', 'thing/thing/my_project*() char/0.0.0']
+    const absoluteDocsPathDocB = `https://do.cat/${ProjectRepository.resource}/${projectB}/${versionB}/${expectedPathB}`
+    const relativeDocsPathB = ProjectRepository.getDocsPath(projectB, versionB, absoluteDocsPathDocB)
 
     expect(relativeDocsPath).toEqual(expectedPath)
+    expect(relativeDocsPathLocal).toEqual(expectedPath)
+    expect(relativeDocsPathDoc).toEqual(expectedPath)
+    expect(relativeDocsPathB).toEqual(expectedPathB)
   })
 
 
