@@ -1,9 +1,9 @@
 name: docat ci
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
-  test:
+  python-test:
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 4
@@ -39,9 +39,32 @@ jobs:
         run: |
           python -m poetry run pytest
 
+  javascript-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+      - name: install JavaScript dependencies
+        working-directory: web
+        run: yarn install
+
+      - name: building frontend
+        working-directory: web
+        run: yarn build
+
+      - name: run linter against code
+        working-directory: web
+        run: yarn lint
+
+      - name: run test suite
+        working-directory: web
+        run: yarn jest
+
   container-image:
     runs-on: ubuntu-latest
-    needs: test
+    needs: [python-test, javascript-test]
 
     strategy:
       max-parallel: 2
