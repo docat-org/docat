@@ -37,7 +37,7 @@ export default {
   },
 
   /**
-   * Returns the project documentatino URL
+   * Returns the project documentation URL
    * @param {string} projectName Name of the project
    * @param {string} version Version name
    * @param {string?} docsPath Path to the documentation page
@@ -47,7 +47,7 @@ export default {
   },
 
   /**
-   * Returns the docs path only without the prefix, porject and version
+   * Returns the docs path only without the prefix, project and version
    * @param {string} projectName Name of the project
    * @param {string} version Version name
    * @param {string} fullDocsPath Full path to the docs including prefix, project and version
@@ -146,5 +146,27 @@ export default {
           }
           return semver.compare(versionA, versionB);
       }
-   }
+   },
+
+   /**
+   * Returns boolean indicating if the project name is part of the favourites.
+   * @param {string} projectName name of the project
+   * @returns bool - true is project is favourite
+   */
+  isFavourite(projectName) {
+    return localStorage.getItem(projectName) == "favourite";
+  },
+
+  /**
+   * Sets favourite preference on project
+   * @param {string} projectName
+   * @param {boolean} shouldBeFavourite
+   */
+  setFavourite(projectName, shouldBeFavourite) {
+    if (shouldBeFavourite) {
+      localStorage.setItem(projectName, "favourite");
+    } else {
+      localStorage.removeItem(projectName);
+    }
+  }
 }
