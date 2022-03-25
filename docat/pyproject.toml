@@ -9,7 +9,7 @@ license = "MIT"
 python = "^3.10"
 tinydb = "^4.7.0"
 fastapi = "^0.75.0"
-Jinja2 = "^3.0.3"
+Jinja2 = "^3.1.0"
 python-multipart = "^0.0.5"
 uvicorn = "^0.17.6"
 
