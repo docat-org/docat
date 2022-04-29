@@ -221,7 +221,7 @@ plugins = ["setuptools"]
 
 [[package]]
 name = "jinja2"
-version = "3.1.1"
+version = "3.1.2"
 description = "A very fast and expressive template engine."
 category = "main"
 optional = false
@@ -532,7 +532,7 @@ standard = ["websockets (>=10.0)", "httptools (>=0.4.0)", "watchgod (>=0.6)", "p
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "9d502f7f17084ddde2d7796f0b26ca372db7b0a3d87b59e6f1feb82096ebaa4c"
+content-hash = "38fe94a7edaf9b158b235550b015bc875c5c3559cad961fae9fc13fadcf7adbe"
 
 [metadata.files]
 anyio = [
@@ -668,8 +668,8 @@ isort = [
     {file = "isort-5.10.1.tar.gz", hash = "sha256:e8443a5e7a020e9d7f97f1d7d9cd17c88bcb3bc7e218bf9cf5095fe550be2951"},
 ]
 jinja2 = [
-    {file = "Jinja2-3.1.1-py3-none-any.whl", hash = "sha256:539835f51a74a69f41b848a9645dbdc35b4f20a3b601e2d9a7e22947b15ff119"},
-    {file = "Jinja2-3.1.1.tar.gz", hash = "sha256:640bed4bb501cbd17194b3cace1dc2126f5b619cf068a726b98192a0fde74ae9"},
+    {file = "Jinja2-3.1.2-py3-none-any.whl", hash = "sha256:6088930bfe239f0e6710546ab9c19c9ef35e29792895fed6e6e31a023a182a61"},
+    {file = "Jinja2-3.1.2.tar.gz", hash = "sha256:31351a702a408a9e7595a8fc6150fc3f43bb6bf7e319770cbc0db9df9437e852"},
 ]
 markupsafe = [
     {file = "MarkupSafe-2.1.0-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:3028252424c72b2602a323f70fbf50aa80a5d3aa616ea6add4ba21ae9cc9da4c"},
