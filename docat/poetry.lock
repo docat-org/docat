@@ -123,7 +123,7 @@ toml = ["tomli"]
 
 [[package]]
 name = "fastapi"
-version = "0.76.0"
+version = "0.77.1"
 description = "FastAPI framework, high performance, easy to learn, fast to code, ready for production"
 category = "main"
 optional = false
@@ -131,7 +131,7 @@ python-versions = ">=3.6.1"
 
 [package.dependencies]
 pydantic = ">=1.6.2,<1.7 || >1.7,<1.7.1 || >1.7.1,<1.7.2 || >1.7.2,<1.7.3 || >1.7.3,<1.8 || >1.8,<1.8.1 || >1.8.1,<2.0.0"
-starlette = "0.18.0"
+starlette = "0.19.1"
 
 [package.extras]
 all = ["requests (>=2.24.0,<3.0.0)", "jinja2 (>=2.11.2,<4.0.0)", "python-multipart (>=0.0.5,<0.0.6)", "itsdangerous (>=1.1.0,<3.0.0)", "pyyaml (>=5.3.1,<7.0.0)", "ujson (>=4.0.1,!=4.0.2,!=4.1.0,!=4.2.0,!=4.3.0,!=5.0.0,!=5.1.0,<6.0.0)", "orjson (>=3.2.1,<4.0.0)", "email_validator (>=1.1.1,<2.0.0)", "uvicorn[standard] (>=0.12.0,<0.18.0)"]
@@ -451,14 +451,14 @@ python-versions = ">=3.5"
 
 [[package]]
 name = "starlette"
-version = "0.18.0"
+version = "0.19.1"
 description = "The little ASGI library that shines."
 category = "main"
 optional = false
 python-versions = ">=3.6"
 
 [package.dependencies]
-anyio = ">=3.0.0,<4"
+anyio = ">=3.4.0,<5"
 
 [package.extras]
 full = ["itsdangerous", "jinja2", "python-multipart", "pyyaml", "requests"]
@@ -532,7 +532,7 @@ standard = ["websockets (>=10.0)", "httptools (>=0.4.0)", "watchgod (>=0.6)", "p
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "032ae086eae4f0917b5daa0491d177e4165da97119316f268759468d5439a49e"
+content-hash = "2babb4d6de65724577a5ed0e1875c2b6eafd9c97e81298dc05ed7cb59b874191"
 
 [metadata.files]
 anyio = [
@@ -636,8 +636,8 @@ coverage = [
     {file = "coverage-6.3.2.tar.gz", hash = "sha256:03e2a7826086b91ef345ff18742ee9fc47a6839ccd517061ef8fa1976e652ce9"},
 ]
 fastapi = [
-    {file = "fastapi-0.76.0-py3-none-any.whl", hash = "sha256:1e05c868651e3935bd9b290c61a3661a54e37471d3a0700bc5e4380f9ed935ae"},
-    {file = "fastapi-0.76.0.tar.gz", hash = "sha256:a5f99f6e827c7108a8efaf1d7f19d6cf2d735ad984f5e44d33ccec6ee88a7da1"},
+    {file = "fastapi-0.77.1-py3-none-any.whl", hash = "sha256:041d8935a13c8f22a7ef80c76d8eea54953c44476d7057e7734138ee8951b9dc"},
+    {file = "fastapi-0.77.1.tar.gz", hash = "sha256:6dfa715a334d1fafedcea33d74c7382afd2ce123093f83be2f4e322e89d45e22"},
 ]
 flake8 = [
     {file = "flake8-4.0.1-py2.py3-none-any.whl", hash = "sha256:479b1304f72536a55948cb40a32dce8bb0ffe3501e26eaf292c7e60eb5e0428d"},
@@ -839,8 +839,8 @@ sniffio = [
     {file = "sniffio-1.2.0.tar.gz", hash = "sha256:c4666eecec1d3f50960c6bdf61ab7bc350648da6c126e3cf6898d8cd4ddcd3de"},
 ]
 starlette = [
-    {file = "starlette-0.18.0-py3-none-any.whl", hash = "sha256:377d64737a0e03560cb8eaa57604afee143cea5a4996933242798a7820e64f53"},
-    {file = "starlette-0.18.0.tar.gz", hash = "sha256:b45c6e9a617ecb5caf7e6446bd8d767b0084d6217e8e1b08187ca5191e10f097"},
+    {file = "starlette-0.19.1-py3-none-any.whl", hash = "sha256:5a60c5c2d051f3a8eb546136aa0c9399773a689595e099e0877704d5888279bf"},
+    {file = "starlette-0.19.1.tar.gz", hash = "sha256:c6d21096774ecb9639acad41b86b7706e52ba3bf1dc13ea4ed9ad593d47e24c7"},
 ]
 testfixtures = [
     {file = "testfixtures-6.18.3-py2.py3-none-any.whl", hash = "sha256:6ddb7f56a123e1a9339f130a200359092bd0a6455e31838d6c477e8729bb7763"},
