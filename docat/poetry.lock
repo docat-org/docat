@@ -154,7 +154,7 @@ pyflakes = ">=2.4.0,<2.5.0"
 
 [[package]]
 name = "flake8-black"
-version = "0.3.2"
+version = "0.3.3"
 description = "flake8 plugin to call black as a code style validator"
 category = "dev"
 optional = false
@@ -532,7 +532,7 @@ standard = ["websockets (>=10.0)", "httptools (>=0.4.0)", "watchgod (>=0.6)", "p
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "db50885397ee419e6e47a813935b790ebd0f063198306598403e3976adc97298"
+content-hash = "d65b83847f989cec819e1f181e77aa8c76a4cbfef687114f8d50a89fd24116e5"
 
 [metadata.files]
 anyio = [
@@ -644,8 +644,8 @@ flake8 = [
     {file = "flake8-4.0.1.tar.gz", hash = "sha256:806e034dda44114815e23c16ef92f95c91e4c71100ff52813adf7132a6ad870d"},
 ]
 flake8-black = [
-    {file = "flake8-black-0.3.2.tar.gz", hash = "sha256:6f6bf198f3f45df43245d1d1a0ba2035ee5817d167680f9e1af23cde70cb7548"},
-    {file = "flake8_black-0.3.2-py3-none-any.whl", hash = "sha256:9c86b24ede16a80555808c6c4779d81bc54cff57d0dd1980029c0e4b39ac8b45"},
+    {file = "flake8-black-0.3.3.tar.gz", hash = "sha256:8211f5e20e954cb57c709acccf2f3281ce27016d4c4b989c3e51f878bb7ce12a"},
+    {file = "flake8_black-0.3.3-py3-none-any.whl", hash = "sha256:7d667d0059fd1aa468de1669d77cc934b7f1feeac258d57bdae69a8e73c4cd90"},
 ]
 flake8-isort = [
     {file = "flake8-isort-4.1.1.tar.gz", hash = "sha256:d814304ab70e6e58859bc5c3e221e2e6e71c958e7005239202fee19c24f82717"},
