@@ -20,7 +20,7 @@ from pydantic import BaseModel
 from starlette.responses import JSONResponse
 from tinydb import Query, TinyDB
 
-from docat.utils import UPLOAD_FOLDER, calculate_token, create_nginx_config, create_symlink, extract_archive, remove_docs
+from docat.utils import DB_PATH, UPLOAD_FOLDER, calculate_token, create_nginx_config, create_symlink, extract_archive, remove_docs
 
 #: Holds the FastAPI application
 app = FastAPI(
@@ -31,7 +31,8 @@ app = FastAPI(
     redoc_url="/api/redoc",
 )
 #: Holds an instance to the TinyDB
-db = TinyDB("db.json")
+DOCAT_DB_PATH = os.getenv("DOCAT_DB_PATH", DB_PATH)
+db = TinyDB(DOCAT_DB_PATH)
 #: Holds the static base path where the uploaded documentation artifacts are stored
 DOCAT_UPLOAD_FOLDER = Path(os.getenv("DOCAT_DOC_PATH", UPLOAD_FOLDER))
 

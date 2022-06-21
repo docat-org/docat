@@ -12,6 +12,7 @@ from jinja2 import Template
 
 NGINX_CONFIG_PATH = Path("/etc/nginx/locations.d")
 UPLOAD_FOLDER = Path("/var/docat/doc")
+DB_PATH = "db.json"
 
 
 def create_symlink(source, destination):

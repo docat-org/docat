@@ -11,7 +11,7 @@ The simplest way is to build and run the docker container,
 you can optionally use volumes to save state:
 
 ```sh
-# run container in background and persist data (docs, nginx configs)
+# run container in background and persist data (docs, nginx configs and tokens database)
 # use 'ghcr.io/docat-org/docat:unstable' to get the latest changes
 mkdir -p docat-run/db && touch docat-run/db/db.json
 docker run \
@@ -19,6 +19,22 @@ docker run \
   --volume $PWD/docat-run/doc:/var/docat/doc/ \
   --volume $PWD/docat-run/locations:/etc/nginx/locations.d/ \
   --volume $PWD/docat-run/db/db.json:/app/docat/db.json \
+  --publish 8000:80 \
+  ghcr.io/docat-org/docat
+```
+
+*Alternative:* Mount a dedicated directory to host `db.json` :
+
+```sh
+# run container in background and persist data (docs, nginx configs and tokens database)
+# use 'ghcr.io/docat-org/docat:unstable' to get the latest changes
+mkdir -p docat-run/db && touch docat-run/db/db.json
+docker run \
+  --detach \
+  --volume $PWD/docat-run/doc:/var/docat/doc/ \
+  --volume $PWD/docat-run/locations:/etc/nginx/locations.d/ \
+  --volume $PWD/docat-run/db:/var/docat/db/ \
+  --env DOCAT_DB_PATH=/var/docat/db/db.json
   --publish 8000:80 \
   ghcr.io/docat-org/docat
 ```
