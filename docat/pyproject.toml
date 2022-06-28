@@ -11,7 +11,7 @@ tinydb = "^4.7.0"
 fastapi = "^0.78.0"
 Jinja2 = "^3.1.2"
 python-multipart = "^0.0.5"
-uvicorn = "^0.18.1"
+uvicorn = "^0.18.2"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^4.0.1"
