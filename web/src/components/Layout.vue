@@ -1,7 +1,7 @@
 <template>
   <md-app>
-    <md-app-toolbar class="md-primary">
-      <div class="md-layout toolbar-layout">
+    <md-app-toolbar class="toolbar-layout">
+      <div class="md-layout toolbar-layout-container">
         <div class="md-layout-item md-size-15 md-small-hide"></div>
         <div class="md-layout-item">
           <router-link to="/">
@@ -54,14 +54,18 @@ export default {
 @import "~vue-material/dist/theme/engine"; // Import the theme engine
 
 @include md-register-theme("default", (
-  primary: #ececec, // The primary color of your application
+  primary: #742A47, // The primary color of your application
   accent: #3a5600 // The accent or secondary color
 ));
 
 @import "~vue-material/dist/theme/all"; // Apply the theme
 
 .toolbar-layout {
-  width: 100%;
+  --md-theme-default-toolbarvariant: #ececec;
+
+  &-container {
+    width: 100%;
+  }
 
   .logo {
     height: 64px;

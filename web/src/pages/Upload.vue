@@ -11,7 +11,7 @@
 
       <md-field :class="getValidationClass('project')">
         <label>Projectname</label>
-        <md-input type="text" id="project" name="project" v-model="form.project" :disabled="sending" />
+        <md-input ref="project" type="text" id="project" name="project" v-model="form.project" :disabled="sending" />
         <span class="md-error" v-if="!$v.form.project.required">The projectname is required</span>
       </md-field>
 
@@ -65,6 +65,9 @@ export default {
       showError: false
     }
   },
+  mounted() {
+    this.focusInput();
+  },
   validations: {
     form: {
       project: { required },
@@ -116,6 +119,9 @@ export default {
       if (!this.$v.$invalid) {
         this.upload()
       }
+    },
+    focusInput() {
+      this.$refs.project.$el.focus();
     }
   }
 }
