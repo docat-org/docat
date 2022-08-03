@@ -9,7 +9,7 @@ RUN yarn run test:unit
 RUN yarn build
 
 # setup Python
-FROM python:3.10.5-alpine3.15 AS backend
+FROM python:3.11.0b5-alpine3.15 AS backend
 
 # configure docker container
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -29,7 +29,7 @@ WORKDIR /app/docat
 RUN poetry install --no-root --no-ansi --no-dev
 
 # production
-FROM python:3.10.5-alpine3.15
+FROM python:3.11.0b5-alpine3.15
 
 # set up the system
 RUN apk update && \
