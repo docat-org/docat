@@ -9,7 +9,10 @@ RUN yarn run test:unit
 RUN yarn build
 
 # setup Python
-FROM python:3.11.0b5-alpine3.15 AS backend
+# TODO(Fliiiix): FastApi is broken in Python 3.11
+# We need to wait for a fix:
+# https://github.com/tiangolo/fastapi/issues/5048
+FROM python:3.10.6-alpine3.15 AS backend
 
 # configure docker container
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -21,7 +24,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 RUN apk update && \
     apk add gcc musl-dev python3-dev libffi-dev openssl-dev cargo
-RUN pip install poetry==1.1.13
+RUN pip install poetry==1.1.14
 COPY /docat/pyproject.toml /docat/poetry.lock /app/
 
 # Install the application
@@ -29,7 +32,10 @@ WORKDIR /app/docat
 RUN poetry install --no-root --no-ansi --no-dev
 
 # production
-FROM python:3.11.0b5-alpine3.15
+# TODO(Fliiiix): FastApi is broken in Python 3.11
+# We need to wait for a fix:
+# https://github.com/tiangolo/fastapi/issues/5048
+FROM python:3.10.6-alpine3.15
 
 # set up the system
 RUN apk update && \

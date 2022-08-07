@@ -5,7 +5,7 @@ tag versions of the documentation.
 
 ## development enviroment
 
-You will need to install [poetry](https://python-poetry.org/docs/#installation) `pip install poetry==1.1.5`.
+You will need to install [poetry](https://python-poetry.org/docs/#installation) `pip install poetry==1.1.14`.
 
 Install the dependencies and run the application:
 
