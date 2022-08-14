@@ -5,10 +5,17 @@ ProjectRepository.baseURL = 'https://do.cat'
 
 const mockFetchData = (fetchData) => {
   global.fetch = jest.fn().mockImplementation(() => Promise.resolve({
+    ok: true,
     json: () => Promise.resolve(fetchData)
   }))
 }
 
+const mockFetchError = (error = "Error") => {
+  global.fetch = jest.fn().mockImplementation(() => Promise.resolve({
+    ok: false,
+    json: () => Promise.resolve({message: error})
+  }))
+}
 
 describe('ProjectRepository', () => {
 
@@ -78,6 +85,16 @@ describe('ProjectRepository', () => {
     )
   })
 
+  it('should throw error when uploading new documentation fails', async () => {
+    const errorMessage = "Failed to upload documentation"
+    mockFetchError(errorMessage)
+
+
+    expect(ProjectRepository.upload('existing-project', '4.0', { data: true })).rejects.toThrow(errorMessage)
+    expect(global.fetch).toHaveBeenCalledTimes(1)
+
+  })
+
   it('should delete an existing documentation', async () => {
     mockFetchData({})
 
@@ -90,6 +107,16 @@ describe('ProjectRepository', () => {
         'headers': { 'Docat-Api-Key': '1234' }
       }
     )
+  })
+
+  it('should throw error when deleting existing documentation fails', async () => {
+    const errorMessage = "Failed to delete documentation"
+    mockFetchError(errorMessage)
+
+
+    expect(ProjectRepository.delete_doc('existing-project', '4.0', { data: true })).rejects.toThrow(errorMessage)
+    expect(global.fetch).toHaveBeenCalledTimes(1)
+
   })
 
   it('should sort doc versions as semantic versions', async () => {
