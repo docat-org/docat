@@ -23,7 +23,7 @@
 
       <md-field :class="getValidationClass('documentation')">
         <label >Documentation (zip file)</label>
-        <md-file id="documentation" @change="onFileUpload($event)" :disabled="sending" accept="zip,application/octet-stream,application/zip,application/x-zip,application/x-zip-compressed" />
+        <md-file ref="fileInput" id="documentation" @change="onFileUpload($event)" :disabled="sending" accept="zip,application/octet-stream,application/zip,application/x-zip,application/x-zip-compressed" />
         <span class="md-error">The documentation is required</span>
       </md-field>
 
@@ -112,6 +112,8 @@ export default {
       this.$v.$reset()
       this.form.project = null
       this.form.version = null
+      this.form.file = ''
+      this.$refs.fileInput.clearField()
     },
     validateUpload() {
       this.$v.$touch()

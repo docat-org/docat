@@ -81,12 +81,17 @@ export default {
    * @param {string} body Data to upload
    */
   async upload(projectName, version, body) {
-    await fetch(`${this.baseURL}/api/${projectName}/${version}`,
+    const resp = await fetch(`${this.baseURL}/api/${projectName}/${version}`,
       {
         method: 'POST',
         body
       }
     )
+    const json = await resp.json()
+    if (!resp.ok) {
+      throw new Error(json.message)
+    }
+    return json
   },
 
   /**
@@ -109,12 +114,17 @@ export default {
    */
   async delete_doc(projectName, version, token) {
     const headers = { "Docat-Api-Key": token }
-    await fetch(`${this.baseURL}/api/${projectName}/${version}`,
+    const resp = await fetch(`${this.baseURL}/api/${projectName}/${version}`,
       {
         method: 'DELETE',
         headers: headers
       }
     )
+    const json = await resp.json()
+    if (!resp.ok) {
+      throw new Error(json.message)
+    }
+    return json
   },
 
   /**
