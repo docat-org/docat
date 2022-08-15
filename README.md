@@ -8,7 +8,7 @@
 ## Getting started
 
 The simplest way is to build and run the docker container,
-you can optionally use volumes to save state:
+you can optionally use volumes to persist state:
 
 ```sh
 # run container in background and persist data (docs, nginx configs and tokens database)
