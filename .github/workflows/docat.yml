@@ -97,9 +97,9 @@ jobs:
           username: ${{ matrix.registry.org }}
           password: ${{ secrets[matrix.registry.token] }}
         # Note(Fliiiix): Only login and push on main repo where the secrets are available
-        if: github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'dependabot[bot]'
+        if: "!(github.event.pull_request.head.repo.fork || github.actor == 'dependabot[bot]')"
 
       - name: Publish Image
         run: |
           docker push --all-tags ${{ matrix.registry.name }}/${{ matrix.registry.org }}/docat
-        if: github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'dependabot[bot]'
+        if: "!(github.event.pull_request.head.repo.fork || github.actor == 'dependabot[bot]')"
