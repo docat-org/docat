@@ -20,7 +20,7 @@ from pydantic import BaseModel
 from starlette.responses import JSONResponse
 from tinydb import Query, TinyDB
 
-from docat.utils import DB_PATH, UPLOAD_FOLDER, calculate_token, create_nginx_config, create_symlink, extract_archive, remove_docs
+from docat.utils import DB_PATH, UPLOAD_FOLDER, calculate_token, create_symlink, extract_archive, remove_docs
 
 #: Holds the FastAPI application
 app = FastAPI(
@@ -56,6 +56,57 @@ class ClaimResponse(ApiResponse):
     token: str
 
 
+class ProjectsResponse(BaseModel):
+    projects: list[str]
+
+
+class ProjectVersion(BaseModel):
+    name: str
+    tags: list[str]
+
+
+class ProjectDetailResponse(BaseModel):
+    name: str
+    versions: list[ProjectVersion]
+
+
+@app.get("/api/projects", response_model=ProjectsResponse, status_code=status.HTTP_200_OK)
+def get_projects():
+    if not DOCAT_UPLOAD_FOLDER.exists():
+        return ProjectsResponse(projects=[])
+    return ProjectsResponse(projects=[str(x.relative_to(DOCAT_UPLOAD_FOLDER)) for x in DOCAT_UPLOAD_FOLDER.iterdir() if x.is_dir()])
+
+
+@app.get(
+    "/api/projects/{project}",
+    response_model=ProjectDetailResponse,
+    status_code=status.HTTP_200_OK,
+    responses={status.HTTP_404_NOT_FOUND: {"model": ApiResponse}},
+)
+def get_project(project):
+    docs_folder = DOCAT_UPLOAD_FOLDER / project
+    if not docs_folder.exists():
+        return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content={"message": f"Project {project} does not exist"})
+
+    tags = [x for x in docs_folder.iterdir() if x.is_dir() and x.is_symlink()]
+
+    return ProjectDetailResponse(
+        name=project,
+        versions=sorted(
+            [
+                ProjectVersion(
+                    name=str(x.relative_to(docs_folder)),
+                    tags=[str(t.relative_to(docs_folder)) for t in tags if t.resolve() == x],
+                )
+                for x in docs_folder.iterdir()
+                if x.is_dir() and not x.is_symlink()
+            ],
+            key=lambda k: k.name,
+            reverse=True,
+        ),
+    )
+
+
 @app.post("/api/{project}/{version}", response_model=ApiResponse, status_code=status.HTTP_201_CREATED)
 def upload(
     project: str,
@@ -86,7 +137,6 @@ def upload(
         shutil.copyfileobj(file.file, buffer)
 
     extract_archive(target_file, base_path)
-    create_nginx_config(project, project_base_path)
     return ApiResponse(message="File successfully uploaded")
 
 
@@ -154,4 +204,4 @@ def check_token_for_project(db, token, project) -> TokenStatus:
 
 # serve_local_docs for local testing without a nginx
 if os.environ.get("DOCAT_SERVE_FILES"):
-    app.mount("/doc", StaticFiles(directory=DOCAT_UPLOAD_FOLDER), name="docs")
+    app.mount("/doc", StaticFiles(directory=DOCAT_UPLOAD_FOLDER, html=True), name="docs")

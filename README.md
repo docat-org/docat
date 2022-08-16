@@ -17,7 +17,6 @@ mkdir -p docat-run/db && touch docat-run/db/db.json
 docker run \
   --detach \
   --volume $PWD/docat-run/doc:/var/docat/doc/ \
-  --volume $PWD/docat-run/locations:/etc/nginx/locations.d/ \
   --volume $PWD/docat-run/db/db.json:/app/docat/db.json \
   --publish 8000:80 \
   ghcr.io/docat-org/docat
@@ -32,7 +31,6 @@ mkdir -p docat-run/db && touch docat-run/db/db.json
 docker run \
   --detach \
   --volume $PWD/docat-run/doc:/var/docat/doc/ \
-  --volume $PWD/docat-run/locations:/etc/nginx/locations.d/ \
   --volume $PWD/docat-run/db:/var/docat/db/ \
   --env DOCAT_DB_PATH=/var/docat/db/db.json
   --publish 8000:80 \
@@ -43,10 +41,35 @@ Go to [localhost:8000](http://localhost:8000) to view your docat instance:
 
 ![docat screenshot](doc/assets/docat-screenshot.png)
 
-If you want to run the application different than in a docker container, look at the
+### Local Development
+
+For local development, first configure and start the backend (inside the `docat/` folder):
+
+```sh
+# create a folder for local development (uploading docs)
+DEV_DOC_PATH="$(mktemp -d)"
+
+# install dependencies
+poetry install
+
+# run the local development version
+DOCAT_SERVE_FILES=1 DOCAT_DOC_PATH="$DEV_DOC_PATH" poetry run python -m docat
+```
+
+After this you need to start the frontend (inside the `web/` folder):
+
+```sh
+# install dependencies
+yarn install --frozen-lockfile
+
+# run the web app
+yarn serve
+```
+
+For more advanced options, have a look at the
 [backend](docat/README.md) and [web](web/README.md) docs.
 
-### Push documentation to docat
+### Push Documentation to docat
 
 The preferred way to push documentation to a docat server is using the [docatl](https://github.com/docat-org/docatl)
 command line application:
@@ -57,7 +80,7 @@ docatl push --host http://localhost:8000 /path/to/your/docs PROJECT VERSION
 
 There are also docker images available for CI systems.
 
-#### Using standard UNIX command line tools
+#### Using Standard UNIX Command Line Tools
 
 If you have static html documentation or use something like
 [mkdocs](https://www.mkdocs.org/), [sphinx](http://www.sphinx-doc.org/en/master/), ...
@@ -77,8 +100,7 @@ When you have multiple versions you may want to tag some version as **latest**:
 curl -X PUT http://localhost:8000/api/PROJECT/VERSION/tags/latest
 ```
 
-
-## Advanced config.json
+## Advanced `config.json`
 
 It is possible to configure some things after the fact.
 

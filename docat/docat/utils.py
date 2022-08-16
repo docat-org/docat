@@ -4,11 +4,8 @@ docat utilities
 import hashlib
 import os
 import shutil
-import subprocess
 from pathlib import Path
 from zipfile import ZipFile
-
-from jinja2 import Template
 
 NGINX_CONFIG_PATH = Path("/etc/nginx/locations.d")
 UPLOAD_FOLDER = Path("/var/docat/doc")
@@ -31,26 +28,6 @@ def create_symlink(source, destination):
         return True
     else:
         return False
-
-
-def create_nginx_config(project, project_base_path):
-    """
-    Creates an Nginx configuration for an uploaded project
-    version.
-
-    Args:
-        project (str): name of the project
-        project_base_path (pathlib.Path): base path of the project
-    """
-    nginx_config = NGINX_CONFIG_PATH / f"{project}-doc.conf"
-    if not nginx_config.exists():
-        out_parsed_template = Template((Path(__file__).parent / "templates" / "nginx-doc.conf").read_text()).render(
-            project=project, dir_path=str(project_base_path)
-        )
-        with nginx_config.open("w") as f:
-            f.write(out_parsed_template)
-
-        subprocess.run(["nginx", "-s", "reload"])
 
 
 def extract_archive(target_file, destination):

@@ -16,10 +16,10 @@
         >
           <md-option
             v-for="version of versions"
-            v-bind:key="version"
-            :value="version"
+            v-bind:key="version.name"
+            :value="version.name"
           >
-            {{ version }}
+            {{ version.name + (version.tags.length ? ` (${version.tags.join(', ')})` : '') }}
           </md-option>
         </md-select>
       </md-field>
@@ -53,7 +53,7 @@ export default {
     document.title = this.$route.params.project + " | docat"
     this.versions = (await ProjectRepository.getVersions(
       this.$route.params.project
-    )).map((version) => version.name).sort(ProjectRepository.compareVersions)
+    )).sort((a, b) => ProjectRepository.compareVersions(a.name, b.name))
 
     if (!this.selectedVersion) {
       this.selectedVersion = (this.versions.find((version) => version == 'latest') || this.versions[0]);
@@ -74,7 +74,7 @@ export default {
           a.setAttribute('target', '_blank')
         }
       })
-      
+
       if(this.docURL) {
         this.load(docsFrame.contentWindow.location.href)
       }

@@ -3,8 +3,8 @@
     <Project
       class="md-layout-item md-size-25"
       v-for="project of projects"
-      v-bind:key="project.name"
-      :project="project.name"
+      v-bind:key="project"
+      :project="project"
     />
     <Help v-if="!projects.length" />
   </div>
