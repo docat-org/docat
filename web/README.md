@@ -57,7 +57,6 @@ web frontend, you can mount the `dist/` folder as a docker volume:
 sudo docker run \
   --detach \
   --volume /path/to/doc:/var/docat/doc/ \
-  --volume /path/to/locations:/etc/nginx/locations.d/ \
   --volume /path/to/docat/web/dist:/var/www/html/ \
   --publish 8000:80 \
   docat

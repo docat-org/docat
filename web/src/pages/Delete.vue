@@ -82,7 +82,7 @@ export default {
       this.sending = true
 
       try {
-        await ProjectRepository.delete_doc(this.form.project, this.form.version, this.form.token)
+        await ProjectRepository.deleteDoc(this.form.project, this.form.version, this.form.token)
         const msg = "Documentation for " + this.form.project + " (" + this.form.version + ") deleted"
         this.clearForm()
         this.showError = true

@@ -24,8 +24,8 @@ export default {
    * Returns all projects
    */
   async get() {
-    const resp = await fetch(`${this.baseURL}/${resource}/`)
-    return await resp.json()
+    const resp = await fetch(`${this.baseURL}/api/projects`)
+    return (await resp.json()).projects
   },
 
   /**
@@ -69,9 +69,8 @@ export default {
    * @param {string} projectName Name of the project
    */
   async getVersions(projectName) {
-    const resp = await fetch(`${this.baseURL}/${resource}/${projectName}/`)
-    return (await resp.json())
-      .filter((version) => version.type == 'directory')
+    const resp = await fetch(`${this.baseURL}/api/projects/${projectName}`)
+    return (await resp.json()).versions
   },
 
   /**
@@ -112,7 +111,7 @@ export default {
    * @param {string} projectName Name of the project
    * @param {string} version Name of the version
    */
-  async delete_doc(projectName, version, token) {
+  async deleteDoc(projectName, version, token) {
     const headers = { "Docat-Api-Key": token }
     const resp = await fetch(`${this.baseURL}/api/${projectName}/${version}`,
       {
@@ -130,14 +129,16 @@ export default {
   /**
    * Compare two versions according to semantic version (semver library)
    * Will always consider the version latest as higher version
-   * 
+   *
    * @param {string} versionNameA Name of the version one
    * @param {string} versionNameB Name of the version two
    */
   compareVersions(versionNameA, versionNameB) {
-  if (versionNameA == "latest") return 1;
-      else if (versionNameB == "latest") return -1;
-      else {
+      if (versionNameA == "latest") {
+        return 1;
+      } else if (versionNameB == "latest") {
+        return -1;
+      } else {
           const versionA = semver.coerce(versionNameA);
           const versionB = semver.coerce(versionNameB);
           if (!versionA || !versionB) {
@@ -145,5 +146,5 @@ export default {
           }
           return semver.compare(versionA, versionB);
       }
-   },
+   }
 }

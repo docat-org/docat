@@ -13,7 +13,7 @@ const mockFetchData = (fetchData) => {
 const mockFetchError = (error = "Error") => {
   global.fetch = jest.fn().mockImplementation(() => Promise.resolve({
     ok: false,
-    json: () => Promise.resolve({message: error})
+    json: () => Promise.resolve({ message: error })
   }))
 }
 
@@ -33,16 +33,18 @@ describe('ProjectRepository', () => {
 
 
   it('should get all projects', async () => {
-    const projects = [
-      { name: 'awesome-project' },
-      { name: 'pet-project' }
-    ]
+    const projects = {
+      'projects': [
+        'awesome-project',
+        'pet-project'
+      ]
+    }
     mockFetchData(projects)
 
     const result = await ProjectRepository.get()
 
     expect(global.fetch).toHaveBeenCalledTimes(1)
-    expect(result).toEqual(projects)
+    expect(result).toEqual(projects.projects)
   })
 
 
@@ -57,17 +59,19 @@ describe('ProjectRepository', () => {
 
 
   it('should get all versions of a project', async () => {
-    const versions = [
-      { name: '1.0', type: 'directory' },
-      { name: '2.0', type: 'directory' },
-      { name: 'image.png', type: 'file' }
-    ]
+    const versions = {
+      'name': 'awesome--project',
+      'versions': [
+        { name: '1.0', tags: [] },
+        { name: '2.0', type: [] },
+      ]
+    }
     mockFetchData(versions)
 
     const result = await ProjectRepository.getVersions('awesome--project')
 
     expect(global.fetch).toHaveBeenCalledTimes(1)
-    expect(result).toEqual(versions.filter((version) => version.type == 'directory'))
+    expect(result).toEqual(versions.versions)
   })
 
 
@@ -98,7 +102,7 @@ describe('ProjectRepository', () => {
   it('should delete an existing documentation', async () => {
     mockFetchData({})
 
-    await ProjectRepository.delete_doc('awesome-project', '1.2', '1234')
+    await ProjectRepository.deleteDoc('awesome-project', '1.2', '1234')
 
     expect(global.fetch).toHaveBeenCalledTimes(1)
     expect(global.fetch).toHaveBeenCalledWith('https://do.cat/api/awesome-project/1.2',
@@ -114,7 +118,7 @@ describe('ProjectRepository', () => {
     mockFetchError(errorMessage)
 
 
-    expect(ProjectRepository.delete_doc('existing-project', '4.0', { data: true })).rejects.toThrow(errorMessage)
+    expect(ProjectRepository.deleteDoc('existing-project', '4.0', { data: true })).rejects.toThrow(errorMessage)
     expect(global.fetch).toHaveBeenCalledTimes(1)
 
   })
