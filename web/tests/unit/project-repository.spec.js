@@ -136,4 +136,14 @@ describe('ProjectRepository', () => {
     expect(ProjectRepository.compareVersions('1.2.0', '1.0')).toBeGreaterThan(0);
     expect(ProjectRepository.compareVersions('1.2', '2.0.0')).toBeLessThan(0);
   })
+
+  it('should add and remove favourite projects correctly', () => {
+      expect(ProjectRepository.isFavourite("mytest-project")).toBeFalsy()
+      ProjectRepository.setFavourite("mytest-project", false)
+      expect(ProjectRepository.isFavourite("mytest-project")).toBeFalsy()
+      ProjectRepository.setFavourite("mytest-project", true)
+      expect(ProjectRepository.isFavourite("mytest-project")).toBeTruthy()
+      ProjectRepository.setFavourite("mytest-project", false)
+      expect(ProjectRepository.isFavourite("mytest-project")).toBeFalsy()
+  })
 })

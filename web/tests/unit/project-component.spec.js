@@ -17,7 +17,9 @@ const wrapper = shallowMount(Project, {
     'router-link': true,
     'md-card': true,
     'md-card-header': true,
-    'md-avatar': true
+    'md-avatar': true,
+    'md-button': true,
+    'md-icon': true
   }
 })
 
