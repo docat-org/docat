@@ -10,7 +10,7 @@ python = "^3.10"
 tinydb = "^4.7.0"
 fastapi = "^0.80.0"
 python-multipart = "^0.0.5"
-uvicorn = "^0.18.2"
+uvicorn = "^0.18.3"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^5.0.4"
