@@ -1,5 +1,5 @@
 <template>
-  
+
   <md-card class="project-card">
     <router-link :to="`/${project}/${latestVersion}`">
       <md-card-header>
@@ -62,6 +62,10 @@ export default {
   margin-bottom: 10px;
   padding-bottom: 16px;
   padding-top: 16px;
+  // FIXME: override broken material design
+  max-width: calc(25% - 32px) !important;
+  min-width: calc(25% - 32px) !important;
+  flex: 1 1 calc(25% - 32px) !important;
 }
 .md-card-header {
   float: left;
