@@ -45,7 +45,7 @@ export default {
     document.title = this.project + " | docat"
     this.logoURL = ProjectRepository.getProjectLogoURL(this.project)
     this.versions = await ProjectRepository.getVersions(this.project)
-    this.latestVersion = (this.versions.find((version) => version.name == 'latest') || this.versions[0]).name
+    this.latestVersion = (this.versions.find((version) => (version.tags || []).includes('latest')) || this.versions[0]).name
     this.isFavourite = ProjectRepository.isFavourite(this.project)
   },
   methods: {

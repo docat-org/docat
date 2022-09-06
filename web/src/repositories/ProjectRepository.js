@@ -130,21 +130,26 @@ export default {
    * Compare two versions according to semantic version (semver library)
    * Will always consider the version latest as higher version
    *
-   * @param {string} versionNameA Name of the version one
-   * @param {string} versionNameB Name of the version two
+   * @param {Object} versionA first version to compare
+   * @param {string} versionA.name version name
+   * @param {string[]?} versionA.tags optinoal tags for this vertion
+   *
+   * @param {Object} versionB second version to compare
+   * @param {string} versionB.name version name
+   * @param {string[]?} versionB.tags optinoal tags for this vertion
    */
-  compareVersions(versionNameA, versionNameB) {
-      if (versionNameA == "latest") {
+  compareVersions(versionA, versionB) {
+      if ((versionA.tags || []).includes('latest')) {
         return 1;
-      } else if (versionNameB == "latest") {
+      } else if ((versionB.tags || []).includes('latest')) {
         return -1;
       } else {
-          const versionA = semver.coerce(versionNameA);
-          const versionB = semver.coerce(versionNameB);
-          if (!versionA || !versionB) {
-              return versionNameA.localeCompare(versionNameB);
+          const semverA = semver.coerce(versionA.name);
+          const semverB = semver.coerce(versionB.name);
+          if (!semverA || !semverB) {
+              return versionA.name.localeCompare(versionB.name);
           }
-          return semver.compare(versionA, versionB);
+          return semver.compare(semverA, semverB);
       }
    },
 

@@ -124,17 +124,17 @@ describe('ProjectRepository', () => {
   })
 
   it('should sort doc versions as semantic versions', async () => {
-    expect(ProjectRepository.compareVersions('0.0.0', '0.0.1')).toBeLessThan(0);
-    expect(ProjectRepository.compareVersions('a', 'b')).toBeLessThan(0);
-    expect(ProjectRepository.compareVersions('z', 'latest')).toBeLessThan(0);
-    expect(ProjectRepository.compareVersions('0.0.10', '0.1.1')).toBeLessThan(0);
-    expect(ProjectRepository.compareVersions('0.0.1', '0.0.22')).toBeLessThan(0);
-    expect(ProjectRepository.compareVersions('0.0.2', '0.0.22')).toBeLessThan(0);
-    expect(ProjectRepository.compareVersions('0.0.22', '0.0.2')).toBeGreaterThan(0);
-    expect(ProjectRepository.compareVersions('0.0.3', '0.0.22')).toBeLessThan(0);
-    expect(ProjectRepository.compareVersions('0.0.2a', '0.0.10')).toBeLessThan(0);
-    expect(ProjectRepository.compareVersions('1.2.0', '1.0')).toBeGreaterThan(0);
-    expect(ProjectRepository.compareVersions('1.2', '2.0.0')).toBeLessThan(0);
+    expect(ProjectRepository.compareVersions({name: '0.0.0'}, {name: '0.0.1'})).toBeLessThan(0);
+    expect(ProjectRepository.compareVersions({name: 'a'}, {name: 'b'})).toBeLessThan(0);
+    expect(ProjectRepository.compareVersions({name: 'z'}, {name: '', tags: ['latest']})).toBeLessThan(0);
+    expect(ProjectRepository.compareVersions({name: '0.0.10'}, {name: '0.1.1'})).toBeLessThan(0);
+    expect(ProjectRepository.compareVersions({name: '0.0.1'}, {name: '0.0.22'})).toBeLessThan(0);
+    expect(ProjectRepository.compareVersions({name: '0.0.2'}, {name: '0.0.22'})).toBeLessThan(0);
+    expect(ProjectRepository.compareVersions({name: '0.0.22'}, {name: '0.0.2'})).toBeGreaterThan(0);
+    expect(ProjectRepository.compareVersions({name: '0.0.3'}, {name: '0.0.22'})).toBeLessThan(0);
+    expect(ProjectRepository.compareVersions({name: '0.0.2a'}, {name: '0.0.10'})).toBeLessThan(0);
+    expect(ProjectRepository.compareVersions({name: '1.2.0'}, {name: '1.0'})).toBeGreaterThan(0);
+    expect(ProjectRepository.compareVersions({name: '1.2'}, {name: '2.0.0'})).toBeLessThan(0);
   })
 
   it('should add and remove favourite projects correctly', () => {
