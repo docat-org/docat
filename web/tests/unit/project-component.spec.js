@@ -6,8 +6,8 @@ import Project from '@/components/Project.vue'
 
 ProjectRepository.getProjectLogoURL = (project) => `/api/${project}`
 ProjectRepository.getVersions = () => [
-  { name: '1.0.0', type: 'directory' },
-  { name: 'latest', type: 'directory' }
+  { name: '1.0.0' },
+  { name: '2.0.0', tags: ['latest'] }
 ]
 
 const project = 'awesome-project'
@@ -25,7 +25,7 @@ const wrapper = shallowMount(Project, {
 
 describe('Project.vue', () => {
   it('finds the latest version', () => {
-    expect(wrapper.vm.$data.latestVersion).toMatch('latest')
+    expect(wrapper.vm.$data.latestVersion).toMatch('2.0.0')
   })
 
   it('gets the correct logo url', () => {
