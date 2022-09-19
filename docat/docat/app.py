@@ -83,6 +83,12 @@ def get_projects():
     status_code=status.HTTP_200_OK,
     responses={status.HTTP_404_NOT_FOUND: {"model": ApiResponse}},
 )
+@app.get(
+    "/api/projects/{project}/",
+    response_model=ProjectDetailResponse,
+    status_code=status.HTTP_200_OK,
+    responses={status.HTTP_404_NOT_FOUND: {"model": ApiResponse}},
+)
 def get_project(project):
     docs_folder = DOCAT_UPLOAD_FOLDER / project
     if not docs_folder.exists():
@@ -108,6 +114,7 @@ def get_project(project):
 
 
 @app.post("/api/{project}/{version}", response_model=ApiResponse, status_code=status.HTTP_201_CREATED)
+@app.post("/api/{project}/{version}/", response_model=ApiResponse, status_code=status.HTTP_201_CREATED)
 def upload(
     project: str,
     version: str,
@@ -141,6 +148,7 @@ def upload(
 
 
 @app.put("/api/{project}/{version}/tags/{new_tag}", response_model=ApiResponse, status_code=status.HTTP_201_CREATED)
+@app.put("/api/{project}/{version}/tags/{new_tag}/", response_model=ApiResponse, status_code=status.HTTP_201_CREATED)
 def tag(project: str, version: str, new_tag: str, response: Response):
     destination = DOCAT_UPLOAD_FOLDER / project / new_tag
 
@@ -153,6 +161,12 @@ def tag(project: str, version: str, new_tag: str, response: Response):
 
 @app.get(
     "/api/{project}/claim",
+    response_model=ClaimResponse,
+    status_code=status.HTTP_201_CREATED,
+    responses={status.HTTP_409_CONFLICT: {"model": ApiResponse}},
+)
+@app.get(
+    "/api/{project}/claim/",
     response_model=ClaimResponse,
     status_code=status.HTTP_201_CREATED,
     responses={status.HTTP_409_CONFLICT: {"model": ApiResponse}},
@@ -173,6 +187,7 @@ def claim(project: str, db: TinyDB = Depends(get_db)):
 
 
 @app.delete("/api/{project}/{version}", response_model=ApiResponse, status_code=status.HTTP_200_OK)
+@app.delete("/api/{project}/{version}/", response_model=ApiResponse, status_code=status.HTTP_200_OK)
 def delete(project: str, version: str, response: Response, docat_api_key: str = Header(None), db: TinyDB = Depends(get_db)):
     token_status = check_token_for_project(db, docat_api_key, project)
     if token_status.valid:
