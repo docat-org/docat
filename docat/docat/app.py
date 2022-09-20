@@ -186,6 +186,36 @@ def claim(project: str, db: TinyDB = Depends(get_db)):
     return ClaimResponse(message=f"Project {project} successfully claimed", token=token)
 
 
+@app.put("/api/{project}/rename/{new_project_name}", response_model=ApiResponse, status_code=status.HTTP_200_OK)
+@app.put("/api/{project}/rename/{new_project_name}/", response_model=ApiResponse, status_code=status.HTTP_200_OK)
+def rename(project: str, new_project_name: str, response: Response, docat_api_key: str = Header(None), db: TinyDB = Depends(get_db)):
+    project_base_path = DOCAT_UPLOAD_FOLDER / project
+    new_project_base_path = DOCAT_UPLOAD_FOLDER / new_project_name
+
+    if not project_base_path.exists():
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return ApiResponse(message=f"Project {project} not found")
+
+    if new_project_base_path.exists():
+        response.status_code = status.HTTP_409_CONFLICT
+        return ApiResponse(message=f"New project name {new_project_name} already in use")
+
+    token_status = check_token_for_project(db, docat_api_key, project)
+    if not token_status.valid:
+        response.status_code = status.HTTP_401_UNAUTHORIZED
+        return ApiResponse(message=token_status.reason)
+
+    # update the claim to the new project name
+    Project = Query()
+    table = db.table("claims")
+    table.update({"name": new_project_name}, Project.name == project)
+
+    os.rename(project_base_path, new_project_base_path)
+
+    response.status_code = status.HTTP_200_OK
+    return ApiResponse(message=f"Successfully renamed project {project} to {new_project_name}")
+
+
 @app.delete("/api/{project}/{version}", response_model=ApiResponse, status_code=status.HTTP_200_OK)
 @app.delete("/api/{project}/{version}/", response_model=ApiResponse, status_code=status.HTTP_200_OK)
 def delete(project: str, version: str, response: Response, docat_api_key: str = Header(None), db: TinyDB = Depends(get_db)):
