@@ -127,6 +127,11 @@ def upload(
     base_path = project_base_path / version
     target_file = base_path / file.filename
 
+    if base_path.is_symlink():
+        # disallow overwriting of tags (symlinks) with new uploads
+        response.status_code = status.HTTP_409_CONFLICT
+        return ApiResponse(message="Cannot overwrite existing tag with new version.")
+
     if base_path.exists():
         token_status = check_token_for_project(db, docat_api_key, project)
         if token_status.valid:
@@ -151,6 +156,11 @@ def upload(
 @app.put("/api/{project}/{version}/tags/{new_tag}/", response_model=ApiResponse, status_code=status.HTTP_201_CREATED)
 def tag(project: str, version: str, new_tag: str, response: Response):
     destination = DOCAT_UPLOAD_FOLDER / project / new_tag
+    source = DOCAT_UPLOAD_FOLDER / project / version
+
+    if not source.exists():
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return ApiResponse(message=f"Version {version} not found")
 
     if create_symlink(version, destination):
         return ApiResponse(message=f"Tag {new_tag} -> {version} successfully created")
