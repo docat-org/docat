@@ -158,13 +158,12 @@ def tag(project: str, version: str, new_tag: str, response: Response):
     destination = DOCAT_UPLOAD_FOLDER / project / new_tag
     source = DOCAT_UPLOAD_FOLDER / project / version
 
+    if not source.exists():
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return ApiResponse(message=f"Version {version} not found")
+
     if create_symlink(version, destination):
-        msg = f"Tag {new_tag} -> {version} successfully created"
-
-        if not source.exists():
-            msg += f", but version {version} does not exist."
-
-        return ApiResponse(message=msg)
+        return ApiResponse(message=f"Tag {new_tag} -> {version} successfully created")
     else:
         response.status_code = status.HTTP_409_CONFLICT
         return ApiResponse(message=f"Tag {new_tag} would overwrite an existing version!")

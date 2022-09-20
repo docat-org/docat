@@ -62,7 +62,7 @@ def test_successful_tag_creation(client_with_claimed_project):
     assert create_tag_response.json() == {"message": "Tag latest -> 1.0.0 successfully created"}
 
 
-def test_warning_on_broken_symlink_creation(client_with_claimed_project):
+def test_create_tag_fails_when_version_does_not_exist(client_with_claimed_project):
     create_project_response = client_with_claimed_project.post(
         "/api/some-project/1.0.0", files={"file": ("index.html", io.BytesIO(b"<h1>Hello World</h1>"), "plain/text")}
     )
@@ -71,10 +71,8 @@ def test_warning_on_broken_symlink_creation(client_with_claimed_project):
 
     create_tag_response = client_with_claimed_project.put("/api/some-project/non-existing-version/tags/new-tag")
 
-    assert create_tag_response.status_code == 201
-    assert create_tag_response.json() == {
-        "message": "Tag new-tag -> non-existing-version successfully created, but version non-existing-version does not exist."
-    }
+    assert create_tag_response.status_code == 404
+    assert create_tag_response.json() == {"message": "Version non-existing-version not found"}
 
 
 def test_create_tag_fails_on_overwrite_of_version(client_with_claimed_project):
@@ -90,7 +88,7 @@ def test_create_tag_fails_on_overwrite_of_version(client_with_claimed_project):
     )
     assert create_project_response.status_code == 201
 
-    create_tag_response = client_with_claimed_project.put(f"/api/{project_name}/non-existing-version/tags/{version}")
+    create_tag_response = client_with_claimed_project.put(f"/api/{project_name}/{version}/tags/{version}")
     assert create_tag_response.status_code == 409
     assert create_tag_response.json() == {"message": f"Tag {version} would overwrite an existing version!"}
 
