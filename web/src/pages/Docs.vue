@@ -9,8 +9,8 @@
 
       <md-field class="version-select">
         <md-select
-          @md-selected="load()"
-          v-model="selectedVersion"
+          @md-selected="dropdownSelect()"
+          v-model="dropdownVersion"
           name="version"
           id="version"
         >
@@ -35,11 +35,20 @@ export default {
   data() {
     return {
       selectedVersion: this.$route.params.version,
+      dropdownVersion: null,
       versions: [],
       docURL: undefined
     }
   },
   beforeRouteUpdate(to, from, next) {
+    this.selectedVersion = to.params.version
+
+    if (!this.selectedVersion){
+      this.selectDefaultVersion()
+    }
+
+    this.updateDropdownVersion()
+
     if (to.params.version && to.params.version !== from.params.version) {
       // hard reload iframe only when switching versions
       this.docURL = ProjectRepository.getProjectDocsURL(
@@ -55,9 +64,11 @@ export default {
       this.$route.params.project
     )).sort((a, b) => ProjectRepository.compareVersions(a, b))
 
-    if (!this.selectedVersion) {
-      this.selectedVersion = (this.versions.find((version) => (version.tags || []).includes('latest')) || this.versions[0]).name;
+    if (!this.selectedVersion){
+      this.selectDefaultVersion()
     }
+
+    this.updateDropdownVersion()
 
     this.docURL = ProjectRepository.getProjectDocsURL(
       this.$route.params.project,
@@ -79,8 +90,29 @@ export default {
         this.load(docsFrame.contentWindow.location.href)
       }
     },
-    load(docPath) {
+    selectDefaultVersion(){
+      this.selectedVersion = (this.getTaggedVersion("latest") || this.versions[this.versions.length - 1]).name;
+    },
+    updateDropdownVersion(){
+      if (!this.versions.map(v => v.name).includes(this.selectedVersion)){
+        const tagVersion = this.getTaggedVersion(this.selectedVersion)
 
+        this.dropdownVersion = tagVersion ? tagVersion.name : this.selectedVersion
+      }
+      else{
+        this.dropdownVersion = this.selectedVersion
+      }
+    },
+    getTaggedVersion(tag){
+      return this.versions.find(v => (v.tags || []).includes(tag))
+    },
+    dropdownSelect(){
+      if (this.getTaggedVersion(this.selectedVersion)?.name !== this.dropdownVersion){
+        this.selectedVersion = this.dropdownVersion
+        this.load()
+      }
+    },
+    load(docPath) {
       // listen on anchor tag changes
       const component = this
       document.getElementById('docs')
