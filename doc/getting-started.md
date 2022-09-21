@@ -85,3 +85,14 @@ If you want to remove the version `1.0.0` from awesome-project.
 ```sh
 curl -X DELETE --header "Docat-Api-Key: <token>" http://localhost:8000/api/awesome-project/1.0.0
 ```
+
+#### Upload Project Icon
+
+To upload a icon (only PNGs are supported), you don't need a token, except if 
+a project icon already exists.
+
+If you want to upload `example-image.png` to awesome-project, that already has a project icon.
+
+```sh
+curl -X POST -F "file=@example-image.png" --header "Docat-Api-Key: <token>" http://localhost:8000/api/awesome-project/icon
+```
