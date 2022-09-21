@@ -113,6 +113,44 @@ def get_project(project):
     )
 
 
+@app.post("/api/{project}/icon", response_model=ApiResponse, status_code=status.HTTP_200_OK)
+@app.post("/api/{project}/icon/", response_model=ApiResponse, status_code=status.HTTP_200_OK)
+def upload_icon(
+    project: str,
+    response: Response,
+    file: UploadFile = File(...),
+    docat_api_key: Optional[str] = Header(None),
+    db: TinyDB = Depends(get_db),
+):
+    project_base_path = DOCAT_UPLOAD_FOLDER / project
+    icon_path = project_base_path / "logo"
+
+    if not project_base_path.exists():
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return ApiResponse(message=f"Project {project} not found")
+
+    if not file.content_type.startswith("image/"):
+        response.status_code = status.HTTP_400_BAD_REQUEST
+        return ApiResponse(message="Icon must be an image")
+
+    # require a token if the project already has an icon
+    if icon_path.is_file():
+        token_status = check_token_for_project(db, docat_api_key, project)
+        if not token_status.valid:
+            response.status_code = status.HTTP_401_UNAUTHORIZED
+            return ApiResponse(message=token_status.reason)
+
+        # remove the old icon
+        os.remove(icon_path)
+
+    # save the uploaded icon
+    file.file.seek(0)
+    with icon_path.open("wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+
+    return ApiResponse(message="Icon successfully uploaded")
+
+
 @app.post("/api/{project}/{version}", response_model=ApiResponse, status_code=status.HTTP_201_CREATED)
 @app.post("/api/{project}/{version}/", response_model=ApiResponse, status_code=status.HTTP_201_CREATED)
 def upload(

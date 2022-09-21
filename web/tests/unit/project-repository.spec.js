@@ -22,7 +22,7 @@ describe('ProjectRepository', () => {
 
   it('should return the correct logo URL', () => {
     expect(ProjectRepository.getProjectLogoURL('awesome-project'))
-      .toMatch('https://do.cat/doc/awesome-project/logo.jpg')
+      .toMatch('https://do.cat/doc/awesome-project/logo')
   })
 
 

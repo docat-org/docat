@@ -33,7 +33,7 @@ export default {
    * @param {string} projectName Name of the project
    */
   getProjectLogoURL(projectName) {
-    return `${this.baseURL}/${resource}/${projectName}/logo.jpg`
+    return `${this.baseURL}/${resource}/${projectName}/logo`
   },
 
   /**
