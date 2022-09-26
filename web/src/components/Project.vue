@@ -4,24 +4,22 @@
     <router-link :to="`/${project}/${latestVersion}`">
       <md-card-header>
         <md-avatar :class="{ hidden: hideAvatar }">
-          <img
-            :alt="`${project} project logo`"
-            :src="logoURL"
-            @error="() => hideAvatar = true"
-          />
+          <img :alt="`${project} project logo`" :src="logoURL" @error="() => hideAvatar = true" />
         </md-avatar>
-        <div class="md-title">{{ project }}</div>
-        <div class="md-subhead">{{ versions.length }} Versions </div>
+        <div class="md-title-container">
+          <div class="md-title">{{ project }}</div>
+          <div class="md-subhead">{{ versions.length }} Versions </div>
+        </div>
       </md-card-header>
-      </router-link>
+    </router-link>
 
-      <div class="star-div">
-        <md-button class="md-icon-button" @click="switchFavourite()">
-          <md-icon v-if="isFavourite" id="favourite-star">star</md-icon>
-          <md-icon v-if="!isFavourite" id="not-favourite-star">star</md-icon>
-        </md-button>
-      </div>
-    </md-card>
+    <div class="star-div">
+      <md-button class="md-icon-button" @click="switchFavourite()">
+        <md-icon v-if="isFavourite" id="favourite-star">star</md-icon>
+        <md-icon v-if="!isFavourite" id="not-favourite-star">star</md-icon>
+      </md-button>
+    </div>
+  </md-card>
 </template>
 
 <script>
@@ -67,21 +65,32 @@ export default {
   min-width: calc(25% - 32px) !important;
   flex: 1 1 calc(25% - 32px) !important;
 }
+
 .md-card-header {
   float: left;
   padding: 0px;
   padding-left: 16px;
+  display: flex
 }
+
+.md-title-container{
+  display: flex;
+  flex-direction: column;
+}
+
 .star-div {
   padding-right: 16px;
   float: right;
 }
+
 .md-avatar.hidden {
   display: none;
 }
+
 #favourite-star {
   color: rgb(80, 80, 80);
 }
+
 #not-favourite-star {
   color: #fff;
   -webkit-text-stroke-width: 1px;
