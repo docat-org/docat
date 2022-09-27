@@ -6,7 +6,7 @@
         <md-avatar :class="{ hidden: hideAvatar }">
           <img :alt="`${project} project logo`" :src="logoURL" @error="() => hideAvatar = true" />
         </md-avatar>
-        <div class="md-title-container">
+        <div>
           <div class="md-title">{{ project }}</div>
           <div class="md-subhead">{{ versions.length }} Versions </div>
         </div>
@@ -67,15 +67,18 @@ export default {
 }
 
 .md-card-header {
-  float: left;
   padding: 0px;
   padding-left: 16px;
-  display: flex
+  width: calc(100% - 75px);
+  float: left;
 }
 
-.md-title-container{
-  display: flex;
-  flex-direction: column;
+.md-title {
+  font-size: 120% !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  
 }
 
 .star-div {
