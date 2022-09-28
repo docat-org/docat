@@ -6,8 +6,8 @@
         <md-avatar :class="{ hidden: hideAvatar }">
           <img :alt="`${project} project logo`" :src="logoURL" @error="() => hideAvatar = true" />
         </md-avatar>
-        <div class="md-title-container">
-          <div class="md-title">{{ project }}</div>
+        <div>
+          <div class="md-title" v-tooltip="{ content: project, classes: ['tooltip'] }">{{ project }}</div>
           <div class="md-subhead">{{ versions.length }} Versions </div>
         </div>
       </md-card-header>
@@ -24,6 +24,10 @@
 
 <script>
 import ProjectRepository from '@/repositories/ProjectRepository'
+import Vue from 'vue'
+import VTooltip from 'v-tooltip'
+
+Vue.use(VTooltip)
 
 export default {
   name: 'Project',
@@ -67,15 +71,25 @@ export default {
 }
 
 .md-card-header {
-  float: left;
   padding: 0px;
   padding-left: 16px;
-  display: flex
+  width: calc(100% - 75px);
+  float: left;
 }
 
-.md-title-container{
-  display: flex;
-  flex-direction: column;
+.md-title {
+  font-size: 120% !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+}
+
+.tooltip {
+  background-color: rgb(80, 80, 80);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
 }
 
 .star-div {
