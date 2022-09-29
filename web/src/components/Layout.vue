@@ -54,8 +54,8 @@ export default {
 @import "~vue-material/dist/theme/engine"; // Import the theme engine
 
 @include md-register-theme("default", (
-  primary: #742A47, // The primary color of your application
-  accent: #3a5600 // The accent or secondary color
+  primary: #383838, // The primary color of your application
+  accent: #868686 // The accent or secondary color
 ));
 
 @import "~vue-material/dist/theme/all"; // Apply the theme
@@ -74,7 +74,7 @@ export default {
 
   h1 {
     float: left;
-    color: #742a47;
+    color: #383838;
     margin-top: 25px;
     margin-left: 10px;
   }
@@ -84,11 +84,6 @@ html,
 body,
 .md-app {
   height: 100%;
-}
-
-a {
-  /* TODO: remove hack */
-  color: #742a47 !important;
 }
 
 .help {
