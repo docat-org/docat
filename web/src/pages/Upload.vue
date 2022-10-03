@@ -1,6 +1,6 @@
 <template>
    <Layout>
-    <form novalidate @submit.prevent="validateUpload" class="upload-form">
+    <form ref="uploadForm" novalidate @submit.prevent="validateUpload" class="upload-form">
       <h1 class="upload-title">Upload documentation</h1>
 
       <p>
@@ -114,6 +114,7 @@ export default {
       this.form.version = null
       this.form.file = ''
       this.$refs.fileInput.clearField()
+      this.$refs.uploadForm.reset()
     },
     validateUpload() {
       this.$v.$touch()
