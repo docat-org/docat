@@ -62,7 +62,7 @@ curl -X PUT http://localhost:8000/api/awesome-project/1.0.0/tags/latest
 
 Claiming a Project returns a `token` which can be used for actions
 which require a authentication (for example deleting a version).
-Each Project can be claimed exactly once.
+Each Project can be claimed **exactly once**, so best store the token safely.
 
 ```sh
 curl -X GET http://localhost:8000/api/awesome-project/claim
