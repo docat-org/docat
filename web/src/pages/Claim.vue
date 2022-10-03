@@ -2,6 +2,11 @@
    <Layout>
     <form novalidate class="claim-form">
       <h1 class="claim-title">Claim Token</h1>
+      <p>
+        Please make sure to store this token safely, as only one token can be generated per project
+        and you will not be able to claim it again.
+      </p>
+
 
       <md-field>
         <label>Projectname</label>
