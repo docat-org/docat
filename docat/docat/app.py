@@ -14,6 +14,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional
 
+import magic
 from fastapi import Depends, FastAPI, File, Header, Response, UploadFile, status
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
@@ -129,7 +130,10 @@ def upload_icon(
         response.status_code = status.HTTP_404_NOT_FOUND
         return ApiResponse(message=f"Project {project} not found")
 
-    if not file.content_type.startswith("image/"):
+    mime_type_checker = magic.Magic(mime=True)
+    mime_type = mime_type_checker.from_buffer(file.file.read())
+
+    if not mime_type.startswith("image/"):
         response.status_code = status.HTTP_400_BAD_REQUEST
         return ApiResponse(message="Icon must be an image")
 
