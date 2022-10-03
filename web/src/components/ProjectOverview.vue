@@ -19,7 +19,7 @@
         :project="project"
       />
     </div>
-    <Help v-if="!projects.length" />
+    <Help v-if="projects?.length === 0" />
   </div>
 </template>
 
@@ -37,7 +37,7 @@ export default {
   },
   data() {
     return {
-      projects: [],
+      projects: null,
       favouriteProjects: [],
       nonFavouriteProjects: [],
     }
