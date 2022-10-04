@@ -7,7 +7,7 @@
           <img :alt="`${project} project logo`" :src="logoURL" @error="() => hideAvatar = true" />
         </md-avatar>
         <div>
-          <div class="md-title" v-tooltip="{ content: project, classes: ['tooltip'] }">{{ project }}</div>
+          <div class="md-title" v-tooltip="{ content: escapeHtml(project), classes: ['tooltip'] }">{{ project }}</div>
           <div class="md-subhead">{{ versions.length }} Versions </div>
         </div>
       </md-card-header>
@@ -55,6 +55,9 @@ export default {
       ProjectRepository.setFavourite(this.project, !this.isFavourite)
       this.isFavourite = !this.isFavourite;
       this.$emit("favouriteChanged")
+    },
+    escapeHtml(text) {
+      return text.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#039;');
     }
   }
 }
