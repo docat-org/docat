@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <iframe id="docs" :src="docURL" @load="onChange()"></iframe>
-    <div class="controls">
+    <div class="controls" v-if="showControls">
       <md-button to="/" class="home-button md-fab md-primary">
         <md-icon>home</md-icon>
         <md-tooltip md-direction="left">docs overview</md-tooltip>
@@ -37,7 +37,8 @@ export default {
       selectedVersion: this.$route.params.version,
       dropdownVersion: null,
       versions: [],
-      docURL: undefined
+      docURL: undefined,
+      showControls: String(this.$route.query.hideui).toLocaleLowerCase() !== 'true',
     }
   },
   beforeRouteUpdate(to, from, next) {
@@ -127,8 +128,10 @@ export default {
           docPath
         )
       }
+      const hideUiParam = this.showControls ? '' : '?hideui=true';
+
       this.$router.replace(
-        `/${this.$route.params.project}/${this.selectedVersion}/${docPath || ''}`
+        `/${this.$route.params.project}/${this.selectedVersion}/${docPath || ''}${hideUiParam}`
       ).catch(() => {})  // NavigationDuplicate
     }
   }
