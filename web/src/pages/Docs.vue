@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <iframe id="docs" :src="docURL" @load="onChange()"></iframe>
-    <div class="controls">
+    <div class="controls" v-if="showControls">
       <md-button to="/" class="home-button md-fab md-primary">
         <md-icon>home</md-icon>
         <md-tooltip md-direction="left">docs overview</md-tooltip>
@@ -23,6 +23,11 @@
           </md-option>
         </md-select>
       </md-field>
+
+      <md-button class="hide-controls-button md-fab md-secondary" @click="onHideControlsClick()">
+        <md-icon>visibility_off</md-icon>
+        <md-tooltip md-direction="bottom">Hide Controls</md-tooltip>
+      </md-button>
     </div>
   </div>
 </template>
@@ -37,7 +42,8 @@ export default {
       selectedVersion: this.$route.params.version,
       dropdownVersion: null,
       versions: [],
-      docURL: undefined
+      docURL: undefined,
+      showControls: String(this.$route.query.hideui).toLocaleLowerCase() !== 'true',
     }
   },
   beforeRouteUpdate(to, from, next) {
@@ -127,9 +133,15 @@ export default {
           docPath
         )
       }
+      const hideUiParam = this.showControls ? '' : '?hideui=true';
+
       this.$router.replace(
-        `/${this.$route.params.project}/${this.selectedVersion}/${docPath || ''}`
+        `/${this.$route.params.project}/${this.selectedVersion}/${docPath || ''}${hideUiParam}`
       ).catch(() => {})  // NavigationDuplicate
+    },
+    onHideControlsClick(){
+      this.showControls = false;
+      this.load()
     }
   }
 }
@@ -151,14 +163,10 @@ body,
 
 .version-select {
   width: 200px;
-  float: right;
   background: white;
-  border-radius: 7px;
+  border-radius: 0px;
   padding: 9px;
-  margin-bottom: 0px;
   border: 1px solid rgba(0, 0, 0, 0.42);
-  border-top-left-radius: 0px;
-  border-bottom-left-radius: 0px;
 }
 
 .md-field {
@@ -171,16 +179,28 @@ body,
   position: absolute;
   bottom: 32px;
   right: 50px;
+  display: flex;
 }
 
 .home-button {
   border-radius: 7px;
   border-top-right-radius: 0px;
   border-bottom-right-radius: 0px;
-  margin-right: -1px;
-  height: 52px;
+  margin-right: 0px;
+  height: 53px;
   margin-top: 4px;
   box-shadow: none;
+  border: 1px solid rgba(0, 0, 0, 0.42);
+}
+
+.hide-controls-button {
+  border-radius: 7px;
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+  height: 53px;
+  box-shadow: none;
+  margin-top: 4px;
+  margin-left: 0px;
   border: 1px solid rgba(0, 0, 0, 0.42);
 }
 
