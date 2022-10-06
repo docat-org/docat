@@ -39,7 +39,7 @@ FROM python:3.10.7-alpine3.15
 
 # set up the system
 RUN apk update && \
-    apk add nginx dumb-init && \
+    apk add nginx dumb-init libmagic && \
     rm -rf /var/cache/apk/*
 
 RUN mkdir -p /var/docat/doc
