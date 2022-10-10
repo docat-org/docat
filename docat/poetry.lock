@@ -148,18 +148,18 @@ tomli = "*"
 
 [[package]]
 name = "flake8-isort"
-version = "4.2.0"
+version = "5.0.0"
 description = "flake8 plugin that integrates isort ."
 category = "dev"
 optional = false
-python-versions = "*"
+python-versions = ">=3.7"
 
 [package.dependencies]
-flake8 = ">=3.2.1,<6"
+flake8 = "*"
 isort = ">=4.3.5,<6"
 
 [package.extras]
-test = ["pytest-cov"]
+test = ["pytest"]
 
 [[package]]
 name = "h11"
@@ -483,7 +483,7 @@ standard = ["colorama (>=0.4)", "httptools (>=0.4.0)", "python-dotenv (>=0.13)",
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "a4476daf48a22a15acb1065d0fc52b6a3c71a391d8df4eb5f66fc9fd1f46802f"
+content-hash = "586f14b883902f831c846b451c81257b710708514980403b1a07ea783e2280ba"
 
 [metadata.files]
 anyio = [
@@ -600,8 +600,8 @@ flake8-black = [
     {file = "flake8_black-0.3.3-py3-none-any.whl", hash = "sha256:7d667d0059fd1aa468de1669d77cc934b7f1feeac258d57bdae69a8e73c4cd90"},
 ]
 flake8-isort = [
-    {file = "flake8-isort-4.2.0.tar.gz", hash = "sha256:26571500cd54976bbc0cf1006ffbcd1a68dd102f816b7a1051b219616ba9fee0"},
-    {file = "flake8_isort-4.2.0-py3-none-any.whl", hash = "sha256:5b87630fb3719bf4c1833fd11e0d9534f43efdeba524863e15d8f14a7ef6adbf"},
+    {file = "flake8-isort-5.0.0.tar.gz", hash = "sha256:e336f928c7edc509684930ab124414194b7f4e237c712af8fcbdf49d8747b10c"},
+    {file = "flake8_isort-5.0.0-py3-none-any.whl", hash = "sha256:c73f9cbd1bf209887f602a27b827164ccfeba1676801b2aa23cb49051a1be79c"},
 ]
 h11 = [
     {file = "h11-0.14.0-py3-none-any.whl", hash = "sha256:e3fe4ac4b851c468cc8363d500db52c2ead036020723024a109d37346efaa761"},
