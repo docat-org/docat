@@ -12,7 +12,7 @@ RUN yarn build
 # TODO(Fliiiix): FastApi is broken in Python 3.11
 # We need to wait for a fix:
 # https://github.com/tiangolo/fastapi/issues/5048
-FROM python:3.10.7-alpine3.15 AS backend
+FROM python:3.11.0rc2-alpine3.15 AS backend
 
 # configure docker container
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -35,7 +35,7 @@ RUN poetry install --no-root --no-ansi --no-dev
 # TODO(Fliiiix): FastApi is broken in Python 3.11
 # We need to wait for a fix:
 # https://github.com/tiangolo/fastapi/issues/5048
-FROM python:3.10.7-alpine3.15
+FROM python:3.11.0rc2-alpine3.15
 
 # set up the system
 RUN apk update && \
