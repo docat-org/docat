@@ -1,5 +1,5 @@
 # building frontend
-FROM node:16.14 as build-deps
+FROM node:19.0.0 as build-deps
 COPY web ./
 # fix docker not following symlinks
 COPY doc/getting-started.md ./src/assets/
