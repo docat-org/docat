@@ -122,3 +122,52 @@ Using `docatl`:
 ```sh
 docatl push-icon awesome-project example-image.png --host http://localhost:8000 --api-key <token>
 ```
+
+#### Rename a Project
+
+To rename a Project, you need a token.
+
+To rename `awesome-project` to `new-awesome-project`:
+
+```sh
+curl -X PUT --header "Docat-Api-Key: <token>" http://localhost:8000/api/awesome-project/rename/new-awesome-project
+```
+
+Using `docatl`:
+
+```sh
+docatl rename awesome-project new-awesome-project --host http://localhost:8000 --api-key <token>
+```
+
+#### Hide a Version
+
+If you want to hide a version from the version select as well as the search results,
+you can hide it. You need to be authenticated to do this.
+
+To hide version `0.0.1` of `awesome-project`:
+
+```sh
+curl -X POST --header "Docat-Api-Key: <token>" http://localhost:8000/api/awesome-project/0.0.1/hide
+```
+
+Using `docatl`:
+
+```sh
+docatl hide awesome-project 0.0.1 --host http://localhost:8000 --api-key <token>
+```
+
+#### Show a Version
+
+This is the reverse of `hide`, and also requires a token.
+
+To show version `0.0.1` of `awesome-project` again:
+
+```sh
+curl -X POST --header "Docat-Api-Key: <token>" http://localhost:8000/api/awesome-project/0.0.1/show
+```
+
+Using `docatl`:
+
+```sh
+docatl show awesome-project 0.0.1 --host http://localhost:8000 --api-key <token>
+```
