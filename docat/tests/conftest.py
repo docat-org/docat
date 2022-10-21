@@ -21,6 +21,11 @@ def client():
 
 
 @pytest.fixture
+def upload_folder_path():
+    return docat.DOCAT_UPLOAD_FOLDER
+
+
+@pytest.fixture
 def client_with_claimed_project(client):
     table = docat.db.table("claims")
     token_hash_1234 = b"\xe0\x8cS\xa3)\xb4\xb5\xa5\xda\xc3K\x96\xf6).\xdd-\xacR\x8e3Q\x17\x87\xfb\x94\x0c-\xc2h\x1c\xf3"
