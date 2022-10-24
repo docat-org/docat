@@ -17,7 +17,7 @@ function App() {
           <Route path="/:project/:version?/:location?" element={Docs} />
         </Routes>
       </BrowserRouter> */}
-      {/* <Footer></Footer> */}
+      <Footer></Footer>
     </div>
   );
 }

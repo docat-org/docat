@@ -1,0 +1,14 @@
+.footer{
+    position: absolute;
+    bottom: 0;
+    border-top: 1px solid var(--secondary-foreground);
+    width: 100%;
+    padding: 15px 0 15px 0;
+    text-align: center;
+}
+
+.help-link{
+    text-decoration: none;
+    color: black;
+    font-size: 15px;
+}
