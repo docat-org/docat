@@ -1,7 +1,7 @@
 * {
   margin: 0;
   padding: 0;
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
@@ -15,4 +15,37 @@ h1 {
   font-size: 30px;
   font-weight: 300;
   color: var(--primary-foreground);
+}
+
+.loading-spinner {
+  --spinner-size: 40px;
+
+  display: inline-block;
+  width: var(--spinner-size);
+  height: var(--spinner-size);
+
+  position: relative;
+  left: calc(50% - var(--spinner-size) / 2 - 8px);
+}
+
+.loading-spinner:after {
+  content: " ";
+  display: block;
+  width: var(--spinner-size);
+  height: var(--spinner-size);
+  margin: 8px;
+  border-radius: 50%;
+  border: 6px solid var(--button-primary);
+  border-color: var(--button-primary) transparent var(--button-primary)
+    transparent;
+  animation: loading-spinner 1.2s linear infinite;
+}
+
+@keyframes loading-spinner {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
