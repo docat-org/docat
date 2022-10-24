@@ -1,0 +1,18 @@
+* {
+  margin: 0;
+  padding: 0;
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  --primary-foreground: #383838;
+  --secondary-foreground: #;
+  --background: #ececec;
+  --button-primary: #2c3e50;
+}
+
+h1 {
+  font-size: 30px;
+  font-weight: 300;
+  color: var(--primary-foreground);
+}

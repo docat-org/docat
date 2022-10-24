@@ -1,0 +1,20 @@
+.header {
+    --header-height: 64px;
+
+    width: 100%;
+    height: var(--header-height);
+    background-color: var(--background);
+    padding-left: 10px;
+}
+
+.logo {
+    height: var(--header-height);
+    float: left;
+}
+
+.header-title {
+    float: left;
+    margin-top: calc(var(--header-height) / 2 - 15px);
+    margin-left: 10px;
+    font-size: 30px;
+}
