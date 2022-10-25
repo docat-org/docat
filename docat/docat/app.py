@@ -11,7 +11,7 @@ import os
 import secrets
 import shutil
 from pathlib import Path
-from typing import List, Optional
+from typing import Optional
 
 import magic
 from fastapi import Depends, FastAPI, File, Header, Response, UploadFile, status

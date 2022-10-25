@@ -3,8 +3,9 @@ import { Link } from "react-router-dom";
 import ProjectRepository from "../repositories/ProjectRepository";
 import "./../style/Project.css";
 
-import { Star, StarOutline } from "@material-ui/icons";
+import { Star, StarOutline } from "@mui/icons-material";
 import ProjectDetails from "../models/ProjectDetails";
+import ReactTooltip from "react-tooltip";
 
 export default function Project(props: { projectName: string }) {
   const [versions, setVersions] = useState<ProjectDetails[]>([]);
@@ -39,23 +40,29 @@ export default function Project(props: { projectName: string }) {
     star = <StarOutline className="star" style={{ color: "#505050" }} />;
   }
 
-  var logo =
-    logoExists === true ? (
-      <img
-        className="project-logo"
-        src={logoURL}
-        alt={`${props.projectName} project Logo`}
-      />
-    ) : (
-      <></>
-    );
-
   return (
     <div className="project-card">
+      <ReactTooltip />
       <div className="project-card-header">
         <Link to={`/${props.projectName}/${latestVersion}`}>
-          {logo}
-          <div className="project-card-title">{props.projectName}</div>
+          {logoExists === true && (
+            <img
+              className="project-logo"
+              src={logoURL}
+              alt={`${props.projectName} project Logo`}
+            />
+          )}
+
+          <div
+            className={
+              logoExists === true
+                ? "project-card-title-with-logo"
+                : "project-card-title"
+            }
+            data-tip={props.projectName}
+          >
+            {props.projectName}
+          </div>
         </Link>
         {star}
       </div>

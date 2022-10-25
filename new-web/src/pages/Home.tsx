@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
-import ProjectRepository from "../repositories/ProjectRepository";
-import "./../style/Home.css";
+import { ErrorOutline } from "@mui/icons-material";
 
-import { ErrorOutline } from "@material-ui/icons/";
+import ProjectRepository from "../repositories/ProjectRepository";
 import Project from "../components/Project";
+import UploadButton from "../components/UploadButton";
+import "./../style/Home.css";
+import ClaimButton from "../components/ClaimButton";
+import DeleteButton from "../components/DeleteButton";
 
 export default function Home(): JSX.Element {
   const [projects, setProjects] = useState<string[]>([]);
@@ -55,22 +58,27 @@ export default function Home(): JSX.Element {
   }
 
   return (
-    <div className="project-overview">
-      {favoriteProjects.length > 0 && (
-        <div>
-          <div className="project-list">
-            {favoriteProjects.map((project) => {
-              return <Project projectName={project} key={project} />;
-            }, [])}
+    <>
+      <div className="project-overview">
+        {favoriteProjects.length > 0 && (
+          <div>
+            <div className="project-list">
+              {favoriteProjects.map((project) => {
+                return <Project projectName={project} key={project} />;
+              }, [])}
+            </div>
+            <div className="divider" />
           </div>
-          <div className="divider" />
+        )}
+        <div className="project-list">
+          {nonFavoriteProjects.map((project) => {
+            return <Project projectName={project} key={project} />;
+          }, [])}
         </div>
-      )}
-      <div className="project-list">
-        {nonFavoriteProjects.map((project) => {
-          return <Project projectName={project} key={project} />;
-        }, [])}
       </div>
-    </div>
+      <UploadButton></UploadButton>
+      <ClaimButton></ClaimButton>
+      <DeleteButton></DeleteButton>
+    </>
   );
 }

@@ -1,29 +1,43 @@
 .project-card {
   margin: 0 16px 10px 16px;
-  padding: 16px;
-  width: calc(100% - 32px);
-  min-width: 150px;
-  flex: 1 1 calc(25% - 80px);
+  padding: 16px 0 16px 16px;
   border: 1px solid var(--secondary-foreground);
+  box-shadow: 0 3px 1px -2px rgb(0 0 0 / 20%), 0 2px 2px 0 rgb(0 0 0 / 14%),
+    0 1px 5px 0 rgb(0 0 0 / 12%);
 }
 
 .project-card-header {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  width:<div class="project-overview">flex calc(90%);
+  display: inline-block;
+  width: 90%;
+  height: 40px;
 }
 
-.project-card-title {
-  font-size: 120%;
+.project-card-title,
+.project-card-title-with-logo {
+  font-weight: lighter;
+  display: inline-block;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  padding-top: 0.25em;
 }
 
-.tooltip {
-  background-color: var(--icons);
-  color: white;
-  padding: 4px 8px;
-  border-radius: 4px;
+.project-card-title {
+  width: calc(100% - 30px);
+}
+
+.project-card-title-with-logo {
+  width: calc(100% - 86px);
+  transform: translateY(-1em);
+}
+
+.project-logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 16px;
+}
+
+.star {
+  float: right;
 }

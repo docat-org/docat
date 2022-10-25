@@ -1,0 +1,23 @@
+.upload-btn,
+.claim-btn,
+.delete-btn {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: var(--primary-foreground);
+  color: white;
+  position: fixed;
+  bottom: 20px;
+}
+
+.upload-btn {
+  right: 180px;
+}
+
+.claim-btn {
+  right: 100px;
+}
+
+.delete-btn {
+  right: 20px;
+}
