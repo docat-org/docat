@@ -4,3 +4,34 @@
   padding-top: 15px;
   font-size: large;
 }
+
+.divider {
+  border-bottom: 1px solid var(--secondary-foreground);
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+}
+
+.project-overview {
+  display: flex;
+  flex-direction: column;
+}
+
+@media only screen and (min-width: 1000px) {
+  .project-overview {
+    margin: 20px 15%;
+    width: 70%;
+  }
+}
+
+@media only screen and (max-width: 1000px) {
+  .project-overview {
+    margin: 20px;
+  }
+}
+
+.project-list {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}

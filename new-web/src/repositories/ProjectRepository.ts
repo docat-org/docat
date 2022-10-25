@@ -1,4 +1,5 @@
 import semver from 'semver';
+import ProjectDetails from '../models/ProjectDetails';
 
 const RESOURCE = 'doc';
 
@@ -69,13 +70,13 @@ function getDocsPath(projectName: string, version: string, fullDocsPath: string)
  * this includes mainly the existing versions
  * @param {string} projectName Name of the project
  */
-async function getVersions(projectName: string): Promise<String[]> {
+async function getVersions(projectName: string): Promise<ProjectDetails[]> {
     try {
         const resp = await fetch(`/api/projects/${projectName}`);
         const project = await resp.json();
         return project.versions;
     } catch {
-        return []
+        return [];
     }
 };
 
@@ -173,22 +174,22 @@ function compareVersions(versionA: { name: string, tags: string[] | undefined },
 };
 
 /**
-* Returns boolean indicating if the project name is part of the favourites.
+* Returns boolean indicating if the project name is part of the favorites.
 * @param {string} projectName name of the project
-* @returns {boolean} - true is project is favourite
+* @returns {boolean} - true is project is favorite
 */
-function isFavourite(projectName: string): boolean {
-    return localStorage.getItem(projectName) === "favourite";
+function isFavorite(projectName: string): boolean {
+    return localStorage.getItem(projectName) === "favorite";
 };
 
 /**
-   * Sets favourite preference on project
+   * Sets favorite preference on project
    * @param {string} projectName
-   * @param {boolean} shouldBeFavourite
+   * @param {boolean} shouldBeFavorite
    */
-function setFavourite(projectName: string, shouldBeFavourite: boolean): void {
-    if (shouldBeFavourite) {
-        localStorage.setItem(projectName, "favourite");
+function setFavorite(projectName: string, shouldBeFavorite: boolean): void {
+    if (shouldBeFavorite) {
+        localStorage.setItem(projectName, "favorite");
     } else {
         localStorage.removeItem(projectName);
     }
@@ -205,8 +206,8 @@ const exp = {
     claim,
     deleteDoc,
     compareVersions,
-    isFavourite,
-    setFavourite
+    isFavorite,
+    setFavorite
 }
 
 export default exp;

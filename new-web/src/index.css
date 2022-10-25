@@ -9,12 +9,26 @@
   --secondary-foreground: #e8e8e8;
   --background: #ececec;
   --button-primary: #2c3e50;
+  --icons: #505050;
 }
 
 h1 {
   font-size: 30px;
   font-weight: 300;
   color: var(--primary-foreground);
+}
+
+a, u {
+  text-decoration: none;
+  color: black;
+}
+
+.subhead{
+  color: var(--primary-foreground);
+  opacity: 0.54;
+  font-size: 14px;
+  letter-spacing: 0.01em;
+  line-height: 20px;
 }
 
 .loading-spinner {
