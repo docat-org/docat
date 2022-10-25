@@ -7,15 +7,29 @@ import { Star, StarOutline } from "@mui/icons-material";
 import ProjectDetails from "../models/ProjectDetails";
 import ReactTooltip from "react-tooltip";
 
-export default function Project(props: { projectName: string }) {
+export default function Project(props: { projectName: string, onFavoriteChanged: () => void }): JSX.Element {
+  const logoURL = ProjectRepository.getProjectLogoURL(props.projectName);
+
+  const [isFavorite, setIsFavorite] = useState<boolean>(
+    ProjectRepository.isFavorite(props.projectName)
+  );
   const [versions, setVersions] = useState<ProjectDetails[]>([]);
   const [latestVersion, setLatestVersion] = useState<string>("");
-  const [isFavorite, setIsFavorite] = useState<boolean>(false);
-  const [logoURL, setLogoURL] = useState<string>("");
+
   //required, as otherwise the image would flash
   const [logoExists, setLogoExists] = useState<boolean | null>(null);
 
+  function toggleFavorite() {
+    const newIsFavorite = !isFavorite;
+    ProjectRepository.setFavorite(props.projectName, newIsFavorite);
+    setIsFavorite(newIsFavorite);
+
+    props.onFavoriteChanged();
+  }
+
   useEffect(() => {
+    fetch(logoURL).then((res) => setLogoExists(res.ok));
+
     ProjectRepository.getVersions(props.projectName).then((versions) => {
       if (!versions) {
         return;
@@ -24,20 +38,24 @@ export default function Project(props: { projectName: string }) {
       setVersions(versions);
       setLatestVersion(versions[0].name);
     });
-
-    const isFavoriteProject = ProjectRepository.isFavorite(props.projectName);
-    setIsFavorite(isFavoriteProject);
-
-    const logoSrc = ProjectRepository.getProjectLogoURL(props.projectName);
-    setLogoURL(logoSrc);
-
-    fetch(logoSrc).then((res) => setLogoExists(res.ok));
-  }, [props.projectName]);
+  }, [props.projectName, logoURL]);
 
   if (isFavorite) {
-    var star = <Star className="star" style={{ color: "#505050" }} />;
+    var star = (
+      <Star
+        className="star"
+        style={{ color: "#505050" }}
+        onClick={toggleFavorite}
+      />
+    );
   } else {
-    star = <StarOutline className="star" style={{ color: "#505050" }} />;
+    star = (
+      <StarOutline
+        className="star"
+        style={{ color: "#505050" }}
+        onClick={toggleFavorite}
+      />
+    );
   }
 
   return (

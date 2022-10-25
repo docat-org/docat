@@ -15,6 +15,18 @@ export default function Home(): JSX.Element {
   const [loading, setLoading] = useState<boolean>(true);
   const [loadingFailed, setLoadingFailed] = useState<boolean>(false);
 
+  function updateFavorites(projects: string[]) {
+    const favorites = projects.filter((project) =>
+      ProjectRepository.isFavorite(project)
+    );
+    const nonFavorites = projects.filter(
+      (project) => !ProjectRepository.isFavorite(project)
+    );
+
+    setFavoriteProjects(favorites);
+    setNonFavoriteProjects(nonFavorites);
+  }
+
   useEffect(() => {
     setLoading(true);
 
@@ -26,14 +38,7 @@ export default function Home(): JSX.Element {
       }
 
       setProjects(projects);
-
-      const nonFavorites = projects.filter(
-        (p) => !ProjectRepository.isFavorite(p)
-      );
-      const favorites = projects.filter((p) => ProjectRepository.isFavorite(p));
-
-      setNonFavoriteProjects(nonFavorites);
-      setFavoriteProjects(favorites);
+      updateFavorites(projects);
       return;
     });
 
@@ -64,7 +69,13 @@ export default function Home(): JSX.Element {
           <div>
             <div className="project-list">
               {favoriteProjects.map((project) => {
-                return <Project projectName={project} key={project} />;
+                return (
+                  <Project
+                    projectName={project}
+                    key={project}
+                    onFavoriteChanged={() => updateFavorites(projects)}
+                  />
+                );
               }, [])}
             </div>
             <div className="divider" />
@@ -72,7 +83,13 @@ export default function Home(): JSX.Element {
         )}
         <div className="project-list">
           {nonFavoriteProjects.map((project) => {
-            return <Project projectName={project} key={project} />;
+            return (
+              <Project
+                projectName={project}
+                key={project}
+                onFavoriteChanged={() => updateFavorites(projects)}
+              />
+            );
           }, [])}
         </div>
       </div>
