@@ -1,0 +1,27 @@
+.not-found-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    height: 100vh;
+    width: 100vw;
+}
+
+.not-found-title {
+  font-weight: 600;
+}
+
+.not-found-text {
+  margin-top: 10px;
+  font-size: 1.2rem;
+  text-align: center;
+}
+
+.not-found-link {
+  background-color: var(--button-primary);
+  color: white;
+  margin: 15px 0;
+  padding: 8px 16px;
+  border-radius: 8px;
+}

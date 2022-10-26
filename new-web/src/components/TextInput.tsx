@@ -11,9 +11,7 @@ export default function TextInput(props: {
   const [validationMessage, setValidationMessage] = useState<string>("");
 
   function validate(value: string): void {
-    if (props.required && !value) {
-      setValidationMessage("This field is required");
-    } else if (props.required && value.trim() === "") {
+    if (props.required && (!value || value.trim() === "")) {
       setValidationMessage("This field is required");
     } else {
       setValidationMessage("");

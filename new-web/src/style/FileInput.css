@@ -1,15 +1,20 @@
 .file-upload-container {
   display: flex;
   flex-direction: column;
+  max-width: 500px;
+  max-height: 250px;
 }
 
 .file-drop-zone {
-  border: 1px solid var(--secondary-foreground);
   border-radius: 5px;
+  border: 1px dashed grey;
   text-align: center;
   padding: 13% 5%;
-  font-size: 0.95em;
   cursor: pointer;
+}
+
+.file-drop-zone > * {
+  color: grey;
 }
 
 .drag-active {
@@ -24,8 +29,7 @@
   cursor: pointer;
   padding: 0.25rem;
   border: none;
-  font-size: 0.95em;
-  font-family: "Oswald", sans-serif;
+  font-size: 1em;
   background-color: transparent;
 }
 
@@ -45,30 +49,35 @@
 }
 
 .input-label {
-  padding-bottom: 0.5em;
-  font-size: 0.95em;
+  --font-size: 0.95em;
+
+  padding: 0 5px;
+  margin: 0;
+
+  position: relative;
+  top: calc(var(--font-size) / 2 + 2px);
+  left: 0.75em;
+  z-index: 1;
+  background-color: white;
+  width: fit-content;
+  font-size: var(--font-size);
 }
 
 @media only screen and (min-width: 650px) {
   .file-upload-container {
-    margin: 16px 35%;
+    margin: 16px 25% 16px 0;
   }
 }
 
 @media only screen and (max-width: 650px) {
   .file-upload-container {
-    margin: 16px 15%;
-  }
-}
-
-@media only screen and (max-width: 350px) {
-  .file-upload-container {
-    margin: 16px;
+    margin: 16px 0;
   }
 }
 
 .validation-message {
-  color: red;
+  padding-top: 5px;
+  font-size: 0.8em;
 }
 
 .red {

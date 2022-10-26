@@ -9,6 +9,7 @@ import DeleteButton from "../components/DeleteButton";
 
 import "./../style/Home.css";
 import ProjectList from "../components/ProjectList";
+import Help from "./Help";
 
 export default function Home(): JSX.Element {
   const [projects, setProjects] = useState<string[]>([]);
@@ -59,7 +60,7 @@ export default function Home(): JSX.Element {
   }
 
   if (projects.length === 0) {
-    return <div></div>; //TODO: Add gettingstarted.md
+    return <Help/>
   }
 
   return (

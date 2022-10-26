@@ -13,7 +13,7 @@ export default function FileInput(props: {
   const [fileName, setFileName] = useState<string>(props.file?.name || "");
   const [dragActive, setDragActive] = useState<boolean>(false);
   const inputRef = useRef(null);
-  
+
   function updateFileIfValid(files: FileList | null): void {
     if (!files || !files[0]) {
       return;
@@ -23,13 +23,17 @@ export default function FileInput(props: {
 
     if (props.required && (!file || !file?.name)) {
       setValidationMessage("Please select a file");
-    } else if (!props.okTypes.find((x) => x === file!.type)) {
-      setValidationMessage("This file type is not allowed");
-    } else {
-      setValidationMessage("");
-      setFileName(file.name);
-      props.onChange(file);
+      return;
     }
+    
+    if (!props.okTypes.find((x) => x === file!.type)) {
+      setValidationMessage("This file type is not allowed");
+      return;
+    }
+
+    setValidationMessage("");
+    setFileName(file.name);
+    props.onChange(file);
   }
 
   function handleDragEvents(e: React.DragEvent<HTMLDivElement>): void {
@@ -96,14 +100,14 @@ export default function FileInput(props: {
           </>
         )}
 
-        <p>Drag and Drop your file here or</p>
+        <p>Drag file here or</p>
 
         <button
           className="file-upload-button"
           type="button"
           onClick={onButtonClick}
         >
-          select a file.
+          click to browse.
         </button>
 
         {dragActive && (

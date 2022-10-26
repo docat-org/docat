@@ -1,54 +1,43 @@
-.upload {
-  padding: 1% 0;
-  border: 1px solid var(--secondary-foreground);
-  border-radius: 15px;
-}
-
 @media only screen and (min-width: 650px) {
   .upload {
+    padding: 1% 0;
     margin: 3% 13%;
   }
 }
 
 @media only screen and (max-width: 650px) {
   .upload {
+    padding: 1% 0;
     margin: 3% 3%;
   }
+}
 
-  .upload-button {
-    width: 80%;
-  }
+.upload-header {
+  display: flex;
+  align-items: center;
 }
 
 .upload-title {
-  padding: 0 0 8px 0;
-  text-align: center;
-  border-bottom: 1px solid var(--secondary-foreground);
+  padding-left: 15px;
   overflow-x: hidden;
+  text-overflow: ellipsis;
 }
 
 .upload-remarks {
-  padding: 16px 2% 0 2%;
-  text-align: center;
+  padding-top: 1%;
   font-size: 0.9em;
 }
 
-.docat-repo-link {
+.upload-remarks > a {
   text-decoration: underline;
 }
 
-.upload-button-container {
-  display: flex;
-  justify-content: center;
-}
-
 .upload-button {
-  text-align: center;
-  width: 200px;
-  margin: 0 16px;
   padding: 8px;
-  border-radius: 8px;
+  width: 100%;
+  max-width: 175px;
   font-size: 1.05em;
+  border-radius: 8px;
   border: none;
   background-color: var(--button-primary);
   color: white;
@@ -58,7 +47,7 @@
 .error-banner {
   color: white;
   text-align: center;
-  padding: 8px;
+  padding: 8px 0;
   width: 100%;
 }
 

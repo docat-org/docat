@@ -1,4 +1,6 @@
+import { ArrowBackIos } from "@mui/icons-material";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import FileInput from "../components/FileInput";
 import InputField from "../components/TextInput";
 import ProjectRepository from "../repositories/ProjectRepository";
@@ -51,7 +53,12 @@ export default function Upload(): JSX.Element {
         <div className="error-banner">Failed to upload documentation.</div>
       )}
       <div className="upload">
-        <h1 className="upload-title">Upload Documentation</h1>
+        <div className="upload-header">
+          <Link to="/">
+            <ArrowBackIos />
+          </Link>
+          <h1 className="upload-title">Upload Documentation</h1>
+        </div>
         <p className="upload-remarks">
           If you want to automate the upload of your documentation consider
           using <code>curl</code> to post it to the server. There are some
@@ -60,7 +67,6 @@ export default function Upload(): JSX.Element {
             href="https://github.com/docat-org/docat/"
             target="_blank"
             rel="noreferrer"
-            className="docat-repo-link"
           >
             docat repository
           </a>
@@ -98,11 +104,9 @@ export default function Upload(): JSX.Element {
             okTypes={["application/zip"]}
           ></FileInput>
 
-          <div className="upload-button-container">
-            <button className="upload-button" type="submit">
-              Upload
-            </button>
-          </div>
+          <button className="upload-button" type="submit">
+            Upload
+          </button>
         </form>
       </div>
     </>
