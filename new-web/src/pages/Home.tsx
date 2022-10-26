@@ -32,8 +32,6 @@ export default function Home(): JSX.Element {
   }
 
   useEffect(() => {
-    setLoading(true);
-
     ProjectRepository.get().then((projects) => {
       if (!projects) {
         setLoadingFailed(true);

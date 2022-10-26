@@ -1,4 +1,3 @@
-import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
@@ -7,9 +6,9 @@ import Upload from "./pages/Upload";
 
 function App() {
   return (
-    <div className="App">
-      <Header></Header>
-      <BrowserRouter>
+    <BrowserRouter>
+      <div className="App">
+        <Header></Header>
         <Routes>
           <Route path="/" element={Home()} />
           {/* <Route path="/help" element={Help} /> */}
@@ -18,9 +17,9 @@ function App() {
           {/* <Route path="/delete" element={Delete} /> */}
           {/* <Route path="/:project/:version?/:location?" element={Docs} />  */}
         </Routes>
-      </BrowserRouter>
-      <Footer></Footer>
-    </div>
+        <Footer></Footer>
+      </div>
+    </BrowserRouter>
   );
 }
 

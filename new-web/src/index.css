@@ -41,6 +41,7 @@ code{
   display: inline-block;
   width: var(--spinner-size);
   height: var(--spinner-size);
+  margin-bottom: 5vh;
 
   position: relative;
   left: calc(50% - var(--spinner-size) / 2 - 8px);
