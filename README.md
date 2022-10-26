@@ -100,6 +100,13 @@ When you have multiple versions you may want to tag some version as **latest**:
 curl -X PUT http://localhost:8000/api/PROJECT/VERSION/tags/latest
 ```
 
+Same thing with `docatl`:
+
+```sh
+# tag the version VERSION of project PROJECT as latest
+docatl tag --host http://localhost:8000 PROJECT VERSION
+```
+
 ## Advanced `config.json`
 
 It is possible to configure some things after the fact.
