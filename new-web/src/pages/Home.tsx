@@ -17,6 +17,8 @@ export default function Home(): JSX.Element {
   const [loading, setLoading] = useState<boolean>(true);
   const [loadingFailed, setLoadingFailed] = useState<boolean>(false);
 
+  document.title= "Home | docat";
+
   function updateFavorites(projects: string[]) {
     const favorites = projects.filter((project) =>
       ProjectRepository.isFavorite(project)

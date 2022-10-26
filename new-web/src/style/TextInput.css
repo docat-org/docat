@@ -1,0 +1,43 @@
+.input-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.input-label {
+  padding-bottom: 0.5em;
+  font-size: 0.95em;
+}
+
+.input {
+  padding: 0.5em;
+  border: 1px solid var(--secondary-foreground);
+  border-radius: 5px;
+  font-size: 1em;
+  text-overflow: ellipsis;
+}
+
+@media only screen and (min-width: 650px) {
+  .input-field {
+    margin: 16px 35%;
+  }
+}
+
+@media only screen and (max-width: 650px) {
+  .input-field {
+    margin: 16px 15%;
+  }
+}
+
+@media only screen and (max-width: 350px) {
+  .input-field {
+    margin: 16px;
+  }
+}
+
+.validation-message {
+  color: red;
+}
+
+.red {
+  color: red;
+}

@@ -23,6 +23,10 @@ a, u {
   color: black;
 }
 
+code{
+  font-family: "Consolas", "Liberation Mono", Menlo, Courier, monospace;
+}
+
 .subhead{
   color: var(--primary-foreground);
   opacity: 0.54;
