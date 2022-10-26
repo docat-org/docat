@@ -75,7 +75,21 @@ class ProjectDetailResponse(BaseModel):
 def get_projects():
     if not DOCAT_UPLOAD_FOLDER.exists():
         return ProjectsResponse(projects=[])
-    return ProjectsResponse(projects=[str(x.relative_to(DOCAT_UPLOAD_FOLDER)) for x in DOCAT_UPLOAD_FOLDER.iterdir() if x.is_dir()])
+
+    def has_not_hidden_versions(project):
+        path = DOCAT_UPLOAD_FOLDER / project
+        return any(
+            (path / version).is_dir() and not (path / version / ".hidden").exists() for version in (DOCAT_UPLOAD_FOLDER / project).iterdir()
+        )
+
+    return ProjectsResponse(
+        projects=list(
+            filter(
+                has_not_hidden_versions,
+                [str(project.relative_to(DOCAT_UPLOAD_FOLDER)) for project in DOCAT_UPLOAD_FOLDER.iterdir() if project.is_dir()],
+            )
+        )
+    )
 
 
 @app.get(
@@ -106,7 +120,7 @@ def get_project(project):
                     tags=[str(t.relative_to(docs_folder)) for t in tags if t.resolve() == x],
                 )
                 for x in docs_folder.iterdir()
-                if x.is_dir() and not x.is_symlink()
+                if x.is_dir() and not x.is_symlink() and not (docs_folder / x.name / ".hidden").exists()
             ],
             key=lambda k: k.name,
             reverse=True,
@@ -153,6 +167,77 @@ def upload_icon(
         shutil.copyfileobj(file.file, buffer)
 
     return ApiResponse(message="Icon successfully uploaded")
+
+
+@app.post("/api/{project}/{version}/hide", response_model=ApiResponse, status_code=status.HTTP_200_OK)
+@app.post("/api/{project}/{version}/hide/", response_model=ApiResponse, status_code=status.HTTP_200_OK)
+def hide_version(
+    project: str,
+    version: str,
+    response: Response,
+    docat_api_key: Optional[str] = Header(None),
+    db: TinyDB = Depends(get_db),
+):
+    project_base_path = DOCAT_UPLOAD_FOLDER / project
+    version_path = project_base_path / version
+    hidden_file = version_path / ".hidden"
+
+    if not project_base_path.exists():
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return ApiResponse(message=f"Project {project} not found")
+
+    if not version_path.exists():
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return ApiResponse(message=f"Version {version} not found")
+
+    if hidden_file.exists():
+        response.status_code = status.HTTP_400_BAD_REQUEST
+        return ApiResponse(message=f"Version {version} is already hidden")
+
+    token_status = check_token_for_project(db, docat_api_key, project)
+    if not token_status.valid:
+        response.status_code = status.HTTP_401_UNAUTHORIZED
+        return ApiResponse(message=token_status.reason)
+
+    with open(hidden_file, "w") as f:
+        f.close()
+
+    return ApiResponse(message=f"Version {version} is now hidden")
+
+
+@app.post("/api/{project}/{version}/show", response_model=ApiResponse, status_code=status.HTTP_200_OK)
+@app.post("/api/{project}/{version}/show/", response_model=ApiResponse, status_code=status.HTTP_200_OK)
+def show_version(
+    project: str,
+    version: str,
+    response: Response,
+    docat_api_key: Optional[str] = Header(None),
+    db: TinyDB = Depends(get_db),
+):
+    project_base_path = DOCAT_UPLOAD_FOLDER / project
+    version_path = project_base_path / version
+    hidden_file = version_path / ".hidden"
+
+    if not project_base_path.exists():
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return ApiResponse(message=f"Project {project} not found")
+
+    if not version_path.exists():
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return ApiResponse(message=f"Version {version} not found")
+
+    if not hidden_file.exists():
+        response.status_code = status.HTTP_400_BAD_REQUEST
+        return ApiResponse(message=f"Version {version} is not hidden")
+
+    token_status = check_token_for_project(db, docat_api_key, project)
+    if not token_status.valid:
+        response.status_code = status.HTTP_401_UNAUTHORIZED
+        return ApiResponse(message=token_status.reason)
+
+    os.remove(hidden_file)
+
+    return ApiResponse(message=f"Version {version} is now shown")
 
 
 @app.post("/api/{project}/{version}", response_model=ApiResponse, status_code=status.HTTP_201_CREATED)
