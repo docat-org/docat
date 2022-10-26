@@ -2,11 +2,13 @@ import { useEffect, useState } from "react";
 import { ErrorOutline } from "@mui/icons-material";
 
 import ProjectRepository from "../repositories/ProjectRepository";
-import Project from "../components/Project";
+
 import UploadButton from "../components/UploadButton";
-import "./../style/Home.css";
 import ClaimButton from "../components/ClaimButton";
 import DeleteButton from "../components/DeleteButton";
+
+import "./../style/Home.css";
+import ProjectList from "../components/ProjectList";
 
 export default function Home(): JSX.Element {
   const [projects, setProjects] = useState<string[]>([]);
@@ -33,13 +35,11 @@ export default function Home(): JSX.Element {
     ProjectRepository.get().then((projects) => {
       if (!projects) {
         setLoadingFailed(true);
-
         return;
       }
 
       setProjects(projects);
       updateFavorites(projects);
-      return;
     });
 
     setLoading(false);
@@ -65,33 +65,15 @@ export default function Home(): JSX.Element {
   return (
     <>
       <div className="project-overview">
-        {favoriteProjects.length > 0 && (
-          <div>
-            <div className="project-list">
-              {favoriteProjects.map((project) => {
-                return (
-                  <Project
-                    projectName={project}
-                    key={project}
-                    onFavoriteChanged={() => updateFavorites(projects)}
-                  />
-                );
-              }, [])}
-            </div>
-            <div className="divider" />
-          </div>
-        )}
-        <div className="project-list">
-          {nonFavoriteProjects.map((project) => {
-            return (
-              <Project
-                projectName={project}
-                key={project}
-                onFavoriteChanged={() => updateFavorites(projects)}
-              />
-            );
-          }, [])}
-        </div>
+        <ProjectList
+          projects={favoriteProjects}
+          onFavoriteChanged={() => updateFavorites(projects)}
+        />
+        <div className="divider" />
+        <ProjectList
+          projects={nonFavoriteProjects}
+          onFavoriteChanged={() => updateFavorites(projects)}
+        />
       </div>
       <UploadButton></UploadButton>
       <ClaimButton></ClaimButton>
