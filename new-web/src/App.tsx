@@ -1,4 +1,5 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import Claim from "./pages/Claim";
 import Docs from "./pages/Docs";
 import Help from "./pages/Help";
 import Home from "./pages/Home";
@@ -17,6 +18,10 @@ function App() {
         {
           path: "upload",
           element: <Upload />,
+        },
+        {
+          path: "claim",
+          element: <Claim />,
         },
         {
           path: "help",
