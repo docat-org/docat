@@ -25,7 +25,7 @@ export default function FileInput(props: {
       setValidationMessage("Please select a file");
       return;
     }
-    
+
     if (!props.okTypes.find((x) => x === file!.type)) {
       setValidationMessage("This file type is not allowed");
       return;
@@ -102,11 +102,7 @@ export default function FileInput(props: {
 
         <p>Drag file here or</p>
 
-        <button
-          className="file-upload-button"
-          type="button"
-          onClick={onButtonClick}
-        >
+        <button className="file-upload-button" type="button">
           click to browse.
         </button>
 

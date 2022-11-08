@@ -5,6 +5,8 @@ import "./../style/Help.css";
 
 // @ts-ignore ts can't read symbols from a md file
 import gettingStarted from "./../assets/getting-started.md";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 export default function Help(): JSX.Element {
   document.title = "Help | docat";
@@ -12,26 +14,35 @@ export default function Help(): JSX.Element {
   const [content, setContent] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
 
+  const replaceLinks = (text: string): string => {
+    text.replace(
+      /http:\/\/localhost:8000/g,
+      `${document.location.protocol}//${document.location.hostname}${
+        document.location.port !== "" ? ":" + document.location.port : ""
+      }`
+    );
+    return text;
+  };
+
   useEffect(() => {
     fetch(gettingStarted)
-      .then((res) => res.text())
-      .then((text) => {
-        const content = text.replace(
-          /http:\/\/localhost:8000/g,
-          `${document.location.protocol}//${document.location.hostname}${
-            document.location.port !== "" ? ":" + document.location.port : ""
-          }`
-        );
-
+      .then((res: Response) => res.text())
+      .then((text: string) => {
+        const content = replaceLinks(text);
         setContent(content);
       });
 
     setLoading(false);
   }, []);
 
-  if (loading) {
-    return <div className="loading-spinner"></div>;
-  }
-
-  return <ReactMarkdown className="markdown-container" children={content} />;
+  return (
+    <>
+      <Header />
+      {loading && <div className="loading-spinner"></div>}
+      {loading || (
+        <ReactMarkdown className="markdown-container" children={content} />
+      )}
+      <Footer />
+    </>
+  );
 }

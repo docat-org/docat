@@ -8,6 +8,8 @@
   color: white;
   position: fixed;
   bottom: 20px;
+  border: none;
+  z-index: 1; /* Without this, the footer is on top of the controls */
 }
 
 .upload-btn {

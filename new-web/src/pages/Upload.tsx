@@ -2,6 +2,8 @@ import { ArrowBackIos } from "@mui/icons-material";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import FileInput from "../components/FileInput";
+import Footer from "../components/Footer";
+import Header from "../components/Header";
 import InputField from "../components/TextInput";
 import ProjectRepository from "../repositories/ProjectRepository";
 import "./../style/Upload.css";
@@ -44,6 +46,7 @@ export default function Upload(): JSX.Element {
 
   return (
     <>
+      <Header />
       {uploadSuccess && (
         <div className="success-banner">
           Documentation uploaded successfully.
@@ -108,6 +111,9 @@ export default function Upload(): JSX.Element {
             Upload
           </button>
         </form>
+      </div>
+      <div className="footer-container">
+        <Footer />
       </div>
     </>
   );

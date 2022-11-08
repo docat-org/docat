@@ -1,11 +1,18 @@
-.not-found-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+.not-found {
+  height: fit-content;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
 
-    height: 100vh;
-    width: 100vw;
+.not-found-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  width: 100vw;
 }
 
 .not-found-title {

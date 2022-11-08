@@ -1,7 +1,7 @@
 @media only screen and (min-width: 650px) {
   .upload {
     padding: 1% 0;
-    margin: 3% 13%;
+    margin: 3% 16%;
   }
 }
 
@@ -24,7 +24,7 @@
 }
 
 .upload-remarks {
-  padding-top: 1%;
+  padding-top: 16px;
   font-size: 0.9em;
 }
 
@@ -57,4 +57,10 @@
 
 .error-banner {
   background-color: red;
+}
+
+.footer-container {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
 }

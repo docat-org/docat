@@ -1,21 +1,27 @@
-import { Home, VisibilityOff } from "@mui/icons-material";
-import {
-  FormControl,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
-} from "@mui/material";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Link, useParams, useSearchParams } from "react-router-dom";
-import ReactTooltip from "react-tooltip";
+import { useParams, useSearchParams } from "react-router-dom";
+import DocumentControlButtons from "../components/DocumentControlButtons";
 import ProjectDetails from "../models/ProjectDetails";
 import ProjectRepository from "../repositories/ProjectRepository";
 
 import "./../style/Docs.css";
 
 export default function Docs(): JSX.Element {
+  const proj = useParams().project || "";
+  const ver = useParams().version || "latest";
+  const location = useParams().page || "index.html";
+  const hideControls = useSearchParams()[0].get("hide-ui") === "true";
+
+  const [project] = useState<string>(proj);
+  const [version, setVersion] = useState<string>(ver);
+  const [page, setPage] = useState<string>(location);
+  const [hideUi, setHideUi] = useState<boolean>(hideControls);
+  const [versions, setVersions] = useState<ProjectDetails[]>([]);
+
   const iFrameRef = useRef(null);
   const [errorMessage, setErrorMessage] = useState<string>("");
+
+  document.title = `${project} | docat`;
 
   const updateRoute = useCallback(
     (
@@ -33,20 +39,7 @@ export default function Docs(): JSX.Element {
     []
   );
 
-  const proj = useParams().project || "";
-  const ver = useParams().version || "latest";
-  const location = useParams().page || "index.html";
-  const hideControls = useSearchParams()[0].get("hide-ui") === "true";
-
-  const [project] = useState<string>(proj);
-  const [version, setVersion] = useState<string>(ver);
-  const [page, setPage] = useState<string>(location);
-  const [hideUi, setHideUi] = useState<boolean>(hideControls);
-  const [versions, setVersions] = useState<ProjectDetails[]>([]);
-
   updateRoute(project, version, page, hideUi);
-
-  document.title = `${project} | docat`;
 
   useEffect(() => {
     if (!project) {
@@ -82,16 +75,17 @@ export default function Docs(): JSX.Element {
     });
   }, [project, version, page, hideUi, updateRoute]);
 
-  if (errorMessage) {
-    return <div className="error-banner">{errorMessage}</div>;
+  function handleVersionChange(v: string): void {
+    setVersion(v);
+    updateRoute(project, v, page, hideUi);
   }
 
-  function handleVersionChange(e: SelectChangeEvent<string>): void {
-    setVersion(e.target.value);
-    updateRoute(project, e.target.value, page, hideUi);
+  function handleHideControls(): void {
+    updateRoute(project, version, page, true);
+    setHideUi(true);
   }
 
-  function onChange(): void {
+  function onIframeLocationChanged(): void {
     if (!iFrameRef.current) return;
 
     // update the path in the url
@@ -116,50 +110,28 @@ export default function Docs(): JSX.Element {
       });
   }
 
-  const url = ProjectRepository.getProjectDocsURL(project, version, page);
-
   return (
     <>
-      <iframe
-        title="docs"
-        ref={iFrameRef}
-        src={url}
-        onLoad={onChange}
-        className="docs-iframe"
-      ></iframe>
+      {errorMessage && <div className="error-banner">{errorMessage}</div>}
+      {!errorMessage && (
+        <>
+          <iframe
+            title="docs"
+            ref={iFrameRef}
+            src={ProjectRepository.getProjectDocsURL(project, version, page)}
+            onLoad={onIframeLocationChanged}
+            className="docs-iframe"
+          ></iframe>
 
-      {hideUi || (
-        <div className="controls">
-          <ReactTooltip />
-          <Link to="/" className="home-button" data-tip="Project Overview">
-            <Home sx={{ width: "25px", height: "25px" }} />
-          </Link>
-
-          <FormControl>
-            <Select
-              className="version-select"
-              onChange={handleVersionChange}
-              value={versions.length ? version : ""}
-            >
-              {versions.map((v) => (
-                <MenuItem key={v.name} value={v.name}>
-                  {v.name + (v.tags.length ? ` (${v.tags.join(", ")})` : "")}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <button
-            className="hide-controls-button"
-            data-tip="Hide Controls"
-            onClick={() => {
-              window.history.pushState({}, "", window.location.pathname);
-              updateRoute(project, version, page, true);
-              setHideUi(true);
-            }}
-          >
-            <VisibilityOff sx={{ width: "25px", height: "25px" }} />
-          </button>
-        </div>
+          {hideUi || (
+            <DocumentControlButtons
+              version={version}
+              versions={versions}
+              onVersionChange={handleVersionChange}
+              onHideUi={handleHideControls}
+            />
+          )}
+        </>
       )}
     </>
   );

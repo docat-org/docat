@@ -10,6 +10,8 @@ import DeleteButton from "../components/DeleteButton";
 import "./../style/Home.css";
 import ProjectList from "../components/ProjectList";
 import Help from "./Help";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 export default function Home(): JSX.Element {
   const [projects, setProjects] = useState<string[]>([]);
@@ -18,7 +20,7 @@ export default function Home(): JSX.Element {
   const [loading, setLoading] = useState<boolean>(true);
   const [loadingFailed, setLoadingFailed] = useState<boolean>(false);
 
-  document.title= "Home | docat";
+  document.title = "Home | docat";
 
   function updateFavorites(projects: string[]) {
     const favorites = projects.filter((project) =>
@@ -60,11 +62,12 @@ export default function Home(): JSX.Element {
   }
 
   if (projects.length === 0) {
-    return <Help/>
+    return <Help />;
   }
 
   return (
-    <>
+    <div className="home">
+      <Header />
       <div className="project-overview">
         <ProjectList
           projects={favoriteProjects}
@@ -79,6 +82,7 @@ export default function Home(): JSX.Element {
       <UploadButton></UploadButton>
       <ClaimButton></ClaimButton>
       <DeleteButton></DeleteButton>
-    </>
+      <Footer />
+    </div>
   );
 }

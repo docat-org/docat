@@ -1,0 +1,61 @@
+
+.controls {
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    height: 50px;
+    display: flex;
+  }
+  
+  .controls > * {
+    box-shadow: 0 5px 5px -3px rgb(0 0 0 / 20%), 0 8px 10px 1px rgb(0 0 0 / 14%),
+      0 3px 14px 2px rgb(0 0 0 / 12%);
+  }
+  
+  .home-button,
+  .hide-controls-button {
+    height: 50px;
+    width: 50px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+  }
+  
+  .home-button {
+    background-color: var(--primary-foreground);
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+  }
+  
+  .hide-controls-button {
+    background-color: #868686;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+  }
+  
+  .version-select {
+    background: white;
+    border: 1px solid rgba(0, 0, 0, 0.42);
+    overflow: hidden;
+  
+    padding: 9px;
+    width: 200px;
+  
+    font-size: 1.05em;
+  }
+  
+  .version-select:focus-visible {
+    outline: none;
+  }
+  
+  @media only screen and (max-width: 380px) {
+    .controls {
+      left: 32px;
+    }
+  
+    .version-select {
+      width: calc(100vw - 100px - 64px)
+    }
+  }
