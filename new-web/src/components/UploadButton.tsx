@@ -2,7 +2,7 @@ import ReactTooltip from "react-tooltip";
 import { FileUpload } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 
-import "./../style/ControlButtons.css";
+import "./../style/components/ControlButtons.css";
 
 export default function UploadButton() {
   return (

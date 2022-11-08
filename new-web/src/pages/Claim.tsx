@@ -11,7 +11,7 @@ import { Link } from "react-router-dom";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import ProjectRepository from "../repositories/ProjectRepository";
-import "./../style/Claim.css";
+import "./../style/pages/Claim.css";
 
 export default function Claim(): JSX.Element {
   const [loading, setLoading] = useState<boolean>(true);

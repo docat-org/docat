@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 
-import "./../style/FileInput.css";
+import "./../style/components/FileInput.css";
 
 export default function FileInput(props: {
   label: string;

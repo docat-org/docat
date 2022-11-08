@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import ProjectRepository from "../repositories/ProjectRepository";
-import "./../style/Project.css";
+import "./../style/components/Project.css";
 
 import ProjectDetails from "../models/ProjectDetails";
 import ReactTooltip from "react-tooltip";

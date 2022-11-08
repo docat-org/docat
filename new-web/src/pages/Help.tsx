@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 
-import "./../style/Help.css";
+import "./../style/pages/Help.css";
 
 // @ts-ignore ts can't read symbols from a md file
 import gettingStarted from "./../assets/getting-started.md";

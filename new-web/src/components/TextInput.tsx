@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "./../style/TextInput.css";
+import "./../style/components/TextInput.css";
 
 export default function TextInput(props: {
   label: string;

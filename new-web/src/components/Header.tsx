@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import "./../style/Header.css";
+import "./../style/components/Header.css";
 
 export default function Header(): JSX.Element {
   const defaultImg = (

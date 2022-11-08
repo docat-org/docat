@@ -1,10 +1,10 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import Claim from "./pages/Claim";
-import Docs from "./pages/Docs";
-import Help from "./pages/Help";
-import Home from "./pages/Home";
-import NotFound from "./pages/NotFound";
-import Upload from "./pages/Upload";
+import Claim from "../../pages/Claim";
+import Docs from "../../pages/Docs";
+import Help from "../../pages/Help";
+import Home from "../../pages/Home";
+import NotFound from "../../pages/NotFound";
+import Upload from "../../pages/Upload";
 
 function App() {
   const router = createBrowserRouter([

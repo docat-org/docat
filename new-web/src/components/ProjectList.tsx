@@ -1,6 +1,6 @@
 import Project from "./Project";
 
-import "./../style/ProjectList.css";
+import "./../style/components/ProjectList.css";
 
 export default function ProjectList(props: {
   projects: string[];

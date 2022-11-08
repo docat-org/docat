@@ -6,7 +6,7 @@ import Footer from "../components/Footer";
 import Header from "../components/Header";
 import InputField from "../components/TextInput";
 import ProjectRepository from "../repositories/ProjectRepository";
-import "./../style/Upload.css";
+import "./../style/pages/Upload.css";
 
 export default function Upload(): JSX.Element {
   document.title = "Upload | docat";

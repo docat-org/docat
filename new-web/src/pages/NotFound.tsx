@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
-import "./../style/NotFound.css";
+import "./../style/pages/NotFound.css";
 
 export default function NotFound() {
   return (

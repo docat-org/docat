@@ -7,7 +7,7 @@ import UploadButton from "../components/UploadButton";
 import ClaimButton from "../components/ClaimButton";
 import DeleteButton from "../components/DeleteButton";
 
-import "./../style/Home.css";
+import "./../style/pages/Home.css";
 import ProjectList from "../components/ProjectList";
 import Help from "./Help";
 import Header from "../components/Header";

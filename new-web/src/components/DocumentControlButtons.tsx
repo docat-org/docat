@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import ReactTooltip from "react-tooltip";
 import ProjectDetails from "../models/ProjectDetails";
 
-import "./../style/DocumentControlButtons.css";
+import "./../style/components/DocumentControlButtons.css";
 
 interface Props {
   version: string;

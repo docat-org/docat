@@ -4,7 +4,7 @@ import DocumentControlButtons from "../components/DocumentControlButtons";
 import ProjectDetails from "../models/ProjectDetails";
 import ProjectRepository from "../repositories/ProjectRepository";
 
-import "./../style/Docs.css";
+import "./../style/pages/Docs.css";
 
 export default function Docs(): JSX.Element {
   const proj = useParams().project || "";
