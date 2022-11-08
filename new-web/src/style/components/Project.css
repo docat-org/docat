@@ -12,6 +12,14 @@
   height: 40px;
 }
 
+.subhead {
+  color: var(--primary-foreground);
+  opacity: 0.54;
+  font-size: 14px;
+  letter-spacing: 0.01em;
+  line-height: 20px;
+}
+
 .project-card-title,
 .project-card-title-with-logo {
   font-weight: lighter;

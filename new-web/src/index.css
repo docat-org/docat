@@ -18,21 +18,14 @@ h1 {
   color: var(--primary-foreground);
 }
 
-a, u {
+a,
+u {
   text-decoration: none;
   color: black;
 }
 
-code{
+code {
   font-family: "Consolas", "Liberation Mono", Menlo, Courier, monospace;
-}
-
-.subhead{
-  color: var(--primary-foreground);
-  opacity: 0.54;
-  font-size: 14px;
-  letter-spacing: 0.01em;
-  line-height: 20px;
 }
 
 .loading-spinner {
