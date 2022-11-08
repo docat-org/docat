@@ -3,15 +3,15 @@ import { ErrorOutline } from "@mui/icons-material";
 
 import ProjectRepository from "../repositories/ProjectRepository";
 
+import Help from "./Help";
 import UploadButton from "../components/UploadButton";
 import ClaimButton from "../components/ClaimButton";
 import DeleteButton from "../components/DeleteButton";
-
-import "./../style/pages/Home.css";
 import ProjectList from "../components/ProjectList";
-import Help from "./Help";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+
+import styles from "./../style/pages/Home.module.css";
 
 export default function Home(): JSX.Element {
   const [projects, setProjects] = useState<string[]>([]);
@@ -50,7 +50,7 @@ export default function Home(): JSX.Element {
 
   if (loadingFailed) {
     return (
-      <div className="loading-error">
+      <div className={styles["loading-error"]}>
         <ErrorOutline color="error" />
         <div>Failed to load Projects</div>
       </div>
@@ -58,7 +58,7 @@ export default function Home(): JSX.Element {
   }
 
   if (loading) {
-    return <div className="loading-spinner"></div>;
+    return <div className={styles["loading-spinner"]}></div>;
   }
 
   if (projects.length === 0) {
@@ -66,14 +66,14 @@ export default function Home(): JSX.Element {
   }
 
   return (
-    <div className="home">
+    <div className={styles["home"]}>
       <Header />
-      <div className="project-overview">
+      <div className={styles["project-overview"]}>
         <ProjectList
           projects={favoriteProjects}
           onFavoriteChanged={() => updateFavorites(projects)}
         />
-        <div className="divider" />
+        <div className={styles["divider"]} />
         <ProjectList
           projects={nonFavoriteProjects}
           onFavoriteChanged={() => updateFavorites(projects)}

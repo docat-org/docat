@@ -6,7 +6,7 @@ import Footer from "../components/Footer";
 import Header from "../components/Header";
 import InputField from "../components/TextInput";
 import ProjectRepository from "../repositories/ProjectRepository";
-import "./../style/pages/Upload.css";
+import styles from "./../style/pages/Upload.module.css";
 
 export default function Upload(): JSX.Element {
   document.title = "Upload | docat";
@@ -41,28 +41,30 @@ export default function Upload(): JSX.Element {
   }
 
   if (isUploading) {
-    return <div className="loading-spinner"></div>;
+    return <div className={styles["loading-spinner"]}></div>;
   }
 
   return (
     <>
       <Header />
       {uploadSuccess && (
-        <div className="success-banner">
+        <div className={styles["success-banner"]}>
           Documentation uploaded successfully.
         </div>
       )}
       {uploadError && (
-        <div className="error-banner">Failed to upload documentation.</div>
+        <div className={styles["error-banner"]}>
+          Failed to upload documentation.
+        </div>
       )}
-      <div className="upload">
-        <div className="upload-header">
+      <div className={styles["upload"]}>
+        <div className={styles["upload-header"]}>
           <Link to="/">
             <ArrowBackIos />
           </Link>
-          <h1 className="upload-title">Upload Documentation</h1>
+          <h1 className={styles["upload-title"]}>Upload Documentation</h1>
         </div>
-        <p className="upload-remarks">
+        <p className={styles["upload-remarks"]}>
           If you want to automate the upload of your documentation consider
           using <code>curl</code> to post it to the server. There are some
           examples in the{" "}
@@ -76,7 +78,7 @@ export default function Upload(): JSX.Element {
           .
         </p>
 
-        <form className="upload-form" onSubmit={upload}>
+        <form className={styles["upload-form"]} onSubmit={upload}>
           <InputField
             label="Project:"
             required={true}
@@ -107,12 +109,12 @@ export default function Upload(): JSX.Element {
             okTypes={["application/zip"]}
           ></FileInput>
 
-          <button className="upload-button" type="submit">
+          <button className={styles["upload-button"]} type="submit">
             Upload
           </button>
         </form>
       </div>
-      <div className="footer-container">
+      <div className={styles["footer-container"]}>
         <Footer />
       </div>
     </>

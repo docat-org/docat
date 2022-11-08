@@ -4,7 +4,7 @@ import DocumentControlButtons from "../components/DocumentControlButtons";
 import ProjectDetails from "../models/ProjectDetails";
 import ProjectRepository from "../repositories/ProjectRepository";
 
-import "./../style/pages/Docs.css";
+import styles from "./../style/pages/Docs.module.css";
 
 export default function Docs(): JSX.Element {
   const proj = useParams().project || "";
@@ -112,7 +112,9 @@ export default function Docs(): JSX.Element {
 
   return (
     <>
-      {errorMessage && <div className="error-banner">{errorMessage}</div>}
+      {errorMessage && (
+        <div className={styles["error-banner"]}>{errorMessage}</div>
+      )}
       {!errorMessage && (
         <>
           <iframe
@@ -120,7 +122,7 @@ export default function Docs(): JSX.Element {
             ref={iFrameRef}
             src={ProjectRepository.getProjectDocsURL(project, version, page)}
             onLoad={onIframeLocationChanged}
-            className="docs-iframe"
+            className={styles["docs-iframe"]}
           ></iframe>
 
           {hideUi || (

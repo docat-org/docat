@@ -1,0 +1,81 @@
+@media only screen and (min-width: 650px) {
+  .delete-content {
+    padding: 1% 0;
+    margin: 3% 16%;
+  }
+}
+
+@media only screen and (max-width: 650px) {
+  .delete-content {
+    padding: 1% 0;
+    margin: 3% 3%;
+  }
+}
+
+@media only screen and (min-width: 1000px) {
+  .delete-form {
+    width: 50%;
+  }
+}
+
+@media only screen and (max-width: 1000px) {
+  .delete-form {
+    width: 100%;
+  }
+}
+
+.delete-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.delete-title {
+  padding-left: 15px;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+}
+
+.delete-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.token-input {
+  margin-top: 2em !important;
+}
+
+.project-select,
+.version-select {
+  min-width: 200px;
+}
+
+.delete-button {
+  padding: 8px;
+  margin: 2em 0;
+  width: 100%;
+  max-width: 175px;
+  font-size: 1.05em;
+  border-radius: 8px;
+  border: none;
+  background-color: var(--button-primary);
+  color: white;
+  cursor: pointer;
+}
+
+.footer-container {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
+
+.error-banner {
+  color: white;
+  text-align: center;
+  padding: 8px 0;
+  width: 100%;
+}
+
+.error-banner {
+  background-color: red;
+}

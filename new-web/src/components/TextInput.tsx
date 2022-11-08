@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "./../style/components/TextInput.css";
+import styles from "./../style/components/TextInput.module.css";
 
 export default function TextInput(props: {
   label: string;
@@ -24,20 +24,22 @@ export default function TextInput(props: {
   }
 
   return (
-    <div className="input-field">
-      <label className="input-label" htmlFor={props.label}>
+    <div className={styles["input-field"]}>
+      <label className={styles["input-label"]} htmlFor={props.label}>
         {props.label}
-        {props.required && <span className="red"> *</span>}
+        {props.required && <span className={styles["red"]}> *</span>}
       </label>
       <input
         name={props.label}
-        className="input"
+        className={styles["input"]}
         required={props.required}
         placeholder={props.placeholder || ""}
         value={props.value || ""}
         onChange={handleChange}
       />
-      <p className="validation-message red">{validationMessage}</p>
+      <p className={`${styles["validation-message"]} ${styles["red"]}`}>
+        {validationMessage}
+      </p>
     </div>
   );
 }

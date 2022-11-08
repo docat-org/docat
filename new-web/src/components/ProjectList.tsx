@@ -1,6 +1,6 @@
 import Project from "./Project";
 
-import "./../style/components/ProjectList.css";
+import styles from "./../style/components/ProjectList.module.css";
 
 export default function ProjectList(props: {
   projects: string[];
@@ -11,7 +11,7 @@ export default function ProjectList(props: {
   }
 
   return (
-    <div className="project-list">
+    <div className={styles["project-list"]}>
       {props.projects.map((project) => (
         <Project
           projectName={project}

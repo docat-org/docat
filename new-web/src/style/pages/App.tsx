@@ -1,5 +1,6 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Claim from "../../pages/Claim";
+import Delete from "../../pages/Delete";
 import Docs from "../../pages/Docs";
 import Help from "../../pages/Help";
 import Home from "../../pages/Home";
@@ -22,6 +23,10 @@ function App() {
         {
           path: "claim",
           element: <Claim />,
+        },
+        {
+          path: "delete",
+          element: <Delete />,
         },
         {
           path: "help",

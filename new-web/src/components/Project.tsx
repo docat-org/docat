@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import ProjectRepository from "../repositories/ProjectRepository";
-import "./../style/components/Project.css";
+import styles from "./../style/components/Project.module.css";
 
 import ProjectDetails from "../models/ProjectDetails";
 import ReactTooltip from "react-tooltip";
@@ -37,20 +37,20 @@ export default function Project(props: {
       : `${versions.length} versions`;
 
   return (
-    <div className="project-card">
+    <div className={styles["project-card"]}>
       <ReactTooltip />
-      <div className="project-card-header">
+      <div className={styles["project-card-header"]}>
         <Link to={`/${props.projectName}/${latestVersion}`}>
           {logoExists === true && (
             <>
               <img
-                className="project-logo"
+                className={styles["project-logo"]}
                 src={logoURL}
                 alt={`${props.projectName} project Logo`}
               />
 
               <div
-                className="project-card-title-with-logo"
+                className={styles["project-card-title-with-logo"]}
                 data-tip={props.projectName}
               >
                 {props.projectName}
@@ -58,7 +58,10 @@ export default function Project(props: {
             </>
           )}
           {logoExists !== true && (
-            <div className="project-card-title" data-tip={props.projectName}>
+            <div
+              className={styles["project-card-title"]}
+              data-tip={props.projectName}
+            >
               {props.projectName}
             </div>
           )}
@@ -68,7 +71,7 @@ export default function Project(props: {
           onFavoriteChanged={props.onFavoriteChanged}
         />
       </div>
-      <div className="subhead">{versionsSubhead}</div>
+      <div className={styles["subhead"]}>{versionsSubhead}</div>
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 
-import "./../style/pages/Help.css";
+import styles from "./../style/pages/Help.module.css";
 
 // @ts-ignore ts can't read symbols from a md file
 import gettingStarted from "./../assets/getting-started.md";
@@ -38,9 +38,12 @@ export default function Help(): JSX.Element {
   return (
     <>
       <Header />
-      {loading && <div className="loading-spinner"></div>}
+      {loading && <div className={styles["loading-spinner"]}></div>}
       {loading || (
-        <ReactMarkdown className="markdown-container" children={content} />
+        <ReactMarkdown
+          className={styles["markdown-container"]}
+          children={content}
+        />
       )}
       <Footer />
     </>

@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 
-import "./../style/components/FileInput.css";
+import styles from "./../style/components/FileInput.module.css";
 
 export default function FileInput(props: {
   label: string;
@@ -74,20 +74,24 @@ export default function FileInput(props: {
   };
 
   return (
-    <div className="file-upload-container">
-      <label className="input-label" htmlFor="upload">
+    <div className={styles["file-upload-container"]}>
+      <label className={styles["input-label"]} htmlFor="upload">
         {props.label}
-        {props.required && <span className="red"> *</span>}
+        {props.required && <span className={styles["red"]}> *</span>}
       </label>
       <div
-        className={dragActive ? "file-drop-zone drag-active" : "file-drop-zone"}
+        className={
+          dragActive
+            ? styles["file-drop-zone drag-active"]
+            : styles["file-drop-zone"]
+        }
         onDragEnter={handleDragEvents}
         onClick={onButtonClick}
       >
         <input
           name="upload"
           type="file"
-          className="file-input"
+          className={styles["file-input"]}
           ref={inputRef}
           accept={props.okTypes.join(",")}
           onChange={handleSelect}
@@ -102,13 +106,13 @@ export default function FileInput(props: {
 
         <p>Drag file here or</p>
 
-        <button className="file-upload-button" type="button">
+        <button className={styles["file-upload-button"]} type="button">
           click to browse.
         </button>
 
         {dragActive && (
           <div
-            className="drag-file-element"
+            className={styles["drag-file-element"]}
             onDragEnter={handleDragEvents}
             onDragLeave={handleDragEvents}
             onDragOver={handleDragEvents}
@@ -116,7 +120,9 @@ export default function FileInput(props: {
           ></div>
         )}
       </div>
-      <p className="validation-message red">{validationMessage}</p>
+      <p className={`${styles["validation-message"]} ${styles["red"]}`}>
+        {validationMessage}
+      </p>
     </div>
   );
 }

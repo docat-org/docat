@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import ReactTooltip from "react-tooltip";
 import ProjectDetails from "../models/ProjectDetails";
 
-import "./../style/components/DocumentControlButtons.css";
+import styles from "./../style/components/DocumentControlButtons.module.css";
 
 interface Props {
   version: string;
@@ -15,15 +15,19 @@ interface Props {
 
 export default function DocumentControlButtons(props: Props): JSX.Element {
   return (
-    <div className="controls">
+    <div className={styles["controls"]}>
       <ReactTooltip />
-      <Link to="/" className="home-button" data-tip="Project Overview">
+      <Link
+        to="/"
+        className={styles["home-button"]}
+        data-tip="Project Overview"
+      >
         <Home sx={{ width: "25px", height: "25px" }} />
       </Link>
 
       <FormControl>
         <Select
-          className="version-select"
+          className={styles["version-select"]}
           onChange={(e) => props.onVersionChange(e.target.value)}
           value={props.versions.length ? props.version : ""}
         >
@@ -35,7 +39,7 @@ export default function DocumentControlButtons(props: Props): JSX.Element {
         </Select>
       </FormControl>
       <button
-        className="hide-controls-button"
+        className={styles["hide-controls-button"]}
         data-tip="Hide Controls"
         onClick={() => {
           window.history.pushState({}, "", window.location.pathname);

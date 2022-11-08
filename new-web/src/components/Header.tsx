@@ -1,18 +1,18 @@
 import { Link } from "react-router-dom";
-import "./../style/components/Header.css";
+import styles from "./../style/components/Header.module.css";
 
 export default function Header(): JSX.Element {
   const defaultImg = (
     <img
-      className="logo"
+      className={styles["logo"]}
       alt="docat logo"
       src={require("../assets/logo.png")}
     />
   );
-  const defaultTitle = <h1 className="header-title">DOCAT</h1>;
+  const defaultTitle = <h1 className={styles["header-title"]}>DOCAT</h1>;
 
   return (
-    <div className="header">
+    <div className={styles["header"]}>
       <Link to="/">
         {defaultImg}
         {defaultTitle}
