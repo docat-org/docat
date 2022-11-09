@@ -39,7 +39,7 @@ export default function Upload(): JSX.Element {
   }
 
   if (isUploading) {
-    return <div className={styles["loading-spinner"]}></div>;
+    return <div className="loading-spinner"></div>;
   }
 
   return (

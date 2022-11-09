@@ -1,45 +1,25 @@
 @media only screen and (min-width: 650px) {
   .delete-content {
-    padding: 1% 0;
     margin: 3% 16%;
   }
 }
 
 @media only screen and (max-width: 650px) {
   .delete-content {
-    padding: 1% 0;
     margin: 3% 3%;
   }
 }
 
-@media only screen and (min-width: 1000px) {
-  .delete-form {
-    width: 50%;
-  }
+.delete-content > div {
+  margin-bottom: 32px;
 }
 
-@media only screen and (max-width: 1000px) {
-  .delete-form {
-    width: 100%;
-  }
-}
-
-.delete-form {
-  margin-top: 32px;
-  height: 60vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.delete-form-group,
-.delete-form-group > * {
-  width: 100%;
+.token-input {
+  width: 50%;
 }
 
 .delete-button {
   padding: 8px;
-  margin: 2em 0;
   width: 100%;
   max-width: 175px;
   font-size: 1.05em;

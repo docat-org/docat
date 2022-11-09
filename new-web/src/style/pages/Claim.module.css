@@ -1,5 +1,6 @@
-.claim {
-  width: 100%;
+.claim-content {
+  display: flex;
+  flex-direction: column;
 }
 
 @media only screen and (min-width: 650px) {
@@ -16,25 +17,20 @@
   }
 }
 
+.token-output {
+  margin-top: 2em !important;
+}
+
 @media only screen and (min-width: 1000px) {
-  .claim-form {
+  .token-output {
     width: 50%;
   }
 }
 
 @media only screen and (max-width: 1000px) {
-  .claim-form {
+  .token-output {
     width: 100%;
   }
-}
-
-.claim-form {
-  display: flex;
-  flex-direction: column;
-}
-
-.token-output {
-  margin-top: 2em !important;
 }
 
 .project-select {

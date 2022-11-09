@@ -58,7 +58,7 @@ export default function Home(): JSX.Element {
   }
 
   if (loading) {
-    return <div className={styles["loading-spinner"]}></div>;
+    return <div className="loading-spinner"></div>;
   }
 
   if (projects.length === 0) {

@@ -1,12 +1,7 @@
-import {
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField,
-} from "@mui/material";
-import { useEffect, useState } from "react";
+import { TextField } from "@mui/material";
+import { useState } from "react";
 import Banner from "../components/Banner";
+import DataSelect from "../components/DataSelect";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import NavigationTitle from "../components/NavigationTitle";
@@ -14,19 +9,10 @@ import ProjectRepository from "../repositories/ProjectRepository";
 import styles from "./../style/pages/Claim.module.css";
 
 export default function Claim(): JSX.Element {
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
   const [errorMsg, setErrorMsg] = useState<string>("");
   const [project, setProject] = useState<string>("none");
   const [token, setToken] = useState<string>("");
-  const [projects, setProjects] = useState<string[]>([]);
-
-  useEffect(() => {
-    setLoading(true);
-    ProjectRepository.get().then((projects) => {
-      setProjects(projects);
-      setLoading(false);
-    });
-  }, []);
 
   async function claim(): Promise<void> {
     if (!project || project === "none") return;
@@ -35,7 +21,6 @@ export default function Claim(): JSX.Element {
       setLoading(true);
 
       const response = await ProjectRepository.claim(project);
-
       setToken(response.token);
 
       setErrorMsg("");
@@ -48,7 +33,11 @@ export default function Claim(): JSX.Element {
   }
 
   if (loading) {
-    return <div className={styles["loading-spinner"]}></div>;
+    return (
+      <>
+        <Header /> <div className="loading-spinner"></div> <Footer />{" "}
+      </>
+    );
   }
 
   return (
@@ -61,47 +50,33 @@ export default function Claim(): JSX.Element {
           descriptionText="Please make sure to store this token safely, as only one token can be generated per project and you will not be able to claim it again."
         />
 
-        <FormControl className={styles["claim-form"]}>
-          <InputLabel id="project-label">Project</InputLabel>
-          <Select
-            className={styles["project-select"]}
-            labelId="project-label"
-            onChange={(e) => setProject(e.target.value)}
-            value={project}
-            defaultValue="none"
-            label="Project"
-          >
-            <MenuItem value="none" disabled>
-              Select a project
-            </MenuItem>
-            {projects.map((p) => (
-              <MenuItem key={p} value={p}>
-                {p}
-              </MenuItem>
-            ))}
-          </Select>
+        <DataSelect
+          emptyMessage="Please select a Project"
+          label="Project"
+          dataSource={ProjectRepository.get()}
+          onChange={(p) => setProject(p)}
+        />
 
-          {token && (
-            <TextField
-              className={styles["token-output"]}
-              label="Token"
-              inputProps={{
-                readOnly: true,
-              }}
-              value={token}
-            >
-              {token}
-            </TextField>
-          )}
-
-          <button
-            className={styles["claim-button"]}
-            type="submit"
-            onClick={claim}
+        {token && (
+          <TextField
+            className={styles["token-output"]}
+            label="Token"
+            inputProps={{
+              readOnly: true,
+            }}
+            value={token}
           >
-            Claim
-          </button>
-        </FormControl>
+            {token}
+          </TextField>
+        )}
+
+        <button
+          className={styles["claim-button"]}
+          type="submit"
+          onClick={claim}
+        >
+          Claim
+        </button>
       </div>
       <div className={styles["footer-container"]}>
         <Footer />

@@ -38,7 +38,7 @@ export default function Help(): JSX.Element {
   return (
     <>
       <Header />
-      {loading && <div className={styles["loading-spinner"]}></div>}
+      {loading && <div className="loading-spinner"></div>}
       {loading || (
         <ReactMarkdown
           className={styles["markdown-container"]}

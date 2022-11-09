@@ -17,14 +17,16 @@ export default function NavigationTitle(props: Props): JSX.Element {
         <Link to={props.backLink || "/"} className={styles["back-link"]}>
           <ArrowBackIos />
         </Link>
-        <h1 className={styles["page-title"]}>Delete Documentation</h1>
+        <h1 className={styles["page-title"]}>{props.title}</h1>
       </div>
 
       {props.descriptionText && (
         <p className={styles["page-description"]}>{props.descriptionText}</p>
       )}
       {props.descriptionElement && (
-        <p className={styles["page-description"]}>{props.descriptionElement}</p>
+        <div className={styles["page-description"]}>
+          {props.descriptionElement}
+        </div>
       )}
     </>
   );

@@ -1,12 +1,7 @@
-import {
-  FormGroup,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField,
-} from "@mui/material";
-import { useEffect, useState } from "react";
+import { FormGroup, TextField } from "@mui/material";
+import { useState } from "react";
 import Banner from "../components/Banner";
+import DataSelect from "../components/DataSelect";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import NavigationTitle from "../components/NavigationTitle";
@@ -14,34 +9,14 @@ import ProjectRepository from "../repositories/ProjectRepository";
 import styles from "./../style/pages/Delete.module.css";
 
 export default function Claim(): JSX.Element {
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
   const [deleteSuccessful, setDeleteSuccessful] = useState<boolean | null>(
     null
   );
   const [errorMsg, setErrorMsg] = useState<string>("");
-  const [projects, setProjects] = useState<string[]>([]);
-  const [versions, setVersions] = useState<string[]>([]);
   const [project, setProject] = useState<string>("none");
   const [version, setVersion] = useState<string>("none");
   const [token, setToken] = useState<string>("");
-
-  useEffect(() => {
-    setLoading(true);
-    ProjectRepository.get().then((projects) => {
-      setProjects(projects);
-      setLoading(false);
-    });
-  }, []);
-
-  useEffect(() => {
-    if (project === "none") return;
-
-    setLoading(true);
-    ProjectRepository.getVersions(project).then((versions) => {
-      setVersions(versions.map((v) => v.name));
-      setLoading(false);
-    });
-  }, [project]);
 
   async function deleteDocumentation(): Promise<void> {
     if (!project || project === "none") return;
@@ -66,7 +41,11 @@ export default function Claim(): JSX.Element {
   }
 
   if (loading) {
-    return <div className={styles["loading-spinner"]}></div>;
+    return (
+      <>
+        <Header /> <div className="loading-spinner"></div> <Footer />{" "}
+      </>
+    );
   }
 
   return (
@@ -81,68 +60,44 @@ export default function Claim(): JSX.Element {
 
       <div className={styles["delete-content"]}>
         <NavigationTitle title="Delete Documentation" />
-        <FormGroup className={styles["delete-form"]}>
-          <div className={styles["delete-form-group"]}>
-            <InputLabel id="project-select-label">Project</InputLabel>
-            <Select
-              className={styles["project-select"]}
-              id="project-select"
-              label="Project"
-              labelId="project-select-label"
-              onChange={(e) => setProject(e.target.value)}
-              value={project}
-              defaultValue="none"
-            >
-              <MenuItem value="none" disabled>
-                Select a project
-              </MenuItem>
-              {projects.map((p) => (
-                <MenuItem key={p} value={p}>
-                  {p}
-                </MenuItem>
-              ))}
-            </Select>
-          </div>
-          <div className={styles["delete-form-group"]}>
-            <InputLabel id="version-select-label">Version</InputLabel>
-            <Select
-              className={styles["version-select"]}
-              label="Version"
-              labelId="version-select-label"
-              onChange={(e) => setVersion(e.target.value)}
-              value={version}
-              defaultValue="none"
-            >
-              <MenuItem value="none" disabled>
-                Select a version
-              </MenuItem>
-              {versions.map((v) => (
-                <MenuItem key={v} value={v}>
-                  {v}
-                </MenuItem>
-              ))}
-            </Select>
-          </div>
+        <DataSelect
+          emptyMessage="Please select a Project"
+          label="Project"
+          dataSource={ProjectRepository.get()}
+          onChange={(project) => setProject(project)}
+        />
 
-          <div className={styles["delete-form-group"]}>
-            <InputLabel id="token-label">Token</InputLabel>
-            <TextField
-              className={styles["token-input"]}
-              value={token}
-              onChange={(e) => setToken(e.target.value)}
-            >
-              {token}
-            </TextField>
-          </div>
+        <DataSelect
+          emptyMessage="Please select a Version"
+          label="Version"
+          dataSource={
+            project === "none"
+              ? Promise.resolve([])
+              : ProjectRepository.getVersions(project).then((versions) =>
+                  versions.map((v) => v.name)
+                )
+          }
+          onChange={(version) => setVersion(version)}
+        />
 
-          <button
-            className={styles["delete-button"]}
-            type="submit"
-            onClick={deleteDocumentation}
+        <FormGroup>
+          <TextField
+            label="Token"
+            className={styles["token-input"]}
+            value={token}
+            onChange={(e) => setToken(e.target.value)}
           >
-            Delete
-          </button>
+            {token}
+          </TextField>
         </FormGroup>
+        
+        <button
+          className={styles["delete-button"]}
+          type="submit"
+          onClick={deleteDocumentation}
+        >
+          Delete
+        </button>
       </div>
       <div className={styles["footer-container"]}>
         <Footer />
