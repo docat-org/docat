@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
+import Banner from "../components/Banner";
 import DocumentControlButtons from "../components/DocumentControlButtons";
 import ProjectDetails from "../models/ProjectDetails";
 import ProjectRepository from "../repositories/ProjectRepository";
@@ -112,9 +113,7 @@ export default function Docs(): JSX.Element {
 
   return (
     <>
-      {errorMessage && (
-        <div className={styles["error-banner"]}>{errorMessage}</div>
-      )}
+      <Banner errorMsg={errorMessage}/>
       {!errorMessage && (
         <>
           <iframe

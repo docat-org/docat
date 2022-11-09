@@ -8,6 +8,7 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import Banner from "../components/Banner";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import ProjectRepository from "../repositories/ProjectRepository";
@@ -42,8 +43,6 @@ export default function Claim(): JSX.Element {
     } catch (e: any) {
       console.error(e);
       setErrorMsg(e.message);
-
-      setTimeout(() => setErrorMsg(""), 5000);
     } finally {
       setLoading(false);
     }
@@ -56,7 +55,7 @@ export default function Claim(): JSX.Element {
   return (
     <div className={styles["claim"]}>
       <Header />
-      {errorMsg && <div className={styles["error-banner"]}>{errorMsg}</div>}
+      <Banner errorMsg={errorMsg} />
       <div className={styles["claim-content"]}>
         <div className={styles["claim-header"]}>
           <Link to="/">

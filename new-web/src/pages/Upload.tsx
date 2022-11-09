@@ -1,6 +1,7 @@
 import { ArrowBackIos } from "@mui/icons-material";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import Banner from "../components/Banner";
 import FileInput from "../components/FileInput";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
@@ -31,11 +32,9 @@ export default function Upload(): JSX.Element {
       setFile(undefined);
 
       setUploadSuccess(true);
-      setTimeout(() => setUploadSuccess(false), 5000);
     } catch (e) {
       console.error(e);
       setUploadError(true);
-      setTimeout(() => setUploadError(false), 5000);
     }
     setIsUploading(false);
   }
@@ -47,16 +46,10 @@ export default function Upload(): JSX.Element {
   return (
     <>
       <Header />
-      {uploadSuccess && (
-        <div className={styles["success-banner"]}>
-          Documentation uploaded successfully.
-        </div>
-      )}
-      {uploadError && (
-        <div className={styles["error-banner"]}>
-          Failed to upload documentation.
-        </div>
-      )}
+      <Banner
+        errorMsg={uploadError ? "Failed to upload documentation." : ""}
+        successMsg={uploadSuccess ? "Documentation uploaded successfully." : ""}
+      />
       <div className={styles["upload"]}>
         <div className={styles["upload-header"]}>
           <Link to="/">

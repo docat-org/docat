@@ -43,22 +43,6 @@
   color: white;
 }
 
-.success-banner,
-.error-banner {
-  color: white;
-  text-align: center;
-  padding: 8px 0;
-  width: 100%;
-}
-
-.success-banner {
-  background-color: green;
-}
-
-.error-banner {
-  background-color: red;
-}
-
 .footer-container {
   position: absolute;
   bottom: 0;

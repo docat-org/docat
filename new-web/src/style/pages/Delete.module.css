@@ -67,14 +67,3 @@
   bottom: 0;
   width: 100%;
 }
-
-.error-banner {
-  color: white;
-  text-align: center;
-  padding: 8px 0;
-  width: 100%;
-}
-
-.error-banner {
-  background-color: red;
-}

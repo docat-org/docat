@@ -1,6 +1,5 @@
 import { ArrowBackIos } from "@mui/icons-material";
 import {
-  FormControl,
   FormGroup,
   InputLabel,
   MenuItem,
@@ -9,6 +8,7 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import Banner from "../components/Banner";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import ProjectRepository from "../repositories/ProjectRepository";
@@ -61,8 +61,6 @@ export default function Claim(): JSX.Element {
 
       setErrorMsg(e.message);
       setDeleteSuccessful(false);
-
-      setTimeout(() => setErrorMsg(""), 5000);
     } finally {
       setLoading(false);
     }
@@ -75,12 +73,13 @@ export default function Claim(): JSX.Element {
   return (
     <div className={styles["delete"]}>
       <Header />
-      {errorMsg && <div className={styles["error-banner"]}>{errorMsg}</div>}
-      {deleteSuccessful && (
-        <div className={styles["success-banner"]}>
-          Documentation deleted successfully
-        </div>
-      )}
+      <Banner
+        errorMsg={errorMsg}
+        successMsg={
+          deleteSuccessful ? "Documentation deleted successfully" : ""
+        }
+      />
+
       <div className={styles["delete-content"]}>
         <div className={styles["delete-header"]}>
           <Link to="/">
@@ -136,6 +135,7 @@ export default function Claim(): JSX.Element {
             <TextField
               className={styles["token-input"]}
               value={token}
+              onChange={(e) => setToken(e.target.value)}
             >
               {token}
             </TextField>
