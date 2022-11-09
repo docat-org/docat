@@ -21,9 +21,7 @@ export default function PageLayout(props: Props): JSX.Element {
         <NavigationTitle title={props.title} description={props.description} />
         {props.children}
       </div>
-      <div className={styles["footer-container"]}>
-        <Footer />
-      </div>
+      <Footer />
     </>
   );
 }

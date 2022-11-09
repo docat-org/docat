@@ -1,7 +1,6 @@
 .main {
   display: flex;
   flex-direction: column;
-  min-height: calc(100vh - var(--header-height));
 }
 
 @media only screen and (min-width: 650px) {
@@ -16,10 +15,4 @@
     padding: 1% 0;
     margin: 3% 3%;
   }
-}
-
-.footer-container {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
 }
