@@ -24,18 +24,6 @@
   }
 }
 
-.delete-header {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
-
-.delete-title {
-  padding-left: 15px;
-  overflow-x: hidden;
-  text-overflow: ellipsis;
-}
-
 .delete-form {
   margin-top: 32px;
   height: 60vh;

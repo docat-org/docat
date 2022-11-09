@@ -12,26 +12,6 @@
   }
 }
 
-.upload-header {
-  display: flex;
-  align-items: center;
-}
-
-.upload-title {
-  padding-left: 15px;
-  overflow-x: hidden;
-  text-overflow: ellipsis;
-}
-
-.upload-remarks {
-  padding-top: 16px;
-  font-size: 0.9em;
-}
-
-.upload-remarks > a {
-  text-decoration: underline;
-}
-
 .upload-button {
   padding: 8px;
   width: 100%;

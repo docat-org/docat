@@ -1,4 +1,3 @@
-import { ArrowBackIos } from "@mui/icons-material";
 import {
   FormGroup,
   InputLabel,
@@ -7,10 +6,10 @@ import {
   TextField,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import Banner from "../components/Banner";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
+import NavigationTitle from "../components/NavigationTitle";
 import ProjectRepository from "../repositories/ProjectRepository";
 import styles from "./../style/pages/Delete.module.css";
 
@@ -81,12 +80,7 @@ export default function Claim(): JSX.Element {
       />
 
       <div className={styles["delete-content"]}>
-        <div className={styles["delete-header"]}>
-          <Link to="/">
-            <ArrowBackIos />
-          </Link>
-          <h1 className={styles["delete-title"]}>Delete Documentation</h1>
-        </div>
+        <NavigationTitle title="Delete Documentation" />
         <FormGroup className={styles["delete-form"]}>
           <div className={styles["delete-form-group"]}>
             <InputLabel id="project-select-label">Project</InputLabel>

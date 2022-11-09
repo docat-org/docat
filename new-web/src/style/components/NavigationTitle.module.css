@@ -1,0 +1,25 @@
+.page-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.back-link {
+  height: 24px;
+  width: 24px;
+}
+
+.page-title {
+  padding-left: 15px;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+}
+
+.page-description {
+  padding: 16px 0 0 0;
+  font-size: 0.9em;
+}
+
+.page-description a {
+  text-decoration: underline;
+}

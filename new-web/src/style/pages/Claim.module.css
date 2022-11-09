@@ -28,23 +28,6 @@
   }
 }
 
-.claim-header {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
-
-.claim-title {
-  padding-left: 15px;
-  overflow-x: hidden;
-  text-overflow: ellipsis;
-}
-
-.claim-description {
-  padding: 16px 0 32px 0;
-  font-size: 0.9em;
-}
-
 .claim-form {
   display: flex;
   flex-direction: column;

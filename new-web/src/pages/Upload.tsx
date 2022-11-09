@@ -1,10 +1,9 @@
-import { ArrowBackIos } from "@mui/icons-material";
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import Banner from "../components/Banner";
 import FileInput from "../components/FileInput";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
+import NavigationTitle from "../components/NavigationTitle";
 import InputField from "../components/TextInput";
 import ProjectRepository from "../repositories/ProjectRepository";
 import styles from "./../style/pages/Upload.module.css";
@@ -51,25 +50,24 @@ export default function Upload(): JSX.Element {
         successMsg={uploadSuccess ? "Documentation uploaded successfully." : ""}
       />
       <div className={styles["upload"]}>
-        <div className={styles["upload-header"]}>
-          <Link to="/">
-            <ArrowBackIos />
-          </Link>
-          <h1 className={styles["upload-title"]}>Upload Documentation</h1>
-        </div>
-        <p className={styles["upload-remarks"]}>
-          If you want to automate the upload of your documentation consider
-          using <code>curl</code> to post it to the server. There are some
-          examples in the{" "}
-          <a
-            href="https://github.com/docat-org/docat/"
-            target="_blank"
-            rel="noreferrer"
-          >
-            docat repository
-          </a>
-          .
-        </p>
+        <NavigationTitle
+          title="Upload Documentation"
+          descriptionElement={
+            <p>
+              If you want to automate the upload of your documentation consider
+              using <code>curl</code> to post it to the server. There are some
+              examples in the{" "}
+              <a
+                href="https://github.com/docat-org/docat/"
+                target="_blank"
+                rel="noreferrer"
+              >
+                docat repository
+              </a>
+              .
+            </p>
+          }
+        />
 
         <form className={styles["upload-form"]} onSubmit={upload}>
           <InputField

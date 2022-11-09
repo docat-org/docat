@@ -1,4 +1,3 @@
-import { ArrowBackIos } from "@mui/icons-material";
 import {
   FormControl,
   InputLabel,
@@ -7,10 +6,10 @@ import {
   TextField,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import Banner from "../components/Banner";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
+import NavigationTitle from "../components/NavigationTitle";
 import ProjectRepository from "../repositories/ProjectRepository";
 import styles from "./../style/pages/Claim.module.css";
 
@@ -57,16 +56,11 @@ export default function Claim(): JSX.Element {
       <Header />
       <Banner errorMsg={errorMsg} />
       <div className={styles["claim-content"]}>
-        <div className={styles["claim-header"]}>
-          <Link to="/">
-            <ArrowBackIos />
-          </Link>
-          <h1 className={styles["claim-title"]}>Claim Token</h1>
-        </div>
-        <p className={styles["claim-description"]}>
-          Please make sure to store this token safely, as only one token can be
-          generated per project and you will not be able to claim it again.
-        </p>
+        <NavigationTitle
+          title="Claim Token"
+          descriptionText="Please make sure to store this token safely, as only one token can be generated per project and you will not be able to claim it again."
+        />
+
         <FormControl className={styles["claim-form"]}>
           <InputLabel id="project-label">Project</InputLabel>
           <Select
