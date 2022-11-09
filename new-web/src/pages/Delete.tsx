@@ -1,6 +1,7 @@
 import { ArrowBackIos } from "@mui/icons-material";
 import {
   FormControl,
+  FormGroup,
   InputLabel,
   MenuItem,
   Select,
@@ -34,6 +35,8 @@ export default function Claim(): JSX.Element {
   }, []);
 
   useEffect(() => {
+    if (project === "none") return;
+
     setLoading(true);
     ProjectRepository.getVersions(project).then((versions) => {
       setVersions(versions.map((v) => v.name));
@@ -49,11 +52,7 @@ export default function Claim(): JSX.Element {
     try {
       setLoading(true);
 
-      const response = await ProjectRepository.deleteDoc(
-        project,
-        version,
-        token
-      );
+      await ProjectRepository.deleteDoc(project, version, token);
 
       setDeleteSuccessful(true);
       setErrorMsg("");
@@ -89,52 +88,58 @@ export default function Claim(): JSX.Element {
           </Link>
           <h1 className={styles["delete-title"]}>Delete Documentation</h1>
         </div>
-        <FormControl className={styles["delete-form"]}>
-          <InputLabel id="project-label">Project</InputLabel>
-          <Select
-            className={styles["project-select"]}
-            labelId="project-label"
-            onChange={(e) => setProject(e.target.value)}
-            value={project}
-            defaultValue="none"
-            label="Project"
-          >
-            <MenuItem value="none" disabled>
-              Select a project
-            </MenuItem>
-            {projects.map((p) => (
-              <MenuItem key={p} value={p}>
-                {p}
+        <FormGroup className={styles["delete-form"]}>
+          <div className={styles["delete-form-group"]}>
+            <InputLabel id="project-select-label">Project</InputLabel>
+            <Select
+              className={styles["project-select"]}
+              id="project-select"
+              label="Project"
+              labelId="project-select-label"
+              onChange={(e) => setProject(e.target.value)}
+              value={project}
+              defaultValue="none"
+            >
+              <MenuItem value="none" disabled>
+                Select a project
               </MenuItem>
-            ))}
-          </Select>
-
-          <InputLabel id="version-label">Version</InputLabel>
-          <Select
-            className={styles["version-select"]}
-            labelId="version-label"
-            onChange={(e) => setVersion(e.target.value)}
-            value={version}
-            defaultValue="none"
-            label="Version"
-          >
-            <MenuItem value="none" disabled>
-              Select a version
-            </MenuItem>
-            {projects.map((v) => (
-              <MenuItem key={v} value={v}>
-                {v}
+              {projects.map((p) => (
+                <MenuItem key={p} value={p}>
+                  {p}
+                </MenuItem>
+              ))}
+            </Select>
+          </div>
+          <div className={styles["delete-form-group"]}>
+            <InputLabel id="version-select-label">Version</InputLabel>
+            <Select
+              className={styles["version-select"]}
+              label="Version"
+              labelId="version-select-label"
+              onChange={(e) => setVersion(e.target.value)}
+              value={version}
+              defaultValue="none"
+            >
+              <MenuItem value="none" disabled>
+                Select a version
               </MenuItem>
-            ))}
-          </Select>
+              {versions.map((v) => (
+                <MenuItem key={v} value={v}>
+                  {v}
+                </MenuItem>
+              ))}
+            </Select>
+          </div>
 
-          <TextField
-            className={styles["token-input"]}
-            label="Token"
-            value={token}
-          >
-            {token}
-          </TextField>
+          <div className={styles["delete-form-group"]}>
+            <InputLabel id="token-label">Token</InputLabel>
+            <TextField
+              className={styles["token-input"]}
+              value={token}
+            >
+              {token}
+            </TextField>
+          </div>
 
           <button
             className={styles["delete-button"]}
@@ -143,7 +148,7 @@ export default function Claim(): JSX.Element {
           >
             Delete
           </button>
-        </FormControl>
+        </FormGroup>
       </div>
       <div className={styles["footer-container"]}>
         <Footer />

@@ -37,17 +37,16 @@
 }
 
 .delete-form {
+  margin-top: 32px;
+  height: 60vh;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
 }
 
-.token-input {
-  margin-top: 2em !important;
-}
-
-.project-select,
-.version-select {
-  min-width: 200px;
+.delete-form-group,
+.delete-form-group > * {
+  width: 100%;
 }
 
 .delete-button {
