@@ -1,12 +1,10 @@
-import { FormGroup, TextField } from "@mui/material";
+import { TextField } from "@mui/material";
 import { useState } from "react";
-import Banner from "../components/Banner";
 import DataSelect from "../components/DataSelect";
-import Footer from "../components/Footer";
-import Header from "../components/Header";
-import NavigationTitle from "../components/NavigationTitle";
 import ProjectRepository from "../repositories/ProjectRepository";
-import styles from "./../style/pages/Delete.module.css";
+import StyledForm from "../components/StyledForm";
+import PageLayout from "../components/PageLayout";
+import LoadingPage from "./LoadingPage";
 
 export default function Claim(): JSX.Element {
   const [loading, setLoading] = useState<boolean>(false);
@@ -41,25 +39,16 @@ export default function Claim(): JSX.Element {
   }
 
   if (loading) {
-    return (
-      <>
-        <Header /> <div className="loading-spinner"></div> <Footer />{" "}
-      </>
-    );
+    return <LoadingPage />;
   }
 
   return (
-    <div className={styles["delete"]}>
-      <Header />
-      <Banner
-        errorMsg={errorMsg}
-        successMsg={
-          deleteSuccessful ? "Documentation deleted successfully" : ""
-        }
-      />
-
-      <div className={styles["delete-content"]}>
-        <NavigationTitle title="Delete Documentation" />
+    <PageLayout
+      title="Delete Documentation"
+      successMsg={deleteSuccessful ? "Documentation deleted successfully" : ""}
+      errorMsg={errorMsg}
+    >
+      <StyledForm>
         <DataSelect
           emptyMessage="Please select a Project"
           label="Project"
@@ -80,28 +69,19 @@ export default function Claim(): JSX.Element {
           onChange={(version) => setVersion(version)}
         />
 
-        <FormGroup>
-          <TextField
-            label="Token"
-            className={styles["token-input"]}
-            value={token}
-            onChange={(e) => setToken(e.target.value)}
-          >
-            {token}
-          </TextField>
-        </FormGroup>
-        
-        <button
-          className={styles["delete-button"]}
-          type="submit"
-          onClick={deleteDocumentation}
+        <TextField
+          fullWidth
+          label="Token"
+          value={token}
+          onChange={(e) => setToken(e.target.value)}
         >
+          {token}
+        </TextField>
+
+        <button type="submit" onClick={deleteDocumentation}>
           Delete
         </button>
-      </div>
-      <div className={styles["footer-container"]}>
-        <Footer />
-      </div>
-    </div>
+      </StyledForm>
+    </PageLayout>
   );
 }

@@ -1,6 +1,5 @@
 import { FormGroup, MenuItem, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
-import styles from "./../style/components/DataSelect.module.css";
 
 interface Props {
   emptyMessage: string;
@@ -24,9 +23,8 @@ export default function DataSelect(props: Props): JSX.Element {
 
   return (
     <>
-      <FormGroup className={styles["form"]}>
+      <FormGroup>
         <TextField
-          className={styles["select"]}
           onChange={onSelect}
           value={selectedValue}
           label={props.label}

@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 
-import styles from "./../style/pages/Help.module.css";
-
 // @ts-ignore ts can't read symbols from a md file
 import gettingStarted from "./../assets/getting-started.md";
 import Header from "../components/Header";
-import Footer from "../components/Footer";
+import LoadingPage from "./LoadingPage";
+
+import styles from "./../style/pages/Help.module.css";
 
 export default function Help(): JSX.Element {
   document.title = "Help | docat";
@@ -35,17 +35,17 @@ export default function Help(): JSX.Element {
     setLoading(false);
   }, []);
 
+  if (loading) {
+    return <LoadingPage />;
+  }
+
   return (
     <>
       <Header />
-      {loading && <div className="loading-spinner"></div>}
-      {loading || (
-        <ReactMarkdown
-          className={styles["markdown-container"]}
-          children={content}
-        />
-      )}
-      <Footer />
+      <ReactMarkdown
+        className={styles["markdown-container"]}
+        children={content}
+      />
     </>
   );
 }

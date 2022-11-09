@@ -1,12 +1,10 @@
 import { TextField } from "@mui/material";
 import { useState } from "react";
-import Banner from "../components/Banner";
 import DataSelect from "../components/DataSelect";
-import Footer from "../components/Footer";
-import Header from "../components/Header";
-import NavigationTitle from "../components/NavigationTitle";
+import PageLayout from "../components/PageLayout";
+import StyledForm from "../components/StyledForm";
 import ProjectRepository from "../repositories/ProjectRepository";
-import styles from "./../style/pages/Claim.module.css";
+import LoadingPage from "./LoadingPage";
 
 export default function Claim(): JSX.Element {
   const [loading, setLoading] = useState<boolean>(false);
@@ -17,13 +15,12 @@ export default function Claim(): JSX.Element {
   async function claim(): Promise<void> {
     if (!project || project === "none") return;
 
-    try {
-      setLoading(true);
+    setLoading(true);
+    setErrorMsg("");
 
+    try {
       const response = await ProjectRepository.claim(project);
       setToken(response.token);
-
-      setErrorMsg("");
     } catch (e: any) {
       console.error(e);
       setErrorMsg(e.message);
@@ -33,23 +30,16 @@ export default function Claim(): JSX.Element {
   }
 
   if (loading) {
-    return (
-      <>
-        <Header /> <div className="loading-spinner"></div> <Footer />{" "}
-      </>
-    );
+    return <LoadingPage />;
   }
 
   return (
-    <div className={styles["claim"]}>
-      <Header />
-      <Banner errorMsg={errorMsg} />
-      <div className={styles["claim-content"]}>
-        <NavigationTitle
-          title="Claim Token"
-          descriptionText="Please make sure to store this token safely, as only one token can be generated per project and you will not be able to claim it again."
-        />
-
+    <PageLayout
+      errorMsg={errorMsg}
+      title="Claim Token"
+      description="Please make sure to store this token safely, as only one token can be generated per project and you will not be able to claim it again."
+    >
+      <StyledForm>
         <DataSelect
           emptyMessage="Please select a Project"
           label="Project"
@@ -57,9 +47,9 @@ export default function Claim(): JSX.Element {
           onChange={(p) => setProject(p)}
         />
 
-        {token && (
+        {(token && (
           <TextField
-            className={styles["token-output"]}
+            fullWidth
             label="Token"
             inputProps={{
               readOnly: true,
@@ -68,19 +58,12 @@ export default function Claim(): JSX.Element {
           >
             {token}
           </TextField>
-        )}
+        )) || <></>}
 
-        <button
-          className={styles["claim-button"]}
-          type="submit"
-          onClick={claim}
-        >
+        <button type="submit" onClick={claim}>
           Claim
         </button>
-      </div>
-      <div className={styles["footer-container"]}>
-        <Footer />
-      </div>
-    </div>
+      </StyledForm>
+    </PageLayout>
   );
 }

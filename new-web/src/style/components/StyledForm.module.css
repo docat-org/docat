@@ -1,0 +1,33 @@
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+@media only screen and (min-width: 1000px) {
+  .form {
+    width: 50%;
+  }
+}
+
+@media only screen and (max-width: 1000px) {
+  .form {
+    width: 100%;
+  }
+}
+
+.form-item {
+  margin: 16px 0;
+  width: 75%;
+}
+
+button[type="submit"] {
+  padding: 8px;
+  width: 100%;
+  max-width: 175px;
+  font-size: 1.05em;
+  border-radius: 8px;
+  border: none;
+  background-color: var(--button-primary);
+  color: white;
+  cursor: pointer;
+}

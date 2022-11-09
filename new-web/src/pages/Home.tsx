@@ -12,6 +12,7 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 
 import styles from "./../style/pages/Home.module.css";
+import LoadingPage from "./LoadingPage";
 
 export default function Home(): JSX.Element {
   const [projects, setProjects] = useState<string[]>([]);
@@ -58,7 +59,7 @@ export default function Home(): JSX.Element {
   }
 
   if (loading) {
-    return <div className="loading-spinner"></div>;
+    return <LoadingPage />;
   }
 
   if (projects.length === 0) {

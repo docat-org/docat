@@ -1,24 +1,21 @@
+.main {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - var(--header-height));
+}
+
 @media only screen and (min-width: 650px) {
-  .upload {
+  .main {
+    padding: 1% 0;
     margin: 3% 16%;
   }
 }
 
 @media only screen and (max-width: 650px) {
-  .upload {
+  .main {
+    padding: 1% 0;
     margin: 3% 3%;
   }
-}
-
-.upload-button {
-  padding: 8px;
-  width: 100%;
-  max-width: 175px;
-  font-size: 1.05em;
-  border-radius: 8px;
-  border: none;
-  background-color: var(--button-primary);
-  color: white;
 }
 
 .footer-container {

@@ -6,8 +6,7 @@ import styles from "./../style/components/NavigationTitle.module.css";
 interface Props {
   title: string;
   backLink?: string;
-  descriptionText?: string;
-  descriptionElement?: JSX.Element;
+  description?: string | JSX.Element;
 }
 
 export default function NavigationTitle(props: Props): JSX.Element {
@@ -20,14 +19,7 @@ export default function NavigationTitle(props: Props): JSX.Element {
         <h1 className={styles["page-title"]}>{props.title}</h1>
       </div>
 
-      {props.descriptionText && (
-        <p className={styles["page-description"]}>{props.descriptionText}</p>
-      )}
-      {props.descriptionElement && (
-        <div className={styles["page-description"]}>
-          {props.descriptionElement}
-        </div>
-      )}
-    </>
+      <div className={styles["page-description"]}>{props.description}</div>
+     </>
   );
 }
