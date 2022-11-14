@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 
 interface Props {
   emptyMessage: string;
+  errorMsg?: string;
+  value?: string;
   label: string;
   dataSource: Promise<string[]>;
   onChange: (value: string) => void;
@@ -10,15 +12,19 @@ interface Props {
 
 export default function DataSelect(props: Props): JSX.Element {
   const [data, setData] = useState<string[]>([]);
-  const [selectedValue, setSelectedValue] = useState<string>("none");
+  const [selectedValue, setSelectedValue] = useState<string>(
+    props.value ?? "none"
+  );
 
   useEffect(() => {
     props.dataSource.then((res) => setData(res));
   }, [props.dataSource]);
 
   function onSelect(e: any): void {
-    setSelectedValue(e.target.value);
-    props.onChange(e.target.value);
+    const value = e.target.value;
+
+    setSelectedValue(value);
+    props.onChange(value);
   }
 
   return (
@@ -26,8 +32,10 @@ export default function DataSelect(props: Props): JSX.Element {
       <FormGroup>
         <TextField
           onChange={onSelect}
-          value={selectedValue}
+          value={data.length > 0 ? selectedValue : "none"}
           label={props.label}
+          error={!!props.errorMsg}
+          helperText={props.errorMsg}
           select
         >
           <MenuItem value="none" disabled>

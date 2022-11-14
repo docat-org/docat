@@ -8,12 +8,16 @@ import LoadingPage from "./LoadingPage";
 
 export default function Claim(): JSX.Element {
   const [loading, setLoading] = useState<boolean>(false);
+  const [projectMissing, setProjectMissing] = useState<boolean | null>(null);
   const [errorMsg, setErrorMsg] = useState<string>("");
   const [project, setProject] = useState<string>("none");
   const [token, setToken] = useState<string>("");
 
   async function claim(): Promise<void> {
-    if (!project || project === "none") return;
+    if (!project || project === "none") {
+      setProjectMissing(true);
+      return;
+    }
 
     setLoading(true);
     setErrorMsg("");
@@ -44,7 +48,17 @@ export default function Claim(): JSX.Element {
           emptyMessage="Please select a Project"
           label="Project"
           dataSource={ProjectRepository.get()}
-          onChange={(p) => setProject(p)}
+          onChange={(p) => {
+            if (p === "none" || !p) {
+              setProjectMissing(true);
+            } else {
+              setProjectMissing(false);
+            }
+
+            setProject(p);
+          }}
+          value={project || "none"}
+          errorMsg={projectMissing ? "Please select a Project" : undefined}
         />
 
         {(token && (

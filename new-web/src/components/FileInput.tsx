@@ -1,13 +1,13 @@
 import { InputLabel } from "@mui/material";
-import { useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import styles from "./../style/components/FileInput.module.css";
 
 export default function FileInput(props: {
   label: string;
-  required: boolean;
   okTypes: string[];
   file: File | undefined;
+  validateNow: boolean;
   onChange: (file: File | undefined) => void;
 }) {
   const [validationMessage, setValidationMessage] = useState<string>("");
@@ -15,24 +15,40 @@ export default function FileInput(props: {
   const [dragActive, setDragActive] = useState<boolean>(false);
   const inputRef = useRef(null);
 
+  const validate = useCallback(
+    (file: File | undefined): boolean => {
+      if (!file || !file?.name) {
+        setValidationMessage("File is required");
+        return false;
+      }
+
+      if (!props.okTypes.find((x) => x === file!.type)) {
+        setValidationMessage("This file type is not allowed");
+        return false;
+      }
+
+      setValidationMessage("");
+      return true;
+    },
+    [props.okTypes]
+  );
+
+  useEffect(() => {
+    if (props.validateNow) {
+      validate(props.file);
+    }
+  }, [props.file, props.validateNow, validate]);
+
   function updateFileIfValid(files: FileList | null): void {
     if (!files || !files[0]) {
       return;
     }
 
     const file = files[0];
-
-    if (props.required && (!file || !file?.name)) {
-      setValidationMessage("Please select a file");
+    if (!validate(file)) {
       return;
     }
 
-    if (!props.okTypes.find((x) => x === file!.type)) {
-      setValidationMessage("This file type is not allowed");
-      return;
-    }
-
-    setValidationMessage("");
     setFileName(file.name);
     props.onChange(file);
   }

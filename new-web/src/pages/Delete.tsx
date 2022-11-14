@@ -7,19 +7,36 @@ import PageLayout from "../components/PageLayout";
 import LoadingPage from "./LoadingPage";
 
 export default function Claim(): JSX.Element {
+  interface Validation {
+    projectMissing?: boolean;
+    versionMissing?: boolean;
+    tokenMissing?: boolean;
+  }
+
   const [loading, setLoading] = useState<boolean>(false);
   const [deleteSuccessful, setDeleteSuccessful] = useState<boolean | null>(
     null
   );
+  const [validation, setValidation] = useState<Validation>({});
   const [errorMsg, setErrorMsg] = useState<string>("");
   const [project, setProject] = useState<string>("none");
   const [version, setVersion] = useState<string>("none");
   const [token, setToken] = useState<string>("");
 
+  function validate(field: "project" | "version" | "token", value: string) {
+    const valid = value !== "none" && !!value;
+    setValidation({ ...validation, [`${field}Missing`]: !valid });
+    return valid;
+  }
+
   async function deleteDocumentation(): Promise<void> {
-    if (!project || project === "none") return;
-    if (!version || version === "none") return;
-    if (!token) return;
+    if (
+      !validate("project", project) ||
+      !validate("version", version) ||
+      !validate("token", token)
+    ) {
+      return;
+    }
 
     try {
       setLoading(true);
@@ -53,7 +70,14 @@ export default function Claim(): JSX.Element {
           emptyMessage="Please select a Project"
           label="Project"
           dataSource={ProjectRepository.get()}
-          onChange={(project) => setProject(project)}
+          onChange={(project) => {
+            setProject(project);
+            validate("project", project);
+          }}
+          value={project || "none"}
+          errorMsg={
+            validation.projectMissing ? "Please select a Project" : undefined
+          }
         />
 
         <DataSelect
@@ -66,14 +90,28 @@ export default function Claim(): JSX.Element {
                   versions.map((v) => v.name)
                 )
           }
-          onChange={(version) => setVersion(version)}
+          onChange={(version) => {
+            setVersion(version);
+            validate("version", version);
+          }}
+          value={version || "none"}
+          errorMsg={
+            validation.versionMissing ? "Please select a Version" : undefined
+          }
         />
 
         <TextField
           fullWidth
           label="Token"
           value={token}
-          onChange={(e) => setToken(e.target.value)}
+          onChange={(e) => {
+            setToken(e.target.value);
+            validate("token", e.target.value);
+          }}
+          error={validation.tokenMissing}
+          helperText={
+            validation.tokenMissing ? "Please enter a Token" : undefined
+          }
         >
           {token}
         </TextField>

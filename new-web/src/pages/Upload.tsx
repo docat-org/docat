@@ -15,14 +15,49 @@ export default function Upload(): JSX.Element {
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const [uploadError, setUploadError] = useState<boolean>(false);
   const [uploadSuccess, setUploadSuccess] = useState<boolean>(false);
+  const [validation, setValidation] = useState<{
+    projectMsg?: string;
+    versionMsg?: string;
+    validateFileNow?: boolean;
+  }>({});
 
-  function resetForm(): void {
-    setProject("");
-    setVersion("");
-    setFile(undefined);
+  function validateInput(inputName: string, value: string): boolean {
+    const validationProp = `${inputName}Msg` as keyof typeof validation;
+
+    if (!value || !value.trim()) {
+      const input = inputName.charAt(0).toUpperCase() + inputName.slice(1);
+      const validationMsg = `${input} is required`;
+
+      setValidation({
+        ...validation,
+        [validationProp]: validationMsg,
+      });
+      return false;
+    } else {
+      setValidation({
+        ...validation,
+        [validationProp]: undefined,
+      });
+      return true;
+    }
+  }
+
+  function validateFile() {
+    setValidation({ ...validation, validateFileNow: true });
+
+    //make ready for another validation
+    setTimeout(() => {
+      setValidation({ ...validation, validateFileNow: false });
+    }, 1000);
+
+    return file !== undefined;
   }
 
   async function upload(): Promise<void> {
+    if (!validateInput("project", project)) return;
+    if (!validateInput("version", version)) return;
+    if (!validateFile()) return;
+
     setIsUploading(true);
     try {
       const formData = new FormData();
@@ -30,8 +65,10 @@ export default function Upload(): JSX.Element {
 
       await ProjectRepository.upload(project, version, formData);
 
-      resetForm();
-
+      //reset the form
+      setProject("");
+      setVersion("");
+      setFile(undefined);
       setUploadSuccess(true);
     } catch (e) {
       console.error(e);
@@ -72,7 +109,13 @@ export default function Upload(): JSX.Element {
           fullWidth
           label="Project"
           value={project}
-          onChange={(e) => setProject(e.target.value)}
+          onChange={(e) => {
+            const project = e.target.value;
+            setProject(project);
+            validateInput("project", project);
+          }}
+          error={validation.projectMsg !== undefined}
+          helperText={validation.projectMsg}
         >
           {project}
         </TextField>
@@ -81,17 +124,23 @@ export default function Upload(): JSX.Element {
           fullWidth
           label="Version"
           value={version}
-          onChange={(e) => setVersion(e.target.value)}
+          onChange={(e) => {
+            const version = e.target.value;
+            setVersion(version);
+            validateInput("version", version);
+          }}
+          error={validation.versionMsg !== undefined}
+          helperText={validation.versionMsg}
         >
           {version}
         </TextField>
 
         <FileInput
           label="Zip File"
-          required={true}
           file={file}
           onChange={(file) => setFile(file)}
           okTypes={["application/zip"]}
+          validateNow={validation.validateFileNow || false}
         ></FileInput>
 
         <button type="submit" onClick={upload}>

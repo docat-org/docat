@@ -5,6 +5,8 @@ interface Props {
 }
 
 export default function StyledForm(props: Props): JSX.Element {
+  if (!props.children) return <></>;
+
   //filter out <></> from children
   const children = props.children.filter(
     (child) => child.type.toString() !== "Symbol(react.fragment)"
