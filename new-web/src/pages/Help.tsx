@@ -15,13 +15,13 @@ export default function Help(): JSX.Element {
   const [loading, setLoading] = useState<boolean>(true);
 
   const replaceLinks = (text: string): string => {
-    text.replace(
-      /http:\/\/localhost:8000/g,
-      `${document.location.protocol}//${document.location.hostname}${
-        document.location.port !== "" ? ":" + document.location.port : ""
-      }`
-    );
-    return text;
+    const protocol = document.location.protocol;
+    const host = document.location.hostname;
+    const port = document.location.port ? `:${document.location.port}` : "";
+
+    const currentUrl = `${protocol}//${host}${port}`;
+
+    return text.replaceAll("http://localhost:8000", currentUrl);
   };
 
   useEffect(() => {
