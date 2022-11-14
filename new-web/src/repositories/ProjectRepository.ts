@@ -6,10 +6,10 @@ const RESOURCE = 'doc';
 /**
   * Get Config
   */
-async function getConfig(): Promise<Object> {
+async function getConfig(): Promise<{headerHTML? : string}> {
     try {
         const resp = await fetch(`/config.json`)
-        return await resp.json();
+        return JSON.parse(await resp.json());
     } catch {
         return {};
     }

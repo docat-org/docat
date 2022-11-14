@@ -1,22 +1,32 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import ProjectRepository from "../repositories/ProjectRepository";
 import styles from "./../style/components/Header.module.css";
 
 export default function Header(): JSX.Element {
-  const defaultImg = (
-    <img
-      className={styles["logo"]}
-      alt="docat logo"
-      src={require("../assets/logo.png")}
-    />
+  const defaultHeader = (
+    <>
+      <img alt="docat logo" src={require("../assets/logo.png")} />
+      <h1>DOCAT</h1>
+    </>
   );
-  const defaultTitle = <h1 className={styles["header-title"]}>DOCAT</h1>;
+
+  const [header, setHeader] = useState<JSX.Element>(defaultHeader);
+
+  useEffect(() => {
+    // try to get a custom header from the backend, or use the default
+    ProjectRepository.getConfig().then((config) => {
+      if (!config.headerHTML) return;
+
+      setHeader(
+        <div dangerouslySetInnerHTML={{ __html: config.headerHTML }} />
+      );
+    });
+  });
 
   return (
     <div className={styles["header"]}>
-      <Link to="/">
-        {defaultImg}
-        {defaultTitle}
-      </Link>
+      <Link to="/">{header}</Link>
     </div>
   );
 }
