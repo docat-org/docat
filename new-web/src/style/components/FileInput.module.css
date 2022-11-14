@@ -1,13 +1,12 @@
 .file-upload-container {
   display: flex;
   flex-direction: column;
-  max-width: 500px;
   max-height: 250px;
 }
 
 .file-drop-zone {
   border-radius: 5px;
-  border: 1px dashed grey;
+  border: 1px solid rgba(0, 0, 0, 0.23);
   text-align: center;
   padding: 13% 5%;
   cursor: pointer;
@@ -48,31 +47,14 @@
   text-decoration-line: underline;
 }
 
-.input-label {
-  --font-size: 0.95em;
-
-  padding: 0 5px;
-  margin: 0;
-
-  position: relative;
-  top: calc(var(--font-size) / 2 + 2px);
-  left: 0.75em;
-  z-index: 1;
+.file-upload-label {
   background-color: white;
   width: fit-content;
-  font-size: var(--font-size);
-}
-
-@media only screen and (min-width: 650px) {
-  .file-upload-container {
-    margin: 16px 25% 16px 0;
-  }
-}
-
-@media only screen and (max-width: 650px) {
-  .file-upload-container {
-    margin: 16px 0;
-  }
+  padding: 0 0.45em !important;
+  font-size: 0.8em !important;
+  z-index: 1;
+  top: 10px;
+  left: 0.75em;
 }
 
 .validation-message {

@@ -87,7 +87,7 @@ export default function Upload(): JSX.Element {
         </TextField>
 
         <FileInput
-          label="Zip File:"
+          label="Zip File"
           required={true}
           file={file}
           onChange={(file) => setFile(file)}

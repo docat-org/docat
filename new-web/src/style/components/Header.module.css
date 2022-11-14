@@ -1,31 +1,39 @@
 .header {
-    --header-height: 64px;
+  --header-height: 64px;
 
-    height: var(--header-height);
-    background-color: var(--background);
-    box-shadow: 0 2px 4px -1px rgb(0 0 0 / 20%), 0 4px 5px 0 rgb(0 0 0 / 14%), 0 1px 10px 0 rgb(0 0 0 / 12%);
+  min-width: 230px;
+  height: var(--header-height);
+  background-color: var(--background);
+  box-shadow: 0 2px 4px -1px rgb(0 0 0 / 20%), 0 4px 5px 0 rgb(0 0 0 / 14%),
+    0 1px 10px 0 rgb(0 0 0 / 12%);
 }
 
 @media only screen and (min-width: 1000px) {
-    .header {
-        padding-left: calc(15% + 16px);
-    }
+  .header {
+    padding-left: calc(15% + 16px);
+  }
 }
 
 @media only screen and (max-width: 1000px) {
-    .header {
-        padding-left: 30px;
-    }
+  .header {
+    padding-left: 30px;
+  }
+}
+
+@media only screen and (max-width: 300px) {
+  .header {
+    padding-left: 10px;
+  }
 }
 
 .logo {
-    height: var(--header-height);
-    float: left;
+  height: var(--header-height);
+  float: left;
 }
 
 .header-title {
-    float: left;
-    margin-top: calc(var(--header-height) / 2 - 15px);
-    margin-left: 10px;
-    font-size: 30px;
+  float: left;
+  margin-top: calc(var(--header-height) / 2 - 15px);
+  margin-left: 10px;
+  font-size: 30px;
 }

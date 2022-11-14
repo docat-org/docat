@@ -1,3 +1,4 @@
+import { InputLabel } from "@mui/material";
 import { useRef, useState } from "react";
 
 import styles from "./../style/components/FileInput.module.css";
@@ -75,14 +76,16 @@ export default function FileInput(props: {
 
   return (
     <div className={styles["file-upload-container"]}>
-      <label className={styles["input-label"]} htmlFor="upload">
-        {props.label}
-        {props.required && <span className={styles["red"]}> *</span>}
-      </label>
+      {!dragActive && (
+        <InputLabel className={styles["file-upload-label"]}>
+          {props.label}
+        </InputLabel>
+      )}
+
       <div
         className={
           dragActive
-            ? styles["file-drop-zone drag-active"]
+            ? styles["file-drop-zone"] + " " + styles["drag-active"]
             : styles["file-drop-zone"]
         }
         onDragEnter={handleDragEvents}
@@ -104,7 +107,7 @@ export default function FileInput(props: {
           </>
         )}
 
-        <p>Drag file here or</p>
+        <p>Drag zip file here or</p>
 
         <button className={styles["file-upload-button"]} type="button">
           click to browse.
