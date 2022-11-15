@@ -36,7 +36,6 @@
 
 .project-card-title-with-logo {
   width: calc(100% - 86px);
-  transform: translateY(-1em);
 }
 
 .project-logo {

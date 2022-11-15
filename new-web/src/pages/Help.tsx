@@ -7,6 +7,7 @@ import Header from "../components/Header";
 import LoadingPage from "./LoadingPage";
 
 import styles from "./../style/pages/Help.module.css";
+import UploadButton from "../components/UploadButton";
 
 export default function Help(): JSX.Element {
   document.title = "Help | docat";
@@ -46,6 +47,7 @@ export default function Help(): JSX.Element {
         className={styles["markdown-container"]}
         children={content}
       />
+      <UploadButton/>
     </>
   );
 }

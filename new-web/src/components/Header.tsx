@@ -16,11 +16,12 @@ export default function Header(): JSX.Element {
   useEffect(() => {
     // try to get a custom header from the backend, or use the default
     ProjectRepository.getConfig().then((config) => {
-      if (!config.headerHTML) return;
+      // @ts-ignore
+      const header = config.headerHTML;
 
-      setHeader(
-        <div dangerouslySetInnerHTML={{ __html: config.headerHTML }} />
-      );
+      if (!header) return;
+
+      setHeader(<div dangerouslySetInnerHTML={{ __html: header }} />);
     });
   });
 

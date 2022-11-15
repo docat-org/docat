@@ -54,16 +54,21 @@ export default function Docs(): JSX.Element {
         return;
       }
 
+      setVersions(
+        allVersions.sort((a, b) => ProjectRepository.compareVersions(a, b))
+      );
+
       if (version === "latest") {
-        const latestVersion = allVersions[0].name;
+        const latestV = allVersions.find((v) =>
+          (v.tags || []).includes("latest")
+        );
+
+        const latestVersion = latestV ? latestV.name : allVersions[0].name;
+
         setVersion(latestVersion);
         updateRoute(project, latestVersion, page, hideUi);
         return;
       }
-
-      setVersions(
-        allVersions.sort((a, b) => ProjectRepository.compareVersions(a, b))
-      );
 
       const versionsAndTags = allVersions
         .map((v) => [v.name, ...v.tags])
@@ -113,7 +118,7 @@ export default function Docs(): JSX.Element {
 
   return (
     <>
-      <Banner errorMsg={errorMessage}/>
+      <Banner errorMsg={errorMessage} />
       {!errorMessage && (
         <>
           <iframe

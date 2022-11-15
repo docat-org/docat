@@ -13,6 +13,8 @@ export default function Claim(): JSX.Element {
   const [project, setProject] = useState<string>("none");
   const [token, setToken] = useState<string>("");
 
+  document.title = "Claim Token | docat";
+
   async function claim(): Promise<void> {
     if (!project || project === "none") {
       setProjectMissing(true);

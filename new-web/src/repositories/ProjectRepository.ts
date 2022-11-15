@@ -4,9 +4,10 @@ import ProjectDetails from '../models/ProjectDetails';
 const RESOURCE = 'doc';
 
 /**
-  * Get Config
-  */
-async function getConfig(): Promise<{headerHTML? : string}> {
+ * Returns the docat configuration JSON (for example a custom header)
+ * @returns The config JSON
+ */
+async function getConfig(): Promise<{}> {
     try {
         const resp = await fetch(`/config.json`)
         return JSON.parse(await resp.json());
@@ -16,8 +17,9 @@ async function getConfig(): Promise<{headerHTML? : string}> {
 };
 
 /**
-   * Returns all projects
-   */
+ * Returns a list of all projects
+ * @returns {string[]} - list of project names 
+ */
 async function get(): Promise<string[]> {
     try {
         const resp = await fetch(`/api/projects`);

@@ -12,7 +12,6 @@ export default function Project(props: {
   onFavoriteChanged: () => void;
 }): JSX.Element {
   const [versions, setVersions] = useState<ProjectDetails[]>([]);
-  const [latestVersion, setLatestVersion] = useState<string>("");
   //required, as otherwise the image would flash
   const [logoExists, setLogoExists] = useState<boolean | null>(null);
 
@@ -27,7 +26,6 @@ export default function Project(props: {
       }
 
       setVersions(versions);
-      setLatestVersion(versions[0].name);
     });
   }, [props.projectName, logoURL]);
 
@@ -40,7 +38,7 @@ export default function Project(props: {
     <div className={styles["project-card"]}>
       <ReactTooltip />
       <div className={styles["project-card-header"]}>
-        <Link to={`/${props.projectName}/${latestVersion}`}>
+        <Link to={`/${props.projectName}/latest`}>
           {logoExists === true && (
             <>
               <img
