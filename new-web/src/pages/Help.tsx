@@ -47,7 +47,7 @@ export default function Help(): JSX.Element {
         className={styles["markdown-container"]}
         children={content}
       />
-      <UploadButton/>
+      <UploadButton isSingleButton={true} />
     </>
   );
 }

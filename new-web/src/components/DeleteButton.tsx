@@ -4,12 +4,22 @@ import ReactTooltip from "react-tooltip";
 
 import styles from "./../style/components/ControlButtons.module.css";
 
-export default function DeleteButton() {
+interface ButtonProps {
+  isSingleButton?: boolean;
+}
+
+export default function DeleteButton(props: ButtonProps): JSX.Element {
   return (
     <>
       <ReactTooltip />
       <Link to="/delete" data-tip="Delete a Documentation Version">
-        <button className={styles["delete-btn"]}>
+        <button
+          className={
+            props.isSingleButton
+              ? styles["single-control-button"]
+              : styles["delete-button"]
+          }
+        >
           <Delete></Delete>
         </button>
       </Link>

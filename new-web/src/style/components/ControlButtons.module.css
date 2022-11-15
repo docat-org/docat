@@ -1,6 +1,7 @@
-.upload-btn,
-.claim-btn,
-.delete-btn {
+.upload-button,
+.claim-button,
+.delete-button,
+.single-control-button {
   width: 60px;
   height: 60px;
   border-radius: 50%;
@@ -12,14 +13,15 @@
   z-index: 1; /* Without this, the footer is on top of the controls */
 }
 
-.upload-btn {
+.upload-button {
   right: 180px;
 }
 
-.claim-btn {
+.claim-button {
   right: 100px;
 }
 
-.delete-btn {
+.delete-button,
+.single-control-button {
   right: 20px;
 }
