@@ -1,7 +1,7 @@
 .loading-error {
   color: red;
   text-align: center;
-  padding-top: 15px;
+  padding: 30px 0;
   font-size: large;
 }
 

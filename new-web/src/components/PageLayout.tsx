@@ -9,6 +9,7 @@ interface Props {
   description?: string | JSX.Element;
   successMsg?: string;
   errorMsg?: string;
+  bannerTimeout?: number;
   children: JSX.Element | JSX.Element[];
 }
 
@@ -16,7 +17,7 @@ export default function PageLayout(props: Props): JSX.Element {
   return (
     <>
       <Header />
-      <Banner successMsg={props.successMsg} errorMsg={props.errorMsg} />
+      <Banner successMsg={props.successMsg} errorMsg={props.errorMsg} timeout={props.bannerTimeout}/>
       <div className={styles["main"]}>
         <NavigationTitle title={props.title} description={props.description} />
         {props.children}

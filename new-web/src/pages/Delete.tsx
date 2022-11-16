@@ -4,7 +4,6 @@ import DataSelect from "../components/DataSelect";
 import ProjectRepository from "../repositories/ProjectRepository";
 import StyledForm from "../components/StyledForm";
 import PageLayout from "../components/PageLayout";
-import LoadingPage from "./LoadingPage";
 
 export default function Claim(): JSX.Element {
   interface Validation {
@@ -13,7 +12,6 @@ export default function Claim(): JSX.Element {
     tokenMissing?: boolean;
   }
 
-  const [loading, setLoading] = useState<boolean>(false);
   const [deleteSuccessful, setDeleteSuccessful] = useState<boolean | null>(
     null
   );
@@ -39,8 +37,6 @@ export default function Claim(): JSX.Element {
     }
 
     try {
-      setLoading(true);
-
       await ProjectRepository.deleteDoc(project, version, token);
 
       setDeleteSuccessful(true);
@@ -50,13 +46,35 @@ export default function Claim(): JSX.Element {
 
       setErrorMsg(e.message);
       setDeleteSuccessful(false);
-    } finally {
-      setLoading(false);
     }
   }
 
-  if (loading) {
-    return <LoadingPage />;
+  async function getProjects(): Promise<string[]> {
+    if (errorMsg) return []; // Failed to load, prevent loading again
+
+    try {
+      const projects = await ProjectRepository.get();
+      return projects;
+    } catch (e: any) {
+      setErrorMsg("Failed to load projects");
+      setTimeout(() => setErrorMsg(""), 5000); // Reset, so we can try loading again after 5 seconds
+      return [];
+    }
+  }
+
+  async function getVersions(): Promise<string[]> {
+    if (project === "none") return [];
+
+    if (errorMsg) return []; // Failed to load, prevent loading again
+
+    try {
+      const versions = await ProjectRepository.getVersions(project);
+      return versions.map((v) => v.name);
+    } catch (e: any) {
+      setErrorMsg("Failed to load versions");
+      setTimeout(() => setErrorMsg(""), 5000); // Reset, so we can try loading again after 5 seconds
+      return [];
+    }
   }
 
   return (
@@ -69,7 +87,7 @@ export default function Claim(): JSX.Element {
         <DataSelect
           emptyMessage="Please select a Project"
           label="Project"
-          dataSource={ProjectRepository.get()}
+          dataSource={getProjects()}
           onChange={(project) => {
             setProject(project);
             validate("project", project);
@@ -83,13 +101,7 @@ export default function Claim(): JSX.Element {
         <DataSelect
           emptyMessage="Please select a Version"
           label="Version"
-          dataSource={
-            project === "none"
-              ? Promise.resolve([])
-              : ProjectRepository.getVersions(project).then((versions) =>
-                  versions.map((v) => v.name)
-                )
-          }
+          dataSource={getVersions()}
           onChange={(version) => {
             setVersion(version);
             validate("version", version);

@@ -69,6 +69,7 @@ export default function Upload(): JSX.Element {
       setProject("");
       setVersion("");
       setFile(undefined);
+      setValidation({});
       setUploadSuccess(true);
     } catch (e) {
       console.error(e);

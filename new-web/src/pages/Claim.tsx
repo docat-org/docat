@@ -1,13 +1,11 @@
 import { TextField } from "@mui/material";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import DataSelect from "../components/DataSelect";
 import PageLayout from "../components/PageLayout";
 import StyledForm from "../components/StyledForm";
 import ProjectRepository from "../repositories/ProjectRepository";
-import LoadingPage from "./LoadingPage";
 
 export default function Claim(): JSX.Element {
-  const [loading, setLoading] = useState<boolean>(false);
   const [projectMissing, setProjectMissing] = useState<boolean | null>(null);
   const [errorMsg, setErrorMsg] = useState<string>("");
   const [project, setProject] = useState<string>("none");
@@ -21,23 +19,28 @@ export default function Claim(): JSX.Element {
       return;
     }
 
-    setLoading(true);
-    setErrorMsg("");
-
     try {
+      setErrorMsg("");
       const response = await ProjectRepository.claim(project);
       setToken(response.token);
     } catch (e: any) {
       console.error(e);
       setErrorMsg(e.message);
-    } finally {
-      setLoading(false);
     }
   }
 
-  if (loading) {
-    return <LoadingPage />;
-  }
+  const getProjects = useCallback(async (): Promise<string[]> => {
+    if (errorMsg) return []; // Failed to load, prevent loading again
+
+    try {
+      const projects = await ProjectRepository.get();
+      return projects;
+    } catch (e: any) {
+      setErrorMsg("Failed to load projects");
+      setTimeout(() => setErrorMsg(""), 5000); // Reset, so we can try loading again after 5 seconds
+      return [];
+    }
+  }, [errorMsg]);
 
   return (
     <PageLayout
@@ -49,7 +52,7 @@ export default function Claim(): JSX.Element {
         <DataSelect
           emptyMessage="Please select a Project"
           label="Project"
-          dataSource={ProjectRepository.get()}
+          dataSource={getProjects()}
           onChange={(p) => {
             if (p === "none" || !p) {
               setProjectMissing(true);

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ErrorOutline } from "@mui/icons-material";
 
 import ProjectRepository from "../repositories/ProjectRepository";
@@ -36,24 +36,34 @@ export default function Home(): JSX.Element {
   }
 
   useEffect(() => {
-    ProjectRepository.get().then((projects) => {
-      if (!projects) {
-        setLoadingFailed(true);
+    ProjectRepository.get()
+      .then((projects) => {
+        if (!projects) {
+          setLoadingFailed(true);
+          return;
+        }
+
+        setProjects(projects);
+        updateFavorites(projects);
+        setLoadingFailed(false);
+        setLoading(false);
         return;
-      }
-
-      setProjects(projects);
-      updateFavorites(projects);
-    });
-
-    setLoading(false);
-  }, []);
+      })
+      .catch(() => {
+        setLoadingFailed(true);
+        setTimeout(() => setLoadingFailed(false), 5000); // Try again after 5 seconds
+      });
+  }, [loadingFailed]);
 
   if (loadingFailed) {
     return (
-      <div className={styles["loading-error"]}>
-        <ErrorOutline color="error" />
-        <div>Failed to load Projects</div>
+      <div className={styles["home"]}>
+        <Header />
+        <div className={styles["loading-error"]}>
+          <ErrorOutline color="error" />
+          <div>Failed to load projects</div>
+        </div>
+        <Footer />
       </div>
     );
   }

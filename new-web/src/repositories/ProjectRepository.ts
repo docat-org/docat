@@ -3,13 +3,26 @@ import ProjectDetails from '../models/ProjectDetails';
 
 const RESOURCE = 'doc';
 
+async function fetchWithTimeout(resource: string, init?: RequestInit, timeout: number = 10000): Promise<Response> {
+    const controller = new AbortController();
+    const id = setTimeout(() => controller.abort(), timeout);
+
+    const response = await fetch(resource, {
+        ...init,
+        signal: controller.signal
+    });
+    clearTimeout(id);
+
+    return response;
+}
+
 /**
  * Returns the docat configuration JSON (for example a custom header)
  * @returns The config JSON
  */
 async function getConfig(): Promise<{}> {
     try {
-        const resp = await fetch(`/config.json`)
+        const resp = await fetchWithTimeout(`/config.json`)
         return JSON.parse(await resp.json());
     } catch {
         return {};
@@ -21,14 +34,12 @@ async function getConfig(): Promise<{}> {
  * @returns {string[]} - list of project names 
  */
 async function get(): Promise<string[]> {
-    try {
-        const resp = await fetch(`/api/projects`);
-        const projects = await resp.json();
-        return projects.projects;
-    }
-    catch {
-        return [];
-    }
+    const resp = await fetchWithTimeout(`/api/projects`);
+
+    if (!resp.ok) throw new Error("Could not fetch projects, status code: " + resp.status);
+
+    const projects = await resp.json();
+    return projects.projects;
 };
 
 /**
@@ -73,13 +84,12 @@ function getDocsPath(projectName: string, version: string, fullDocsPath: string)
  * @param {string} projectName Name of the project
  */
 async function getVersions(projectName: string): Promise<ProjectDetails[]> {
-    try {
-        const resp = await fetch(`/api/projects/${projectName}`);
-        const project = await resp.json();
-        return project.versions;
-    } catch {
-        return [];
-    }
+    const resp = await fetchWithTimeout(`/api/projects/${projectName}`);
+
+    if (!resp.ok) throw new Error("Could not fetch versions, status code: " + resp.status);
+
+    const project = await resp.json();
+    return project.versions;
 };
 
 /**
@@ -89,11 +99,11 @@ async function getVersions(projectName: string): Promise<ProjectDetails[]> {
  * @param {FormData} body Data to upload
  */
 async function upload(projectName: string, version: string, body: FormData) {
-    const resp = await fetch(`/api/${projectName}/${version}`,
+    const resp = await fetchWithTimeout(`/api/${projectName}/${version}`,
         {
             method: 'POST',
             body
-        }
+        }, 60000 // higher timeout, because it is possible to upload large files
     )
 
     const json = await resp.json()
@@ -110,7 +120,7 @@ async function upload(projectName: string, version: string, body: FormData) {
  * @param {string} projectName Name of the project
  */
 async function claim(projectName: string) {
-    const resp = await fetch(`/api/${projectName}/claim`);
+    const resp = await fetchWithTimeout(`/api/${projectName}/claim`);
     const json = await resp.json();
 
     if (!resp.ok) {
@@ -128,7 +138,7 @@ async function claim(projectName: string) {
  */
 async function deleteDoc(projectName: string, version: string, token: string) {
     const headers = { "Docat-Api-Key": token };
-    const resp = await fetch(`/api/${projectName}/${version}`,
+    const resp = await fetchWithTimeout(`/api/${projectName}/${version}`,
         {
             method: 'DELETE',
             headers: headers
