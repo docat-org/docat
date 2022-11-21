@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
-import Banner from "../components/Banner";
 import DocumentControlButtons from "../components/DocumentControlButtons";
 import ProjectDetails from "../models/ProjectDetails";
 import ProjectRepository from "../repositories/ProjectRepository";
 
 import styles from "./../style/pages/Docs.module.css";
+import LoadingPage from "./LoadingPage";
 
 export default function Docs(): JSX.Element {
   const proj = useParams().project || "";
@@ -20,9 +20,12 @@ export default function Docs(): JSX.Element {
   const [versions, setVersions] = useState<ProjectDetails[]>([]);
 
   const iFrameRef = useRef(null);
-  const [errorMessage, setErrorMessage] = useState<string>("");
 
   document.title = `${project} | docat`;
+
+  if (!project) {
+    throw new Response("Project not found", { status: 404 });
+  }
 
   const updateRoute = useCallback(
     (
@@ -43,42 +46,44 @@ export default function Docs(): JSX.Element {
   updateRoute(project, version, page, hideUi);
 
   useEffect(() => {
-    if (!project) {
-      setErrorMessage("Project not found");
+    if (!project || project === "none") {
+      setVersions([]);
       return;
     }
 
-    ProjectRepository.getVersions(project).then((allVersions) => {
-      if (!allVersions) {
-        setErrorMessage("Project not found");
-        return;
-      }
+    ProjectRepository.getVersions(project)
+      .then((res) => {
+        if (res.length === 0) {
+          throw new Response("Project not found", { status: 404 });
+        }
 
-      setVersions(
-        allVersions.sort((a, b) => ProjectRepository.compareVersions(a, b))
-      );
+        res = res.sort((a, b) => ProjectRepository.compareVersions(a, b));
 
-      if (version === "latest") {
-        const latestV = allVersions.find((v) =>
-          (v.tags || []).includes("latest")
-        );
+        setVersions(res);
 
-        const latestVersion = latestV ? latestV.name : allVersions[0].name;
+        if (version === "latest") {
+          const versionWithLatestTag = res.find((v) =>
+            (v.tags || []).includes("latest")
+          );
 
-        setVersion(latestVersion);
-        updateRoute(project, latestVersion, page, hideUi);
-        return;
-      }
+          const latestVersion = versionWithLatestTag
+            ? versionWithLatestTag.name
+            : res[res.length - 1].name;
 
-      const versionsAndTags = allVersions
-        .map((v) => [v.name, ...v.tags])
-        .flat();
+          setVersion(latestVersion);
+          updateRoute(project, latestVersion, page, hideUi);
+        } else {
+          const versionsAndTags = res.map((v) => [v.name, ...v.tags]).flat();
 
-      if (!versionsAndTags.includes(version)) {
-        setErrorMessage("Version not found");
-        return;
-      }
-    });
+          if (!versionsAndTags.includes(version)) {
+            throw new Response("Version not found", { status: 404 });
+          }
+        }
+      })
+      .catch((e: any) => {
+        console.error(e);
+        throw new Response("Failed to load versions", { status: 500 });
+      });
   }, [project, version, page, hideUi, updateRoute]);
 
   function handleVersionChange(v: string): void {
@@ -116,28 +121,27 @@ export default function Docs(): JSX.Element {
       });
   }
 
+  if (!versions.length) {
+    return <LoadingPage />;
+  }
+
   return (
     <>
-      <Banner errorMsg={errorMessage} />
-      {!errorMessage && (
-        <>
-          <iframe
-            title="docs"
-            ref={iFrameRef}
-            src={ProjectRepository.getProjectDocsURL(project, version, page)}
-            onLoad={onIframeLocationChanged}
-            className={styles["docs-iframe"]}
-          ></iframe>
+      <iframe
+        title="docs"
+        ref={iFrameRef}
+        src={ProjectRepository.getProjectDocsURL(project, version, page)}
+        onLoad={onIframeLocationChanged}
+        className={styles["docs-iframe"]}
+      ></iframe>
 
-          {hideUi || (
-            <DocumentControlButtons
-              version={version}
-              versions={versions}
-              onVersionChange={handleVersionChange}
-              onHideUi={handleHideControls}
-            />
-          )}
-        </>
+      {hideUi || (
+        <DocumentControlButtons
+          version={version}
+          versions={versions}
+          onVersionChange={handleVersionChange}
+          onHideUi={handleHideControls}
+        />
       )}
     </>
   );

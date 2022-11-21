@@ -1,25 +1,55 @@
 import { TextField } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DataSelect from "../components/DataSelect";
 import ProjectRepository from "../repositories/ProjectRepository";
 import StyledForm from "../components/StyledForm";
 import PageLayout from "../components/PageLayout";
+import { useProjects } from "../data-providers/ProjectDataProvider";
+import ProjectDetails from "../models/ProjectDetails";
 
-export default function Claim(): JSX.Element {
+export default function Delete(): JSX.Element {
   interface Validation {
     projectMissing?: boolean;
     versionMissing?: boolean;
     tokenMissing?: boolean;
   }
 
-  const [deleteSuccessful, setDeleteSuccessful] = useState<boolean | null>(
-    null
-  );
+  interface Message {
+    show: boolean;
+    type: "error" | "success";
+    text: string;
+  }
+
+  const { projects, loadingFailed } = useProjects();
+  const [versions, setVersions] = useState<ProjectDetails[]>([]);
+
   const [validation, setValidation] = useState<Validation>({});
-  const [errorMsg, setErrorMsg] = useState<string>("");
+  const [msg, setMsg] = useState<Message>({
+    show: false,
+    type: "error",
+    text: "",
+  });
   const [project, setProject] = useState<string>("none");
   const [version, setVersion] = useState<string>("none");
   const [token, setToken] = useState<string>("");
+
+  document.title = "Delete Version | docat";
+
+  useEffect(() => {
+    if (!project || project === "none") {
+      setVersions([]);
+      return;
+    }
+
+    ProjectRepository.getVersions(project)
+      .then((res) => {
+        setVersions(res);
+      })
+      .catch((e: any) => {
+        console.error(e);
+        setMsg({ show: true, type: "error", text: e.message });
+      });
+  }, [project]);
 
   function validate(field: "project" | "version" | "token", value: string) {
     const valid = value !== "none" && !!value;
@@ -39,57 +69,72 @@ export default function Claim(): JSX.Element {
     try {
       await ProjectRepository.deleteDoc(project, version, token);
 
-      setDeleteSuccessful(true);
-      setErrorMsg("");
+      setMsg({
+        show: true,
+        type: "success",
+        text: `Documentation for ${project} (${version}) deleted successfully.`,
+      });
     } catch (e: any) {
       console.error(e);
 
-      setErrorMsg(e.message);
-      setDeleteSuccessful(false);
+      setMsg({
+        show: true,
+        type: "error",
+        text: e.message,
+      });
+    } finally {
+      setTimeout(
+        () =>
+          setMsg((current) => {
+            return { ...current, show: false };
+          }),
+        5000
+      );
     }
   }
 
-  async function getProjects(): Promise<string[]> {
-    if (errorMsg) return []; // Failed to load, prevent loading again
-
-    try {
-      const projects = await ProjectRepository.get();
-      return projects;
-    } catch (e: any) {
-      setErrorMsg("Failed to load projects");
-      setTimeout(() => setErrorMsg(""), 5000); // Reset, so we can try loading again after 5 seconds
+  function getProjects(): string[] {
+    if (loadingFailed || !projects) {
       return [];
     }
+
+    return projects;
   }
 
-  async function getVersions(): Promise<string[]> {
-    if (project === "none") return [];
-
-    if (errorMsg) return []; // Failed to load, prevent loading again
-
-    try {
-      const versions = await ProjectRepository.getVersions(project);
-      return versions.map((v) => v.name);
-    } catch (e: any) {
-      setErrorMsg("Failed to load versions");
-      setTimeout(() => setErrorMsg(""), 5000); // Reset, so we can try loading again after 5 seconds
+  function getVersions(): string[] {
+    if (!project || project === "none") {
       return [];
     }
+
+    return versions.map((v) => v.name);
+  }
+
+  if (loadingFailed && msg.text !== "Failed to load projects") {
+    // make sure to only show this error once
+    setMsg({ show: true, type: "error", text: "Failed to load projects" });
+    setTimeout(
+      () =>
+        setMsg((current) => {
+          return { ...current, show: false };
+        }),
+      5000
+    );
   }
 
   return (
     <PageLayout
       title="Delete Documentation"
-      successMsg={deleteSuccessful ? "Documentation deleted successfully" : ""}
-      errorMsg={errorMsg}
+      successMsg={msg.show ?? msg.type === "success" ? msg.text : ""}
+      errorMsg={msg.show ?? msg.type === "error" ? msg.text : ""}
     >
       <StyledForm>
         <DataSelect
           emptyMessage="Please select a Project"
           label="Project"
-          dataSource={getProjects()}
+          values={getProjects()}
           onChange={(project) => {
             setProject(project);
+            setVersion("none");
             validate("project", project);
           }}
           value={project || "none"}
@@ -97,11 +142,10 @@ export default function Claim(): JSX.Element {
             validation.projectMissing ? "Please select a Project" : undefined
           }
         />
-
         <DataSelect
           emptyMessage="Please select a Version"
           label="Version"
-          dataSource={getVersions()}
+          values={getVersions()}
           onChange={(version) => {
             setVersion(version);
             validate("version", version);

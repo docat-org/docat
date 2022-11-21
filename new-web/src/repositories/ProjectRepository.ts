@@ -3,44 +3,22 @@ import ProjectDetails from '../models/ProjectDetails';
 
 const RESOURCE = 'doc';
 
-async function fetchWithTimeout(resource: string, init?: RequestInit, timeout: number = 10000): Promise<Response> {
-    const controller = new AbortController();
-    const id = setTimeout(() => controller.abort(), timeout);
-
-    const response = await fetch(resource, {
-        ...init,
-        signal: controller.signal
-    });
-    clearTimeout(id);
-
-    return response;
-}
-
 /**
- * Returns the docat configuration JSON (for example a custom header)
- * @returns The config JSON
+ * Returns a list of all versions of a project.
+ * @param {string} projectName Name of the project
  */
-async function getConfig(): Promise<{}> {
-    try {
-        const resp = await fetchWithTimeout(`/config.json`)
-        return JSON.parse(await resp.json());
-    } catch {
-        return {};
+async function getVersions(projectName: string): Promise<ProjectDetails[]> {
+    const res = await fetch(`/api/projects/${projectName}`);
+
+    if (!res.ok) {
+        console.error(res.json());
+        return [];
     }
-};
 
-/**
- * Returns a list of all projects
- * @returns {string[]} - list of project names 
- */
-async function get(): Promise<string[]> {
-    const resp = await fetchWithTimeout(`/api/projects`);
+    const json = await res.json();
 
-    if (!resp.ok) throw new Error("Could not fetch projects, status code: " + resp.status);
-
-    const projects = await resp.json();
-    return projects.projects;
-};
+    return json.versions as ProjectDetails[];
+}
 
 /**
  * Returns the logo URL of a given project
@@ -78,19 +56,6 @@ function getDocsPath(projectName: string, version: string, fullDocsPath: string)
     return fullDocsPath;
 };
 
-/**
- * Returns information about the Project
- * this includes mainly the existing versions
- * @param {string} projectName Name of the project
- */
-async function getVersions(projectName: string): Promise<ProjectDetails[]> {
-    const resp = await fetchWithTimeout(`/api/projects/${projectName}`);
-
-    if (!resp.ok) throw new Error("Could not fetch versions, status code: " + resp.status);
-
-    const project = await resp.json();
-    return project.versions;
-};
 
 /**
  * Uploads new project documentation
@@ -99,11 +64,11 @@ async function getVersions(projectName: string): Promise<ProjectDetails[]> {
  * @param {FormData} body Data to upload
  */
 async function upload(projectName: string, version: string, body: FormData) {
-    const resp = await fetchWithTimeout(`/api/${projectName}/${version}`,
+    const resp = await fetch(`/api/${projectName}/${version}`,
         {
             method: 'POST',
             body
-        }, 60000 // higher timeout, because it is possible to upload large files
+        }
     )
 
     const json = await resp.json()
@@ -120,7 +85,7 @@ async function upload(projectName: string, version: string, body: FormData) {
  * @param {string} projectName Name of the project
  */
 async function claim(projectName: string) {
-    const resp = await fetchWithTimeout(`/api/${projectName}/claim`);
+    const resp = await fetch(`/api/${projectName}/claim`);
     const json = await resp.json();
 
     if (!resp.ok) {
@@ -138,20 +103,28 @@ async function claim(projectName: string) {
  */
 async function deleteDoc(projectName: string, version: string, token: string) {
     const headers = { "Docat-Api-Key": token };
-    const resp = await fetchWithTimeout(`/api/${projectName}/${version}`,
+    const resp = await fetch(`/api/${projectName}/${version}`,
         {
             method: 'DELETE',
             headers: headers
         }
     );
-
-    const json = await resp.json();
-
-    if (!resp.ok) {
-        throw new Error(json.message)
+    if (resp.status === 401) {
+        throw new Error("The token you provided is invalid")
     }
 
-    return json;
+    try {
+        const json = await resp.json();
+
+        if (!resp.ok) {
+            throw new Error(json.message)
+        }
+
+        return json;
+    } catch (e) {
+        console.error(e);
+        throw new Error("Failed to delete documentation");
+    }
 }
 
 /**
@@ -208,12 +181,10 @@ function setFavorite(projectName: string, shouldBeFavorite: boolean): void {
 };
 
 const exp = {
-    getConfig,
-    get,
+    getVersions,
     getProjectLogoURL,
     getProjectDocsURL,
     getDocsPath,
-    getVersions,
     upload,
     claim,
     deleteDoc,

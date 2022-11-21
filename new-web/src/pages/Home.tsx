@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useState } from "react";
-import { ErrorOutline } from "@mui/icons-material";
+import { useState } from "react";
 
 import ProjectRepository from "../repositories/ProjectRepository";
+import { useProjects } from "../data-providers/ProjectDataProvider";
 
 import Help from "./Help";
 import UploadButton from "../components/UploadButton";
@@ -10,20 +10,21 @@ import DeleteButton from "../components/DeleteButton";
 import ProjectList from "../components/ProjectList";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-
-import styles from "./../style/pages/Home.module.css";
 import LoadingPage from "./LoadingPage";
 
+import styles from "./../style/pages/Home.module.css";
+import { ErrorOutline } from "@mui/icons-material";
+
 export default function Home(): JSX.Element {
-  const [projects, setProjects] = useState<string[]>([]);
+  const { projects, loadingFailed } = useProjects();
   const [nonFavoriteProjects, setNonFavoriteProjects] = useState<string[]>([]);
   const [favoriteProjects, setFavoriteProjects] = useState<string[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [loadingFailed, setLoadingFailed] = useState<boolean>(false);
 
   document.title = "Home | docat";
 
-  function updateFavorites(projects: string[]) {
+  function updateFavorites() {
+    if (!projects) return;
+
     const favorites = projects.filter((project) =>
       ProjectRepository.isFavorite(project)
     );
@@ -34,26 +35,6 @@ export default function Home(): JSX.Element {
     setFavoriteProjects(favorites);
     setNonFavoriteProjects(nonFavorites);
   }
-
-  useEffect(() => {
-    ProjectRepository.get()
-      .then((projects) => {
-        if (!projects) {
-          setLoadingFailed(true);
-          return;
-        }
-
-        setProjects(projects);
-        updateFavorites(projects);
-        setLoadingFailed(false);
-        setLoading(false);
-        return;
-      })
-      .catch(() => {
-        setLoadingFailed(true);
-        setTimeout(() => setLoadingFailed(false), 5000); // Try again after 5 seconds
-      });
-  }, [loadingFailed]);
 
   if (loadingFailed) {
     return (
@@ -68,12 +49,17 @@ export default function Home(): JSX.Element {
     );
   }
 
-  if (loading) {
+  if (!projects) {
     return <LoadingPage />;
   }
 
   if (projects.length === 0) {
     return <Help />;
+  }
+
+  // update favorites when they aren't loaded yet
+  if (projects && !favoriteProjects.length && !nonFavoriteProjects.length) {
+    updateFavorites();
   }
 
   return (
@@ -82,12 +68,12 @@ export default function Home(): JSX.Element {
       <div className={styles["project-overview"]}>
         <ProjectList
           projects={favoriteProjects}
-          onFavoriteChanged={() => updateFavorites(projects)}
+          onFavoriteChanged={() => updateFavorites()}
         />
         <div className={styles["divider"]} />
         <ProjectList
           projects={nonFavoriteProjects}
-          onFavoriteChanged={() => updateFavorites(projects)}
+          onFavoriteChanged={() => updateFavorites()}
         />
       </div>
       <UploadButton></UploadButton>

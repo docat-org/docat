@@ -1,4 +1,6 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { ConfigDataProvider } from "./data-providers/ConfigDataProvider";
+import { ProjectDataProvider } from "./data-providers/ProjectDataProvider";
 import Claim from "./pages/Claim";
 import Delete from "./pages/Delete";
 import Docs from "./pages/Docs";
@@ -61,7 +63,11 @@ function App() {
 
   return (
     <div className="App">
-      <RouterProvider router={router} />
+      <ConfigDataProvider>
+        <ProjectDataProvider>
+          <RouterProvider router={router} />
+        </ProjectDataProvider>
+      </ConfigDataProvider>
     </div>
   );
 }

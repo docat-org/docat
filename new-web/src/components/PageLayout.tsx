@@ -1,5 +1,5 @@
 import styles from "./../style/components/PageLayout.module.css";
-import Banner from "./Banner";
+import Banner from "./InfoBanner";
 import Footer from "./Footer";
 import Header from "./Header";
 import NavigationTitle from "./NavigationTitle";

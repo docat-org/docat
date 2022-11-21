@@ -1,6 +1,8 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import ProjectRepository from "../repositories/ProjectRepository";
+
+import { useConfig } from "../data-providers/ConfigDataProvider";
+
 import styles from "./../style/components/Header.module.css";
 
 export default function Header(): JSX.Element {
@@ -10,20 +12,12 @@ export default function Header(): JSX.Element {
       <h1>DOCAT</h1>
     </>
   );
+  const [header, setHeader] = useState<any>(defaultHeader);
+  const config = useConfig();
 
-  const [header, setHeader] = useState<JSX.Element>(defaultHeader);
-
-  useEffect(() => {
-    // try to get a custom header from the backend, or use the default
-    ProjectRepository.getConfig().then((config) => {
-      // @ts-ignore
-      const header = config.headerHTML;
-
-      if (!header) return;
-
-      setHeader(<div dangerouslySetInnerHTML={{ __html: header }} />);
-    });
-  });
+  if (config.headerHTML && header === defaultHeader) {
+    setHeader(<div dangerouslySetInnerHTML={{ __html: config.headerHTML }} />);
+  }
 
   return (
     <div className={styles["header"]}>

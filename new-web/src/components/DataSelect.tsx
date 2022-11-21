@@ -1,30 +1,34 @@
 import { FormGroup, MenuItem, TextField } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 interface Props {
   emptyMessage: string;
   errorMsg?: string;
   value?: string;
   label: string;
-  dataSource: Promise<string[]>;
+  values: string[];
   onChange: (value: string) => void;
 }
 
 export default function DataSelect(props: Props): JSX.Element {
-  const [data, setData] = useState<string[]>([]);
   const [selectedValue, setSelectedValue] = useState<string>(
     props.value ?? "none"
   );
 
-  useEffect(() => {
-    props.dataSource.then((res) => setData(res));
-  }, [props.dataSource]);
-
-  function onSelect(e: any): void {
+  function onSelect(e: any) {
     const value = e.target.value;
 
     setSelectedValue(value);
     props.onChange(value);
+  }
+
+  // clear field if selected value is not in options
+  if (
+    props.values.length > 0 &&
+    selectedValue !== "none" &&
+    !props.values.includes(selectedValue)
+  ) {
+    setSelectedValue("none");
   }
 
   return (
@@ -32,7 +36,7 @@ export default function DataSelect(props: Props): JSX.Element {
       <FormGroup>
         <TextField
           onChange={onSelect}
-          value={data.length > 0 ? selectedValue : "none"}
+          value={props.values.length > 0 ? selectedValue : "none"}
           label={props.label}
           error={!!props.errorMsg}
           helperText={props.errorMsg}
@@ -42,7 +46,7 @@ export default function DataSelect(props: Props): JSX.Element {
             {props.emptyMessage}
           </MenuItem>
 
-          {data.map((value) => {
+          {props.values.map((value) => {
             return (
               <MenuItem key={value} value={value}>
                 {value}

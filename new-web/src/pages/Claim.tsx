@@ -1,15 +1,18 @@
 import { TextField } from "@mui/material";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import DataSelect from "../components/DataSelect";
 import PageLayout from "../components/PageLayout";
 import StyledForm from "../components/StyledForm";
+import { useProjects } from "../data-providers/ProjectDataProvider";
 import ProjectRepository from "../repositories/ProjectRepository";
 
 export default function Claim(): JSX.Element {
-  const [projectMissing, setProjectMissing] = useState<boolean | null>(null);
-  const [errorMsg, setErrorMsg] = useState<string>("");
+  const { projects, loadingFailed } = useProjects();
+
   const [project, setProject] = useState<string>("none");
   const [token, setToken] = useState<string>("");
+  const [errorMsg, setErrorMsg] = useState<string>("");
+  const [projectMissing, setProjectMissing] = useState<boolean | null>(null);
 
   document.title = "Claim Token | docat";
 
@@ -29,18 +32,17 @@ export default function Claim(): JSX.Element {
     }
   }
 
-  const getProjects = useCallback(async (): Promise<string[]> => {
-    if (errorMsg) return []; // Failed to load, prevent loading again
-
-    try {
-      const projects = await ProjectRepository.get();
-      return projects;
-    } catch (e: any) {
-      setErrorMsg("Failed to load projects");
-      setTimeout(() => setErrorMsg(""), 5000); // Reset, so we can try loading again after 5 seconds
+  function getProjects(): string[] {
+    if (loadingFailed || !projects) {
       return [];
     }
-  }, [errorMsg]);
+
+    return projects;
+  }
+
+  if (loadingFailed && errorMsg !== "Failed to load projects") {
+    setErrorMsg("Failed to load projects");
+  }
 
   return (
     <PageLayout
@@ -52,7 +54,7 @@ export default function Claim(): JSX.Element {
         <DataSelect
           emptyMessage="Please select a Project"
           label="Project"
-          dataSource={getProjects()}
+          values={getProjects()}
           onChange={(p) => {
             if (p === "none" || !p) {
               setProjectMissing(true);
@@ -61,6 +63,8 @@ export default function Claim(): JSX.Element {
             }
 
             setProject(p);
+            setToken("");
+            setErrorMsg("");
           }}
           value={project || "none"}
           errorMsg={projectMissing ? "Please select a Project" : undefined}
@@ -79,7 +83,7 @@ export default function Claim(): JSX.Element {
           </TextField>
         )) || <></>}
 
-        <button type="submit" onClick={claim}>
+        <button type="submit" disabled={!!token} onClick={claim}>
           Claim
         </button>
       </StyledForm>

@@ -10,6 +10,7 @@
   position: fixed;
   bottom: 20px;
   border: none;
+  cursor: pointer;
   z-index: 1; /* Without this, the footer is on top of the controls */
 }
 

@@ -13,8 +13,7 @@ export default function Upload(): JSX.Element {
   const [version, setVersion] = useState<string>("");
   const [file, setFile] = useState<File | undefined>(undefined);
   const [isUploading, setIsUploading] = useState<boolean>(false);
-  const [uploadError, setUploadError] = useState<boolean>(false);
-  const [uploadSuccess, setUploadSuccess] = useState<boolean>(false);
+  const [uploadSuccess, setUploadSuccess] = useState<boolean | null>(null);
   const [validation, setValidation] = useState<{
     projectMsg?: string;
     versionMsg?: string;
@@ -73,8 +72,9 @@ export default function Upload(): JSX.Element {
       setUploadSuccess(true);
     } catch (e) {
       console.error(e);
-      setUploadError(true);
+      setUploadSuccess(false);
     } finally {
+      setTimeout(() => setUploadSuccess(null), 5000);
       setIsUploading(false);
     }
   }
@@ -100,14 +100,19 @@ export default function Upload(): JSX.Element {
 
   return (
     <PageLayout
-      errorMsg={uploadError ? "Failed to upload documentation." : ""}
-      successMsg={uploadSuccess ? "Documentation uploaded successfully." : ""}
+      errorMsg={
+        uploadSuccess === false ? "Failed to upload documentation." : ""
+      }
+      successMsg={
+        uploadSuccess === true ? "Documentation uploaded successfully." : ""
+      }
       title="Upload Documentation"
       description={description}
     >
       <StyledForm>
         <TextField
           fullWidth
+          autoComplete="off"
           label="Project"
           value={project}
           onChange={(e) => {
@@ -123,6 +128,7 @@ export default function Upload(): JSX.Element {
 
         <TextField
           fullWidth
+          autoComplete="off"
           label="Version"
           value={version}
           onChange={(e) => {

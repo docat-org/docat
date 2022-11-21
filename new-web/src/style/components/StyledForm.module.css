@@ -31,3 +31,8 @@ button[type="submit"] {
   color: white;
   cursor: pointer;
 }
+
+button:disabled {
+  background-color: gray;
+  cursor: not-allowed;
+}

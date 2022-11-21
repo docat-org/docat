@@ -15,7 +15,7 @@ export default function Help(): JSX.Element {
   const [content, setContent] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
 
-  const replaceLinks = (text: string): string => {
+  function replaceLinks(text: string): string {
     const protocol = document.location.protocol;
     const host = document.location.hostname;
     const port = document.location.port ? `:${document.location.port}` : "";
@@ -23,7 +23,7 @@ export default function Help(): JSX.Element {
     const currentUrl = `${protocol}//${host}${port}`;
 
     return text.replaceAll("http://localhost:8000", currentUrl);
-  };
+  }
 
   useEffect(() => {
     fetch(gettingStarted)
