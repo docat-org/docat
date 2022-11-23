@@ -1,34 +1,34 @@
-import { FormGroup, MenuItem, TextField } from "@mui/material";
-import { useState } from "react";
+import { FormGroup, MenuItem, TextField } from '@mui/material'
+import React, { useState } from 'react'
 
 interface Props {
-  emptyMessage: string;
-  errorMsg?: string;
-  value?: string;
-  label: string;
-  values: string[];
-  onChange: (value: string) => void;
+  emptyMessage: string
+  errorMsg?: string
+  value?: string
+  label: string
+  values: string[]
+  onChange: (value: string) => void
 }
 
-export default function DataSelect(props: Props): JSX.Element {
+export default function DataSelect (props: Props): JSX.Element {
   const [selectedValue, setSelectedValue] = useState<string>(
-    props.value ?? "none"
-  );
+    props.value ?? 'none'
+  )
 
-  function onSelect(e: any) {
-    const value = e.target.value;
+  function onSelect (e: { target: { value: string } }): void {
+    const value = e.target.value
 
-    setSelectedValue(value);
-    props.onChange(value);
+    setSelectedValue(value)
+    props.onChange(value)
   }
 
   // clear field if selected value is not in options
   if (
     props.values.length > 0 &&
-    selectedValue !== "none" &&
+    selectedValue !== 'none' &&
     !props.values.includes(selectedValue)
   ) {
-    setSelectedValue("none");
+    setSelectedValue('none')
   }
 
   return (
@@ -36,9 +36,9 @@ export default function DataSelect(props: Props): JSX.Element {
       <FormGroup>
         <TextField
           onChange={onSelect}
-          value={props.values.length > 0 ? selectedValue : "none"}
+          value={props.values.length > 0 ? selectedValue : 'none'}
           label={props.label}
-          error={!!props.errorMsg}
+          error={props.errorMsg !== undefined && props.errorMsg !== ''}
           helperText={props.errorMsg}
           select
         >
@@ -51,10 +51,10 @@ export default function DataSelect(props: Props): JSX.Element {
               <MenuItem key={value} value={value}>
                 {value}
               </MenuItem>
-            );
+            )
           })}
         </TextField>
       </FormGroup>
     </>
-  );
+  )
 }

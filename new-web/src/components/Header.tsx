@@ -1,27 +1,28 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from 'react'
+import { Link } from 'react-router-dom'
 
-import { useConfig } from "../data-providers/ConfigDataProvider";
+import { useConfig } from '../data-providers/ConfigDataProvider'
 
-import styles from "./../style/components/Header.module.css";
+import docatLogo from '../assets/logo.png'
+import styles from './../style/components/Header.module.css'
 
-export default function Header(): JSX.Element {
+export default function Header (): JSX.Element {
   const defaultHeader = (
     <>
-      <img alt="docat logo" src={require("../assets/logo.png")} />
+      <img alt="docat logo" src={docatLogo} />
       <h1>DOCAT</h1>
     </>
-  );
-  const [header, setHeader] = useState<any>(defaultHeader);
-  const config = useConfig();
+  )
+  const [header, setHeader] = useState<JSX.Element>(defaultHeader)
+  const config = useConfig()
 
-  if (config.headerHTML && header === defaultHeader) {
-    setHeader(<div dangerouslySetInnerHTML={{ __html: config.headerHTML }} />);
+  if (config.headerHTML != null && header === defaultHeader) {
+    setHeader(<div dangerouslySetInnerHTML={{ __html: config.headerHTML }} />)
   }
 
   return (
-    <div className={styles["header"]}>
+    <div className={styles.header}>
       <Link to="/">{header}</Link>
     </div>
-  );
+  )
 }

@@ -1,53 +1,57 @@
-import { useEffect, useState } from "react";
-import ReactMarkdown from "react-markdown";
+import React, { useEffect, useState } from 'react'
+import ReactMarkdown from 'react-markdown'
 
-// @ts-ignore ts can't read symbols from a md file
-import gettingStarted from "./../assets/getting-started.md";
-import Header from "../components/Header";
-import LoadingPage from "./LoadingPage";
+// @ts-expect-error ts can't read symbols from a md file
+import gettingStarted from './../assets/getting-started.md'
 
-import styles from "./../style/pages/Help.module.css";
-import UploadButton from "../components/UploadButton";
+import UploadButton from '../components/UploadButton'
+import Header from '../components/Header'
+import LoadingPage from './LoadingPage'
 
-export default function Help(): JSX.Element {
-  document.title = "Help | docat";
+import styles from './../style/pages/Help.module.css'
 
-  const [content, setContent] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(true);
+export default function Help (): JSX.Element {
+  document.title = 'Help | docat'
 
-  function replaceLinks(text: string): string {
-    const protocol = document.location.protocol;
-    const host = document.location.hostname;
-    const port = document.location.port ? `:${document.location.port}` : "";
+  const [content, setContent] = useState<string>('')
+  const [loading, setLoading] = useState<boolean>(true)
 
-    const currentUrl = `${protocol}//${host}${port}`;
+  function replaceLinks (text: string): string {
+    const protocol = document.location.protocol
+    const host = document.location.hostname
+    const port =
+      document.location.port !== '' ? `:${document.location.port}` : ''
 
-    return text.replaceAll("http://localhost:8000", currentUrl);
+    const currentUrl = `${protocol}//${host}${port}`
+
+    return text.replaceAll('http://localhost:8000', currentUrl)
   }
 
   useEffect(() => {
-    fetch(gettingStarted)
-      .then((res: Response) => res.text())
+    fetch(gettingStarted as RequestInfo)
+      .then(async (res: Response) => await res.text())
       .then((text: string) => {
-        const content = replaceLinks(text);
-        setContent(content);
-      });
+        const content = replaceLinks(text)
+        setContent(content)
+      })
+      .catch((err) => {
+        console.error(err)
+      })
 
-    setLoading(false);
-  }, []);
+    setLoading(false)
+  }, [])
 
   if (loading) {
-    return <LoadingPage />;
+    return <LoadingPage />
   }
 
   return (
     <>
       <Header />
-      <ReactMarkdown
-        className={styles["markdown-container"]}
-        children={content}
-      />
+      <ReactMarkdown className={styles['markdown-container']}>
+        {content}
+      </ReactMarkdown>
       <UploadButton isSingleButton={true} />
     </>
-  );
+  )
 }

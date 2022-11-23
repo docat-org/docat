@@ -1,17 +1,20 @@
-import Project from "./Project";
+import Project from './Project'
+import React from 'react'
 
-import styles from "./../style/components/ProjectList.module.css";
+import styles from './../style/components/ProjectList.module.css'
 
-export default function ProjectList(props: {
-  projects: string[];
-  onFavoriteChanged: () => void;
-}) {
-  if (!props.projects) {
-    return <></>;
+interface Props {
+  projects: string[]
+  onFavoriteChanged: () => void
+}
+
+export default function ProjectList (props: Props): JSX.Element {
+  if (props.projects.length === 0) {
+    return <></>
   }
 
   return (
-    <div className={styles["project-list"]}>
+    <div className={styles['project-list']}>
       {props.projects.map((project) => (
         <Project
           projectName={project}
@@ -20,5 +23,5 @@ export default function ProjectList(props: {
         />
       ))}
     </div>
-  );
+  )
 }

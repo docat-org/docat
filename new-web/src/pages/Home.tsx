@@ -1,76 +1,76 @@
-import { useState } from "react";
+import React, { useState } from 'react'
 
-import ProjectRepository from "../repositories/ProjectRepository";
-import { useProjects } from "../data-providers/ProjectDataProvider";
+import ProjectRepository from '../repositories/ProjectRepository'
+import { useProjects } from '../data-providers/ProjectDataProvider'
 
-import Help from "./Help";
-import UploadButton from "../components/UploadButton";
-import ClaimButton from "../components/ClaimButton";
-import DeleteButton from "../components/DeleteButton";
-import ProjectList from "../components/ProjectList";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
-import LoadingPage from "./LoadingPage";
+import Help from './Help'
+import UploadButton from '../components/UploadButton'
+import ClaimButton from '../components/ClaimButton'
+import DeleteButton from '../components/DeleteButton'
+import ProjectList from '../components/ProjectList'
+import Header from '../components/Header'
+import Footer from '../components/Footer'
+import LoadingPage from './LoadingPage'
 
-import styles from "./../style/pages/Home.module.css";
-import { ErrorOutline } from "@mui/icons-material";
+import styles from './../style/pages/Home.module.css'
+import { ErrorOutline } from '@mui/icons-material'
 
-export default function Home(): JSX.Element {
-  const { projects, loadingFailed } = useProjects();
-  const [nonFavoriteProjects, setNonFavoriteProjects] = useState<string[]>([]);
-  const [favoriteProjects, setFavoriteProjects] = useState<string[]>([]);
+export default function Home (): JSX.Element {
+  const { projects, loadingFailed } = useProjects()
+  const [nonFavoriteProjects, setNonFavoriteProjects] = useState<string[]>([])
+  const [favoriteProjects, setFavoriteProjects] = useState<string[]>([])
 
-  document.title = "Home | docat";
+  document.title = 'Home | docat'
 
-  function updateFavorites() {
-    if (!projects) return;
+  function updateFavorites (): void {
+    if (projects == null) return
 
     const favorites = projects.filter((project) =>
       ProjectRepository.isFavorite(project)
-    );
+    )
     const nonFavorites = projects.filter(
       (project) => !ProjectRepository.isFavorite(project)
-    );
+    )
 
-    setFavoriteProjects(favorites);
-    setNonFavoriteProjects(nonFavorites);
+    setFavoriteProjects(favorites)
+    setNonFavoriteProjects(nonFavorites)
   }
 
   if (loadingFailed) {
     return (
-      <div className={styles["home"]}>
+      <div className={styles.home}>
         <Header />
-        <div className={styles["loading-error"]}>
+        <div className={styles['loading-error']}>
           <ErrorOutline color="error" />
           <div>Failed to load projects</div>
         </div>
         <Footer />
       </div>
-    );
+    )
   }
 
-  if (!projects) {
-    return <LoadingPage />;
+  if (projects == null) {
+    return <LoadingPage />
   }
 
   if (projects.length === 0) {
-    return <Help />;
+    return <Help />
   }
 
   // update favorites when they aren't loaded yet
-  if (projects && !favoriteProjects.length && !nonFavoriteProjects.length) {
-    updateFavorites();
+  if (favoriteProjects.length === 0 && nonFavoriteProjects.length === 0) {
+    updateFavorites()
   }
 
   return (
-    <div className={styles["home"]}>
+    <div className={styles.home}>
       <Header />
-      <div className={styles["project-overview"]}>
+      <div className={styles['project-overview']}>
         <ProjectList
           projects={favoriteProjects}
           onFavoriteChanged={() => updateFavorites()}
         />
-        <div className={styles["divider"]} />
+        <div className={styles.divider} />
         <ProjectList
           projects={nonFavoriteProjects}
           onFavoriteChanged={() => updateFavorites()}
@@ -81,5 +81,5 @@ export default function Home(): JSX.Element {
       <DeleteButton></DeleteButton>
       <Footer />
     </div>
-  );
+  )
 }

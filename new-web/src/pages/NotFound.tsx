@@ -1,22 +1,23 @@
-import { Link } from "react-router-dom";
-import Footer from "../components/Footer";
-import Header from "../components/Header";
-import styles from "./../style/pages/NotFound.module.css";
+import { Link } from 'react-router-dom'
+import Footer from '../components/Footer'
+import Header from '../components/Header'
+import styles from './../style/pages/NotFound.module.css'
+import React from 'react'
 
-export default function NotFound() {
+export default function NotFound (): JSX.Element {
   return (
-    <div className={styles["not-found"]}>
+    <div className={styles['not-found']}>
       <Header />
-      <div className={styles["not-found-container"]}>
-        <h1 className={styles["not-found-title"]}>404 - Not Found</h1>
-        <p className={styles["not-found-text"]}>
+      <div className={styles['not-found-container']}>
+        <h1 className={styles['not-found-title']}>404 - Not Found</h1>
+        <p className={styles['not-found-text']}>
           Sorry, the page you were looking for was not found.
         </p>
-        <Link to="/" className={styles["not-found-link"]}>
+        <Link to="/" className={styles['not-found-link']}>
           Home
         </Link>
       </div>
       <Footer />
     </div>
-  );
+  )
 }

@@ -22,6 +22,14 @@
                     "./tsconfig.json"
                 ]
             }
+        },
+        {
+            "files": [
+                "src/react-app-env.d.ts"
+            ],
+            "rules": {
+                "@typescript-eslint/triple-slash-reference": "off"
+            }
         }
     ],
     "parserOptions": {

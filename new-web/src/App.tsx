@@ -1,75 +1,76 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { ConfigDataProvider } from "./data-providers/ConfigDataProvider";
-import { ProjectDataProvider } from "./data-providers/ProjectDataProvider";
-import Claim from "./pages/Claim";
-import Delete from "./pages/Delete";
-import Docs from "./pages/Docs";
-import Help from "./pages/Help";
-import Home from "./pages/Home";
-import NotFound from "./pages/NotFound";
-import Upload from "./pages/Upload";
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import React from 'react'
+import { ConfigDataProvider } from './data-providers/ConfigDataProvider'
+import { ProjectDataProvider } from './data-providers/ProjectDataProvider'
+import Claim from './pages/Claim'
+import Delete from './pages/Delete'
+import Docs from './pages/Docs'
+import Help from './pages/Help'
+import Home from './pages/Home'
+import NotFound from './pages/NotFound'
+import Upload from './pages/Upload'
 
-function App() {
+function App (): JSX.Element {
   const router = createBrowserRouter([
     {
-      path: "/",
+      path: '/',
       children: [
         {
-          path: "",
-          element: <Home />,
+          path: '',
+          element: <Home />
         },
         {
-          path: "upload",
-          element: <Upload />,
+          path: 'upload',
+          element: <Upload />
         },
         {
-          path: "claim",
-          element: <Claim />,
+          path: 'claim',
+          element: <Claim />
         },
         {
-          path: "delete",
-          element: <Delete />,
+          path: 'delete',
+          element: <Delete />
         },
         {
-          path: "help",
-          element: <Help />,
+          path: 'help',
+          element: <Help />
         },
         {
-          path: "/:project",
+          path: '/:project',
           children: [
             {
-              path: "",
-              element: <Docs />,
+              path: '',
+              element: <Docs />
             },
             {
-              path: ":version",
+              path: ':version',
               children: [
                 {
-                  path: "",
-                  element: <Docs />,
+                  path: '',
+                  element: <Docs />
                 },
                 {
-                  path: ":page",
-                  element: <Docs />,
-                },
-              ],
-            },
-          ],
-        },
+                  path: ':page',
+                  element: <Docs />
+                }
+              ]
+            }
+          ]
+        }
       ],
-      errorElement: <NotFound />,
-    },
-  ]);
+      errorElement: <NotFound />
+    }
+  ])
 
   return (
-    <div className="App">
+    <div className='App'>
       <ConfigDataProvider>
         <ProjectDataProvider>
           <RouterProvider router={router} />
         </ProjectDataProvider>
       </ConfigDataProvider>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App

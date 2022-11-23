@@ -1,19 +1,28 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from 'react'
 
-const Context = createContext<any>({});
+export interface Config {
+  headerHTML?: string
+}
 
-export const ConfigDataProvider = ({ children }: any) => {
-  const [config, setConfig] = useState<any>({});
+const Context = createContext<Config>({})
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const ConfigDataProvider = ({ children }: any): JSX.Element => {
+  const [config, setConfig] = useState<Config>({})
 
   useEffect(() => {
-    fetch("/config.json")
-      .then((res) => res.json())
+    fetch('/config.json')
+      .then(async (res) => await res.json() as Config)
       .then((data) => {
-        setConfig(data);
-      });
-  }, []);
+        setConfig(data)
+      })
+      .catch((err) => {
+        console.error(err)
+      })
+  }, [])
 
-  return <Context.Provider value={config}>{children}</Context.Provider>;
-};
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+  return <Context.Provider value={config}>{children}</Context.Provider>
+}
 
-export const useConfig = () => useContext(Context);
+export const useConfig = (): Config => useContext(Context)

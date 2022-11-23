@@ -1,47 +1,56 @@
-import { Alert, Snackbar } from "@mui/material";
-import { useEffect, useState } from "react";
+import { Alert, Snackbar } from '@mui/material'
+import React, { useEffect, useState } from 'react'
 
 interface Props {
-  errorMsg?: string;
-  successMsg?: string;
-  timeout?: number;
+  errorMsg?: string
+  successMsg?: string
+  timeout?: number
+}
+
+function isNotEmpty (str: string | undefined): boolean {
+  return str != null && str.trim() !== ''
 }
 
 class Message {
-  msg: string = "";
-  type: "error" | "success" = "error";
+  msg = ''
+  type: 'error' | 'success' = 'error'
 
-  constructor(props: Props) {
-    this.msg = props.errorMsg || props.successMsg || "";
-    this.type = props.errorMsg ? "error" : "success";
+  constructor (props: Props) {
+    if (isNotEmpty(props.errorMsg)) {
+      this.msg = props.errorMsg ?? ''
+      this.type = 'error'
+    } else if (isNotEmpty(props.successMsg)) {
+      this.msg = props.successMsg ?? ''
+      this.type = 'success'
+    }
   }
 }
 
-export default function Banner(props: Props): JSX.Element {
-  const [msg, setMsg] = useState<Message>(new Message(props));
-  const [show, setShow] = useState<boolean>(false);
+export default function Banner (props: Props): JSX.Element {
+  const [msg, setMsg] = useState<Message>(new Message(props))
+  const [show, setShow] = useState<boolean>(false)
 
   useEffect(() => {
-    if (props.errorMsg || props.successMsg) {
-      setMsg(new Message(props));
-      setShow(true);
+    if (isNotEmpty(props.errorMsg) || isNotEmpty(props.successMsg)) {
+      setMsg(new Message(props))
+      setShow(true)
     }
-  }, [props]);
+  }, [props])
 
   return (
     <Snackbar
       key={`${msg.msg}`}
       open={show}
-      autoHideDuration={props.timeout || 6000}
+      autoHideDuration={props.timeout ?? 6000}
       onClose={() => setShow(false)}
     >
       <Alert
         onClose={() => setShow(false)}
         severity={msg.type}
-        sx={{ width: "100%" }}
+        sx={{ width: '100%' }}
       >
         {msg.msg}
       </Alert>
     </Snackbar>
-  );
+  )
 }

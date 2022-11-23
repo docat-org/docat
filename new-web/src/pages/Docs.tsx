@@ -1,30 +1,34 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import { useParams, useSearchParams } from "react-router-dom";
-import DocumentControlButtons from "../components/DocumentControlButtons";
-import ProjectDetails from "../models/ProjectDetails";
-import ProjectRepository from "../repositories/ProjectRepository";
+/* eslint-disable @typescript-eslint/no-throw-literal */
 
-import styles from "./../style/pages/Docs.module.css";
-import LoadingPage from "./LoadingPage";
+// throwing react-router-dom.Response is necessary to redirect to the error page
 
-export default function Docs(): JSX.Element {
-  const proj = useParams().project || "";
-  const ver = useParams().version || "latest";
-  const location = useParams().page || "index.html";
-  const hideControls = useSearchParams()[0].get("hide-ui") === "true";
+import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { useParams, useSearchParams } from 'react-router-dom'
+import DocumentControlButtons from '../components/DocumentControlButtons'
+import ProjectDetails from '../models/ProjectDetails'
+import ProjectRepository from '../repositories/ProjectRepository'
 
-  const [project] = useState<string>(proj);
-  const [version, setVersion] = useState<string>(ver);
-  const [page, setPage] = useState<string>(location);
-  const [hideUi, setHideUi] = useState<boolean>(hideControls);
-  const [versions, setVersions] = useState<ProjectDetails[]>([]);
+import styles from './../style/pages/Docs.module.css'
+import LoadingPage from './LoadingPage'
 
-  const iFrameRef = useRef(null);
+export default function Docs (): JSX.Element {
+  const proj = useParams().project ?? ''
+  const ver = useParams().version ?? 'latest'
+  const location = useParams().page ?? 'index.html'
+  const hideControls = useSearchParams()[0].get('hide-ui') === 'true'
 
-  document.title = `${project} | docat`;
+  const [project] = useState<string>(proj)
+  const [version, setVersion] = useState<string>(ver)
+  const [page, setPage] = useState<string>(location)
+  const [hideUi, setHideUi] = useState<boolean>(hideControls)
+  const [versions, setVersions] = useState<ProjectDetails[]>([])
 
-  if (!project) {
-    throw new Response("Project not found", { status: 404 });
+  const iFrameRef = useRef(null)
+
+  document.title = `${project} | docat`
+
+  if (project === '') {
+    throw new Response('Project not found', { status: 404 })
   }
 
   const updateRoute = useCallback(
@@ -36,93 +40,95 @@ export default function Docs(): JSX.Element {
     ): void => {
       window.history.replaceState(
         {},
-        "",
-        `/${project}/${version}/${page}${hideControls ? "?hide-ui=true" : ""}`
-      );
+        '',
+        `/${project}/${version}/${page}${hideControls ? '?hide-ui=true' : ''}`
+      )
     },
     []
-  );
+  )
 
-  updateRoute(project, version, page, hideUi);
+  updateRoute(project, version, page, hideUi)
 
   useEffect(() => {
-    if (!project || project === "none") {
-      setVersions([]);
-      return;
+    if (project === '' || project === 'none') {
+      setVersions([])
+      return
     }
 
     ProjectRepository.getVersions(project)
       .then((res) => {
         if (res.length === 0) {
-          throw new Response("Project not found", { status: 404 });
+          throw new Response('Project not found', { status: 404 })
         }
 
-        res = res.sort((a, b) => ProjectRepository.compareVersions(a, b));
+        res = res.sort((a, b) => ProjectRepository.compareVersions(a, b))
 
-        setVersions(res);
+        setVersions(res)
 
-        if (version === "latest") {
+        if (version === 'latest') {
           const versionWithLatestTag = res.find((v) =>
-            (v.tags || []).includes("latest")
-          );
+            (v.tags ?? []).includes('latest')
+          )
 
-          const latestVersion = versionWithLatestTag
-            ? versionWithLatestTag.name
-            : res[res.length - 1].name;
+          const latestVersion =
+            versionWithLatestTag != null
+              ? versionWithLatestTag.name
+              : res[res.length - 1].name
 
-          setVersion(latestVersion);
-          updateRoute(project, latestVersion, page, hideUi);
+          setVersion(latestVersion)
+          updateRoute(project, latestVersion, page, hideUi)
         } else {
-          const versionsAndTags = res.map((v) => [v.name, ...v.tags]).flat();
+          const versionsAndTags = res.map((v) => [v.name, ...v.tags]).flat()
 
           if (!versionsAndTags.includes(version)) {
-            throw new Response("Version not found", { status: 404 });
+            throw new Response('Version not found', { status: 404 })
           }
         }
       })
-      .catch((e: any) => {
-        console.error(e);
-        throw new Response("Failed to load versions", { status: 500 });
-      });
-  }, [project, version, page, hideUi, updateRoute]);
+      .catch((e) => {
+        console.error(e)
+        throw new Response('Failed to load versions', { status: 500 })
+      })
+  }, [project, version, page, hideUi, updateRoute])
 
-  function handleVersionChange(v: string): void {
-    setVersion(v);
-    updateRoute(project, v, page, hideUi);
+  function handleVersionChange (v: string): void {
+    setVersion(v)
+    updateRoute(project, v, page, hideUi)
   }
 
-  function handleHideControls(): void {
-    updateRoute(project, version, page, true);
-    setHideUi(true);
+  function handleHideControls (): void {
+    updateRoute(project, version, page, true)
+    setHideUi(true)
   }
 
-  function onIframeLocationChanged(): void {
-    if (!iFrameRef.current) return;
+  function onIframeLocationChanged (): void {
+    /*  eslint-disable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call */
+    if (iFrameRef?.current == null) return
 
     // update the path in the url
-    // @ts-ignore
-    const path: string = iFrameRef.current.contentWindow?.location.href;
-    const page = path.split(`${version}/`)[1];
+    // @ts-expect-error - ts does not find the location on the iframe
+    const path: string = iFrameRef.current.contentWindow.location.href as string
+    const page = path.split(`${version}/`)[1]
 
-    if (!page) return;
+    if (page.trim().length < 1) return
 
-    setPage(page);
-    updateRoute(project, version, page, hideUi);
+    setPage(page)
+    updateRoute(project, version, page, hideUi)
 
     // make all links in iframe open in new tab
-    // @ts-ignore
+    // @ts-expect-error - ts does not find the document on the iframe
     iFrameRef.current.contentDocument
-      .querySelectorAll("a")
+      .querySelectorAll('a')
       .forEach((a: HTMLAnchorElement) => {
         if (!a.href.startsWith(window.location.origin)) {
-          // open all foreign links in a new tab
-          a.setAttribute("target", "_blank");
+          a.setAttribute('target', '_blank')
         }
-      });
+      })
+    /*  eslint-enable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call */
   }
 
-  if (!versions.length) {
-    return <LoadingPage />;
+  if (versions.length === 0) {
+    return <LoadingPage />
   }
 
   return (
@@ -132,10 +138,10 @@ export default function Docs(): JSX.Element {
         ref={iFrameRef}
         src={ProjectRepository.getProjectDocsURL(project, version, page)}
         onLoad={onIframeLocationChanged}
-        className={styles["docs-iframe"]}
+        className={styles['docs-iframe']}
       ></iframe>
 
-      {hideUi || (
+      {!hideUi && (
         <DocumentControlButtons
           version={version}
           versions={versions}
@@ -144,5 +150,5 @@ export default function Docs(): JSX.Element {
         />
       )}
     </>
-  );
+  )
 }

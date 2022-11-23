@@ -1,32 +1,34 @@
-import semver from 'semver';
-import ProjectDetails from '../models/ProjectDetails';
+import semver from 'semver'
+import ProjectDetails from '../models/ProjectDetails'
 
-const RESOURCE = 'doc';
+const RESOURCE = 'doc'
 
 /**
  * Returns a list of all versions of a project.
  * @param {string} projectName Name of the project
  */
-async function getVersions(projectName: string): Promise<ProjectDetails[]> {
-    const res = await fetch(`/api/projects/${projectName}`);
+async function getVersions (projectName: string): Promise<ProjectDetails[]> {
+  const res = await fetch(`/api/projects/${projectName}`)
 
-    if (!res.ok) {
-        console.error(res.json());
-        return [];
-    }
+  if (!res.ok) {
+    console.error(res.json())
+    return []
+  }
 
-    const json = await res.json();
+  const json = await res.json() as {
+    versions: ProjectDetails[]
+  }
 
-    return json.versions as ProjectDetails[];
+  return json.versions
 }
 
 /**
  * Returns the logo URL of a given project
  * @param {string} projectName Name of the project
  */
-function getProjectLogoURL(projectName: string): string {
-    return `/${RESOURCE}/${projectName}/logo`;
-};
+function getProjectLogoURL (projectName: string): string {
+  return `/${RESOURCE}/${projectName}/logo`
+}
 
 /**
  * Returns the project documentation URL
@@ -34,9 +36,9 @@ function getProjectLogoURL(projectName: string): string {
  * @param {string} version Version name
  * @param {string?} docsPath Path to the documentation page
  */
-function getProjectDocsURL(projectName: string, version: string, docsPath: string | undefined): string {
-    return `/${RESOURCE}/${projectName}/${version}/${docsPath || ''}`;
-};
+function getProjectDocsURL (projectName: string, version: string, docsPath: string | undefined): string {
+  return `/${RESOURCE}/${projectName}/${version}/${docsPath ?? ''}`
+}
 
 /**
  * Returns the docs path only without the prefix, project and version
@@ -44,18 +46,17 @@ function getProjectDocsURL(projectName: string, version: string, docsPath: strin
  * @param {string} version Version name
  * @param {string} fullDocsPath Full path to the docs including prefix, project and version
  */
-function getDocsPath(projectName: string, version: string, fullDocsPath: string): string {
-    const match = decodeURIComponent(fullDocsPath).match(new RegExp(
-        String.raw`(.*)/${RESOURCE}/${projectName}/${version}/(.*)`
-    ));
+function getDocsPath (projectName: string, version: string, fullDocsPath: string): string {
+  const match = decodeURIComponent(fullDocsPath).match(new RegExp(
+    String.raw`(.*)/${RESOURCE}/${projectName}/${version}/(.*)`
+  ))
 
-    if (match && match.length > 2) {
-        return match[2] || "";
-    }
+  if (match == null || match.length < 2) {
+    return fullDocsPath
+  }
 
-    return fullDocsPath;
-};
-
+  return match[2] ?? ''
+}
 
 /**
  * Uploads new project documentation
@@ -63,37 +64,35 @@ function getDocsPath(projectName: string, version: string, fullDocsPath: string)
  * @param {string} version Name of the version
  * @param {FormData} body Data to upload
  */
-async function upload(projectName: string, version: string, body: FormData) {
-    const resp = await fetch(`/api/${projectName}/${version}`,
-        {
-            method: 'POST',
-            body
-        }
-    )
-
-    const json = await resp.json()
-
-    if (!resp.ok) {
-        throw new Error(json.message)
+async function upload (projectName: string, version: string, body: FormData): Promise<void> {
+  const resp = await fetch(`/api/${projectName}/${version}`,
+    {
+      method: 'POST',
+      body
     }
+  )
 
-    return json
-};
+  const json = await resp.json() as { message: string }
+
+  if (!resp.ok) {
+    throw new Error(json.message)
+  }
+}
 
 /**
  * Claim the project token
  * @param {string} projectName Name of the project
  */
-async function claim(projectName: string) {
-    const resp = await fetch(`/api/${projectName}/claim`);
-    const json = await resp.json();
+async function claim (projectName: string): Promise<{ token: string }> {
+  const resp = await fetch(`/api/${projectName}/claim`)
+  const json = await resp.json() as { token?: string, message: string }
 
-    if (!resp.ok) {
-        throw new Error(json.message)
-    }
+  if (!resp.ok || json.token == null) {
+    throw new Error(json.message)
+  }
 
-    return json;
-};
+  return { token: json.token }
+}
 
 /**
  * Deletes existing project documentation
@@ -101,30 +100,29 @@ async function claim(projectName: string) {
  * @param {string} version Name of the version
  * @param {string} token Token to authenticate
  */
-async function deleteDoc(projectName: string, version: string, token: string) {
-    const headers = { "Docat-Api-Key": token };
-    const resp = await fetch(`/api/${projectName}/${version}`,
-        {
-            method: 'DELETE',
-            headers: headers
-        }
-    );
-    if (resp.status === 401) {
-        throw new Error("The token you provided is invalid")
+async function deleteDoc (projectName: string, version: string, token: string): Promise<void> {
+  const headers = { 'Docat-Api-Key': token }
+  const resp = await fetch(`/api/${projectName}/${version}`,
+    {
+      method: 'DELETE',
+      headers
     }
+  )
+  if (resp.status === 401) {
+    throw new Error('The token you provided is invalid')
+  }
 
-    try {
-        const json = await resp.json();
+  let json = { message: '' }
+  try {
+    json = await resp.json() as { message: string }
+  } catch (e) {
+    console.error(e)
+    throw new Error('Failed to delete documentation')
+  }
 
-        if (!resp.ok) {
-            throw new Error(json.message)
-        }
-
-        return json;
-    } catch (e) {
-        console.error(e);
-        throw new Error("Failed to delete documentation");
-    }
+  if (!resp.ok) {
+    throw new Error('Failed to delete documentation' + json.message)
+  }
 }
 
 /**
@@ -139,58 +137,58 @@ async function deleteDoc(projectName: string, version: string, token: string) {
  * @param {string} versionB.name version name
  * @param {string[] | undefined} versionB.tags optional tags for this vertion
  */
-function compareVersions(versionA: { name: string, tags: string[] | undefined }, versionB: { name: string, tags: string[] | undefined }): number {
-    if ((versionA.tags || []).includes('latest')) {
-        return 1;
-    }
+function compareVersions (versionA: { name: string, tags: string[] | undefined }, versionB: { name: string, tags: string[] | undefined }): number {
+  if ((versionA.tags ?? []).includes('latest')) {
+    return 1
+  }
 
-    if ((versionB.tags || []).includes('latest')) {
-        return -1;
-    }
+  if ((versionB.tags ?? []).includes('latest')) {
+    return -1
+  }
 
-    const semverA = semver.coerce(versionA.name);
-    const semverB = semver.coerce(versionB.name);
+  const semverA = semver.coerce(versionA.name)
+  const semverB = semver.coerce(versionB.name)
 
-    if (!semverA || !semverB) {
-        return versionA.name.localeCompare(versionB.name);
-    }
+  if ((semverA == null) || (semverB == null)) {
+    return versionA.name.localeCompare(versionB.name)
+  }
 
-    return semver.compare(semverA, semverB);
-};
+  return semver.compare(semverA, semverB)
+}
 
 /**
 * Returns boolean indicating if the project name is part of the favorites.
 * @param {string} projectName name of the project
 * @returns {boolean} - true is project is favorite
 */
-function isFavorite(projectName: string): boolean {
-    return localStorage.getItem(projectName) === "favorite";
-};
+function isFavorite (projectName: string): boolean {
+  return localStorage.getItem(projectName) === 'favorite'
+}
 
 /**
    * Sets favorite preference on project
    * @param {string} projectName
    * @param {boolean} shouldBeFavorite
    */
-function setFavorite(projectName: string, shouldBeFavorite: boolean): void {
-    if (shouldBeFavorite) {
-        localStorage.setItem(projectName, "favorite");
-    } else {
-        localStorage.removeItem(projectName);
-    }
-};
-
-const exp = {
-    getVersions,
-    getProjectLogoURL,
-    getProjectDocsURL,
-    getDocsPath,
-    upload,
-    claim,
-    deleteDoc,
-    compareVersions,
-    isFavorite,
-    setFavorite
+function setFavorite (projectName: string, shouldBeFavorite: boolean): void {
+  if (shouldBeFavorite) {
+    localStorage.setItem(projectName, 'favorite')
+  } else {
+    localStorage.removeItem(projectName)
+  }
 }
 
-export default exp;
+const exp = {
+  getVersions,
+  getProjectLogoURL,
+  getProjectDocsURL,
+  getDocsPath,
+  upload,
+  claim,
+  deleteDoc,
+  compareVersions,
+  isFavorite,
+  setFavorite
+}
+
+export default exp

@@ -1,48 +1,67 @@
-import { TextField } from "@mui/material";
-import { useState } from "react";
-import DataSelect from "../components/DataSelect";
-import PageLayout from "../components/PageLayout";
-import StyledForm from "../components/StyledForm";
-import { useProjects } from "../data-providers/ProjectDataProvider";
-import ProjectRepository from "../repositories/ProjectRepository";
+import { TextField } from '@mui/material'
+import React, { useState } from 'react'
+import DataSelect from '../components/DataSelect'
+import PageLayout from '../components/PageLayout'
+import StyledForm from '../components/StyledForm'
+import { useProjects } from '../data-providers/ProjectDataProvider'
+import ProjectRepository from '../repositories/ProjectRepository'
 
-export default function Claim(): JSX.Element {
-  const { projects, loadingFailed } = useProjects();
+export default function Claim (): JSX.Element {
+  const { projects, loadingFailed } = useProjects()
 
-  const [project, setProject] = useState<string>("none");
-  const [token, setToken] = useState<string>("");
-  const [errorMsg, setErrorMsg] = useState<string>("");
-  const [projectMissing, setProjectMissing] = useState<boolean | null>(null);
+  const [project, setProject] = useState<string>('none')
+  const [token, setToken] = useState<string>('')
+  const [errorMsg, setErrorMsg] = useState<string>('')
+  const [projectMissing, setProjectMissing] = useState<boolean | null>(null)
 
-  document.title = "Claim Token | docat";
+  document.title = 'Claim Token | docat'
 
-  async function claim(): Promise<void> {
-    if (!project || project === "none") {
-      setProjectMissing(true);
-      return;
+  async function claim (): Promise<void> {
+    if (project == null || project === '' || project === 'none') {
+      setProjectMissing(true)
+      return
     }
 
     try {
-      setErrorMsg("");
-      const response = await ProjectRepository.claim(project);
-      setToken(response.token);
-    } catch (e: any) {
-      console.error(e);
-      setErrorMsg(e.message);
+      setErrorMsg('')
+      const response = await ProjectRepository.claim(project)
+      setToken(response.token)
+    } catch (e) {
+      console.error(e)
+      const msg = (e as { message: string }).message
+      setErrorMsg(msg)
     }
   }
 
-  function getProjects(): string[] {
-    if (loadingFailed || !projects) {
-      return [];
+  function getProjects (): string[] {
+    if (loadingFailed || projects == null) {
+      return []
     }
 
-    return projects;
+    return projects
   }
 
-  if (loadingFailed && errorMsg !== "Failed to load projects") {
-    setErrorMsg("Failed to load projects");
+  if (loadingFailed && errorMsg !== 'Failed to load projects') {
+    setErrorMsg('Failed to load projects')
   }
+
+  const tokenContainer =
+    token === ''
+      ? (
+      <></>
+        )
+      : (
+      <TextField
+        fullWidth
+        label="Token"
+        inputProps={{
+          readOnly: true
+        }}
+        value={token}
+      >
+        {token}
+      </TextField>
+        )
 
   return (
     <PageLayout
@@ -56,37 +75,36 @@ export default function Claim(): JSX.Element {
           label="Project"
           values={getProjects()}
           onChange={(p) => {
-            if (p === "none" || !p) {
-              setProjectMissing(true);
+            if (p == null || p === '' || p === 'none') {
+              setProjectMissing(true)
             } else {
-              setProjectMissing(false);
+              setProjectMissing(false)
             }
 
-            setProject(p);
-            setToken("");
-            setErrorMsg("");
+            setProject(p)
+            setToken('')
+            setErrorMsg('')
           }}
-          value={project || "none"}
-          errorMsg={projectMissing ? "Please select a Project" : undefined}
+          value={project ?? 'none'}
+          errorMsg={
+            projectMissing === true ? 'Please select a Project' : undefined
+          }
         />
 
-        {(token && (
-          <TextField
-            fullWidth
-            label="Token"
-            inputProps={{
-              readOnly: true,
-            }}
-            value={token}
-          >
-            {token}
-          </TextField>
-        )) || <></>}
+        {tokenContainer}
 
-        <button type="submit" disabled={!!token} onClick={claim}>
+        <button
+          type="submit"
+          disabled={token !== ''}
+          onClick={() => {
+            (async () => {
+              await claim()
+            })().catch((e) => console.error(e))
+          }}
+        >
           Claim
         </button>
       </StyledForm>
     </PageLayout>
-  );
+  )
 }
