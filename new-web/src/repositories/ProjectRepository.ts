@@ -72,10 +72,15 @@ async function upload (projectName: string, version: string, body: FormData): Pr
     }
   )
 
-  const json = await resp.json() as { message: string }
+  if (resp.ok) return
 
-  if (!resp.ok) {
-    throw new Error(json.message)
+  switch (resp.status) {
+    case 401:
+      throw new Error('Failed to upload documentation: Version already exists')
+    case 504:
+      throw new Error('Failed to upload documentation: Server unreachable')
+    default:
+      throw new Error(`Failed to upload documentation: ${(await resp.json() as { message: string }).message}`)
   }
 }
 
@@ -85,13 +90,18 @@ async function upload (projectName: string, version: string, body: FormData): Pr
  */
 async function claim (projectName: string): Promise<{ token: string }> {
   const resp = await fetch(`/api/${projectName}/claim`)
-  const json = await resp.json() as { token?: string, message: string }
 
-  if (!resp.ok || json.token == null) {
-    throw new Error(json.message)
+  if (resp.ok) {
+    const json = await resp.json() as { token: string }
+    return json
   }
 
-  return { token: json.token }
+  if (resp.status === 504) { // Gateway timeout
+    throw new Error('Failed to claim project: Server unreachable')
+  }
+
+  const json = await resp.json() as { message: string }
+  throw new Error(`Failed to claim project: ${json.message}`)
 }
 
 /**
@@ -109,12 +119,15 @@ async function deleteDoc (projectName: string, version: string, token: string): 
     }
   )
 
-  if (resp.status === 401) { // Give the user more specific error message
-    throw new Error('The token you provided is invalid')
-  }
+  if (resp.ok) return
 
-  if (!resp.ok) {
-    throw new Error(`Failed to delete documentation: ${resp.statusText}`)
+  switch (resp.status) {
+    case 401:
+      throw new Error('Failed to delete documentation: Invalid token')
+    case 504:
+      throw new Error('Failed to delete documentation: Server unreachable')
+    default:
+      throw new Error(`Failed to delete documentation: ${(await resp.json() as { message: string }).message}`)
   }
 }
 

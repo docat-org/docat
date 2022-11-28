@@ -32,8 +32,8 @@ export default function Banner (props: Props): JSX.Element {
 
   useEffect(() => {
     if (isNotEmpty(props.errorMsg) || isNotEmpty(props.successMsg)) {
-      setMsg(new Message(props))
       setShow(true)
+      setMsg(new Message(props))
     }
   }, [props])
 

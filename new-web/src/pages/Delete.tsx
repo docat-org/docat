@@ -131,8 +131,8 @@ export default function Delete (): JSX.Element {
   return (
     <PageLayout
       title="Delete Documentation"
-      successMsg={msg.show ?? msg.type === 'success' ? msg.text : ''}
-      errorMsg={msg.show ?? msg.type === 'error' ? msg.text : ''}
+      successMsg={msg.show && msg.type === 'success' ? msg.text : ''}
+      errorMsg={msg.show && msg.type === 'error' ? msg.text : ''}
     >
       <StyledForm>
         <DataSelect

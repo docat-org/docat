@@ -9,6 +9,18 @@ import ProjectRepository from '../repositories/ProjectRepository'
 import LoadingPage from './LoadingPage'
 
 export default function Upload (): JSX.Element {
+  interface Validation {
+    projectMsg?: string
+    versionMsg?: string
+    validateFileNow?: boolean
+  }
+
+  interface Message {
+    show: boolean
+    type: 'error' | 'success'
+    text: string
+  }
+
   document.title = 'Upload | docat'
 
   const { reload: reloadProjects } = useProjects()
@@ -16,32 +28,32 @@ export default function Upload (): JSX.Element {
   const [version, setVersion] = useState<string>('')
   const [file, setFile] = useState<File | undefined>(undefined)
   const [isUploading, setIsUploading] = useState<boolean>(false)
-  const [uploadSuccess, setUploadSuccess] = useState<boolean | null>(null)
-  const [validation, setValidation] = useState<{
-    projectMsg?: string
-    versionMsg?: string
-    validateFileNow?: boolean
-  }>({})
+  const [validation, setValidation] = useState<Validation>({})
+  const [msg, setMsg] = useState<Message>({
+    show: false,
+    type: 'error',
+    text: ''
+  })
 
   function validateInput (inputName: string, value: string): boolean {
     const validationProp = `${inputName}Msg` as keyof typeof validation
 
-    if (value.trim() === '') {
-      const input = inputName.charAt(0).toUpperCase() + inputName.slice(1)
-      const validationMsg = `${input} is required`
-
-      setValidation({
-        ...validation,
-        [validationProp]: validationMsg
-      })
-      return false
-    } else {
+    if (value.trim().length > 0) {
       setValidation({
         ...validation,
         [validationProp]: undefined
       })
       return true
     }
+
+    const input = inputName.charAt(0).toUpperCase() + inputName.slice(1)
+    const validationMsg = `${input} is required`
+
+    setValidation({
+      ...validation,
+      [validationProp]: validationMsg
+    })
+    return false
   }
 
   function validateFile (): boolean {
@@ -72,15 +84,27 @@ export default function Upload (): JSX.Element {
       setVersion('')
       setFile(undefined)
       setValidation({})
-      setUploadSuccess(true)
+      setMsg({
+        show: true,
+        type: 'success',
+        text: 'Documentation uploaded successfully'
+      })
 
       // reload the projects
       reloadProjects()
     } catch (e) {
       console.error(e)
-      setUploadSuccess(false)
+
+      const message = (e as { message: string }).message
+      setMsg({
+        show: true,
+        type: 'error',
+        text: message
+      })
     } finally {
-      setTimeout(() => setUploadSuccess(null), 5000)
+      setTimeout(() => {
+        setMsg({ ...msg, show: false })
+      }, 1000)
       setIsUploading(false)
     }
   }
@@ -106,12 +130,8 @@ export default function Upload (): JSX.Element {
 
   return (
     <PageLayout
-      errorMsg={
-        uploadSuccess === false ? 'Failed to upload documentation.' : ''
-      }
-      successMsg={
-        uploadSuccess === true ? 'Documentation uploaded successfully.' : ''
-      }
+      successMsg={msg.show && msg.type === 'success' ? msg.text : ''}
+      errorMsg={msg.show && msg.type === 'error' ? msg.text : ''}
       title="Upload Documentation"
       description={description}
     >
