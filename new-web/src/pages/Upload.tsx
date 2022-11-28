@@ -4,12 +4,14 @@ import React, { useState } from 'react'
 import FileInput from '../components/FileInput'
 import PageLayout from '../components/PageLayout'
 import StyledForm from '../components/StyledForm'
+import { useProjects } from '../data-providers/ProjectDataProvider'
 import ProjectRepository from '../repositories/ProjectRepository'
 import LoadingPage from './LoadingPage'
 
 export default function Upload (): JSX.Element {
   document.title = 'Upload | docat'
 
+  const { reload: reloadProjects } = useProjects()
   const [project, setProject] = useState<string>('')
   const [version, setVersion] = useState<string>('')
   const [file, setFile] = useState<File | undefined>(undefined)
@@ -71,6 +73,9 @@ export default function Upload (): JSX.Element {
       setFile(undefined)
       setValidation({})
       setUploadSuccess(true)
+
+      // reload the projects
+      reloadProjects()
     } catch (e) {
       console.error(e)
       setUploadSuccess(false)
@@ -157,11 +162,14 @@ export default function Upload (): JSX.Element {
           validateNow={validation.validateFileNow === true}
         ></FileInput>
 
-        <button type="submit" onClick={() => {
-          (async () => {
-            await upload()
-          })().catch(console.error)
-        }}>
+        <button
+          type="submit"
+          onClick={() => {
+            (async () => {
+              await upload()
+            })().catch(console.error)
+          }}
+        >
           Upload
         </button>
       </StyledForm>
