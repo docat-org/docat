@@ -22,7 +22,7 @@ export default function Home (): JSX.Element {
 
   document.title = 'Home | docat'
 
-  function updateFavorites (): void {
+  const updateFavorites = (): void => {
     if (projects == null) return
 
     const favorites = projects.filter((project) =>
@@ -70,7 +70,9 @@ export default function Home (): JSX.Element {
           projects={favoriteProjects}
           onFavoriteChanged={() => updateFavorites()}
         />
-        <div className={styles.divider} />
+        {nonFavoriteProjects.length > 0 && favoriteProjects.length > 0 && (
+          <div className={styles.divider} />
+        )}
         <ProjectList
           projects={nonFavoriteProjects}
           onFavoriteChanged={() => updateFavorites()}

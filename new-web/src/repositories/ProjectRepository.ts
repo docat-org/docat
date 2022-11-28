@@ -108,20 +108,13 @@ async function deleteDoc (projectName: string, version: string, token: string): 
       headers
     }
   )
-  if (resp.status === 401) {
+
+  if (resp.status === 401) { // Give the user more specific error message
     throw new Error('The token you provided is invalid')
   }
 
-  let json = { message: '' }
-  try {
-    json = await resp.json() as { message: string }
-  } catch (e) {
-    console.error(e)
-    throw new Error('Failed to delete documentation')
-  }
-
   if (!resp.ok) {
-    throw new Error('Failed to delete documentation' + json.message)
+    throw new Error(`Failed to delete documentation: ${resp.statusText}`)
   }
 }
 
