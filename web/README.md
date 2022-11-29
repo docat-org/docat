@@ -8,18 +8,16 @@ yarn install [--pure-lockfile]
 
 ### Compiles and hot-reloads for development
 
-Configure the backend connection by setting
-port and host in `.env.development.local`.
-Like this configuration for the host `127.0.0.1`
-and the port `1337`.
-
+Configure both the frontend port and the backend connection
+by setting them in `.env.development.local`.
 ```sh
-VUE_APP_BACKEND_PORT=1337
-VUE_APP_BACKEND_HOST=127.0.0.1
+PORT=8080
+BACKEND_HOST=127.0.0.1
+BACKEND_PORT=5000
 ```
 
 ```sh
-yarn serve
+yarn start
 ```
 
 ### Compiles and minifies for production
@@ -34,7 +32,7 @@ yarn build
 yarn lint
 ```
 
-### Basic Header Theeming
+### Basic Header Theming
 
 Not happy with the default Docat logo and header?
 Just add your custom html header to the `/var/www/html/config.json` file.
@@ -42,10 +40,6 @@ Just add your custom html header to the `/var/www/html/config.json` file.
 ```json
 { "headerHTML": "<h1>MyCompany</h1>" }
 ```
-
-### Customize configuration
-
-See [Configuration Reference](https://cli.vuejs.org/config/).
 
 
 ## Development
