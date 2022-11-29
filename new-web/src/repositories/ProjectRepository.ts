@@ -11,7 +11,7 @@ async function getVersions (projectName: string): Promise<ProjectDetails[]> {
   const res = await fetch(`/api/projects/${projectName}`)
 
   if (!res.ok) {
-    console.error(res.json())
+    console.error((await res.json() as { message: string }).message)
     return []
   }
 

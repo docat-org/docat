@@ -1,7 +1,3 @@
-/* eslint-disable @typescript-eslint/no-throw-literal */
-
-// throwing react-router-dom.Response is necessary to redirect to the error page
-
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useParams, useSearchParams } from 'react-router-dom'
 import DocumentControlButtons from '../components/DocumentControlButtons'
@@ -10,6 +6,7 @@ import ProjectRepository from '../repositories/ProjectRepository'
 
 import styles from './../style/pages/Docs.module.css'
 import LoadingPage from './LoadingPage'
+import NotFound from './NotFound'
 
 export default function Docs (): JSX.Element {
   const proj = useParams().project ?? ''
@@ -22,13 +19,14 @@ export default function Docs (): JSX.Element {
   const [page, setPage] = useState<string>(location)
   const [hideUi, setHideUi] = useState<boolean>(hideControls)
   const [versions, setVersions] = useState<ProjectDetails[]>([])
+  const [loadingFailed, setLoadingFailed] = useState<boolean>(false)
 
   const iFrameRef = useRef(null)
 
   document.title = `${project} | docat`
 
   if (project === '') {
-    throw new Response('Project not found', { status: 404 })
+    setLoadingFailed(true)
   }
 
   const updateRoute = useCallback(
@@ -38,11 +36,16 @@ export default function Docs (): JSX.Element {
       page: string,
       hideControls: boolean
     ): void => {
-      window.history.replaceState(
-        {},
-        '',
-        `/${project}/${version}/${page}${hideControls ? '?hide-ui=true' : ''}`
-      )
+      const newState = `/#/${project}/${version}/${page}${
+        hideControls ? '?hide-ui=true' : ''
+      }`
+
+      // skip updating the route if the new state is the same as the current one
+      if (window.location.hash === newState.substring(1)) {
+        return
+      }
+
+      window.history.pushState({}, '', newState)
     },
     []
   )
@@ -58,7 +61,8 @@ export default function Docs (): JSX.Element {
     ProjectRepository.getVersions(project)
       .then((res) => {
         if (res.length === 0) {
-          throw new Response('Project not found', { status: 404 })
+          setLoadingFailed(true)
+          return
         }
 
         res = res.sort((a, b) => ProjectRepository.compareVersions(a, b))
@@ -81,13 +85,13 @@ export default function Docs (): JSX.Element {
           const versionsAndTags = res.map((v) => [v.name, ...v.tags]).flat()
 
           if (!versionsAndTags.includes(version)) {
-            throw new Response('Version not found', { status: 404 })
+            setLoadingFailed(true)
           }
         }
       })
       .catch((e) => {
         console.error(e)
-        throw new Response('Failed to load versions', { status: 500 })
+        setLoadingFailed(true)
       })
   }, [project, version, page, hideUi, updateRoute])
 
@@ -110,7 +114,7 @@ export default function Docs (): JSX.Element {
     const path: string = iFrameRef.current.contentWindow.location.href as string
     const page = path.split(`${version}/`)[1]
 
-    if (page.trim().length < 1) return
+    if (page == null || page.trim().length < 1) return
 
     setPage(page)
     updateRoute(project, version, page, hideUi)
@@ -125,6 +129,10 @@ export default function Docs (): JSX.Element {
         }
       })
     /*  eslint-enable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call */
+  }
+
+  if (loadingFailed) {
+    return <NotFound />
   }
 
   if (versions.length === 0) {
