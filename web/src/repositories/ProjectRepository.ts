@@ -41,24 +41,6 @@ function getProjectDocsURL (projectName: string, version: string, docsPath?: str
 }
 
 /**
- * Returns the docs path only without the prefix, project and version
- * @param {string} projectName Name of the project
- * @param {string} version Version name
- * @param {string} fullDocsPath Full path to the docs including prefix, project and version
- */
-function getDocsPath (projectName: string, version: string, fullDocsPath: string): string {
-  const match = decodeURIComponent(fullDocsPath).match(new RegExp(
-    String.raw`(.*)/${RESOURCE}/${projectName}/${version}/(.*)`
-  ))
-
-  if (match == null || match.length < 2) {
-    return fullDocsPath
-  }
-
-  return match[2] ?? ''
-}
-
-/**
  * Uploads new project documentation
  * @param {string} projectName Name of the project
  * @param {string} version Name of the version
@@ -188,7 +170,6 @@ const exp = {
   getVersions,
   getProjectLogoURL,
   getProjectDocsURL,
-  getDocsPath,
   upload,
   claim,
   deleteDoc,
