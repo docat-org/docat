@@ -32,6 +32,12 @@ yarn build
 yarn lint
 ```
 
+### Tests
+
+```sh
+yarn test
+```
+
 ### Basic Header Theming
 
 Not happy with the default Docat logo and header?
@@ -44,14 +50,19 @@ Just add your custom html header to the `/var/www/html/config.json` file.
 
 ## Development
 
-To mount the development `dist/` folder while working on the
-web frontend, you can mount the `dist/` folder as a docker volume:
-
 ```sh
 sudo docker run \
   --detach \
   --volume /path/to/doc:/var/docat/doc/ \
-  --volume /path/to/docat/web/dist:/var/www/html/ \
   --publish 8000:80 \
   docat
+```
+
+## Errors
+
+If you get a 403 response when trying to read a version,
+try changing the permissions of your docs folder on your host.
+
+```sh
+sudo chmod 777 /path/to/doc -r
 ```

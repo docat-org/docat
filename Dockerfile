@@ -1,17 +1,21 @@
 # building frontend
-FROM node:16.14 as build-deps
+FROM node:16.14 as frontend
+WORKDIR /app/frontend
 COPY web ./
+
 # fix docker not following symlinks
 COPY doc/getting-started.md ./src/assets/
+
 RUN yarn install --frozen-lockfile
 RUN yarn lint
-RUN yarn run test:unit
+
+# fix test not exiting by default
+ARG CI=true
+RUN yarn test
+
 RUN yarn build
 
 # setup Python
-# TODO(Fliiiix): FastApi is broken in Python 3.11
-# We need to wait for a fix:
-# https://github.com/tiangolo/fastapi/issues/5048
 FROM python:3.11.0-alpine3.15 AS backend
 
 # configure docker container
@@ -29,12 +33,9 @@ COPY /docat/pyproject.toml /docat/poetry.lock /app/
 
 # Install the application
 WORKDIR /app/docat
-RUN poetry install --no-root --no-ansi --no-dev
+RUN poetry install --no-root --no-ansi --only main
 
 # production
-# TODO(Fliiiix): FastApi is broken in Python 3.11
-# We need to wait for a fix:
-# https://github.com/tiangolo/fastapi/issues/5048
 FROM python:3.11.0-alpine3.15
 
 # set up the system
@@ -46,7 +47,7 @@ RUN mkdir -p /var/docat/doc
 
 # install the application
 RUN mkdir -p /var/www/html
-COPY --from=build-deps /dist /var/www/html
+COPY --from=frontend /app/frontend/build /var/www/html
 COPY docat /app/docat
 WORKDIR /app/docat
 

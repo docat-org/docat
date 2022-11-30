@@ -11,7 +11,7 @@ export const ConfigDataProvider = ({ children }: any): JSX.Element => {
   const [config, setConfig] = useState<Config>({})
 
   useEffect(() => {
-    fetch('/config.json')
+    fetch('/doc/config.json')
       .then(async (res) => await res.json() as Config)
       .then((data) => {
         setConfig(data)
