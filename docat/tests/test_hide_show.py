@@ -1,6 +1,7 @@
 import io
-from pathlib import Path
 from unittest.mock import patch
+
+import docat.app as docat
 
 
 def test_hide(client_with_claimed_project):
@@ -70,11 +71,11 @@ def test_hide_only_version_not_listed_in_projects(client_with_claimed_project):
     assert project_details_response.json() == {"name": "some-project", "versions": []}
 
 
-def test_hide_creates_hidden_file(client_with_claimed_project, upload_folder_path):
+def test_hide_creates_hidden_file(client_with_claimed_project):
     """
     Tests that the hidden file is created when hiding a version
     """
-    hidden_file_path = Path(upload_folder_path) / "some-project" / "1.0.0" / ".hidden"
+    hidden_file_path = docat.DOCAT_UPLOAD_FOLDER / "some-project" / "1.0.0" / ".hidden"
 
     # create a version
     create_response = client_with_claimed_project.post(
@@ -223,11 +224,11 @@ def test_show(client_with_claimed_project):
     }
 
 
-def test_show_deletes_hidden_file(client_with_claimed_project, upload_folder_path):
+def test_show_deletes_hidden_file(client_with_claimed_project):
     """
     Tests that the hidden file is deleted when requesting show.
     """
-    hidden_file_path = Path(upload_folder_path) / "some-project" / "1.0.0" / ".hidden"
+    hidden_file_path = docat.DOCAT_UPLOAD_FOLDER / "some-project" / "1.0.0" / ".hidden"
 
     # create a version
     create_response = client_with_claimed_project.post(

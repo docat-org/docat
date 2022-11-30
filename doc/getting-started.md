@@ -171,3 +171,18 @@ Using `docatl`:
 ```sh
 docatl show awesome-project 0.0.1 --host http://localhost:8000 --api-key <token>
 ```
+### Force Index Re-creation
+
+To force the re-creation of the search index, you can use the following command:
+
+```sh
+curl -X POST http://localhost:8000/api/index/update
+```
+
+Using `docatl`:
+
+```sh
+docatl update-index --host http://localhost:8000
+```
+
+Note that this can take some time.

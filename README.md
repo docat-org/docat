@@ -11,28 +11,12 @@ The simplest way is to build and run the docker container,
 you can optionally use volumes to persist state:
 
 ```sh
-# run container in background and persist data (docs, nginx configs and tokens database)
+# run container in background and persist data (docs, nginx configs and tokens database as well as the content index)
 # use 'ghcr.io/docat-org/docat:unstable' to get the latest changes
-mkdir -p docat-run/db && touch docat-run/db/db.json
+mkdir -p docat-run/
 docker run \
   --detach \
-  --volume $PWD/docat-run/doc:/var/docat/doc/ \
-  --volume $PWD/docat-run/db/db.json:/app/docat/db.json \
-  --publish 8000:80 \
-  ghcr.io/docat-org/docat
-```
-
-*Alternative:* Mount a dedicated directory to host `db.json` :
-
-```sh
-# run container in background and persist data (docs, nginx configs and tokens database)
-# use 'ghcr.io/docat-org/docat:unstable' to get the latest changes
-mkdir -p docat-run/db && touch docat-run/db/db.json
-docker run \
-  --detach \
-  --volume $PWD/docat-run/doc:/var/docat/doc/ \
-  --volume $PWD/docat-run/db:/var/docat/db/ \
-  --env DOCAT_DB_PATH=/var/docat/db/db.json
+  --volume $PWD/docat-run/doc:/var/docat/ \
   --publish 8000:80 \
   ghcr.io/docat-org/docat
 ```
@@ -47,13 +31,13 @@ For local development, first configure and start the backend (inside the `docat/
 
 ```sh
 # create a folder for local development (uploading docs)
-DEV_DOC_PATH="$(mktemp -d)"
+DEV_DOCAT_PATH="$(mktemp -d)"
 
 # install dependencies
 poetry install
 
 # run the local development version
-DOCAT_SERVE_FILES=1 DOCAT_DOC_PATH="$DEV_DOC_PATH" poetry run python -m docat
+DOCAT_SERVE_FILES=1 DOCAT_STORAGE_PATH="$DEV_DOCAT_PATH" poetry run python -m docat
 ```
 
 After this you need to start the frontend (inside the `web/` folder):
@@ -116,10 +100,36 @@ It is possible to configure some things after the fact.
 
 Supported config options:
 
-* headerHTML
+- headerHTML
 
 ## Advanced Usage
 
 ### Hide Controls
 
-If you would like to send link to a specific version of the documentation without the option to change the version, you can do so by clicking on the `Hide Controls` button. This will hide the control buttons and change the link, which can then be copied as usual. 
+If you would like to send link to a specific version of the documentation without the option to change the version, you can do so by clicking on the `Hide Controls` button. This will hide the control buttons and change the link, which can then be copied as usual.
+
+### Indexing
+
+Docat uses indexing for better search performance. The index is automatically updated when you upload, modify or delete a project. However, this means that if you already have existing projects, these need to be initially indexed. There are two ways to do this:
+
+#### Using an Environment Variable:
+
+When the **DOCAT_INDEX_FILES** is set, docat forces creation of the index on startup. See [local development](#local-development) for examples.
+
+> Note: This will increase startup time substantially, depending on how many projects you have.
+
+#### Using the API:
+
+You can force the index re-creation using the following request:
+
+```sh
+curl -X POST http://localhost:8000/api/index/update
+```
+
+Using `docatl`:
+
+```sh
+docatl update-index --host http://localhost:8000
+```
+
+Don't worry if it takes some time :)
