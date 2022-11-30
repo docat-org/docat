@@ -1,0 +1,24 @@
+.no-results {
+  text-align: center;
+  font-size: 120%;
+  margin-top: 16px;
+}
+
+.search-results {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+}
+
+.search-result {
+  width: calc(100% - 24px);
+  margin: 8px 0;
+  padding: 12px;
+  border-radius: 7px;
+  font-size: 120%;
+  background-color: #e8e8e8;
+}
+
+.highlighted {
+  background-color: yellow;
+}

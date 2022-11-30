@@ -1,5 +1,5 @@
 import { createHashRouter, RouterProvider } from 'react-router-dom'
-import React from 'react'
+import React, { ReactNode } from 'react'
 import { ConfigDataProvider } from './data-providers/ConfigDataProvider'
 import { ProjectDataProvider } from './data-providers/ProjectDataProvider'
 import Claim from './pages/Claim'
@@ -9,6 +9,8 @@ import Help from './pages/Help'
 import Home from './pages/Home'
 import NotFound from './pages/NotFound'
 import Upload from './pages/Upload'
+import Search from './pages/Search'
+import EscapeSlashForDocsPath from './pages/EscapeSlashForDocsPath'
 
 function App (): JSX.Element {
   const router = createHashRouter([
@@ -37,6 +39,10 @@ function App (): JSX.Element {
           element: <Help />
         },
         {
+          path: 'search',
+          element: <Search />
+        },
+        {
           path: ':project',
           children: [
             {
@@ -52,7 +58,16 @@ function App (): JSX.Element {
                 },
                 {
                   path: ':page',
-                  element: <Docs />
+                  children: [
+                    {
+                      path: '',
+                      element: <Docs />
+                    },
+                    {
+                      path: '*',
+                      element: <EscapeSlashForDocsPath />
+                    }
+                  ]
                 }
               ]
             }

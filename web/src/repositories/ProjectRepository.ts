@@ -1,5 +1,6 @@
 import semver from 'semver'
 import ProjectDetails from '../models/ProjectDetails'
+import { ApiSearchResponse } from '../models/SearchResult'
 
 const RESOURCE = 'doc'
 
@@ -20,6 +21,28 @@ async function getVersions (projectName: string): Promise<ProjectDetails[]> {
   }
 
   return json.versions
+}
+
+/**
+ *
+ * @param query Query to search for
+ * @returns
+ */
+async function search (query: string): Promise<ApiSearchResponse> {
+  const response = await fetch(`/api/search?query=${query}`)
+
+  if (response.ok) {
+    return await response.json() as ApiSearchResponse
+  }
+
+  switch (response.status) {
+    case 504:
+      throw new Error('Failed to search: Gateway timeout')
+    case 404:
+      throw new Error('Failed to search: Server does not yet support search')
+    default:
+      throw new Error(`Failed to search: ${(await response.json() as { message: string }).message}`)
+  }
 }
 
 /**
@@ -168,6 +191,7 @@ function setFavorite (projectName: string, shouldBeFavorite: boolean): void {
 
 const exp = {
   getVersions,
+  search,
   getProjectLogoURL,
   getProjectDocsURL,
   upload,
