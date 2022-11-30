@@ -20,7 +20,7 @@ export default function Delete (): JSX.Element {
     text: string
   }
 
-  const { projects, loadingFailed } = useProjects()
+  const { projects, loadingFailed, reload } = useProjects()
   const [versions, setVersions] = useState<ProjectDetails[]>([])
 
   const [validation, setValidation] = useState<Validation>({})
@@ -33,7 +33,7 @@ export default function Delete (): JSX.Element {
   const [version, setVersion] = useState<string>('none')
   const [token, setToken] = useState<string>('')
 
-  document.title = 'Delete Version | docat'
+  document.title = 'Delete Documentation | docat'
 
   useEffect(() => {
     if (project === '' || project === 'none') {
@@ -81,6 +81,10 @@ export default function Delete (): JSX.Element {
         type: 'success',
         text: `Documentation for ${project} (${version}) deleted successfully.`
       })
+      setProject('none')
+      setVersion('none')
+      setToken('')
+      reload()
     } catch (e) {
       console.error(e)
 
