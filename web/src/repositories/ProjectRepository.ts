@@ -36,7 +36,7 @@ function getProjectLogoURL (projectName: string): string {
  * @param {string} version Version name
  * @param {string?} docsPath Path to the documentation page
  */
-function getProjectDocsURL (projectName: string, version: string, docsPath: string | undefined): string {
+function getProjectDocsURL (projectName: string, version: string, docsPath?: string): string {
   return `/${RESOURCE}/${projectName}/${version}/${docsPath ?? ''}`
 }
 
@@ -96,12 +96,12 @@ async function claim (projectName: string): Promise<{ token: string }> {
     return json
   }
 
-  if (resp.status === 504) { // Gateway timeout
-    throw new Error('Failed to claim project: Server unreachable')
+  switch (resp.status) {
+    case 504:
+      throw new Error('Failed to claim project: Server unreachable')
+    default:
+      throw new Error(`Failed to claim project: ${(await resp.json() as { message: string }).message}`)
   }
-
-  const json = await resp.json() as { message: string }
-  throw new Error(`Failed to claim project: ${json.message}`)
 }
 
 /**
@@ -143,7 +143,7 @@ async function deleteDoc (projectName: string, version: string, token: string): 
  * @param {string} versionB.name version name
  * @param {string[] | undefined} versionB.tags optional tags for this vertion
  */
-function compareVersions (versionA: { name: string, tags: string[] | undefined }, versionB: { name: string, tags: string[] | undefined }): number {
+function compareVersions (versionA: { name: string, tags?: string[] }, versionB: { name: string, tags?: string[] }): number {
   if ((versionA.tags ?? []).includes('latest')) {
     return 1
   }
