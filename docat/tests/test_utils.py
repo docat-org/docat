@@ -1,6 +1,7 @@
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
+import docat.app as docat
 from docat.utils import create_symlink, extract_archive, remove_docs
 
 
@@ -70,11 +71,10 @@ def test_archive_artifact():
 
 def test_remove_version(temp_project_version):
     docs = temp_project_version("project", "1.0")
-    with patch("docat.utils.UPLOAD_FOLDER", docs):
-        remove_docs("project", "1.0")
+    remove_docs("project", "1.0", docat.DOCAT_UPLOAD_FOLDER)
 
-        assert docs.exists()
-        assert not (docs / "project").exists()
+    assert docs.exists()
+    assert not (docs / "project").exists()
 
 
 def test_remove_symlink_version(temp_project_version):
@@ -83,7 +83,6 @@ def test_remove_symlink_version(temp_project_version):
     symlink_to_latest = docs / project / "latest"
     assert symlink_to_latest.is_symlink()
 
-    with patch("docat.utils.UPLOAD_FOLDER", docs):
-        remove_docs(project, "latest")
+    remove_docs(project, "latest", docat.DOCAT_UPLOAD_FOLDER)
 
-        assert not symlink_to_latest.exists()
+    assert not symlink_to_latest.exists()

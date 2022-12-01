@@ -4,25 +4,37 @@ from pathlib import Path
 import pytest
 from fastapi.testclient import TestClient
 from tinydb import TinyDB
-from tinydb.storages import MemoryStorage
 
 import docat.app as docat
 from docat.utils import create_symlink
 
 
-@pytest.fixture
-def client():
+@pytest.fixture(autouse=True)
+def setup_docat_paths():
+    """
+    Set up the temporary paths for the docat app.
+    """
+
     temp_dir = tempfile.TemporaryDirectory()
-    docat.DOCAT_UPLOAD_FOLDER = Path(temp_dir.name)
-    docat.db = TinyDB(storage=MemoryStorage)
-    yield TestClient(docat.app)
-    docat.app.db = None
+    docat.DOCAT_STORAGE_PATH = Path(temp_dir.name)
+    docat.DOCAT_DB_PATH = Path(temp_dir.name) / "db.json"
+    docat.DOCAT_INDEX_PATH = Path(temp_dir.name) / "index.json"
+    docat.DOCAT_UPLOAD_FOLDER = Path(temp_dir.name) / "doc"
+
+    yield
+
     temp_dir.cleanup()
 
 
 @pytest.fixture
-def upload_folder_path():
-    return docat.DOCAT_UPLOAD_FOLDER
+def client():
+    docat.db = TinyDB(docat.DOCAT_DB_PATH)
+    docat.index_db = TinyDB(docat.DOCAT_INDEX_PATH)
+
+    yield TestClient(docat.app)
+
+    docat.app.db = None
+    docat.app.index_db = None
 
 
 @pytest.fixture
@@ -34,18 +46,34 @@ def client_with_claimed_project(client):
 
 
 @pytest.fixture
-def temp_project_version(tmp_path):
-    docs = tmp_path / "doc"
-
-    docs.mkdir()
-
+def temp_project_version():
     def __create(project, version):
-        version_docs = docs / project / version
+        version_docs = docat.DOCAT_UPLOAD_FOLDER / project / version
         version_docs.mkdir(parents=True)
         (version_docs / "index.html").touch()
 
-        create_symlink(version_docs, docs / project / "latest")
+        create_symlink(version_docs, docat.DOCAT_UPLOAD_FOLDER / project / "latest")
 
-        return docs
+        return docat.DOCAT_UPLOAD_FOLDER
 
     yield __create
+
+
+@pytest.fixture
+def index_db_project_table():
+    index_db = TinyDB(docat.DOCAT_INDEX_PATH)
+    projects_table = index_db.table("projects")
+
+    yield projects_table
+
+    index_db.close()
+
+
+@pytest.fixture
+def index_db_files_table():
+    index_db = TinyDB(docat.DOCAT_INDEX_PATH)
+    projects_table = index_db.table("files")
+
+    yield projects_table
+
+    index_db.close()

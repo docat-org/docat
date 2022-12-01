@@ -5,4 +5,5 @@ upload
 .tox
 .coverage
 db.json
+index.json
 .python-version

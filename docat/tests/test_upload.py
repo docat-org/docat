@@ -30,7 +30,7 @@ def test_successfully_override(client_with_claimed_project):
 
         assert response.status_code == 201
         assert response_data["message"] == "File successfully uploaded"
-        assert remove_mock.mock_calls == [call("some-project", "1.0.0")]
+        assert remove_mock.mock_calls == [call("some-project", "1.0.0", docat.DOCAT_UPLOAD_FOLDER)]
 
 
 def test_tags_are_not_overwritten_without_api_key(client_with_claimed_project):

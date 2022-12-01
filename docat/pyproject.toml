@@ -12,6 +12,8 @@ fastapi = "^0.86.0"
 python-multipart = "^0.0.5"
 uvicorn = "^0.20.0"
 python-magic = "^0.4.27"
+beautifulsoup4 = "^4.11.1"
+types-beautifulsoup4 = "^4.11.6"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^6.0.0"
