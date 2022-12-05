@@ -113,7 +113,12 @@ def get_project(project):
 @app.get("/api/search", response_model=SearchResponse, status_code=status.HTTP_200_OK)
 @app.get("/api/search/", response_model=SearchResponse, status_code=status.HTTP_200_OK)
 def search(query: str):
-    query = query.lower()
+    query = query.lower().strip()
+
+    # an empty string would match almost everything
+    if not query:
+        return SearchResponse(projects=[], versions=[], files=[])
+
     found_projects: list[SearchResultProject] = []
     found_versions: list[SearchResultVersion] = []
     found_files: list[SearchResultFile] = []
