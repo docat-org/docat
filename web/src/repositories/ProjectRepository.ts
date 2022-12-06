@@ -38,8 +38,6 @@ async function search (query: string): Promise<ApiSearchResponse> {
   switch (response.status) {
     case 504:
       throw new Error('Failed to search: Gateway timeout')
-    case 404:
-      throw new Error('Failed to search: Server does not yet support search')
     default:
       throw new Error(`Failed to search: ${(await response.json() as { message: string }).message}`)
   }

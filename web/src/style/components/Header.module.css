@@ -4,8 +4,6 @@
   min-width: 230px;
   height: var(--header-height);
   background-color: var(--background);
-  box-shadow: 0 2px 4px -1px rgb(0 0 0 / 20%), 0 4px 5px 0 rgb(0 0 0 / 14%),
-    0 1px 10px 0 rgb(0 0 0 / 12%);
 }
 
 @media only screen and (min-width: 1000px) {

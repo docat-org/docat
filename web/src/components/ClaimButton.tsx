@@ -5,11 +5,11 @@ import ReactTooltip from 'react-tooltip'
 
 import styles from './../style/components/ControlButtons.module.css'
 
-class ButtonProps {
+interface Props {
   isSingleButton?: boolean
 }
 
-export default function ClaimButton (props: ButtonProps): JSX.Element {
+export default function ClaimButton (props: Props): JSX.Element {
   return (
     <>
       <ReactTooltip />

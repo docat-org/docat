@@ -7,20 +7,20 @@ import ProjectRepository from '../repositories/ProjectRepository'
 import { debounce } from 'lodash'
 
 import SearchResults from '../components/SearchResults'
+import { useMessageBanner } from '../data-providers/MessageBannerProvider'
 
-export default function Search (): JSX.Element {
-  const NO_RESULTS: ApiSearchResponse = {
-    projects: [],
-    versions: [],
-    files: []
-  }
-  const queryParam =
-    useSearchParams()[0].get('query') ?? ''
-  const debounceMs = 1000
+const NO_RESULTS: ApiSearchResponse = {
+  projects: [],
+  versions: [],
+  files: []
+}
+const debounceMs = 600
 
-  const [loading, setLoading] = useState<boolean>(false)
-  const [errorMsg, setErrorMsg] = useState<string | null>(null)
-  const [results, setResults] = useState<ApiSearchResponse>(NO_RESULTS)
+export default function Search(): JSX.Element {
+  const queryParam = useSearchParams()[0].get('query') ?? ''
+
+  const { showMessage } = useMessageBanner()
+  const [results, setResults] = useState<ApiSearchResponse | null>(null)
   const [searchQuery, setSearchQuery] = useState<string>(queryParam)
   // used to prevent the search from being triggered immediately when the query is changed
   const [displayedSearchQuery, setDisplayedSearchQuery] =
@@ -36,20 +36,19 @@ export default function Search (): JSX.Element {
           return
         }
 
-        setLoading(true)
-        ProjectRepository.search(searchQuery)
-          .then((res) => {
-            setResults(res)
-          })
-          .catch((e: { message: string }) => {
+        void (async () => {
+          try {
+            const results = await ProjectRepository.search(searchQuery)
+            setResults(results)
+          } catch (e) {
             console.error(e)
             setResults(NO_RESULTS)
-            setErrorMsg(e.message)
-          })
-          .finally(() => {
-            setLoading(false)
-            setTimeout(() => setErrorMsg(null), 5000)
-          })
+            showMessage({
+              text: (e as { message: string }).message,
+              type: 'error'
+            })
+          }
+        })()
       }, debounceMs),
     [searchQuery]
   )
@@ -64,11 +63,10 @@ export default function Search (): JSX.Element {
     <PageLayout
       title="Search"
       description="Search for a project, version, tag, document or html content"
-      errorMsg={errorMsg ?? undefined}
       showSearchBar={false}
     >
       <TextField
-        focused={true}
+        autoFocus
         label="Search"
         type="search"
         value={displayedSearchQuery}
@@ -77,8 +75,13 @@ export default function Search (): JSX.Element {
           debounce(() => setSearchQuery(e.target.value), debounceMs)()
         }}
       />
-
-      <SearchResults searchQuery={searchQuery} loading={loading} results={results} />
+      {results === null
+        ? (
+        <div className="loading-spinner" />
+          )
+        : (
+        <SearchResults searchQuery={searchQuery} results={results} />
+          )}
     </PageLayout>
   )
 }

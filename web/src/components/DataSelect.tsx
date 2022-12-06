@@ -15,46 +15,36 @@ export default function DataSelect (props: Props): JSX.Element {
     props.value ?? 'none'
   )
 
-  function onSelect (e: { target: { value: string } }): void {
-    const value = e.target.value
-
-    setSelectedValue(value)
-    props.onChange(value)
-  }
-
   // clear field if selected value is not in options
-  if (
-    props.values.length > 0 &&
-    selectedValue !== 'none' &&
-    !props.values.includes(selectedValue)
-  ) {
+  if (selectedValue !== 'none' && !props.values.includes(selectedValue)) {
     setSelectedValue('none')
   }
 
   return (
-    <>
-      <FormGroup>
-        <TextField
-          onChange={onSelect}
-          value={props.values.length > 0 ? selectedValue : 'none'}
-          label={props.label}
-          error={props.errorMsg !== undefined && props.errorMsg !== ''}
-          helperText={props.errorMsg}
-          select
-        >
-          <MenuItem value="none" disabled>
-            {props.emptyMessage}
-          </MenuItem>
+    <FormGroup>
+      <TextField
+        onChange={(e: { target: { value: string } }) => {
+          setSelectedValue(e.target.value)
+          props.onChange(e.target.value)
+        }}
+        value={props.values.length > 0 ? selectedValue : 'none'}
+        label={props.label}
+        error={props.errorMsg !== undefined && props.errorMsg !== ''}
+        helperText={props.errorMsg}
+        select
+      >
+        <MenuItem value="none" disabled>
+          {props.emptyMessage}
+        </MenuItem>
 
-          {props.values.map((value) => {
-            return (
-              <MenuItem key={value} value={value}>
-                {value}
-              </MenuItem>
-            )
-          })}
-        </TextField>
-      </FormGroup>
-    </>
+        {props.values.map((value) => {
+          return (
+            <MenuItem key={value} value={value}>
+              {value}
+            </MenuItem>
+          )
+        })}
+      </TextField>
+    </FormGroup>
   )
 }

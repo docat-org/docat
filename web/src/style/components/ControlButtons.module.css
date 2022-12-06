@@ -2,8 +2,8 @@
 .claim-button,
 .delete-button,
 .single-control-button {
-  width: 60px;
-  height: 60px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
   background-color: var(--primary-foreground);
   color: white;

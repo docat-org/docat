@@ -15,6 +15,8 @@ interface Props {
 }
 
 export default function DocumentControlButtons (props: Props): JSX.Element {
+  const buttonStyle = { width: '25px', height: '25px' }
+
   return (
     <div className={styles.controls}>
       <ReactTooltip />
@@ -23,18 +25,18 @@ export default function DocumentControlButtons (props: Props): JSX.Element {
         className={styles['home-button']}
         data-tip="Project Overview"
       >
-        <Home sx={{ width: '25px', height: '25px' }} />
+        <Home sx={buttonStyle} />
       </Link>
 
       <FormControl>
         <Select
           className={styles['version-select']}
           onChange={(e) => props.onVersionChange(e.target.value)}
-          value={(props.versions.length > 0) ? props.version : ''}
+          value={props.versions.length > 0 ? props.version : ''}
         >
           {props.versions.map((v) => (
             <MenuItem key={v.name} value={v.name}>
-              {v.name + ((v.tags.length > 0) ? ` (${v.tags.join(', ')})` : '')}
+              {v.name + (v.tags.length > 0 ? ` (${v.tags.join(', ')})` : '')}
             </MenuItem>
           ))}
         </Select>
@@ -42,12 +44,9 @@ export default function DocumentControlButtons (props: Props): JSX.Element {
       <button
         className={styles['hide-controls-button']}
         data-tip="Hide Controls"
-        onClick={() => {
-          window.history.pushState({}, '', window.location.pathname)
-          props.onHideUi()
-        }}
+        onClick={props.onHideUi}
       >
-        <VisibilityOff sx={{ width: '25px', height: '25px' }} />
+        <VisibilityOff sx={buttonStyle} />
       </button>
     </div>
   )

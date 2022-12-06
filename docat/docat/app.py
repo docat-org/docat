@@ -40,6 +40,7 @@ from docat.utils import (
     get_all_projects,
     get_project_details,
     index_all_projects,
+    is_forbidden_project_name,
     remove_docs,
     remove_file_index_from_db,
     remove_version_from_version_index,
@@ -317,6 +318,10 @@ def upload(
     docat_api_key: Optional[str] = Header(None),
     db: TinyDB = Depends(get_db),
 ):
+    if is_forbidden_project_name(project):
+        response.status_code = status.HTTP_400_BAD_REQUEST
+        return ApiResponse(message=f'Project name "{project}" is forbidden, as it conflicts with pages in docat web.')
+
     project_base_path = DOCAT_UPLOAD_FOLDER / project
     base_path = project_base_path / version
     target_file = base_path / file.filename
@@ -396,6 +401,10 @@ def claim(project: str, db: TinyDB = Depends(get_db)):
 @app.put("/api/{project}/rename/{new_project_name}", response_model=ApiResponse, status_code=status.HTTP_200_OK)
 @app.put("/api/{project}/rename/{new_project_name}/", response_model=ApiResponse, status_code=status.HTTP_200_OK)
 def rename(project: str, new_project_name: str, response: Response, docat_api_key: str = Header(None), db: TinyDB = Depends(get_db)):
+    if is_forbidden_project_name(new_project_name):
+        response.status_code = status.HTTP_400_BAD_REQUEST
+        return ApiResponse(message=f'New project name "{new_project_name}" is forbidden, as it conflicts with pages in docat web.')
+
     project_base_path = DOCAT_UPLOAD_FOLDER / project
     new_project_base_path = DOCAT_UPLOAD_FOLDER / new_project_name
 

@@ -5,11 +5,11 @@ import { Link } from 'react-router-dom'
 
 import styles from './../style/components/ControlButtons.module.css'
 
-class ButtonProps {
+interface Props {
   isSingleButton?: boolean
 }
 
-export default function UploadButton (props: ButtonProps): JSX.Element {
+export default function UploadButton (props: Props): JSX.Element {
   return (
     <>
       <ReactTooltip />

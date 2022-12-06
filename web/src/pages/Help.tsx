@@ -16,7 +16,12 @@ export default function Help (): JSX.Element {
   const [content, setContent] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(true)
 
-  function replaceLinks (text: string): string {
+  /**
+   * Replaces the links to "http://localhost:3000" with the current url of the page
+   * @param text the contents of the markdown file
+   * @returns the contents of the markdown file with the links replaced
+   */
+  const replaceLinks = (text: string): string => {
     const protocol = document.location.protocol
     const host = document.location.hostname
     const port =
@@ -27,18 +32,23 @@ export default function Help (): JSX.Element {
     return text.replaceAll('http://localhost:8000', currentUrl)
   }
 
+  // Load the markdown file
   useEffect(() => {
-    fetch(gettingStarted as RequestInfo)
-      .then(async (res: Response) => await res.text())
-      .then((text: string) => {
+    void (async (): Promise<void> => {
+      try {
+        // the import "gettingStarted" is just a path to the md file,
+        // so we need to fetch the contents of the file manually
+
+        const response = await fetch(gettingStarted as RequestInfo)
+        const text = await response.text()
         const content = replaceLinks(text)
         setContent(content)
-      })
-      .catch((err) => {
-        console.error(err)
-      })
-
-    setLoading(false)
+      } catch (e) {
+        console.error(e)
+      } finally {
+        setLoading(false)
+      }
+    })()
   }, [])
 
   if (loading) {

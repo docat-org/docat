@@ -1,5 +1,5 @@
 import { InputLabel } from '@mui/material'
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 
 import styles from './../style/components/FileInput.module.css'
 
@@ -7,54 +7,29 @@ interface Props {
   label: string
   okTypes: string[]
   file: File | undefined
-  validateNow: boolean
   onChange: (file: File | undefined) => void
+  isValid: (file: File) => boolean
 }
 
-export default function FileInput (props: Props): JSX.Element {
-  const [validationMessage, setValidationMessage] = useState<string>('')
+export default function FileInput(props: Props): JSX.Element {
   const [fileName, setFileName] = useState<string>(
     props.file?.name !== undefined ? props.file.name : ''
   )
   const [dragActive, setDragActive] = useState<boolean>(false)
   const inputRef = useRef(null)
 
-  const validate = useCallback(
-    (file: File | undefined): boolean => {
-      if (file == null || file.name == null) {
-        setValidationMessage('File is required')
-        return false
-      }
-
-      if (file.type == null) {
-        setValidationMessage('Could not determine file type')
-        return false
-      }
-
-      if (props.okTypes.find((x) => x === file.type) === undefined) {
-        setValidationMessage('This file type is not allowed')
-        return false
-      }
-
-      setValidationMessage('')
-      return true
-    },
-    [props.okTypes]
-  )
-
-  useEffect(() => {
-    if (props.validateNow) {
-      validate(props.file)
-    }
-  }, [props.file, props.validateNow, validate])
-
-  function updateFileIfValid (files: FileList | null): void {
+  /**
+   * Checks if a file was selected and if it is valid
+   * before it is selected.
+   * @param files FileList from the event
+   */
+  const updateFileIfValid = (files: FileList | null): void => {
     if (files == null || files.length < 1 || files[0] == null) {
       return
     }
 
     const file = files[0]
-    if (!validate(file)) {
+    if (!props.isValid(file)) {
       return
     }
 
@@ -62,7 +37,12 @@ export default function FileInput (props: Props): JSX.Element {
     props.onChange(file)
   }
 
-  function handleDragEvents (e: React.DragEvent<HTMLDivElement>): void {
+  /**
+   * This updates the file upload container to show a custom style when
+   * the user is dragging a file into or out of the container.
+   * @param e drag enter event
+   */
+  const handleDragEvents = (e: React.DragEvent<HTMLDivElement>): void => {
     e.preventDefault()
     e.stopPropagation()
 
@@ -73,7 +53,11 @@ export default function FileInput (props: Props): JSX.Element {
     }
   }
 
-  function handleDrop (e: React.DragEvent<HTMLDivElement>): void {
+  /**
+   * Handles the drop event when the user drops a file into the container.
+   * @param e DragEvent
+   */
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>): void => {
     e.preventDefault()
     e.stopPropagation()
     setDragActive(false)
@@ -85,14 +69,20 @@ export default function FileInput (props: Props): JSX.Element {
     updateFileIfValid(e.dataTransfer.files)
   }
 
-  function handleSelect (e: React.ChangeEvent<HTMLInputElement>): void {
+  /**
+   * Handles the file input via the file browser.
+   * @param e change event
+   */
+  const handleSelect = (e: React.ChangeEvent<HTMLInputElement>): void => {
     e.preventDefault()
 
     updateFileIfValid(e.target.files)
   }
 
-  // triggers the input when the button is clicked
-  function onButtonClick (): void {
+  /**
+   * This triggers the input when the container is clicked.
+   */
+  const onButtonClick = (): void => {
     if (inputRef?.current != null) {
       // @ts-expect-error - the ref is not null, therefore the button should be able to be clicked
       inputRef.current.click() // eslint-disable-line @typescript-eslint/no-unsafe-call
@@ -125,7 +115,7 @@ export default function FileInput (props: Props): JSX.Element {
           onChange={handleSelect}
         />
 
-        {(fileName !== '') && (
+        {fileName !== '' && (
           <>
             <p>{fileName}</p>
             <p>-</p>
@@ -148,9 +138,6 @@ export default function FileInput (props: Props): JSX.Element {
           ></div>
         )}
       </div>
-      <p className={`${styles['validation-message']} ${styles.red}`}>
-        {validationMessage}
-      </p>
     </div>
   )
 }

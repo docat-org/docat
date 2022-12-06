@@ -11,8 +11,9 @@ import NotFound from './pages/NotFound'
 import Upload from './pages/Upload'
 import Search from './pages/Search'
 import EscapeSlashForDocsPath from './pages/EscapeSlashForDocsPath'
+import { MessageBannerProvider } from './data-providers/MessageBannerProvider'
 
-function App (): JSX.Element {
+function App(): JSX.Element {
   const router = createHashRouter([
     {
       path: '/',
@@ -79,11 +80,13 @@ function App (): JSX.Element {
 
   return (
     <div className="App">
-      <ConfigDataProvider>
-        <ProjectDataProvider>
-          <RouterProvider router={router} />
-        </ProjectDataProvider>
-      </ConfigDataProvider>
+      <MessageBannerProvider>
+        <ConfigDataProvider>
+          <ProjectDataProvider>
+            <RouterProvider router={router} />
+          </ProjectDataProvider>
+        </ConfigDataProvider>
+      </MessageBannerProvider>
     </div>
   )
 }

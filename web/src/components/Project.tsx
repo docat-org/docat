@@ -7,28 +7,43 @@ import styles from './../style/components/Project.module.css'
 import ProjectDetails from '../models/ProjectDetails'
 import FavoriteStar from './FavoriteStar'
 
-export default function Project (props: {
+interface Props {
   projectName: string
   onFavoriteChanged: () => void
-}): JSX.Element {
-  const [versions, setVersions] = useState<ProjectDetails[]>([])
-  const [logoExists, setLogoExists] = useState<boolean | null>(null)
+}
 
-  const logoURL = ProjectRepository.getProjectLogoURL(props.projectName)
+export default function Project (props: Props): JSX.Element {
+  const [versions, setVersions] = useState<ProjectDetails[]>([])
+  const [logo, setLogo] = useState<Blob | null>(null)
 
   // try to load image to prevent image flashing
   useEffect(() => {
-    fetch(logoURL)
-      .then((res) => setLogoExists(res.ok))
-      .catch(() => setLogoExists(false))
-  }, [logoURL])
+    void (async () => {
+      const logoURL = ProjectRepository.getProjectLogoURL(props.projectName)
+      try {
+        const response = await fetch(logoURL)
+        if (response.status === 200) {
+          const imgData = await response.blob()
+          setLogo(imgData)
+        }
+      } catch (e) {
+        setLogo(null)
+      }
+    })()
+  }, [props.projectName])
 
+  // reload versions on project name change
   useEffect(() => {
-    ProjectRepository.getVersions(props.projectName)
-      .then((res) => {
-        setVersions(res)
-      })
-      .catch(() => setVersions([]))
+    void (async () => {
+      try {
+        const versionResponse = await ProjectRepository.getVersions(
+          props.projectName
+        )
+        setVersions(versionResponse)
+      } catch (e) {
+        setVersions([])
+      }
+    })()
   }, [props.projectName])
 
   return (
@@ -36,19 +51,20 @@ export default function Project (props: {
       <ReactTooltip />
       <div className={styles['project-card-header']}>
         <Link to={`/${props.projectName}/latest`}>
-          {logoExists !== true && (
+          {logo == null
+            ? (
             <div
               className={styles['project-card-title']}
               data-tip={props.projectName}
             >
               {props.projectName}
             </div>
-          )}
-          {logoExists === true && (
+              )
+            : (
             <>
               <img
                 className={styles['project-logo']}
-                src={logoURL}
+                src={URL.createObjectURL(logo)}
                 alt={`${props.projectName} project Logo`}
               />
 
@@ -59,7 +75,7 @@ export default function Project (props: {
                 {props.projectName}
               </div>
             </>
-          )}
+              )}
         </Link>
         <FavoriteStar
           projectName={props.projectName}

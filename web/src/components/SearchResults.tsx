@@ -1,5 +1,5 @@
-import { uniqueId } from 'lodash'
-import React, { useEffect, useState } from 'react'
+import { debounce, uniqueId } from 'lodash'
+import React, { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ApiSearchResponse } from '../models/SearchResult'
 
@@ -7,22 +7,15 @@ import styles from '../style/components/SearchResults.module.css'
 
 interface Props {
   searchQuery: string
-  loading: boolean
   results: ApiSearchResponse
 }
 
-export default function SearchResults (props: Props): JSX.Element {
-  const [loading, setLoading] = useState<boolean>(props.loading)
+export default function SearchResults(props: Props): JSX.Element {
   const [resultElements, setResultElements] = useState<JSX.Element[]>([])
 
   useEffect(() => {
-    setLoading(props.loading)
-  }, [props.loading])
-
-  useEffect(() => {
-    setLoading(true)
-    setResultElements(createSearchResultElements(props.results))
-    setLoading(false)
+    searchResultElements.cancel()
+    searchResultElements()
   }, [props.results])
 
   /**
@@ -31,44 +24,46 @@ export default function SearchResults (props: Props): JSX.Element {
    * @param res ApiSearchResponse
    * @returns Array of JSX.Element
    */
-  const createSearchResultElements = (
-    res: ApiSearchResponse
-  ): JSX.Element[] => {
-    const projects = res.projects.map((p) => (
-      <Link
-        className={styles['search-result']}
-        key={`project-${p.name}`}
-        to={`/${p.name}`}
-        dangerouslySetInnerHTML={{
-          __html: highlighedText(p.name)
-        }}
-      ></Link>
-    ))
+  const searchResultElements = useMemo(
+    () =>
+      debounce(() => {
+        const projects = props.results.projects.map((p) => (
+          <Link
+            className={styles['search-result']}
+            key={`project-${p.name}`}
+            to={`/${p.name}`}
+            dangerouslySetInnerHTML={{
+              __html: highlighedText(p.name)
+            }}
+          ></Link>
+        ))
 
-    const versions = res.versions.map((v) => (
-      <Link
-        className={styles['search-result']}
-        key={`version-${v.project}-${v.version}`}
-        to={`/${v.project}/${v.version}`}
-        dangerouslySetInnerHTML={{
-          __html: highlighedText(`${v.project} v. ${v.version}`)
-        }}
-      ></Link>
-    ))
+        const versions = props.results.versions.map((v) => (
+          <Link
+            className={styles['search-result']}
+            key={`version-${v.project}-${v.version}`}
+            to={`/${v.project}/${v.version}`}
+            dangerouslySetInnerHTML={{
+              __html: highlighedText(`${v.project} v. ${v.version}`)
+            }}
+          ></Link>
+        ))
 
-    const files = res.files.map((f) => (
-      <Link
-        className={styles['search-result']}
-        key={`file-${f.project}-${f.version}-${f.path}`}
-        to={`/${f.project}/${f.version}/${f.path}`}
-        dangerouslySetInnerHTML={{
-          __html: highlighedText(`${f.project} v. ${f.version} - ${f.path}`)
-        }}
-      ></Link>
-    ))
+        const files = props.results.files.map((f) => (
+          <Link
+            className={styles['search-result']}
+            key={`file-${f.project}-${f.version}-${f.path}`}
+            to={`/${f.project}/${f.version}/${f.path}`}
+            dangerouslySetInnerHTML={{
+              __html: highlighedText(`${f.project} v. ${f.version} - ${f.path}`)
+            }}
+          ></Link>
+        ))
 
-    return [...projects, ...versions, ...files]
-  }
+        setResultElements([...projects, ...versions, ...files])
+      }, 1000),
+    [props.results]
+  )
 
   /**
    * Used to replace any unsafe characters in the displayed name
@@ -101,11 +96,15 @@ export default function SearchResults (props: Props): JSX.Element {
     )
   }
 
-  if (loading) {
-    return <div className="loading-spinner"></div>
-  }
-
   if (resultElements.length === 0) {
+    if (
+      props.results.projects.length > 0 ||
+      props.results.versions.length > 0 ||
+      props.results.files.length > 0
+    ) {
+      return <div className="loading-spinner" />
+    }
+
     if (props.searchQuery.trim().length === 0) {
       return <div className={styles['no-results']}>No results</div>
     }

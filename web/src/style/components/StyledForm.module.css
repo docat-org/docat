@@ -3,7 +3,7 @@
   flex-direction: column;
 }
 
-.form-item {
+.form > div {
   margin: 16px 0 0 0;
   width: 100%;
   min-height: 5em;
@@ -21,7 +21,8 @@
   }
 }
 
-button[type="submit"] {
+button[type='submit'] {
+  margin-top: 16px;
   padding: 8px;
   width: 100%;
   max-width: 175px;

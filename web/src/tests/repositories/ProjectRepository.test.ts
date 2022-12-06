@@ -72,8 +72,7 @@ describe('get project docs url', () => {
     const result = ProjectRepository.getProjectDocsURL(projectName, version)
 
     expect(result).toEqual(`/doc/${projectName}/${version}/`)
-  }
-  )
+  })
 
   test('should return the correct url with path', () => {
     const projectName = 'test-project'

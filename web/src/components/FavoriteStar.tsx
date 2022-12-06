@@ -2,15 +2,17 @@ import { Star, StarOutline } from '@mui/icons-material'
 import React, { useState } from 'react'
 import ProjectRepository from '../repositories/ProjectRepository'
 
-export default function FavoriteStar (props: {
+interface Props {
   projectName: string
   onFavoriteChanged: () => void
-}): JSX.Element {
+}
+
+export default function FavoriteStar (props: Props): JSX.Element {
   const [isFavorite, setIsFavorite] = useState<boolean>(
     ProjectRepository.isFavorite(props.projectName)
   )
 
-  function toggleFavorite (): void {
+  const toggleFavorite = (): void => {
     const newIsFavorite = !isFavorite
     ProjectRepository.setFavorite(props.projectName, newIsFavorite)
     setIsFavorite(newIsFavorite)

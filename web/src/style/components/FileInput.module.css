@@ -56,14 +56,3 @@
   top: 10px;
   left: 0.75em;
 }
-
-.validation-message {
-  padding-top: 5px;
-  margin-left: 14px;
-  font-size: 0.8em;
-  min-height: 1em;
-}
-
-.red {
-  color: red;
-}

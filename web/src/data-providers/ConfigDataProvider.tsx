@@ -1,3 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return */
+/*
+  We need any, because we don't know the type of the children,
+  and we need the return those children again which is an "unsafe return"
+*/
+
 import React, { createContext, useContext, useEffect, useState } from 'react'
 
 export interface Config {
@@ -6,22 +12,25 @@ export interface Config {
 
 const Context = createContext<Config>({})
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+/**
+ * Provides the config from the backend for the whole application,
+ * so it can be used in every component without it being reloaded the whole time.
+ */
 export const ConfigDataProvider = ({ children }: any): JSX.Element => {
   const [config, setConfig] = useState<Config>({})
 
   useEffect(() => {
-    fetch('/doc/config.json')
-      .then(async (res) => await res.json() as Config)
-      .then((data) => {
+    void (async () => {
+      try {
+        const res = await fetch('/doc/config.json')
+        const data = await res.json() as Config
         setConfig(data)
-      })
-      .catch((err) => {
+      } catch (err) {
         console.error(err)
-      })
+      }
+    })()
   }, [])
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   return <Context.Provider value={config}>{children}</Context.Provider>
 }
 

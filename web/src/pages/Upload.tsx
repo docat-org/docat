@@ -4,38 +4,40 @@ import React, { useState } from 'react'
 import FileInput from '../components/FileInput'
 import PageLayout from '../components/PageLayout'
 import StyledForm from '../components/StyledForm'
+import { useMessageBanner } from '../data-providers/MessageBannerProvider'
 import { useProjects } from '../data-providers/ProjectDataProvider'
 import ProjectRepository from '../repositories/ProjectRepository'
 import LoadingPage from './LoadingPage'
 
-export default function Upload (): JSX.Element {
-  interface Validation {
-    projectMsg?: string
-    versionMsg?: string
-    validateFileNow?: boolean
-  }
+import styles from '../style/pages/Upload.module.css'
 
-  interface Message {
-    show: boolean
-    type: 'error' | 'success'
-    text: string
-  }
+interface Validation {
+  projectMsg?: string
+  versionMsg?: string
+  fileMsg?: string
+}
 
+const okFileTypes = [
+  'application/zip',
+  'zip',
+  'application/octet-stream',
+  'application/x-zip',
+  'application/x-zip-compressed'
+]
+
+export default function Upload(): JSX.Element {
   document.title = 'Upload | docat'
 
   const { reload: reloadProjects } = useProjects()
+  const { showMessage } = useMessageBanner()
+
   const [project, setProject] = useState<string>('')
   const [version, setVersion] = useState<string>('')
   const [file, setFile] = useState<File | undefined>(undefined)
   const [isUploading, setIsUploading] = useState<boolean>(false)
   const [validation, setValidation] = useState<Validation>({})
-  const [msg, setMsg] = useState<Message>({
-    show: false,
-    type: 'error',
-    text: ''
-  })
 
-  function validateInput (inputName: string, value: string): boolean {
+  const validateInput = (inputName: string, value: string): boolean => {
     const validationProp = `${inputName}Msg` as keyof typeof validation
 
     if (value.trim().length > 0) {
@@ -56,57 +58,75 @@ export default function Upload (): JSX.Element {
     return false
   }
 
-  function validateFile (): boolean {
-    setValidation({ ...validation, validateFileNow: true })
+  const validateFile = (file: File | undefined): boolean => {
+    if (file == null || file.name == null) {
+      setValidation({
+        ...validation,
+        fileMsg: 'File is required'
+      })
+      return false
+    }
 
-    // make ready for another validation
-    setTimeout(() => {
-      setValidation({ ...validation, validateFileNow: false })
-    }, 1000)
+    if (file.type == null) {
+      setValidation({
+        ...validation,
+        fileMsg: 'Could not determine file type'
+      })
+      return false
+    }
 
-    return file !== undefined
+    if (okFileTypes.find((x) => x === file.type) === undefined) {
+      setValidation({
+        ...validation,
+        fileMsg: 'This file type is not allowed'
+      })
+      return false
+    }
+
+    setValidation({
+      ...validation,
+      fileMsg: undefined
+    })
+    return true
   }
 
-  async function upload (): Promise<void> {
-    if (!validateInput('project', project)) return
-    if (!validateInput('version', version)) return
-    if (!validateFile() || file === undefined) return
+  const upload = (): void => {
+    void (async () => {
+      if (!validateInput('project', project)) return
+      if (!validateInput('version', version)) return
+      if (!validateFile(file) || file === undefined) return
 
-    setIsUploading(true)
-    try {
-      const formData = new FormData()
-      formData.append('file', file)
+      setIsUploading(true)
+      try {
+        const formData = new FormData()
+        formData.append('file', file)
 
-      await ProjectRepository.upload(project, version, formData)
+        await ProjectRepository.upload(project, version, formData)
 
-      // reset the form
-      setProject('')
-      setVersion('')
-      setFile(undefined)
-      setValidation({})
-      setMsg({
-        show: true,
-        type: 'success',
-        text: 'Documentation uploaded successfully'
-      })
+        // reset the form
+        setProject('')
+        setVersion('')
+        setFile(undefined)
+        setValidation({})
+        showMessage({
+          type: 'success',
+          text: 'Documentation uploaded successfully'
+        })
 
-      // reload the projects
-      reloadProjects()
-    } catch (e) {
-      console.error(e)
+        // reload the projects
+        reloadProjects()
+      } catch (e) {
+        console.error(e)
 
-      const message = (e as { message: string }).message
-      setMsg({
-        show: true,
-        type: 'error',
-        text: message
-      })
-    } finally {
-      setTimeout(() => {
-        setMsg({ ...msg, show: false })
-      }, 1000)
-      setIsUploading(false)
-    }
+        const message = (e as { message: string }).message
+        showMessage({
+          type: 'error',
+          text: message
+        })
+      } finally {
+        setIsUploading(false)
+      }
+    })()
   }
 
   if (isUploading) {
@@ -129,12 +149,7 @@ export default function Upload (): JSX.Element {
   )
 
   return (
-    <PageLayout
-      successMsg={msg.show && msg.type === 'success' ? msg.text : ''}
-      errorMsg={msg.show && msg.type === 'error' ? msg.text : ''}
-      title="Upload Documentation"
-      description={description}
-    >
+    <PageLayout title="Upload Documentation" description={description}>
       <StyledForm>
         <TextField
           fullWidth
@@ -172,24 +187,14 @@ export default function Upload (): JSX.Element {
           label="Zip File"
           file={file}
           onChange={(file) => setFile(file)}
-          okTypes={[
-            'application/zip',
-            'zip',
-            'application/octet-stream',
-            'application/x-zip',
-            'application/x-zip-compressed'
-          ]}
-          validateNow={validation.validateFileNow === true}
+          okTypes={okFileTypes}
+          isValid={validateFile}
         ></FileInput>
+        <p className={`${styles['validation-message']} ${styles.red}`}>
+          {validation.fileMsg}
+        </p>
 
-        <button
-          type="submit"
-          onClick={() => {
-            (async () => {
-              await upload()
-            })().catch(console.error)
-          }}
-        >
+        <button type="submit" onClick={upload}>
           Upload
         </button>
       </StyledForm>

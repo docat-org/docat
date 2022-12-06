@@ -5,11 +5,11 @@ import React from 'react'
 
 import styles from './../style/components/ControlButtons.module.css'
 
-class ButtonProps {
+interface Props {
   isSingleButton?: boolean
 }
 
-export default function DeleteButton (props: ButtonProps): JSX.Element {
+export default function DeleteButton (props: Props): JSX.Element {
   return (
     <>
       <ReactTooltip />

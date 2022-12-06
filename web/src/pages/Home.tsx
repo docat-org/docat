@@ -25,15 +25,12 @@ export default function Home (): JSX.Element {
   const updateFavorites = (): void => {
     if (projects == null) return
 
-    const favorites = projects.filter((project) =>
-      ProjectRepository.isFavorite(project)
+    setFavoriteProjects(
+      projects.filter((project) => ProjectRepository.isFavorite(project))
     )
-    const nonFavorites = projects.filter(
-      (project) => !ProjectRepository.isFavorite(project)
+    setNonFavoriteProjects(
+      projects.filter((project) => !ProjectRepository.isFavorite(project))
     )
-
-    setFavoriteProjects(favorites)
-    setNonFavoriteProjects(nonFavorites)
   }
 
   if (loadingFailed) {
@@ -53,6 +50,7 @@ export default function Home (): JSX.Element {
     return <LoadingPage />
   }
 
+  // no projects
   if (projects.length === 0) {
     return <Help />
   }

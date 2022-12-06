@@ -6,32 +6,22 @@ import StyledForm from '../components/StyledForm'
 import PageLayout from '../components/PageLayout'
 import { useProjects } from '../data-providers/ProjectDataProvider'
 import ProjectDetails from '../models/ProjectDetails'
+import { useMessageBanner } from '../data-providers/MessageBannerProvider'
 
-export default function Delete (): JSX.Element {
-  interface Validation {
-    projectMissing?: boolean
-    versionMissing?: boolean
-    tokenMissing?: boolean
-  }
+interface Validation {
+  projectMissing?: boolean
+  versionMissing?: boolean
+  tokenMissing?: boolean
+}
 
-  interface Message {
-    show: boolean
-    type: 'error' | 'success'
-    text: string
-  }
-
-  const { projects, loadingFailed, reload } = useProjects()
-  const [versions, setVersions] = useState<ProjectDetails[]>([])
-
-  const [validation, setValidation] = useState<Validation>({})
-  const [msg, setMsg] = useState<Message>({
-    show: false,
-    type: 'error',
-    text: ''
-  })
+export default function Delete(): JSX.Element {
+  const { showMessage } = useMessageBanner()
   const [project, setProject] = useState<string>('none')
   const [version, setVersion] = useState<string>('none')
   const [token, setToken] = useState<string>('')
+  const { projects, loadingFailed, reload } = useProjects()
+  const [versions, setVersions] = useState<ProjectDetails[]>([])
+  const [validation, setValidation] = useState<Validation>({})
 
   document.title = 'Delete Documentation | docat'
 
@@ -41,70 +31,62 @@ export default function Delete (): JSX.Element {
       return
     }
 
-    ProjectRepository.getVersions(project)
-      .then((res) => {
-        setVersions(res)
-      })
-      .catch((e) => {
+    void (async () => {
+      try {
+        const v = await ProjectRepository.getVersions(project)
+        setVersions(v)
+      } catch (e) {
         console.error(e)
-        setMsg({
-          show: true,
+        showMessage({
           type: 'error',
           text: (e as { message: string }).message
         })
-      })
+      }
+    })()
   }, [project])
 
-  function validate (
+  const validate = (
     field: 'project' | 'version' | 'token',
     value: string
-  ): boolean {
+  ): boolean => {
     const valid = value !== 'none' && value !== ''
     setValidation({ ...validation, [`${field}Missing`]: !valid })
     return valid
   }
 
-  async function deleteDocumentation (): Promise<void> {
-    if (
-      !validate('project', project) ||
-      !validate('version', version) ||
-      !validate('token', token)
-    ) {
-      return
-    }
+  const deleteDocumentation = (): void => {
+    void (async () => {
+      if (!validate('project', project)) return
+      if (!validate('version', version)) return
+      if (!validate('token', token)) return
 
-    try {
-      await ProjectRepository.deleteDoc(project, version, token)
+      try {
+        await ProjectRepository.deleteDoc(project, version, token)
 
-      setMsg({
-        show: true,
-        type: 'success',
-        text: `Documentation for ${project} (${version}) deleted successfully.`
-      })
-      setProject('none')
-      setVersion('none')
-      setToken('')
-      reload()
-    } catch (e) {
-      console.error(e)
+        showMessage({
+          type: 'success',
+          text: `Documentation for ${project} (${version}) deleted successfully.`
+        })
+        setProject('none')
+        setVersion('none')
+        setToken('')
+        reload()
+      } catch (e) {
+        console.error(e)
 
-      setMsg({
-        show: true,
-        type: 'error',
-        text: (e as { message: string }).message
-      })
-    } finally {
-      setTimeout(
-        () =>
-          setMsg((current) => {
-            return { ...current, show: false }
-          }),
-        5000
-      )
-    }
+        showMessage({
+          type: 'error',
+          text: (e as { message: string }).message
+        })
+      }
+    })()
   }
 
-  function getProjects (): string[] {
+  /**
+   * Returns loaded Projects for DataSelect
+   * @returns string[] or an empty array
+   */
+  const getProjects = (): string[] => {
     if (loadingFailed || projects == null) {
       return []
     }
@@ -112,7 +94,11 @@ export default function Delete (): JSX.Element {
     return projects
   }
 
-  function getVersions (): string[] {
+  /**
+   * Returns loaded Versions for DataSelect
+   * @returns string[] or an empty array
+   */
+  const getVersions = (): string[] => {
     if (project === '' || project === 'none') {
       return []
     }
@@ -120,24 +106,8 @@ export default function Delete (): JSX.Element {
     return versions.map((v) => v.name)
   }
 
-  if (loadingFailed && msg.text !== 'Failed to load projects') {
-    // make sure to only show this error once
-    setMsg({ show: true, type: 'error', text: 'Failed to load projects' })
-    setTimeout(
-      () =>
-        setMsg((current) => {
-          return { ...current, show: false }
-        }),
-      5000
-    )
-  }
-
   return (
-    <PageLayout
-      title="Delete Documentation"
-      successMsg={msg.show && msg.type === 'success' ? msg.text : ''}
-      errorMsg={msg.show && msg.type === 'error' ? msg.text : ''}
-    >
+    <PageLayout title="Delete Documentation">
       <StyledForm>
         <DataSelect
           emptyMessage="Please select a Project"
@@ -189,14 +159,7 @@ export default function Delete (): JSX.Element {
           {token}
         </TextField>
 
-        <button
-          type="submit"
-          onClick={() => {
-            (async () => {
-              await deleteDocumentation()
-            })().catch((e) => console.error(e))
-          }}
-        >
+        <button type="submit" onClick={deleteDocumentation}>
           Delete
         </button>
       </StyledForm>

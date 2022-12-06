@@ -1,3 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call */
+/*
+  the iFrameRef is not really compatiple with ts,
+  and we need to use some of it's members, which is unsafe
+*/
+
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useParams, useSearchParams } from 'react-router-dom'
 import DocumentControlButtons from '../components/DocumentControlButtons'
@@ -9,15 +15,15 @@ import LoadingPage from './LoadingPage'
 import NotFound from './NotFound'
 
 export default function Docs (): JSX.Element {
-  const proj = useParams().project ?? ''
-  const ver = useParams().version ?? 'latest'
-  const location = useParams().page ?? 'index.html'
-  const hideControls = useSearchParams()[0].get('hide-ui') === 'true'
+  const projectParam = useParams().project ?? ''
+  const versionParam = useParams().version ?? 'latest'
+  const pageParam = useParams().page ?? 'index.html'
+  const hideUiParam = useSearchParams()[0].get('hide-ui') === 'true'
 
-  const [project] = useState<string>(proj)
-  const [version, setVersion] = useState<string>(ver)
-  const [page, setPage] = useState<string>(location)
-  const [hideUi, setHideUi] = useState<boolean>(hideControls)
+  const [project] = useState<string>(projectParam)
+  const [version, setVersion] = useState<string>(versionParam)
+  const [page, setPage] = useState<string>(pageParam)
+  const [hideUi, setHideUi] = useState<boolean>(hideUiParam)
   const [versions, setVersions] = useState<ProjectDetails[]>([])
   const [loadingFailed, setLoadingFailed] = useState<boolean>(false)
 
@@ -58,63 +64,78 @@ export default function Docs (): JSX.Element {
       return
     }
 
-    ProjectRepository.getVersions(project)
-      .then((res) => {
+    void (async () => {
+      try {
+        let res = await ProjectRepository.getVersions(project)
+
         if (res.length === 0) {
           setLoadingFailed(true)
           return
         }
 
         res = res.sort((a, b) => ProjectRepository.compareVersions(a, b))
-
         setVersions(res)
 
-        if (version === 'latest') {
-          const versionWithLatestTag = res.find((v) =>
-            (v.tags ?? []).includes('latest')
-          )
-
-          const latestVersion =
-            versionWithLatestTag != null
-              ? versionWithLatestTag.name
-              : res[res.length - 1].name
-
-          setVersion(latestVersion)
-          updateRoute(project, latestVersion, page, hideUi)
-        } else {
+        if (version !== 'latest') {
+          // custom version -> check if it exists
           const versionsAndTags = res.map((v) => [v.name, ...v.tags]).flat()
 
           if (!versionsAndTags.includes(version)) {
+            // version does not exist -> fail
             setLoadingFailed(true)
           }
+
+          return
         }
-      })
-      .catch((e) => {
+
+        // latest version -> check if there is a latest tag
+        const versionWithLatestTag = res.find((v) =>
+          (v.tags ?? []).includes('latest')
+        )
+
+        // if there is a latest tag, use it,
+        // otherwise use the latest version by sorting
+        const latestVersion =
+          versionWithLatestTag != null
+            ? versionWithLatestTag.name
+            : res[res.length - 1].name
+
+        setVersion(latestVersion)
+        updateRoute(project, latestVersion, page, hideUi)
+      } catch (e) {
         console.error(e)
         setLoadingFailed(true)
-      })
+      }
+    })()
   }, [project, version, page, hideUi, updateRoute])
 
-  function handleVersionChange (v: string): void {
+  const handleVersionChange = (v: string): void => {
     setVersion(v)
     updateRoute(project, v, page, hideUi)
   }
 
-  function handleHideControls (): void {
+  const handleHideControls = (): void => {
     updateRoute(project, version, page, true)
     setHideUi(true)
   }
 
-  function onIframeLocationChanged (): void {
-    /*  eslint-disable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call */
-    if (iFrameRef?.current == null) return
+  /**
+   * This makes all external links in the iFrame open in a new tab
+   * and updates the page url when the location in the iFrame changes
+   */
+  const onIframeLocationChanged = (): void => {
+    if (iFrameRef?.current == null) {
+      return
+    }
 
     // update the path in the url
     // @ts-expect-error - ts does not find the location on the iframe
     const path: string = iFrameRef.current.contentWindow.location.href as string
     const page = path.split(`${version}/`)[1]
 
-    if (page == null || page.trim().length < 1) return
+    if (page == null || page.trim().length < 1) {
+      return
+    }
 
     setPage(page)
     updateRoute(project, version, page, hideUi)
@@ -128,7 +149,6 @@ export default function Docs (): JSX.Element {
           a.setAttribute('target', '_blank')
         }
       })
-    /*  eslint-enable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call */
   }
 
   if (loadingFailed) {

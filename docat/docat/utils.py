@@ -99,6 +99,16 @@ def calculate_token(password, salt):
     return hashlib.pbkdf2_hmac("sha256", password.encode("utf-8"), salt, 100000).hex()
 
 
+def is_forbidden_project_name(name: str) -> bool:
+    """
+    Checks if the given project name is forbidden.
+    The project name is forbidden if it conflicts with
+    a page on the docat website.
+    """
+    name = name.lower().strip()
+    return name in ["upload", "claim", "delete", "search", "help"]
+
+
 def get_all_projects(upload_folder_path: Path) -> Projects:
     """
     Returns all projects in the upload folder.

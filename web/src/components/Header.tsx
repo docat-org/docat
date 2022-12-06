@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 
+import SearchBar from './SearchBar'
 import { useConfig } from '../data-providers/ConfigDataProvider'
 
 import docatLogo from '../assets/logo.png'
 import styles from './../style/components/Header.module.css'
-import SearchBar from './SearchBar'
 
 interface Props {
   showSearchBar?: boolean
@@ -18,9 +18,11 @@ export default function Header (props: Props): JSX.Element {
       <h1>DOCAT</h1>
     </>
   )
+
   const [header, setHeader] = useState<JSX.Element>(defaultHeader)
   const config = useConfig()
 
+  // set custom header if found in config
   if (config.headerHTML != null && header === defaultHeader) {
     setHeader(<div dangerouslySetInnerHTML={{ __html: config.headerHTML }} />)
   }
