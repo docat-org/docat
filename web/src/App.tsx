@@ -1,5 +1,5 @@
 import { createHashRouter, RouterProvider } from 'react-router-dom'
-import React, { ReactNode } from 'react'
+import React from 'react'
 import { ConfigDataProvider } from './data-providers/ConfigDataProvider'
 import { ProjectDataProvider } from './data-providers/ProjectDataProvider'
 import Claim from './pages/Claim'

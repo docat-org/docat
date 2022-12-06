@@ -102,6 +102,7 @@ export default function Search (): JSX.Element {
       title="Search"
       description="Search for a project, version, tag, document or html content"
       errorMsg={errorMsg ?? undefined}
+      showSearchBar={false}
     >
       <TextField
         focused={true}
@@ -151,12 +152,12 @@ export default function Search (): JSX.Element {
             ))}
           </div>
         )}
-        {!hasProjects() && searchQuery.trim().length > 0 && (
+        {!hasProjects() && displayedSearchQuery.trim().length > 0 && (
           <div className={styles['no-results']}>
-            No results found for &quot;{searchQuery}&quot;
+            No results found for &quot;{displayedSearchQuery}&quot;
           </div>
         )}
-        {!hasProjects() && searchQuery.trim().length === 0 && (
+        {!hasProjects() && displayedSearchQuery.trim().length === 0 && (
           <div className={styles['no-results']}>No results</div>
         )}
       </>

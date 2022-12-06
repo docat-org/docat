@@ -5,8 +5,13 @@ import { useConfig } from '../data-providers/ConfigDataProvider'
 
 import docatLogo from '../assets/logo.png'
 import styles from './../style/components/Header.module.css'
+import SearchBar from './SearchBar'
 
-export default function Header (): JSX.Element {
+interface Props {
+  showSearchBar?: boolean
+}
+
+export default function Header (props: Props): JSX.Element {
   const defaultHeader = (
     <>
       <img alt="docat logo" src={docatLogo} />
@@ -23,6 +28,7 @@ export default function Header (): JSX.Element {
   return (
     <div className={styles.header}>
       <Link to="/">{header}</Link>
+      {props.showSearchBar !== false && <SearchBar />}
     </div>
   )
 }
