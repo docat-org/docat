@@ -150,3 +150,20 @@ def test_fails_with_invalid_token(client_with_claimed_project):
         assert response_data["message"] == "Docat-Api-Key token is not valid for some-project"
 
         assert remove_mock.mock_calls == []
+
+
+def test_upload_rejects_forbidden_project_name(client_with_claimed_project):
+    """
+    Names that conflict with pages in docat web are forbidden,
+    and creating a project with such a name should fail.
+    """
+
+    with patch("docat.app.remove_docs") as remove_mock:
+        for project_name in ["upload", "claim", "delete", "Search ", "help"]:
+            response = client_with_claimed_project.post(
+                f"/api/{project_name}/1.0.0", files={"file": ("index.html", io.BytesIO(b"<h1>Hello World</h1>"), "plain/text")}
+            )
+            assert response.status_code == 400
+            assert response.json() == {"message": f'Project name "{project_name}" is forbidden, as it conflicts with pages in docat web.'}
+
+            assert remove_mock.mock_calls == []

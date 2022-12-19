@@ -5,3 +5,5 @@ docat/__pycache__
 docat/upload
 docat/.tox
 web/node_modules
+web/build
+web/.env*

@@ -46,6 +46,25 @@ def test_search_project_by_name_negative(client_with_claimed_project):
     assert search_response.json() == {"projects": [], "versions": [], "files": []}
 
 
+def test_search_ignores_empty_query(client_with_claimed_project):
+    """
+    Search should return an empty result if the query is empty.
+    """
+    create_project_response = client_with_claimed_project.post(
+        "/api/some-project/1.0.0",
+        files={"file": ("index.html", io.BytesIO(b"<h1>Hello World</h1>"), "plain/text")},
+    )
+    assert create_project_response.status_code == 201
+
+    search_response = client_with_claimed_project.get("/api/search?query=%20")
+    assert search_response.status_code == 200
+    assert search_response.json() == {"projects": [], "versions": [], "files": []}
+
+    search_response = client_with_claimed_project.get("/api/search?query=&")
+    assert search_response.status_code == 200
+    assert search_response.json() == {"projects": [], "versions": [], "files": []}
+
+
 def test_search_finds_tag(client_with_claimed_project):
     """
     Search should find a tag by name. (Partial match)

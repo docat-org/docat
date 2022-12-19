@@ -1,0 +1,44 @@
+.project-card {
+  margin: 0 16px 10px 16px;
+  padding: 16px 0 16px 16px;
+  border: 1px solid var(--secondary-foreground);
+}
+
+.project-card-header {
+  display: inline-block;
+  width: 90%;
+  height: 40px;
+}
+
+.subhead {
+  color: var(--primary-foreground);
+  opacity: 0.54;
+  font-size: 14px;
+  letter-spacing: 0.01em;
+  line-height: 20px;
+}
+
+.project-card-title,
+.project-card-title-with-logo {
+  font-weight: lighter;
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-top: 0.25em;
+}
+
+.project-card-title {
+  width: calc(100% - 30px);
+}
+
+.project-card-title-with-logo {
+  width: calc(100% - 86px);
+}
+
+.project-logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 16px;
+}

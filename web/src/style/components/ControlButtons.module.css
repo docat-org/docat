@@ -1,0 +1,28 @@
+.upload-button,
+.claim-button,
+.delete-button,
+.single-control-button {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: var(--primary-foreground);
+  color: white;
+  position: fixed;
+  bottom: 20px;
+  border: none;
+  cursor: pointer;
+  z-index: 1; /* Without this, the footer is on top of the controls */
+}
+
+.upload-button {
+  right: 180px;
+}
+
+.claim-button {
+  right: 100px;
+}
+
+.delete-button,
+.single-control-button {
+  right: 20px;
+}

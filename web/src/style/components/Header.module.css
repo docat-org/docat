@@ -1,0 +1,38 @@
+.header {
+  --header-height: 64px;
+
+  min-width: 230px;
+  height: var(--header-height);
+  background-color: var(--background);
+}
+
+@media only screen and (min-width: 1000px) {
+  .header {
+    padding-left: calc(15% + 16px);
+  }
+}
+
+@media only screen and (max-width: 1000px) {
+  .header {
+    padding-left: 30px;
+  }
+}
+
+@media only screen and (max-width: 300px) {
+  .header {
+    padding-left: 10px;
+  }
+}
+
+img {
+  height: var(--header-height);
+  float: left;
+}
+
+h1 {
+  float: left;
+  margin-top: calc(var(--header-height) / 2 - 15px);
+  margin-left: 10px;
+  font-size: 30px;
+  font-weight: 800;
+}

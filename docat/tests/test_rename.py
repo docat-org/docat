@@ -72,3 +72,26 @@ def test_rename_success(client_with_claimed_project):
         assert len(claims_with_old_name) == 0
         claims_with_new_name = table.search(Project.name == "new-project-name")
         assert len(claims_with_new_name) == 1
+
+
+def test_rename_rejects_forbidden_project_name(client_with_claimed_project):
+    """
+    Names that conflict with pages in docat web are forbidden,
+    and renaming a project to such a name should fail.
+    """
+
+    create_response = client_with_claimed_project.post(
+        "/api/some-project/1.0.0", files={"file": ("index.html", io.BytesIO(b"<h1>Hello World</h1>"), "plain/text")}
+    )
+    assert create_response.status_code == 201
+
+    with patch("os.rename") as rename_mock:
+        for project_name in ["upload", "claim", "delete", "Search ", "help"]:
+
+            rename_response = client_with_claimed_project.put(f"/api/some-project/rename/{project_name}", headers={"Docat-Api-Key": "1234"})
+            assert rename_response.status_code == 400
+            assert rename_response.json() == {
+                "message": f'New project name "{project_name}" is forbidden, as it conflicts with pages in docat web.'
+            }
+
+            assert rename_mock.mock_calls == []

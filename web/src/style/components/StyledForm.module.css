@@ -1,0 +1,40 @@
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form > div {
+  margin: 16px 0 0 0;
+  width: 100%;
+  min-height: 5em;
+}
+
+@media only screen and (min-width: 1000px) {
+  .form {
+    width: 50%;
+  }
+}
+
+@media only screen and (max-width: 1000px) {
+  .form {
+    width: 100%;
+  }
+}
+
+button[type='submit'] {
+  margin-top: 16px;
+  padding: 8px;
+  width: 100%;
+  max-width: 175px;
+  font-size: 1.05em;
+  border-radius: 8px;
+  border: none;
+  background-color: var(--button-primary);
+  color: white;
+  cursor: pointer;
+}
+
+button:disabled {
+  background-color: gray;
+  cursor: not-allowed;
+}
