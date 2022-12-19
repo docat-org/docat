@@ -30,8 +30,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test --watchAll=false --testMatch **/src/**/*.test.ts --passWithNoTests",
-    "jest": "react-scripts test --watchAll=false --testMatch **/src/**/*.test.ts --passWithNoTests",
+    "test": "react-scripts test --watchAll=false --testMatch **/src/**/*.test.ts",
     "eject": "react-scripts eject",
     "lint": "eslint ./src --ext .js,.jsx,.ts,.tsx"
   },

@@ -60,7 +60,7 @@ jobs:
 
       - name: run test suite
         working-directory: web
-        run: yarn jest
+        run: yarn test
 
   container-image:
     runs-on: ubuntu-latest
