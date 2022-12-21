@@ -160,27 +160,28 @@ def get_project_details(upload_folder_path: Path, project_name: str) -> ProjectD
 
 def index_all_projects(
     upload_folder_path: Path,
-    index_db_path: Path,
+    index_db: TinyDB,
 ):
     """
     This will extract all content from all versions for each project,
     and save it into index.json.
     """
     # drop existing index
-    index_db_path.unlink(missing_ok=True)
+    index_db.drop_tables()
+    index_db.table("projects")
+    index_db.table("files")
 
     all_projects = get_all_projects(upload_folder_path).projects
 
     for project in all_projects:
-        update_version_index_for_project(upload_folder_path, index_db_path, project)
-        update_file_index_for_project(upload_folder_path, index_db_path, project)
+        update_version_index_for_project(upload_folder_path, index_db, project)
+        update_file_index_for_project(upload_folder_path, index_db, project)
 
 
-def update_file_index_for_project(upload_folder_path: Path, index_db_path: Path, project: str):
+def update_file_index_for_project(upload_folder_path: Path, index_db: TinyDB, project: str):
     """
     Rebuilds the file index for all versions of the given project
     """
-    index_db = TinyDB(index_db_path)
     files_table = index_db.table("files")
     files_table.remove(Query().project == project)
 
@@ -190,10 +191,10 @@ def update_file_index_for_project(upload_folder_path: Path, index_db_path: Path,
         return
 
     for version in project_details.versions:
-        update_file_index_for_project_version(upload_folder_path, index_db_path, project, version.name)
+        update_file_index_for_project_version(upload_folder_path, index_db, project, version.name)
 
 
-def update_file_index_for_project_version(upload_folder_path: Path, index_db_path: Path, project: str, version: str):
+def update_file_index_for_project_version(upload_folder_path: Path, index_db: TinyDB, project: str, version: str):
     """
     Removes existing indexes, and rebuilds it with the name of the contained files, and their content for html files.
     """
@@ -202,7 +203,7 @@ def update_file_index_for_project_version(upload_folder_path: Path, index_db_pat
     if not docs_folder.exists():
         return
 
-    remove_file_index_from_db(index_db_path, project, version)
+    remove_file_index_from_db(index_db, project, version)
 
     for file in docs_folder.rglob("*"):
         if not file.is_file():
@@ -212,15 +213,14 @@ def update_file_index_for_project_version(upload_folder_path: Path, index_db_pat
         path = str(file.relative_to(docs_folder))
         content = get_html_content(file) if file.name.endswith(".html") else ""
 
-        insert_file_index_into_db(index_db_path, project, version, path, content)
+        insert_file_index_into_db(index_db, project, version, path, content)
 
 
-def update_version_index_for_project(upload_folder_path: Path, index_db_path: Path, project: str):
+def update_version_index_for_project(upload_folder_path: Path, index_db: TinyDB, project: str):
     """
     Removes existing version indexes for the given project.
     It saves all existing versions and tags to the indexdb.
     """
-    index_db = TinyDB(index_db_path)
     project_table = index_db.table("projects")
     Project = Query()
     project_table.remove(Project.name == project)
@@ -231,7 +231,7 @@ def update_version_index_for_project(upload_folder_path: Path, index_db_path: Pa
         return
 
     for version in details.versions:
-        insert_version_into_version_index(index_db_path, project, version.name, version.tags)
+        insert_version_into_version_index(index_db, project, version.name, version.tags)
 
 
 def get_html_content(file_path: Path) -> str:
@@ -249,40 +249,33 @@ def get_html_content(file_path: Path) -> str:
     soup = BeautifulSoup(file_content, "html.parser")
     text_content = filter(html_tag_visible, soup.findAll(string=True))
     content = " ".join(t.strip() for t in text_content).lower()
+
     return content
 
 
-def insert_file_index_into_db(index_db_path: Path, project: str, version: str, file_path: str, content: str):
+def insert_file_index_into_db(index_db: TinyDB, project: str, version: str, file_path: str, content: str):
     """
     Inserts a file index into the index.json.
     """
-    index_db = TinyDB(index_db_path)
     files_table = index_db.table("files")
-
     files_table.insert({"path": file_path, "content": content, "project": project, "version": version})
 
-    index_db.close()
 
-
-def remove_file_index_from_db(index_db_path: Path, project: str, version: str):
+def remove_file_index_from_db(index_db: TinyDB, project: str, version: str):
     """
     Removes the file index for the given project version
     """
 
-    index_db = TinyDB(index_db_path)
     files_table = index_db.table("files")
 
     File = Query()
     files_table.remove(File.project == project and File.version == version)
 
-    index_db.close()
 
-
-def insert_version_into_version_index(index_db_path: Path, project: str, version: str, tags: list[str]):
+def insert_version_into_version_index(index_db: TinyDB, project: str, version: str, tags: list[str]):
     """
     Inserts a project index into the index db.
     """
-    index_db = TinyDB(index_db_path)
     projects_table = index_db.table("projects")
     Project = Query()
     found_projects = projects_table.search(Project.name == project)
@@ -290,7 +283,6 @@ def insert_version_into_version_index(index_db_path: Path, project: str, version
     if not found_projects:
         # create
         projects_table.insert({"name": project, "versions": [{"name": version, "tags": tags}]})
-        index_db.close()
         return
 
     existing_versions = found_projects[0].get("versions")
@@ -304,14 +296,12 @@ def insert_version_into_version_index(index_db_path: Path, project: str, version
 
     existing_versions.append({"name": version, "tags": tags})
     projects_table.update({"versions": existing_versions}, Project.name == project)
-    index_db.close()
 
 
-def remove_version_from_version_index(index_db_path: Path, project: str, version: str):
+def remove_version_from_version_index(index_db: TinyDB, project: str, version: str):
     """
     Removes a version from the project index in the index db.
     """
-    index_db = TinyDB(index_db_path)
     projects_table = index_db.table("projects")
 
     Project = Query()
@@ -336,5 +326,3 @@ def remove_version_from_version_index(index_db_path: Path, project: str, version
 
     found_versions.remove(version_to_remove)
     projects_table.update({"versions": found_versions}, Project.name == project)
-
-    index_db.close()

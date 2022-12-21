@@ -1,7 +1,7 @@
 import io
 import os
 import shutil
-from unittest.mock import patch
+from unittest.mock import ANY, patch
 
 import docat.app as docat
 from docat.utils import (
@@ -25,7 +25,7 @@ def test_insert_file_index_into_db(client_with_claimed_project, index_db_files_t
     project = "some-project"
     version = "1.0.0"
 
-    insert_file_index_into_db(docat.DOCAT_INDEX_PATH, project, version, "index.html", "hello world")
+    insert_file_index_into_db(docat.index_db, project, version, "index.html", "hello world")
 
     assert index_db_files_table.all() == [{"path": "index.html", "content": "hello world", "project": project, "version": version}]
 
@@ -39,8 +39,8 @@ def test_remove_file_index_from_db(client_with_claimed_project, index_db_files_t
     project = "some-project"
     version = "1.0.0"
 
-    insert_file_index_into_db(docat.DOCAT_INDEX_PATH, project, version, "index.html", "hello world")
-    remove_file_index_from_db(docat.DOCAT_INDEX_PATH, project, version)
+    insert_file_index_into_db(docat.index_db, project, version, "index.html", "hello world")
+    remove_file_index_from_db(docat.index_db, project, version)
 
     assert index_db_files_table.all() == []
 
@@ -55,7 +55,7 @@ def test_insert_version_into_version_index(client_with_claimed_project, index_db
     version = "1.0.0"
     tag = "latest"
 
-    insert_version_into_version_index(docat.DOCAT_INDEX_PATH, project, version, [tag])
+    insert_version_into_version_index(docat.index_db, project, version, [tag])
 
     assert index_db_project_table.all() == [{"name": project, "versions": [{"name": version, "tags": [tag]}]}]
 
@@ -71,8 +71,8 @@ def test_insert_version_into_version_index_no_duplicates(client_with_claimed_pro
     version = "1.0.0"
     tag = "latest"
 
-    insert_version_into_version_index(docat.DOCAT_INDEX_PATH, project, version, [tag])
-    insert_version_into_version_index(docat.DOCAT_INDEX_PATH, project, version, [tag])
+    insert_version_into_version_index(docat.index_db, project, version, [tag])
+    insert_version_into_version_index(docat.index_db, project, version, [tag])
 
     assert index_db_project_table.all() == [{"name": project, "versions": [{"name": version, "tags": [tag]}]}]
 
@@ -89,7 +89,7 @@ def test_insert_version_into_version_index_second(client_with_claimed_project, i
     tags = ["latest", "stable"]
 
     for version, tag in zip(versions, tags):
-        insert_version_into_version_index(docat.DOCAT_INDEX_PATH, project, version, [tag])
+        insert_version_into_version_index(docat.index_db, project, version, [tag])
 
     assert index_db_project_table.all() == [
         {"name": project, "versions": [{"name": versions[0], "tags": [tags[0]]}, {"name": versions[1], "tags": [tags[1]]}]}
@@ -108,11 +108,11 @@ def test_insert_version_into_version_index_second_with_different_tags(client_wit
     old_tags = ["latest"]
     new_tags = ["stale", "nightly"]
 
-    insert_version_into_version_index(docat.DOCAT_INDEX_PATH, project, version, [old_tags])
+    insert_version_into_version_index(docat.index_db, project, version, [old_tags])
 
     assert index_db_project_table.all() == [{"name": project, "versions": [{"name": version, "tags": [old_tags]}]}]
 
-    insert_version_into_version_index(docat.DOCAT_INDEX_PATH, project, version, [new_tags])
+    insert_version_into_version_index(docat.index_db, project, version, [new_tags])
 
     assert index_db_project_table.all() == [{"name": project, "versions": [{"name": version, "tags": [new_tags]}]}]
 
@@ -129,10 +129,10 @@ def test_insert_version_into_version_index_second_with_overlapping_tags(client_w
     old_tags = ["latest"]
     new_tags = ["stable", "latest"]
 
-    insert_version_into_version_index(docat.DOCAT_INDEX_PATH, project, version, [old_tags])
+    insert_version_into_version_index(docat.index_db, project, version, [old_tags])
     assert index_db_project_table.all() == [{"name": project, "versions": [{"name": version, "tags": [old_tags]}]}]
 
-    insert_version_into_version_index(docat.DOCAT_INDEX_PATH, project, version, [new_tags])
+    insert_version_into_version_index(docat.index_db, project, version, [new_tags])
     assert index_db_project_table.all() == [{"name": project, "versions": [{"name": version, "tags": [new_tags]}]}]
 
 
@@ -147,13 +147,13 @@ def test_remove_version_from_version_index(client_with_claimed_project, index_db
     tags = ["latest", "stable"]
 
     for version, tag in zip(versions, tags):
-        insert_version_into_version_index(docat.DOCAT_INDEX_PATH, project, version, [tag])
+        insert_version_into_version_index(docat.index_db, project, version, [tag])
 
     assert index_db_project_table.all() == [
         {"name": project, "versions": [{"name": versions[0], "tags": [tags[0]]}, {"name": versions[1], "tags": [tags[1]]}]}
     ]
 
-    remove_version_from_version_index(docat.DOCAT_INDEX_PATH, project, versions[1])
+    remove_version_from_version_index(docat.index_db, project, versions[1])
     assert index_db_project_table.all() == [{"name": project, "versions": [{"name": versions[0], "tags": [tags[0]]}]}]
 
 
@@ -167,8 +167,8 @@ def test_remove_version_from_version_index_remove_last_version(client_with_claim
     version = "1.0.0"
     tag = "latest"
 
-    insert_version_into_version_index(docat.DOCAT_INDEX_PATH, project, version, [tag])
-    remove_version_from_version_index(docat.DOCAT_INDEX_PATH, project, version)
+    insert_version_into_version_index(docat.index_db, project, version, [tag])
+    remove_version_from_version_index(docat.index_db, project, version)
 
     assert index_db_project_table.all() == []
 
@@ -192,13 +192,13 @@ def test_update_version_index_for_project(client_with_claimed_project, index_db_
         with open(project_folder / version / "index.html", "w") as f:
             f.write("<h1>Hello World</h1>")
 
-    update_version_index_for_project(docat.DOCAT_UPLOAD_FOLDER, docat.DOCAT_INDEX_PATH, project)
+    update_version_index_for_project(docat.DOCAT_UPLOAD_FOLDER, docat.index_db, project)
     assert index_db_project_table.all() == [
         {"name": project, "versions": [{"name": versions[1], "tags": []}, {"name": versions[0], "tags": []}]}
     ]
 
     shutil.rmtree(project_folder / versions[0])
-    update_version_index_for_project(docat.DOCAT_UPLOAD_FOLDER, docat.DOCAT_INDEX_PATH, project)
+    update_version_index_for_project(docat.DOCAT_UPLOAD_FOLDER, docat.index_db, project)
     assert index_db_project_table.all() == [{"name": project, "versions": [{"name": versions[1], "tags": []}]}]
 
 
@@ -220,14 +220,14 @@ def test_update_file_index_for_project_version(client_with_claimed_project, inde
         with open(docat.DOCAT_UPLOAD_FOLDER / project / version / file, "w") as f:
             f.write("<h1>Hello World</h1>")
 
-    update_file_index_for_project_version(docat.DOCAT_UPLOAD_FOLDER, docat.DOCAT_INDEX_PATH, project, version)
+    update_file_index_for_project_version(docat.DOCAT_UPLOAD_FOLDER, docat.index_db, project, version)
     assert index_db_files_table.all().sort(key=lambda e: e.get("path")) == [
         {"path": files[1], "content": "", "project": project, "version": version},
         {"path": files[0], "content": "hello world", "project": project, "version": version},
     ].sort(key=lambda e: e["path"])
 
     os.remove(docat.DOCAT_UPLOAD_FOLDER / project / version / files[0])
-    update_file_index_for_project_version(docat.DOCAT_UPLOAD_FOLDER, docat.DOCAT_INDEX_PATH, project, version)
+    update_file_index_for_project_version(docat.DOCAT_UPLOAD_FOLDER, docat.index_db, project, version)
     assert index_db_files_table.all() == [
         {"path": files[1], "content": "", "project": project, "version": version},
     ]
@@ -242,7 +242,7 @@ def test_update_file_index_for_project_version_folder_does_not_exist(client_with
     project = "non-existing-project"
 
     with patch("docat.utils.TinyDB") as mock_tinydb:
-        update_file_index_for_project_version(docat.DOCAT_UPLOAD_FOLDER, docat.DOCAT_INDEX_PATH, project, "1.0.0")
+        update_file_index_for_project_version(docat.DOCAT_UPLOAD_FOLDER, docat.index_db, project, "1.0.0")
         mock_tinydb.assert_not_called()
 
 
@@ -263,14 +263,14 @@ def test_update_file_index_for_project(client_with_claimed_project, index_db_fil
         with open(docat.DOCAT_UPLOAD_FOLDER / project / version / "index.html", "w") as f:
             f.write("<h1>Hello World</h1>")
 
-    update_file_index_for_project(docat.DOCAT_UPLOAD_FOLDER, docat.DOCAT_INDEX_PATH, project)
+    update_file_index_for_project(docat.DOCAT_UPLOAD_FOLDER, docat.index_db, project)
     assert index_db_files_table.all().sort(key=lambda e: e.get("version")) == [
         {"path": "index.html", "content": "hello world", "project": project, "version": versions[1]},
         {"path": "index.html", "content": "hello world", "project": project, "version": versions[0]},
     ].sort(key=lambda e: e["version"])
 
     shutil.rmtree(docat.DOCAT_UPLOAD_FOLDER / project / versions[0])
-    update_file_index_for_project(docat.DOCAT_UPLOAD_FOLDER, docat.DOCAT_INDEX_PATH, project)
+    update_file_index_for_project(docat.DOCAT_UPLOAD_FOLDER, docat.index_db, project)
     assert index_db_files_table.all() == [{"path": "index.html", "content": "hello world", "project": project, "version": versions[1]}]
 
 
@@ -291,10 +291,10 @@ def test_index_project_with_html_content(client_with_claimed_project):
     assert create_project_response.status_code == 201
 
     with patch("docat.utils.insert_file_index_into_db") as mock_insert_file_index_into_db:
-        update_file_index_for_project_version(docat.DOCAT_UPLOAD_FOLDER, docat.DOCAT_INDEX_PATH, project, version)
+        update_file_index_for_project_version(docat.DOCAT_UPLOAD_FOLDER, docat.index_db, project, version)
 
         mock_insert_file_index_into_db.assert_called_once_with(
-            docat.DOCAT_INDEX_PATH,
+            docat.index_db,
             project,
             version,
             file,
@@ -319,9 +319,9 @@ def test_index_project_non_html(client_with_claimed_project):
     assert create_project_response.status_code == 201
 
     with patch("docat.utils.insert_file_index_into_db") as mock_insert_file_index_into_db:
-        update_file_index_for_project_version(docat.DOCAT_UPLOAD_FOLDER, docat.DOCAT_INDEX_PATH, project, version)
+        update_file_index_for_project_version(docat.DOCAT_UPLOAD_FOLDER, docat.index_db, project, version)
         mock_insert_file_index_into_db.assert_called_once_with(
-            docat.DOCAT_INDEX_PATH,
+            docat.index_db,
             project,
             version,
             file,
@@ -351,9 +351,9 @@ def test_index_all_projects_creates_version_and_tag_index(client_with_claimed_pr
         assert tag_project_response.status_code == 201
 
     with patch("docat.utils.insert_version_into_version_index") as mock_insert_version_into_version_index:
-        index_all_projects(docat.DOCAT_UPLOAD_FOLDER, docat.DOCAT_INDEX_PATH)
-        mock_insert_version_into_version_index.assert_any_call(docat.DOCAT_INDEX_PATH, project, versions[0], [tags[0]])
-        mock_insert_version_into_version_index.assert_any_call(docat.DOCAT_INDEX_PATH, project, versions[1], [tags[1]])
+        index_all_projects(docat.DOCAT_UPLOAD_FOLDER, docat.index_db)
+        mock_insert_version_into_version_index.assert_any_call(docat.index_db, project, versions[0], [tags[0]])
+        mock_insert_version_into_version_index.assert_any_call(docat.index_db, project, versions[1], [tags[1]])
 
 
 def test_index_all_projects_creates_file_and_version_index(client_with_claimed_project):
@@ -375,11 +375,11 @@ def test_index_all_projects_creates_file_and_version_index(client_with_claimed_p
     with patch("docat.utils.insert_version_into_version_index") as mock_insert_version_into_version_index, patch(
         "docat.utils.insert_file_index_into_db"
     ) as mock_insert_file_index_into_db:
-        index_all_projects(docat.DOCAT_UPLOAD_FOLDER, docat.DOCAT_INDEX_PATH)
+        index_all_projects(docat.DOCAT_UPLOAD_FOLDER, docat.index_db)
         for project in projects:
             for version in versions:
-                mock_insert_version_into_version_index.assert_any_call(docat.DOCAT_INDEX_PATH, project, version, [])
-                mock_insert_file_index_into_db.assert_any_call(docat.DOCAT_INDEX_PATH, project, version, "index.html", "hello world")
+                mock_insert_version_into_version_index.assert_any_call(docat.index_db, project, version, [])
+                mock_insert_file_index_into_db.assert_any_call(docat.index_db, project, version, "index.html", "hello world")
 
 
 def test_index_all_projects_creates_file_and_version_index_api(client_with_claimed_project):
@@ -406,8 +406,8 @@ def test_index_all_projects_creates_file_and_version_index_api(client_with_claim
 
         for project in projects:
             for version in versions:
-                mock_insert_version_into_version_index.assert_any_call(docat.DOCAT_INDEX_PATH, project, version, [])
-                mock_insert_file_index_into_db.assert_any_call(docat.DOCAT_INDEX_PATH, project, version, "index.html", "hello world")
+                mock_insert_version_into_version_index.assert_any_call(ANY, project, version, [])
+                mock_insert_file_index_into_db.assert_any_call(ANY, project, version, "index.html", "hello world")
 
 
 def test_hide_show_removes_file_index_and_adds_again_only_version(client_with_claimed_project, index_db_files_table):
