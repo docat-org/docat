@@ -37,15 +37,15 @@ export default function Claim(): JSX.Element {
   }
 
   /**
-   * Returns loaded Projects for DataSelect
-   * @returns projects as string[] or an empty array
+   * Returns loaded project names for DataSelect
+   * @returns project names as string[] or an empty array
    */
   const getProjects = (): string[] => {
     if (loadingFailed || projects == null) {
       return []
     }
 
-    return projects
+    return projects.map((project) => project.name)
   }
 
   const onProjectSelect = (p: string): void => {

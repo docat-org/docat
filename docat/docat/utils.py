@@ -11,7 +11,7 @@ from bs4 import BeautifulSoup
 from bs4.element import Comment
 from tinydb import Query, TinyDB
 
-from docat.models import ProjectDetail, Projects, ProjectVersion
+from docat.models import ProjectDetail, Projects, ProjectVersion, ProjectWithVersionCount
 
 NGINX_CONFIG_PATH = Path("/etc/nginx/locations.d")
 UPLOAD_FOLDER = "doc"
@@ -114,20 +114,26 @@ def get_all_projects(upload_folder_path: Path) -> Projects:
     Returns all projects in the upload folder.
     """
 
-    def has_not_hidden_versions(project):
+    def count_not_hidden_versions(project) -> int:
         path = upload_folder_path / project
-        return any(
-            (path / version).is_dir() and not (path / version / ".hidden").exists() for version in (upload_folder_path / project).iterdir()
-        )
+        versions = [
+            version
+            for version in (upload_folder_path / project).iterdir()
+            if (path / version).is_dir() and not (path / version).is_symlink() and not (path / version / ".hidden").exists()
+        ]
+        return len(versions)
 
-    return Projects(
-        projects=list(
-            filter(
-                has_not_hidden_versions,
-                [str(project.relative_to(upload_folder_path)) for project in upload_folder_path.iterdir() if project.is_dir()],
-            )
-        )
-    )
+    projects: list[ProjectWithVersionCount] = []
+
+    for project in upload_folder_path.iterdir():
+        if project.is_dir():
+            versions = count_not_hidden_versions(project)
+            if versions < 1:
+                continue
+
+            projects.append(ProjectWithVersionCount(name=str(project.relative_to(upload_folder_path)), versions=versions))
+
+    return Projects(projects=projects)
 
 
 def get_project_details(upload_folder_path: Path, project_name: str) -> ProjectDetail | None:
@@ -174,8 +180,8 @@ def index_all_projects(
     all_projects = get_all_projects(upload_folder_path).projects
 
     for project in all_projects:
-        update_version_index_for_project(upload_folder_path, index_db, project)
-        update_file_index_for_project(upload_folder_path, index_db, project)
+        update_version_index_for_project(upload_folder_path, index_db, project.name)
+        update_file_index_for_project(upload_folder_path, index_db, project.name)
 
 
 def update_file_index_for_project(upload_folder_path: Path, index_db: TinyDB, project: str):
