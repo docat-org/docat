@@ -14,11 +14,12 @@ import LoadingPage from './LoadingPage'
 
 import styles from './../style/pages/Home.module.css'
 import { ErrorOutline } from '@mui/icons-material'
+import { Project } from '../models/ProjectsResponse'
 
 export default function Home (): JSX.Element {
   const { projects, loadingFailed } = useProjects()
-  const [nonFavoriteProjects, setNonFavoriteProjects] = useState<string[]>([])
-  const [favoriteProjects, setFavoriteProjects] = useState<string[]>([])
+  const [nonFavoriteProjects, setNonFavoriteProjects] = useState<Project[]>([])
+  const [favoriteProjects, setFavoriteProjects] = useState<Project[]>([])
 
   document.title = 'Home | docat'
 
@@ -26,10 +27,10 @@ export default function Home (): JSX.Element {
     if (projects == null) return
 
     setFavoriteProjects(
-      projects.filter((project) => ProjectRepository.isFavorite(project))
+      projects.filter((project) => ProjectRepository.isFavorite(project.name))
     )
     setNonFavoriteProjects(
-      projects.filter((project) => !ProjectRepository.isFavorite(project))
+      projects.filter((project) => !ProjectRepository.isFavorite(project.name))
     )
   }
 

@@ -5,10 +5,11 @@
 */
 
 import React, { createContext, useContext, useEffect, useState } from 'react'
+import ProjectsResponse, { Project } from '../models/ProjectsResponse'
 import { useMessageBanner } from './MessageBannerProvider'
 
 interface ProjectState {
-  projects: string[] | null
+  projects: Project[] | null
   loadingFailed: boolean
   reload: () => void
 }
@@ -42,7 +43,7 @@ export function ProjectDataProvider({ children }: any): JSX.Element {
           )
         }
 
-        const data: { projects: string[] } = await response.json()
+        const data: ProjectsResponse = await response.json()
         setProjects({
           projects: data.projects,
           loadingFailed: false,

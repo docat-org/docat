@@ -3,23 +3,22 @@ import ReactTooltip from 'react-tooltip'
 import { Link } from 'react-router-dom'
 import ProjectRepository from '../repositories/ProjectRepository'
 import styles from './../style/components/Project.module.css'
+import { Project as ProjectType } from '../models/ProjectsResponse'
 
-import ProjectDetails from '../models/ProjectDetails'
 import FavoriteStar from './FavoriteStar'
 
 interface Props {
-  projectName: string
+  project: ProjectType
   onFavoriteChanged: () => void
 }
 
-export default function Project (props: Props): JSX.Element {
-  const [versions, setVersions] = useState<ProjectDetails[]>([])
+export default function Project(props: Props): JSX.Element {
   const [logo, setLogo] = useState<Blob | null>(null)
 
   // try to load image to prevent image flashing
   useEffect(() => {
     void (async () => {
-      const logoURL = ProjectRepository.getProjectLogoURL(props.projectName)
+      const logoURL = ProjectRepository.getProjectLogoURL(props.project.name)
       try {
         const response = await fetch(logoURL)
         if (response.status === 200) {
@@ -30,34 +29,20 @@ export default function Project (props: Props): JSX.Element {
         setLogo(null)
       }
     })()
-  }, [props.projectName])
-
-  // reload versions on project name change
-  useEffect(() => {
-    void (async () => {
-      try {
-        const versionResponse = await ProjectRepository.getVersions(
-          props.projectName
-        )
-        setVersions(versionResponse)
-      } catch (e) {
-        setVersions([])
-      }
-    })()
-  }, [props.projectName])
+  }, [props.project])
 
   return (
     <div className={styles['project-card']}>
       <ReactTooltip />
       <div className={styles['project-card-header']}>
-        <Link to={`/${props.projectName}/latest`}>
+        <Link to={`/${props.project.name}/latest`}>
           {logo == null
             ? (
             <div
               className={styles['project-card-title']}
-              data-tip={props.projectName}
+              data-tip={props.project.name}
             >
-              {props.projectName}
+              {props.project.name}
             </div>
               )
             : (
@@ -65,27 +50,27 @@ export default function Project (props: Props): JSX.Element {
               <img
                 className={styles['project-logo']}
                 src={URL.createObjectURL(logo)}
-                alt={`${props.projectName} project Logo`}
+                alt={`${props.project.name} project Logo`}
               />
 
               <div
                 className={styles['project-card-title-with-logo']}
-                data-tip={props.projectName}
+                data-tip={props.project.name}
               >
-                {props.projectName}
+                {props.project.name}
               </div>
             </>
               )}
         </Link>
         <FavoriteStar
-          projectName={props.projectName}
+          projectName={props.project.name}
           onFavoriteChanged={props.onFavoriteChanged}
         />
       </div>
       <div className={styles.subhead}>
-        {versions.length === 1
-          ? `${versions.length} version`
-          : `${versions.length} versions`}
+        {props.project.versions === 1
+          ? `${props.project.versions} version`
+          : `${props.project.versions} versions`}
       </div>
     </div>
   )

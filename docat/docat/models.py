@@ -17,8 +17,13 @@ class ClaimResponse(ApiResponse):
     token: str
 
 
+class ProjectWithVersionCount(BaseModel):
+    name: str
+    versions: int
+
+
 class Projects(BaseModel):
-    projects: list[str]
+    projects: list[ProjectWithVersionCount]
 
 
 class ProjectVersion(BaseModel):

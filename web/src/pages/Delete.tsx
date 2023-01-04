@@ -83,7 +83,7 @@ export default function Delete(): JSX.Element {
   }
 
   /**
-   * Returns loaded Projects for DataSelect
+   * Returns loaded project names for DataSelect
    * @returns string[] or an empty array
    */
   const getProjects = (): string[] => {
@@ -91,7 +91,7 @@ export default function Delete(): JSX.Element {
       return []
     }
 
-    return projects
+    return projects.map((project) => project.name)
   }
 
   /**
