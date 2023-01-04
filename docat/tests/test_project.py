@@ -15,7 +15,7 @@ def test_project_api(temp_project_version):
         response = client.get("/api/projects")
 
         assert response.ok
-        assert response.json() == {"projects": [{"name": "project", "versions": 1}]}
+        assert response.json() == {"projects": [{"name": "project", "logo": False, "versions": 1}]}
 
 
 def test_project_api_without_any_projects():

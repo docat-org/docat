@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import ReactTooltip from 'react-tooltip'
 import { Link } from 'react-router-dom'
 import ProjectRepository from '../repositories/ProjectRepository'
@@ -13,44 +13,18 @@ interface Props {
 }
 
 export default function Project(props: Props): JSX.Element {
-  const [logo, setLogo] = useState<Blob | null>(null)
-
-  // try to load image to prevent image flashing
-  useEffect(() => {
-    void (async () => {
-      const logoURL = ProjectRepository.getProjectLogoURL(props.project.name)
-      try {
-        const response = await fetch(logoURL)
-        if (response.status === 200) {
-          const imgData = await response.blob()
-          setLogo(imgData)
-        }
-      } catch (e) {
-        setLogo(null)
-      }
-    })()
-  }, [props.project])
-
   return (
     <div className={styles['project-card']}>
       <ReactTooltip />
       <div className={styles['project-card-header']}>
         <Link to={`/${props.project.name}/latest`}>
-          {logo == null
+          {props.project.logo
             ? (
-            <div
-              className={styles['project-card-title']}
-              data-tip={props.project.name}
-            >
-              {props.project.name}
-            </div>
-              )
-            : (
             <>
               <img
                 className={styles['project-logo']}
-                src={URL.createObjectURL(logo)}
-                alt={`${props.project.name} project Logo`}
+                src={ProjectRepository.getProjectLogoURL(props.project.name)}
+                alt={`${props.project.name} project logo`}
               />
 
               <div
@@ -60,6 +34,14 @@ export default function Project(props: Props): JSX.Element {
                 {props.project.name}
               </div>
             </>
+              )
+            : (
+            <div
+              className={styles['project-card-title']}
+              data-tip={props.project.name}
+            >
+              {props.project.name}
+            </div>
               )}
         </Link>
         <FavoriteStar
