@@ -108,4 +108,4 @@ def test_get_all_projects_counts_versions_correctly(client_with_claimed_project)
 
     response = client_with_claimed_project.get("/api/projects")
     assert response.status_code == 200
-    assert response.json() == {"projects": [{"name": "some-project", "versions": len(versions)}]}
+    assert response.json() == {"projects": [{"name": "some-project", "logo": False, "versions": len(versions)}]}

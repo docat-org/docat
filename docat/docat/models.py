@@ -19,6 +19,7 @@ class ClaimResponse(ApiResponse):
 
 class ProjectWithVersionCount(BaseModel):
     name: str
+    logo: bool
     versions: int
 
 

@@ -50,7 +50,7 @@ def test_hide_only_version_not_listed_in_projects(client_with_claimed_project):
     projects_response = client_with_claimed_project.get("/api/projects")
     assert projects_response.status_code == 200
     assert projects_response.json() == {
-        "projects": [{"name": "some-project", "versions": 1}],
+        "projects": [{"name": "some-project", "logo": False, "versions": 1}],
     }
 
     # hide the only version

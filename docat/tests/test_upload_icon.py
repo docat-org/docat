@@ -141,3 +141,44 @@ def test_icon_upload_fails_no_image(client_with_claimed_project):
         assert upload_response.json() == {"message": "Icon must be an image"}
         assert remove_file_mock.mock_calls == []
         assert copyfileobj_mock.mock_calls == []
+
+
+def test_get_project_recongizes_icon(client_with_claimed_project):
+    """
+    get_projects should return true, if the project has an icon
+    """
+
+    upload_folder_response = client_with_claimed_project.post(
+        "/api/some-project/1.0.0", files={"file": ("index.html", io.BytesIO(b"<h1>Hello World</h1>"), "plain/text")}
+    )
+    assert upload_folder_response.status_code == 201
+
+    projects_response = client_with_claimed_project.get("/api/projects")
+    assert projects_response.status_code == 200
+    assert projects_response.json() == {
+        "projects": [
+            {
+                "name": "some-project",
+                "logo": False,
+                "versions": 1,
+            }
+        ]
+    }
+
+    upload_response = client_with_claimed_project.post(
+        "/api/some-project/icon",
+        files={"file": ("icon.jpg", io.BytesIO(ONE_PIXEL_PNG), "image/png")},
+    )
+    assert upload_response.status_code == 200
+
+    projects_response = client_with_claimed_project.get("/api/projects")
+    assert projects_response.status_code == 200
+    assert projects_response.json() == {
+        "projects": [
+            {
+                "name": "some-project",
+                "logo": True,
+                "versions": 1,
+            }
+        ]
+    }

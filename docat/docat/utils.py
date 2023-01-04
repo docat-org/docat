@@ -131,7 +131,9 @@ def get_all_projects(upload_folder_path: Path) -> Projects:
             if versions < 1:
                 continue
 
-            projects.append(ProjectWithVersionCount(name=str(project.relative_to(upload_folder_path)), versions=versions))
+            project_name = str(project.relative_to(upload_folder_path))
+            project_has_logo = (upload_folder_path / project / "logo").exists()
+            projects.append(ProjectWithVersionCount(name=project_name, logo=project_has_logo, versions=versions))
 
     return Projects(projects=projects)
 
