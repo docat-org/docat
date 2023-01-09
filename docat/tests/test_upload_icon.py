@@ -160,7 +160,7 @@ def test_get_project_recongizes_icon(client_with_claimed_project):
             {
                 "name": "some-project",
                 "logo": False,
-                "versions": 1,
+                "versions": [{"name": "1.0.0", "tags": [], "hidden": False}],
             }
         ]
     }
@@ -178,7 +178,7 @@ def test_get_project_recongizes_icon(client_with_claimed_project):
             {
                 "name": "some-project",
                 "logo": True,
-                "versions": 1,
+                "versions": [{"name": "1.0.0", "tags": [], "hidden": False}],
             }
         ]
     }

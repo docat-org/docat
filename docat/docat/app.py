@@ -88,10 +88,10 @@ def update_index(index_db: TinyDB = Depends(get_index_db)):
 
 
 @app.get("/api/projects", response_model=Projects, status_code=status.HTTP_200_OK)
-def get_projects():
+def get_projects(include_hidden: bool = False):
     if not DOCAT_UPLOAD_FOLDER.exists():
         return Projects(projects=[])
-    return get_all_projects(DOCAT_UPLOAD_FOLDER)
+    return get_all_projects(DOCAT_UPLOAD_FOLDER, include_hidden)
 
 
 @app.get(
@@ -106,8 +106,8 @@ def get_projects():
     status_code=status.HTTP_200_OK,
     responses={status.HTTP_404_NOT_FOUND: {"model": ApiResponse}},
 )
-def get_project(project):
-    details = get_project_details(DOCAT_UPLOAD_FOLDER, project)
+def get_project(project, include_hidden: bool = False):
+    details = get_project_details(DOCAT_UPLOAD_FOLDER, project, include_hidden)
 
     if not details:
         return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content={"message": f"Project {project} does not exist"})

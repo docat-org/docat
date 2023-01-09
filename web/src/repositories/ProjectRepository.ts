@@ -1,15 +1,27 @@
 import semver from 'semver'
 import ProjectDetails from '../models/ProjectDetails'
+import { Project } from '../models/ProjectsResponse'
 import { ApiSearchResponse } from '../models/SearchResult'
 
 const RESOURCE = 'doc'
+
+function filterHiddenVersions(allProjects: Project[]): Project[] {
+  // create deep-copy first
+  const projects = JSON.parse(JSON.stringify(allProjects)) as Project[]
+
+  projects.forEach(p => {
+    p.versions = p.versions.filter(v => !v.hidden)
+  })
+
+  return projects.filter(p => p.versions.length > 0)
+}
 
 /**
  * Returns a list of all versions of a project.
  * @param {string} projectName Name of the project
  */
 async function getVersions (projectName: string): Promise<ProjectDetails[]> {
-  const res = await fetch(`/api/projects/${projectName}`)
+  const res = await fetch(`/api/projects/${projectName}?include_hidden=true`)
 
   if (!res.ok) {
     console.error((await res.json() as { message: string }).message)
@@ -189,6 +201,7 @@ function setFavorite (projectName: string, shouldBeFavorite: boolean): void {
 
 const exp = {
   getVersions,
+  filterHiddenVersions,
   search,
   getProjectLogoURL,
   getProjectDocsURL,

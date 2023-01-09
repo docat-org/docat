@@ -3,7 +3,7 @@
 
 import ProjectRepository from '../../repositories/ProjectRepository'
 import ProjectDetails from '../../models/ProjectDetails'
-
+import { Project } from '../../models/ProjectsResponse'
 const mockFetchData = (fetchData: any): void => {
   global.fetch = jest.fn().mockImplementation(async () => await Promise.resolve({
     ok: true,
@@ -30,7 +30,7 @@ describe('get versions', () => {
   test('should return versions', async () => {
     const projectName = 'test'
     const versions = ['1.0.0', '2.0.0']
-    const responseData = versions.map(version => (new ProjectDetails(version, ['tag'])))
+    const responseData = versions.map(version => (new ProjectDetails(version, ['tag'], false)))
 
     mockFetchData({ versions: responseData })
 
@@ -253,5 +253,60 @@ describe('favories', () => {
 
     ProjectRepository.setFavorite(project, false)
     expect(ProjectRepository.isFavorite(project)).toBe(false)
+  })
+})
+
+describe('filterHiddenVersions', () => {
+  test('should remove hidden versions', () => {
+    const shownVersion: ProjectDetails = {
+
+      name: 'v-2',
+      tags: ['stable'],
+      hidden: false
+    }
+
+    const hiddenVersion: ProjectDetails =
+    {
+      name: 'v-1',
+      tags: ['latest'],
+      hidden: true
+    }
+
+    const allProjects: Project[] = [
+      {
+        name: 'test-project-1',
+        versions: [shownVersion, hiddenVersion],
+        logo: false
+      }
+    ]
+
+    const shownProjects: Project[] = [
+      {
+        name: 'test-project-1',
+        versions: [shownVersion],
+        logo: false
+      }
+    ]
+
+    const result = ProjectRepository.filterHiddenVersions(allProjects)
+    expect(result).toStrictEqual(shownProjects)
+  })
+  test('should remove the whole project if no shown versions are present', () => {
+    const allProjects: Project[] = [
+      {
+        name: 'test-project-1',
+        versions: [
+          {
+            name: 'v-1',
+            tags: ['latest'],
+            hidden: true
+          }
+        ],
+        logo: true
+      }
+    ]
+
+    const result = ProjectRepository.filterHiddenVersions(allProjects)
+    expect(result).toStrictEqual([])
   })
 })

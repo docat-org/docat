@@ -11,7 +11,7 @@ from bs4 import BeautifulSoup
 from bs4.element import Comment
 from tinydb import Query, TinyDB
 
-from docat.models import ProjectDetail, Projects, ProjectVersion, ProjectWithVersionCount
+from docat.models import Project, ProjectDetail, Projects, ProjectVersion
 
 NGINX_CONFIG_PATH = Path("/etc/nginx/locations.d")
 UPLOAD_FOLDER = "doc"
@@ -109,36 +109,32 @@ def is_forbidden_project_name(name: str) -> bool:
     return name in ["upload", "claim", "delete", "search", "help"]
 
 
-def get_all_projects(upload_folder_path: Path) -> Projects:
+def get_all_projects(upload_folder_path: Path, include_hidden: bool) -> Projects:
     """
     Returns all projects in the upload folder.
     """
-
-    def count_not_hidden_versions(project) -> int:
-        path = upload_folder_path / project
-        versions = [
-            version
-            for version in (upload_folder_path / project).iterdir()
-            if (path / version).is_dir() and not (path / version).is_symlink() and not (path / version / ".hidden").exists()
-        ]
-        return len(versions)
-
-    projects: list[ProjectWithVersionCount] = []
+    projects: list[Project] = []
 
     for project in upload_folder_path.iterdir():
-        if project.is_dir():
-            versions = count_not_hidden_versions(project)
-            if versions < 1:
-                continue
+        if not project.is_dir():
+            continue
 
-            project_name = str(project.relative_to(upload_folder_path))
-            project_has_logo = (upload_folder_path / project / "logo").exists()
-            projects.append(ProjectWithVersionCount(name=project_name, logo=project_has_logo, versions=versions))
+        details = get_project_details(upload_folder_path, project.name, include_hidden)
+
+        if details is None:
+            continue
+
+        if len(details.versions) < 1:
+            continue
+
+        project_name = str(project.relative_to(upload_folder_path))
+        project_has_logo = (upload_folder_path / project / "logo").exists()
+        projects.append(Project(name=project_name, logo=project_has_logo, versions=details.versions))
 
     return Projects(projects=projects)
 
 
-def get_project_details(upload_folder_path: Path, project_name: str) -> ProjectDetail | None:
+def get_project_details(upload_folder_path: Path, project_name: str, include_hidden: bool) -> ProjectDetail | None:
     """
     Returns all versions and tags for a project.
     """
@@ -149,6 +145,12 @@ def get_project_details(upload_folder_path: Path, project_name: str) -> ProjectD
 
     tags = [x for x in docs_folder.iterdir() if x.is_dir() and x.is_symlink()]
 
+    def should_include(name: str) -> bool:
+        if include_hidden:
+            return True
+
+        return not (docs_folder / name / ".hidden").exists()
+
     return ProjectDetail(
         name=project_name,
         versions=sorted(
@@ -156,9 +158,10 @@ def get_project_details(upload_folder_path: Path, project_name: str) -> ProjectD
                 ProjectVersion(
                     name=str(x.relative_to(docs_folder)),
                     tags=[str(t.relative_to(docs_folder)) for t in tags if t.resolve() == x],
+                    hidden=(docs_folder / x.name / ".hidden").exists(),
                 )
                 for x in docs_folder.iterdir()
-                if x.is_dir() and not x.is_symlink() and not (docs_folder / x.name / ".hidden").exists()
+                if x.is_dir() and not x.is_symlink() and should_include(x.name)
             ],
             key=lambda k: k.name,
             reverse=True,
@@ -179,7 +182,7 @@ def index_all_projects(
     index_db.table("projects")
     index_db.table("files")
 
-    all_projects = get_all_projects(upload_folder_path).projects
+    all_projects = get_all_projects(upload_folder_path, include_hidden=False).projects
 
     for project in all_projects:
         update_version_index_for_project(upload_folder_path, index_db, project.name)
@@ -193,7 +196,7 @@ def update_file_index_for_project(upload_folder_path: Path, index_db: TinyDB, pr
     files_table = index_db.table("files")
     files_table.remove(Query().project == project)
 
-    project_details = get_project_details(upload_folder_path, project)
+    project_details = get_project_details(upload_folder_path, project, include_hidden=False)
 
     if not project_details:
         return
@@ -233,7 +236,7 @@ def update_version_index_for_project(upload_folder_path: Path, index_db: TinyDB,
     Project = Query()
     project_table.remove(Project.name == project)
 
-    details = get_project_details(upload_folder_path, project)
+    details = get_project_details(upload_folder_path, project, include_hidden=False)
 
     if not details:
         return

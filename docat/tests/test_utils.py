@@ -1,4 +1,3 @@
-import io
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
@@ -87,25 +86,3 @@ def test_remove_symlink_version(temp_project_version):
     remove_docs(project, "latest", docat.DOCAT_UPLOAD_FOLDER)
 
     assert not symlink_to_latest.exists()
-
-
-def test_get_all_projects_counts_versions_correctly(client_with_claimed_project):
-    """
-    Tests whether get_all_projects returns the correct number of versions.
-    (Don't count symlinks)
-    """
-
-    versions = ["1.0.0", "2.0.0", "3.0.0"]
-    for version in versions:
-        response = client_with_claimed_project.post(
-            f"/api/some-project/{version}", files={"file": ("index.html", io.BytesIO(b"<h1>Hello World</h1>"), "plain/text")}
-        )
-        assert response.status_code == 201
-
-    # tag "3.0.0" as latest
-    response = client_with_claimed_project.put(f"/api/some-project/{versions[-1]}/tags/latest")
-    assert response.status_code == 201
-
-    response = client_with_claimed_project.get("/api/projects")
-    assert response.status_code == 200
-    assert response.json() == {"projects": [{"name": "some-project", "logo": False, "versions": len(versions)}]}

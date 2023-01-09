@@ -19,7 +19,7 @@ export default function Delete(): JSX.Element {
   const [project, setProject] = useState<string>('none')
   const [version, setVersion] = useState<string>('none')
   const [token, setToken] = useState<string>('')
-  const { projects, loadingFailed, reload } = useProjects()
+  const { projectsWithHiddenVersions: projects, loadingFailed, reload } = useProjects()
   const [versions, setVersions] = useState<ProjectDetails[]>([])
   const [validation, setValidation] = useState<Validation>({})
 
@@ -31,18 +31,7 @@ export default function Delete(): JSX.Element {
       return
     }
 
-    void (async () => {
-      try {
-        const v = await ProjectRepository.getVersions(project)
-        setVersions(v)
-      } catch (e) {
-        console.error(e)
-        showMessage({
-          type: 'error',
-          text: (e as { message: string }).message
-        })
-      }
-    })()
+    setVersions(projects?.find((p) => p.name === project)?.versions ?? [])
   }, [project])
 
   const validate = (
