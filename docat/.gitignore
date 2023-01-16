@@ -6,4 +6,5 @@ upload
 .coverage
 db.json
 index.json
+tmp-index.json
 .python-version
