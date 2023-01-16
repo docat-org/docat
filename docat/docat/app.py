@@ -81,8 +81,8 @@ def get_index_db() -> TinyDB:
 
 @app.post("/api/index/update", response_model=ApiResponse, status_code=status.HTTP_200_OK)
 @app.post("/api/index/update/", response_model=ApiResponse, status_code=status.HTTP_200_OK)
-def update_index(index_db: TinyDB = Depends(get_index_db)):
-    index_all_projects(DOCAT_UPLOAD_FOLDER, index_db)
+def update_index():
+    index_all_projects(DOCAT_UPLOAD_FOLDER, DOCAT_INDEX_PATH)
 
     return ApiResponse(message="Successfully updated search index")
 
@@ -505,4 +505,4 @@ if os.environ.get("DOCAT_SERVE_FILES"):
 
 # index local files on start
 if os.environ.get("DOCAT_INDEX_FILES"):
-    index_all_projects(DOCAT_UPLOAD_FOLDER, get_index_db())
+    index_all_projects(DOCAT_UPLOAD_FOLDER, DOCAT_INDEX_PATH)

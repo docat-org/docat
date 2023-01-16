@@ -168,22 +168,32 @@ def get_project_details(upload_folder_path: Path, project_name: str) -> ProjectD
 
 def index_all_projects(
     upload_folder_path: Path,
-    index_db: TinyDB,
+    index_db_path: Path,
 ):
     """
     This will extract all content from all versions for each project,
     and save it into index.json.
     """
-    # drop existing index
-    index_db.drop_tables()
-    index_db.table("projects")
-    index_db.table("files")
+    TMP_DB_PATH = upload_folder_path / "tmp-index.json"
+
+    # check already indexing
+    if TMP_DB_PATH.exists():
+        return
 
     all_projects = get_all_projects(upload_folder_path).projects
 
-    for project in all_projects:
-        update_version_index_for_project(upload_folder_path, index_db, project.name)
-        update_file_index_for_project(upload_folder_path, index_db, project.name)
+    # make index with seperate db, and swap it afterwards
+    try:
+        with TinyDB(TMP_DB_PATH) as tmp_index_db:
+            for project in all_projects:
+                update_version_index_for_project(upload_folder_path, tmp_index_db, project.name)
+                update_file_index_for_project(upload_folder_path, tmp_index_db, project.name)
+        # swap index
+        TMP_DB_PATH.rename(str(index_db_path))
+
+    finally:
+        if TMP_DB_PATH.exists():
+            TMP_DB_PATH.unlink()
 
 
 def update_file_index_for_project(upload_folder_path: Path, index_db: TinyDB, project: str):
