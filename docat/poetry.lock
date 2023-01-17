@@ -23,21 +23,22 @@ trio = ["trio (>=0.16,<0.22)"]
 
 [[package]]
 name = "attrs"
-version = "22.1.0"
+version = "22.2.0"
 description = "Classes Without Boilerplate"
 category = "dev"
 optional = false
-python-versions = ">=3.5"
+python-versions = ">=3.6"
 files = [
-    {file = "attrs-22.1.0-py2.py3-none-any.whl", hash = "sha256:86efa402f67bf2df34f51a335487cf46b1ec130d02b8d39fd248abfd30da551c"},
-    {file = "attrs-22.1.0.tar.gz", hash = "sha256:29adc2665447e5191d0e7c568fde78b21f9672d344281d0c6e1ab085429b22b6"},
+    {file = "attrs-22.2.0-py3-none-any.whl", hash = "sha256:29e95c7f6778868dbd49170f98f8818f78f3dc5e0e37c0b1f474e3561b240836"},
+    {file = "attrs-22.2.0.tar.gz", hash = "sha256:c9227bfc2f01993c03f68db37d1d15c9690188323c067c641f1a35ca58185f99"},
 ]
 
 [package.extras]
-dev = ["cloudpickle", "coverage[toml] (>=5.0.2)", "furo", "hypothesis", "mypy (>=0.900,!=0.940)", "pre-commit", "pympler", "pytest (>=4.3.0)", "pytest-mypy-plugins", "sphinx", "sphinx-notfound-page", "zope.interface"]
-docs = ["furo", "sphinx", "sphinx-notfound-page", "zope.interface"]
-tests = ["cloudpickle", "coverage[toml] (>=5.0.2)", "hypothesis", "mypy (>=0.900,!=0.940)", "pympler", "pytest (>=4.3.0)", "pytest-mypy-plugins", "zope.interface"]
-tests-no-zope = ["cloudpickle", "coverage[toml] (>=5.0.2)", "hypothesis", "mypy (>=0.900,!=0.940)", "pympler", "pytest (>=4.3.0)", "pytest-mypy-plugins"]
+cov = ["attrs[tests]", "coverage-enable-subprocess", "coverage[toml] (>=5.3)"]
+dev = ["attrs[docs,tests]"]
+docs = ["furo", "myst-parser", "sphinx", "sphinx-notfound-page", "sphinxcontrib-towncrier", "towncrier", "zope.interface"]
+tests = ["attrs[tests-no-zope]", "zope.interface"]
+tests-no-zope = ["cloudpickle", "cloudpickle", "hypothesis", "hypothesis", "mypy (>=0.971,<0.990)", "mypy (>=0.971,<0.990)", "pympler", "pympler", "pytest (>=4.3.0)", "pytest (>=4.3.0)", "pytest-mypy-plugins", "pytest-mypy-plugins", "pytest-xdist[psutil]", "pytest-xdist[psutil]"]
 
 [[package]]
 name = "beautifulsoup4"
@@ -60,33 +61,24 @@ lxml = ["lxml"]
 
 [[package]]
 name = "black"
-version = "22.10.0"
+version = "22.12.0"
 description = "The uncompromising code formatter."
 category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "black-22.10.0-1fixedarch-cp310-cp310-macosx_11_0_x86_64.whl", hash = "sha256:5cc42ca67989e9c3cf859e84c2bf014f6633db63d1cbdf8fdb666dcd9e77e3fa"},
-    {file = "black-22.10.0-1fixedarch-cp311-cp311-macosx_11_0_x86_64.whl", hash = "sha256:5d8f74030e67087b219b032aa33a919fae8806d49c867846bfacde57f43972ef"},
-    {file = "black-22.10.0-1fixedarch-cp37-cp37m-macosx_10_16_x86_64.whl", hash = "sha256:197df8509263b0b8614e1df1756b1dd41be6738eed2ba9e9769f3880c2b9d7b6"},
-    {file = "black-22.10.0-1fixedarch-cp38-cp38-macosx_10_16_x86_64.whl", hash = "sha256:2644b5d63633702bc2c5f3754b1b475378fbbfb481f62319388235d0cd104c2d"},
-    {file = "black-22.10.0-1fixedarch-cp39-cp39-macosx_11_0_x86_64.whl", hash = "sha256:e41a86c6c650bcecc6633ee3180d80a025db041a8e2398dcc059b3afa8382cd4"},
-    {file = "black-22.10.0-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:2039230db3c6c639bd84efe3292ec7b06e9214a2992cd9beb293d639c6402edb"},
-    {file = "black-22.10.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:14ff67aec0a47c424bc99b71005202045dc09270da44a27848d534600ac64fc7"},
-    {file = "black-22.10.0-cp310-cp310-win_amd64.whl", hash = "sha256:819dc789f4498ecc91438a7de64427c73b45035e2e3680c92e18795a839ebb66"},
-    {file = "black-22.10.0-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:5b9b29da4f564ba8787c119f37d174f2b69cdfdf9015b7d8c5c16121ddc054ae"},
-    {file = "black-22.10.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:b8b49776299fece66bffaafe357d929ca9451450f5466e997a7285ab0fe28e3b"},
-    {file = "black-22.10.0-cp311-cp311-win_amd64.whl", hash = "sha256:21199526696b8f09c3997e2b4db8d0b108d801a348414264d2eb8eb2532e540d"},
-    {file = "black-22.10.0-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:1e464456d24e23d11fced2bc8c47ef66d471f845c7b7a42f3bd77bf3d1789650"},
-    {file = "black-22.10.0-cp37-cp37m-win_amd64.whl", hash = "sha256:9311e99228ae10023300ecac05be5a296f60d2fd10fff31cf5c1fa4ca4b1988d"},
-    {file = "black-22.10.0-cp38-cp38-macosx_11_0_arm64.whl", hash = "sha256:fba8a281e570adafb79f7755ac8721b6cf1bbf691186a287e990c7929c7692ff"},
-    {file = "black-22.10.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:915ace4ff03fdfff953962fa672d44be269deb2eaf88499a0f8805221bc68c87"},
-    {file = "black-22.10.0-cp38-cp38-win_amd64.whl", hash = "sha256:444ebfb4e441254e87bad00c661fe32df9969b2bf224373a448d8aca2132b395"},
-    {file = "black-22.10.0-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:974308c58d057a651d182208a484ce80a26dac0caef2895836a92dd6ebd725e0"},
-    {file = "black-22.10.0-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:72ef3925f30e12a184889aac03d77d031056860ccae8a1e519f6cbb742736383"},
-    {file = "black-22.10.0-cp39-cp39-win_amd64.whl", hash = "sha256:432247333090c8c5366e69627ccb363bc58514ae3e63f7fc75c54b1ea80fa7de"},
-    {file = "black-22.10.0-py3-none-any.whl", hash = "sha256:c957b2b4ea88587b46cf49d1dc17681c1e672864fd7af32fc1e9664d572b3458"},
-    {file = "black-22.10.0.tar.gz", hash = "sha256:f513588da599943e0cde4e32cc9879e825d58720d6557062d1098c5ad80080e1"},
+    {file = "black-22.12.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:9eedd20838bd5d75b80c9f5487dbcb06836a43833a37846cf1d8c1cc01cef59d"},
+    {file = "black-22.12.0-cp310-cp310-win_amd64.whl", hash = "sha256:159a46a4947f73387b4d83e87ea006dbb2337eab6c879620a3ba52699b1f4351"},
+    {file = "black-22.12.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:d30b212bffeb1e252b31dd269dfae69dd17e06d92b87ad26e23890f3efea366f"},
+    {file = "black-22.12.0-cp311-cp311-win_amd64.whl", hash = "sha256:7412e75863aa5c5411886804678b7d083c7c28421210180d67dfd8cf1221e1f4"},
+    {file = "black-22.12.0-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:c116eed0efb9ff870ded8b62fe9f28dd61ef6e9ddd28d83d7d264a38417dcee2"},
+    {file = "black-22.12.0-cp37-cp37m-win_amd64.whl", hash = "sha256:1f58cbe16dfe8c12b7434e50ff889fa479072096d79f0a7f25e4ab8e94cd8350"},
+    {file = "black-22.12.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:77d86c9f3db9b1bf6761244bc0b3572a546f5fe37917a044e02f3166d5aafa7d"},
+    {file = "black-22.12.0-cp38-cp38-win_amd64.whl", hash = "sha256:82d9fe8fee3401e02e79767016b4907820a7dc28d70d137eb397b92ef3cc5bfc"},
+    {file = "black-22.12.0-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:101c69b23df9b44247bd88e1d7e90154336ac4992502d4197bdac35dd7ee3320"},
+    {file = "black-22.12.0-cp39-cp39-win_amd64.whl", hash = "sha256:559c7a1ba9a006226f09e4916060982fd27334ae1998e7a38b3f33a37f7a2148"},
+    {file = "black-22.12.0-py3-none-any.whl", hash = "sha256:436cc9167dd28040ad90d3b404aec22cedf24a6e4d7de221bec2730ec0c97bcf"},
+    {file = "black-22.12.0.tar.gz", hash = "sha256:229351e5a18ca30f447bf724d007f890f97e13af070bb6ad4c0a441cd7596a2f"},
 ]
 
 [package.dependencies]
@@ -104,30 +96,113 @@ uvloop = ["uvloop (>=0.15.2)"]
 
 [[package]]
 name = "certifi"
-version = "2022.9.24"
+version = "2022.12.7"
 description = "Python package for providing Mozilla's CA Bundle."
 category = "main"
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "certifi-2022.9.24-py3-none-any.whl", hash = "sha256:90c1a32f1d68f940488354e36370f6cca89f0f106db09518524c88d6ed83f382"},
-    {file = "certifi-2022.9.24.tar.gz", hash = "sha256:0d9c601124e5a6ba9712dbc60d9c53c21e34f5f641fe83002317394311bdce14"},
+    {file = "certifi-2022.12.7-py3-none-any.whl", hash = "sha256:4ad3232f5e926d6718ec31cfc1fcadfde020920e278684144551c91769c7bc18"},
+    {file = "certifi-2022.12.7.tar.gz", hash = "sha256:35824b4c3a97115964b408844d64aa14db1cc518f6562e8d7261699d1350a9e3"},
 ]
 
 [[package]]
 name = "charset-normalizer"
-version = "2.1.1"
+version = "3.0.1"
 description = "The Real First Universal Charset Detector. Open, modern and actively maintained alternative to Chardet."
 category = "dev"
 optional = false
-python-versions = ">=3.6.0"
+python-versions = "*"
 files = [
-    {file = "charset-normalizer-2.1.1.tar.gz", hash = "sha256:5a3d016c7c547f69d6f81fb0db9449ce888b418b5b9952cc5e6e66843e9dd845"},
-    {file = "charset_normalizer-2.1.1-py3-none-any.whl", hash = "sha256:83e9a75d1911279afd89352c68b45348559d1fc0506b054b346651b5e7fee29f"},
+    {file = "charset-normalizer-3.0.1.tar.gz", hash = "sha256:ebea339af930f8ca5d7a699b921106c6e29c617fe9606fa7baa043c1cdae326f"},
+    {file = "charset_normalizer-3.0.1-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:88600c72ef7587fe1708fd242b385b6ed4b8904976d5da0893e31df8b3480cb6"},
+    {file = "charset_normalizer-3.0.1-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:c75ffc45f25324e68ab238cb4b5c0a38cd1c3d7f1fb1f72b5541de469e2247db"},
+    {file = "charset_normalizer-3.0.1-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:db72b07027db150f468fbada4d85b3b2729a3db39178abf5c543b784c1254539"},
+    {file = "charset_normalizer-3.0.1-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:62595ab75873d50d57323a91dd03e6966eb79c41fa834b7a1661ed043b2d404d"},
+    {file = "charset_normalizer-3.0.1-cp310-cp310-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:ff6f3db31555657f3163b15a6b7c6938d08df7adbfc9dd13d9d19edad678f1e8"},
+    {file = "charset_normalizer-3.0.1-cp310-cp310-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:772b87914ff1152b92a197ef4ea40efe27a378606c39446ded52c8f80f79702e"},
+    {file = "charset_normalizer-3.0.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:70990b9c51340e4044cfc394a81f614f3f90d41397104d226f21e66de668730d"},
+    {file = "charset_normalizer-3.0.1-cp310-cp310-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:292d5e8ba896bbfd6334b096e34bffb56161c81408d6d036a7dfa6929cff8783"},
+    {file = "charset_normalizer-3.0.1-cp310-cp310-musllinux_1_1_aarch64.whl", hash = "sha256:2edb64ee7bf1ed524a1da60cdcd2e1f6e2b4f66ef7c077680739f1641f62f555"},
+    {file = "charset_normalizer-3.0.1-cp310-cp310-musllinux_1_1_i686.whl", hash = "sha256:31a9ddf4718d10ae04d9b18801bd776693487cbb57d74cc3458a7673f6f34639"},
+    {file = "charset_normalizer-3.0.1-cp310-cp310-musllinux_1_1_ppc64le.whl", hash = "sha256:44ba614de5361b3e5278e1241fda3dc1838deed864b50a10d7ce92983797fa76"},
+    {file = "charset_normalizer-3.0.1-cp310-cp310-musllinux_1_1_s390x.whl", hash = "sha256:12db3b2c533c23ab812c2b25934f60383361f8a376ae272665f8e48b88e8e1c6"},
+    {file = "charset_normalizer-3.0.1-cp310-cp310-musllinux_1_1_x86_64.whl", hash = "sha256:c512accbd6ff0270939b9ac214b84fb5ada5f0409c44298361b2f5e13f9aed9e"},
+    {file = "charset_normalizer-3.0.1-cp310-cp310-win32.whl", hash = "sha256:502218f52498a36d6bf5ea77081844017bf7982cdbe521ad85e64cabee1b608b"},
+    {file = "charset_normalizer-3.0.1-cp310-cp310-win_amd64.whl", hash = "sha256:601f36512f9e28f029d9481bdaf8e89e5148ac5d89cffd3b05cd533eeb423b59"},
+    {file = "charset_normalizer-3.0.1-cp311-cp311-macosx_10_9_universal2.whl", hash = "sha256:0298eafff88c99982a4cf66ba2efa1128e4ddaca0b05eec4c456bbc7db691d8d"},
+    {file = "charset_normalizer-3.0.1-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:a8d0fc946c784ff7f7c3742310cc8a57c5c6dc31631269876a88b809dbeff3d3"},
+    {file = "charset_normalizer-3.0.1-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:87701167f2a5c930b403e9756fab1d31d4d4da52856143b609e30a1ce7160f3c"},
+    {file = "charset_normalizer-3.0.1-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:14e76c0f23218b8f46c4d87018ca2e441535aed3632ca134b10239dfb6dadd6b"},
+    {file = "charset_normalizer-3.0.1-cp311-cp311-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:0c0a590235ccd933d9892c627dec5bc7511ce6ad6c1011fdf5b11363022746c1"},
+    {file = "charset_normalizer-3.0.1-cp311-cp311-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:8c7fe7afa480e3e82eed58e0ca89f751cd14d767638e2550c77a92a9e749c317"},
+    {file = "charset_normalizer-3.0.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:79909e27e8e4fcc9db4addea88aa63f6423ebb171db091fb4373e3312cb6d603"},
+    {file = "charset_normalizer-3.0.1-cp311-cp311-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:8ac7b6a045b814cf0c47f3623d21ebd88b3e8cf216a14790b455ea7ff0135d18"},
+    {file = "charset_normalizer-3.0.1-cp311-cp311-musllinux_1_1_aarch64.whl", hash = "sha256:72966d1b297c741541ca8cf1223ff262a6febe52481af742036a0b296e35fa5a"},
+    {file = "charset_normalizer-3.0.1-cp311-cp311-musllinux_1_1_i686.whl", hash = "sha256:f9d0c5c045a3ca9bedfc35dca8526798eb91a07aa7a2c0fee134c6c6f321cbd7"},
+    {file = "charset_normalizer-3.0.1-cp311-cp311-musllinux_1_1_ppc64le.whl", hash = "sha256:5995f0164fa7df59db4746112fec3f49c461dd6b31b841873443bdb077c13cfc"},
+    {file = "charset_normalizer-3.0.1-cp311-cp311-musllinux_1_1_s390x.whl", hash = "sha256:4a8fcf28c05c1f6d7e177a9a46a1c52798bfe2ad80681d275b10dcf317deaf0b"},
+    {file = "charset_normalizer-3.0.1-cp311-cp311-musllinux_1_1_x86_64.whl", hash = "sha256:761e8904c07ad053d285670f36dd94e1b6ab7f16ce62b9805c475b7aa1cffde6"},
+    {file = "charset_normalizer-3.0.1-cp311-cp311-win32.whl", hash = "sha256:71140351489970dfe5e60fc621ada3e0f41104a5eddaca47a7acb3c1b851d6d3"},
+    {file = "charset_normalizer-3.0.1-cp311-cp311-win_amd64.whl", hash = "sha256:9ab77acb98eba3fd2a85cd160851816bfce6871d944d885febf012713f06659c"},
+    {file = "charset_normalizer-3.0.1-cp36-cp36m-macosx_10_9_x86_64.whl", hash = "sha256:84c3990934bae40ea69a82034912ffe5a62c60bbf6ec5bc9691419641d7d5c9a"},
+    {file = "charset_normalizer-3.0.1-cp36-cp36m-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:74292fc76c905c0ef095fe11e188a32ebd03bc38f3f3e9bcb85e4e6db177b7ea"},
+    {file = "charset_normalizer-3.0.1-cp36-cp36m-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:c95a03c79bbe30eec3ec2b7f076074f4281526724c8685a42872974ef4d36b72"},
+    {file = "charset_normalizer-3.0.1-cp36-cp36m-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:f4c39b0e3eac288fedc2b43055cfc2ca7a60362d0e5e87a637beac5d801ef478"},
+    {file = "charset_normalizer-3.0.1-cp36-cp36m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:df2c707231459e8a4028eabcd3cfc827befd635b3ef72eada84ab13b52e1574d"},
+    {file = "charset_normalizer-3.0.1-cp36-cp36m-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:93ad6d87ac18e2a90b0fe89df7c65263b9a99a0eb98f0a3d2e079f12a0735837"},
+    {file = "charset_normalizer-3.0.1-cp36-cp36m-musllinux_1_1_aarch64.whl", hash = "sha256:59e5686dd847347e55dffcc191a96622f016bc0ad89105e24c14e0d6305acbc6"},
+    {file = "charset_normalizer-3.0.1-cp36-cp36m-musllinux_1_1_i686.whl", hash = "sha256:cd6056167405314a4dc3c173943f11249fa0f1b204f8b51ed4bde1a9cd1834dc"},
+    {file = "charset_normalizer-3.0.1-cp36-cp36m-musllinux_1_1_ppc64le.whl", hash = "sha256:083c8d17153ecb403e5e1eb76a7ef4babfc2c48d58899c98fcaa04833e7a2f9a"},
+    {file = "charset_normalizer-3.0.1-cp36-cp36m-musllinux_1_1_s390x.whl", hash = "sha256:f5057856d21e7586765171eac8b9fc3f7d44ef39425f85dbcccb13b3ebea806c"},
+    {file = "charset_normalizer-3.0.1-cp36-cp36m-musllinux_1_1_x86_64.whl", hash = "sha256:7eb33a30d75562222b64f569c642ff3dc6689e09adda43a082208397f016c39a"},
+    {file = "charset_normalizer-3.0.1-cp36-cp36m-win32.whl", hash = "sha256:95dea361dd73757c6f1c0a1480ac499952c16ac83f7f5f4f84f0658a01b8ef41"},
+    {file = "charset_normalizer-3.0.1-cp36-cp36m-win_amd64.whl", hash = "sha256:eaa379fcd227ca235d04152ca6704c7cb55564116f8bc52545ff357628e10602"},
+    {file = "charset_normalizer-3.0.1-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:3e45867f1f2ab0711d60c6c71746ac53537f1684baa699f4f668d4c6f6ce8e14"},
+    {file = "charset_normalizer-3.0.1-cp37-cp37m-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:cadaeaba78750d58d3cc6ac4d1fd867da6fc73c88156b7a3212a3cd4819d679d"},
+    {file = "charset_normalizer-3.0.1-cp37-cp37m-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:911d8a40b2bef5b8bbae2e36a0b103f142ac53557ab421dc16ac4aafee6f53dc"},
+    {file = "charset_normalizer-3.0.1-cp37-cp37m-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:503e65837c71b875ecdd733877d852adbc465bd82c768a067badd953bf1bc5a3"},
+    {file = "charset_normalizer-3.0.1-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:a60332922359f920193b1d4826953c507a877b523b2395ad7bc716ddd386d866"},
+    {file = "charset_normalizer-3.0.1-cp37-cp37m-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:16a8663d6e281208d78806dbe14ee9903715361cf81f6d4309944e4d1e59ac5b"},
+    {file = "charset_normalizer-3.0.1-cp37-cp37m-musllinux_1_1_aarch64.whl", hash = "sha256:a16418ecf1329f71df119e8a65f3aa68004a3f9383821edcb20f0702934d8087"},
+    {file = "charset_normalizer-3.0.1-cp37-cp37m-musllinux_1_1_i686.whl", hash = "sha256:9d9153257a3f70d5f69edf2325357251ed20f772b12e593f3b3377b5f78e7ef8"},
+    {file = "charset_normalizer-3.0.1-cp37-cp37m-musllinux_1_1_ppc64le.whl", hash = "sha256:02a51034802cbf38db3f89c66fb5d2ec57e6fe7ef2f4a44d070a593c3688667b"},
+    {file = "charset_normalizer-3.0.1-cp37-cp37m-musllinux_1_1_s390x.whl", hash = "sha256:2e396d70bc4ef5325b72b593a72c8979999aa52fb8bcf03f701c1b03e1166918"},
+    {file = "charset_normalizer-3.0.1-cp37-cp37m-musllinux_1_1_x86_64.whl", hash = "sha256:11b53acf2411c3b09e6af37e4b9005cba376c872503c8f28218c7243582df45d"},
+    {file = "charset_normalizer-3.0.1-cp37-cp37m-win32.whl", hash = "sha256:0bf2dae5291758b6f84cf923bfaa285632816007db0330002fa1de38bfcb7154"},
+    {file = "charset_normalizer-3.0.1-cp37-cp37m-win_amd64.whl", hash = "sha256:2c03cc56021a4bd59be889c2b9257dae13bf55041a3372d3295416f86b295fb5"},
+    {file = "charset_normalizer-3.0.1-cp38-cp38-macosx_10_9_universal2.whl", hash = "sha256:024e606be3ed92216e2b6952ed859d86b4cfa52cd5bc5f050e7dc28f9b43ec42"},
+    {file = "charset_normalizer-3.0.1-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:4b0d02d7102dd0f997580b51edc4cebcf2ab6397a7edf89f1c73b586c614272c"},
+    {file = "charset_normalizer-3.0.1-cp38-cp38-macosx_11_0_arm64.whl", hash = "sha256:358a7c4cb8ba9b46c453b1dd8d9e431452d5249072e4f56cfda3149f6ab1405e"},
+    {file = "charset_normalizer-3.0.1-cp38-cp38-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:81d6741ab457d14fdedc215516665050f3822d3e56508921cc7239f8c8e66a58"},
+    {file = "charset_normalizer-3.0.1-cp38-cp38-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:8b8af03d2e37866d023ad0ddea594edefc31e827fee64f8de5611a1dbc373174"},
+    {file = "charset_normalizer-3.0.1-cp38-cp38-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:9cf4e8ad252f7c38dd1f676b46514f92dc0ebeb0db5552f5f403509705e24753"},
+    {file = "charset_normalizer-3.0.1-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:e696f0dd336161fca9adbb846875d40752e6eba585843c768935ba5c9960722b"},
+    {file = "charset_normalizer-3.0.1-cp38-cp38-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:c22d3fe05ce11d3671297dc8973267daa0f938b93ec716e12e0f6dee81591dc1"},
+    {file = "charset_normalizer-3.0.1-cp38-cp38-musllinux_1_1_aarch64.whl", hash = "sha256:109487860ef6a328f3eec66f2bf78b0b72400280d8f8ea05f69c51644ba6521a"},
+    {file = "charset_normalizer-3.0.1-cp38-cp38-musllinux_1_1_i686.whl", hash = "sha256:37f8febc8ec50c14f3ec9637505f28e58d4f66752207ea177c1d67df25da5aed"},
+    {file = "charset_normalizer-3.0.1-cp38-cp38-musllinux_1_1_ppc64le.whl", hash = "sha256:f97e83fa6c25693c7a35de154681fcc257c1c41b38beb0304b9c4d2d9e164479"},
+    {file = "charset_normalizer-3.0.1-cp38-cp38-musllinux_1_1_s390x.whl", hash = "sha256:a152f5f33d64a6be73f1d30c9cc82dfc73cec6477ec268e7c6e4c7d23c2d2291"},
+    {file = "charset_normalizer-3.0.1-cp38-cp38-musllinux_1_1_x86_64.whl", hash = "sha256:39049da0ffb96c8cbb65cbf5c5f3ca3168990adf3551bd1dee10c48fce8ae820"},
+    {file = "charset_normalizer-3.0.1-cp38-cp38-win32.whl", hash = "sha256:4457ea6774b5611f4bed5eaa5df55f70abde42364d498c5134b7ef4c6958e20e"},
+    {file = "charset_normalizer-3.0.1-cp38-cp38-win_amd64.whl", hash = "sha256:e62164b50f84e20601c1ff8eb55620d2ad25fb81b59e3cd776a1902527a788af"},
+    {file = "charset_normalizer-3.0.1-cp39-cp39-macosx_10_9_universal2.whl", hash = "sha256:8eade758719add78ec36dc13201483f8e9b5d940329285edcd5f70c0a9edbd7f"},
+    {file = "charset_normalizer-3.0.1-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:8499ca8f4502af841f68135133d8258f7b32a53a1d594aa98cc52013fff55678"},
+    {file = "charset_normalizer-3.0.1-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:3fc1c4a2ffd64890aebdb3f97e1278b0cc72579a08ca4de8cd2c04799a3a22be"},
+    {file = "charset_normalizer-3.0.1-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:00d3ffdaafe92a5dc603cb9bd5111aaa36dfa187c8285c543be562e61b755f6b"},
+    {file = "charset_normalizer-3.0.1-cp39-cp39-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:c2ac1b08635a8cd4e0cbeaf6f5e922085908d48eb05d44c5ae9eabab148512ca"},
+    {file = "charset_normalizer-3.0.1-cp39-cp39-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:f6f45710b4459401609ebebdbcfb34515da4fc2aa886f95107f556ac69a9147e"},
+    {file = "charset_normalizer-3.0.1-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:3ae1de54a77dc0d6d5fcf623290af4266412a7c4be0b1ff7444394f03f5c54e3"},
+    {file = "charset_normalizer-3.0.1-cp39-cp39-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:3b590df687e3c5ee0deef9fc8c547d81986d9a1b56073d82de008744452d6541"},
+    {file = "charset_normalizer-3.0.1-cp39-cp39-musllinux_1_1_aarch64.whl", hash = "sha256:ab5de034a886f616a5668aa5d098af2b5385ed70142090e2a31bcbd0af0fdb3d"},
+    {file = "charset_normalizer-3.0.1-cp39-cp39-musllinux_1_1_i686.whl", hash = "sha256:9cb3032517f1627cc012dbc80a8ec976ae76d93ea2b5feaa9d2a5b8882597579"},
+    {file = "charset_normalizer-3.0.1-cp39-cp39-musllinux_1_1_ppc64le.whl", hash = "sha256:608862a7bf6957f2333fc54ab4399e405baad0163dc9f8d99cb236816db169d4"},
+    {file = "charset_normalizer-3.0.1-cp39-cp39-musllinux_1_1_s390x.whl", hash = "sha256:0f438ae3532723fb6ead77e7c604be7c8374094ef4ee2c5e03a3a17f1fca256c"},
+    {file = "charset_normalizer-3.0.1-cp39-cp39-musllinux_1_1_x86_64.whl", hash = "sha256:356541bf4381fa35856dafa6a965916e54bed415ad8a24ee6de6e37deccf2786"},
+    {file = "charset_normalizer-3.0.1-cp39-cp39-win32.whl", hash = "sha256:39cf9ed17fe3b1bc81f33c9ceb6ce67683ee7526e65fde1447c772afc54a1bb8"},
+    {file = "charset_normalizer-3.0.1-cp39-cp39-win_amd64.whl", hash = "sha256:0a11e971ed097d24c534c037d298ad32c6ce81a45736d31e0ff0ad37ab437d59"},
+    {file = "charset_normalizer-3.0.1-py3-none-any.whl", hash = "sha256:7e189e2e1d3ed2f4aebabd2d5b0f931e883676e51c7624826e0a4e5fe8a0bf24"},
 ]
-
-[package.extras]
-unicode-backport = ["unicodedata2"]
 
 [[package]]
 name = "click"
@@ -158,63 +233,63 @@ files = [
 
 [[package]]
 name = "coverage"
-version = "7.0.3"
+version = "7.0.5"
 description = "Code coverage measurement for Python"
 category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "coverage-7.0.3-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:2f7c51b6074a8a3063c341953dffe48fd6674f8e4b1d3c8aa8a91f58d6e716a8"},
-    {file = "coverage-7.0.3-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:628f47eaf66727fc986d3b190d6fa32f5e6b7754a243919d28bc0fd7974c449f"},
-    {file = "coverage-7.0.3-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:e89d5abf86c104de808108a25d171ad646c07eda96ca76c8b237b94b9c71e518"},
-    {file = "coverage-7.0.3-cp310-cp310-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:75e43c6f4ea4d122dac389aabdf9d4f0e160770a75e63372f88005d90f5bcc80"},
-    {file = "coverage-7.0.3-cp310-cp310-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:49da0ff241827ebb52d5d6d5a36d33b455fa5e721d44689c95df99fd8db82437"},
-    {file = "coverage-7.0.3-cp310-cp310-musllinux_1_1_aarch64.whl", hash = "sha256:0bce4ad5bdd0b02e177a085d28d2cea5fc57bb4ba2cead395e763e34cf934eb1"},
-    {file = "coverage-7.0.3-cp310-cp310-musllinux_1_1_i686.whl", hash = "sha256:f79691335257d60951638dd43576b9bcd6f52baa5c1c2cd07a509bb003238372"},
-    {file = "coverage-7.0.3-cp310-cp310-musllinux_1_1_x86_64.whl", hash = "sha256:5722269ed05fbdb94eef431787c66b66260ff3125d1a9afcc00facff8c45adf9"},
-    {file = "coverage-7.0.3-cp310-cp310-win32.whl", hash = "sha256:bdbda870e0fda7dd0fe7db7135ca226ec4c1ade8aa76e96614829b56ca491012"},
-    {file = "coverage-7.0.3-cp310-cp310-win_amd64.whl", hash = "sha256:e56fae4292e216b8deeee38ace84557b9fa85b52db005368a275427cdabb8192"},
-    {file = "coverage-7.0.3-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:b82343a5bc51627b9d606f0b6b6b9551db7b6311a5dd920fa52a94beae2e8959"},
-    {file = "coverage-7.0.3-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:fd0a8aa431f9b7ad9eb8264f55ef83cbb254962af3775092fb6e93890dea9ca2"},
-    {file = "coverage-7.0.3-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:112cfead1bd22eada8a8db9ed387bd3e8be5528debc42b5d3c1f7da4ffaf9fb5"},
-    {file = "coverage-7.0.3-cp311-cp311-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:af87e906355fa42447be5c08c5d44e6e1c005bf142f303f726ddf5ed6e0c8a4d"},
-    {file = "coverage-7.0.3-cp311-cp311-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:f30090e22a301952c5abd0e493a1c8358b4f0b368b49fa3e4568ed3ed68b8d1f"},
-    {file = "coverage-7.0.3-cp311-cp311-musllinux_1_1_aarch64.whl", hash = "sha256:ae871d09901911eedda1981ea6fd0f62a999107293cdc4c4fd612321c5b34745"},
-    {file = "coverage-7.0.3-cp311-cp311-musllinux_1_1_i686.whl", hash = "sha256:ed7c9debf7bfc63c9b9f8b595409237774ff4b061bf29fba6f53b287a2fdeab9"},
-    {file = "coverage-7.0.3-cp311-cp311-musllinux_1_1_x86_64.whl", hash = "sha256:13121fa22dcd2c7b19c5161e3fd725692448f05377b788da4502a383573227b3"},
-    {file = "coverage-7.0.3-cp311-cp311-win32.whl", hash = "sha256:037b51ee86bc600f99b3b957c20a172431c35c2ef9c1ca34bc813ab5b51fd9f5"},
-    {file = "coverage-7.0.3-cp311-cp311-win_amd64.whl", hash = "sha256:25fde928306034e8deecd5fc91a07432dcc282c8acb76749581a28963c9f4f3f"},
-    {file = "coverage-7.0.3-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:7e8b0642c38b3d3b3c01417643ccc645345b03c32a2e84ef93cdd6844d6fe530"},
-    {file = "coverage-7.0.3-cp37-cp37m-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:18b09811f849cc958d23f733a350a66b54a8de3fed1e6128ba55a5c97ffb6f65"},
-    {file = "coverage-7.0.3-cp37-cp37m-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:349d0b545520e8516f7b4f12373afc705d17d901e1de6a37a20e4ec9332b61f7"},
-    {file = "coverage-7.0.3-cp37-cp37m-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:b5b38813eee5b4739f505d94247604c72eae626d5088a16dd77b08b8b1724ab3"},
-    {file = "coverage-7.0.3-cp37-cp37m-musllinux_1_1_aarch64.whl", hash = "sha256:ba9af1218fa01b1f11c72271bc7290b701d11ad4dbc2ae97c445ecacf6858dba"},
-    {file = "coverage-7.0.3-cp37-cp37m-musllinux_1_1_i686.whl", hash = "sha256:c5648c7eec5cf1ba5db1cf2d6c10036a582d7f09e172990474a122e30c841361"},
-    {file = "coverage-7.0.3-cp37-cp37m-musllinux_1_1_x86_64.whl", hash = "sha256:d0df04495b76a885bfef009f45eebe8fe2fbf815ad7a83dabcf5aced62f33162"},
-    {file = "coverage-7.0.3-cp37-cp37m-win32.whl", hash = "sha256:af6cef3796b8068713a48dd67d258dc9a6e2ebc3bd4645bfac03a09672fa5d20"},
-    {file = "coverage-7.0.3-cp37-cp37m-win_amd64.whl", hash = "sha256:62ef3800c4058844e2e3fa35faa9dd0ccde8a8aba6c763aae50342e00d4479d4"},
-    {file = "coverage-7.0.3-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:acef7f3a3825a2d218a03dd02f5f3cc7f27aa31d882dd780191d1ad101120d74"},
-    {file = "coverage-7.0.3-cp38-cp38-macosx_11_0_arm64.whl", hash = "sha256:a530663a361eb27375cec28aea5cd282089b5e4b022ae451c4c3493b026a68a5"},
-    {file = "coverage-7.0.3-cp38-cp38-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:c58cd6bb46dcb922e0d5792850aab5964433d511b3a020867650f8d930dde4f4"},
-    {file = "coverage-7.0.3-cp38-cp38-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:f918e9ef4c98f477a5458238dde2a1643aed956c7213873ab6b6b82e32b8ef61"},
-    {file = "coverage-7.0.3-cp38-cp38-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:2b865aa679bee7fbd1c55960940dbd3252621dd81468268786c67122bbd15343"},
-    {file = "coverage-7.0.3-cp38-cp38-musllinux_1_1_aarch64.whl", hash = "sha256:c5d9b480ebae60fc2cbc8d6865194136bc690538fa542ba58726433bed6e04cc"},
-    {file = "coverage-7.0.3-cp38-cp38-musllinux_1_1_i686.whl", hash = "sha256:985ad2af5ec3dbb4fd75d5b0735752c527ad183455520055a08cf8d6794cabfc"},
-    {file = "coverage-7.0.3-cp38-cp38-musllinux_1_1_x86_64.whl", hash = "sha256:ca15308ef722f120967af7474ba6a453e0f5b6f331251e20b8145497cf1bc14a"},
-    {file = "coverage-7.0.3-cp38-cp38-win32.whl", hash = "sha256:c1cee10662c25c94415bbb987f2ec0e6ba9e8fce786334b10be7e6a7ab958f69"},
-    {file = "coverage-7.0.3-cp38-cp38-win_amd64.whl", hash = "sha256:44d6a556de4418f1f3bfd57094b8c49f0408df5a433cf0d253eeb3075261c762"},
-    {file = "coverage-7.0.3-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:e6dcc70a25cb95df0ae33dfc701de9b09c37f7dd9f00394d684a5b57257f8246"},
-    {file = "coverage-7.0.3-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:bf76d79dfaea802f0f28f50153ffbc1a74ae1ee73e480baeda410b4f3e7ab25f"},
-    {file = "coverage-7.0.3-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:88834e5d56d01c141c29deedacba5773fe0bed900b1edc957595a8a6c0da1c3c"},
-    {file = "coverage-7.0.3-cp39-cp39-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:ef001a60e888f8741e42e5aa79ae55c91be73761e4df5e806efca1ddd62fd400"},
-    {file = "coverage-7.0.3-cp39-cp39-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:4959dc506be74e4963bd2c42f7b87d8e4b289891201e19ec551e64c6aa5441f8"},
-    {file = "coverage-7.0.3-cp39-cp39-musllinux_1_1_aarch64.whl", hash = "sha256:b791beb17b32ac019a78cfbe6184f992b6273fdca31145b928ad2099435e2fcb"},
-    {file = "coverage-7.0.3-cp39-cp39-musllinux_1_1_i686.whl", hash = "sha256:b07651e3b9af8f1a092861d88b4c74d913634a7f1f2280fca0ad041ad84e9e96"},
-    {file = "coverage-7.0.3-cp39-cp39-musllinux_1_1_x86_64.whl", hash = "sha256:55e46fa4168ccb7497c9be78627fcb147e06f474f846a10d55feeb5108a24ef0"},
-    {file = "coverage-7.0.3-cp39-cp39-win32.whl", hash = "sha256:e3f1cd1cd65695b1540b3cf7828d05b3515974a9d7c7530f762ac40f58a18161"},
-    {file = "coverage-7.0.3-cp39-cp39-win_amd64.whl", hash = "sha256:d8249666c23683f74f8f93aeaa8794ac87cc61c40ff70374a825f3352a4371dc"},
-    {file = "coverage-7.0.3-pp37.pp38.pp39-none-any.whl", hash = "sha256:b1ffc8f58b81baed3f8962e28c30d99442079b82ce1ec836a1f67c0accad91c1"},
-    {file = "coverage-7.0.3.tar.gz", hash = "sha256:d5be4e93acce64f516bf4fd239c0e6118fc913c93fa1a3f52d15bdcc60d97b2d"},
+    {file = "coverage-7.0.5-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:2a7f23bbaeb2a87f90f607730b45564076d870f1fb07b9318d0c21f36871932b"},
+    {file = "coverage-7.0.5-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:c18d47f314b950dbf24a41787ced1474e01ca816011925976d90a88b27c22b89"},
+    {file = "coverage-7.0.5-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:ef14d75d86f104f03dea66c13188487151760ef25dd6b2dbd541885185f05f40"},
+    {file = "coverage-7.0.5-cp310-cp310-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:66e50680e888840c0995f2ad766e726ce71ca682e3c5f4eee82272c7671d38a2"},
+    {file = "coverage-7.0.5-cp310-cp310-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:a9fed35ca8c6e946e877893bbac022e8563b94404a605af1d1e6accc7eb73289"},
+    {file = "coverage-7.0.5-cp310-cp310-musllinux_1_1_aarch64.whl", hash = "sha256:d8d04e755934195bdc1db45ba9e040b8d20d046d04d6d77e71b3b34a8cc002d0"},
+    {file = "coverage-7.0.5-cp310-cp310-musllinux_1_1_i686.whl", hash = "sha256:7e109f1c9a3ece676597831874126555997c48f62bddbcace6ed17be3e372de8"},
+    {file = "coverage-7.0.5-cp310-cp310-musllinux_1_1_x86_64.whl", hash = "sha256:0a1890fca2962c4f1ad16551d660b46ea77291fba2cc21c024cd527b9d9c8809"},
+    {file = "coverage-7.0.5-cp310-cp310-win32.whl", hash = "sha256:be9fcf32c010da0ba40bf4ee01889d6c737658f4ddff160bd7eb9cac8f094b21"},
+    {file = "coverage-7.0.5-cp310-cp310-win_amd64.whl", hash = "sha256:cbfcba14a3225b055a28b3199c3d81cd0ab37d2353ffd7f6fd64844cebab31ad"},
+    {file = "coverage-7.0.5-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:30b5fec1d34cc932c1bc04017b538ce16bf84e239378b8f75220478645d11fca"},
+    {file = "coverage-7.0.5-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:1caed2367b32cc80a2b7f58a9f46658218a19c6cfe5bc234021966dc3daa01f0"},
+    {file = "coverage-7.0.5-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:d254666d29540a72d17cc0175746cfb03d5123db33e67d1020e42dae611dc196"},
+    {file = "coverage-7.0.5-cp311-cp311-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:19245c249aa711d954623d94f23cc94c0fd65865661f20b7781210cb97c471c0"},
+    {file = "coverage-7.0.5-cp311-cp311-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:7b05ed4b35bf6ee790832f68932baf1f00caa32283d66cc4d455c9e9d115aafc"},
+    {file = "coverage-7.0.5-cp311-cp311-musllinux_1_1_aarch64.whl", hash = "sha256:29de916ba1099ba2aab76aca101580006adfac5646de9b7c010a0f13867cba45"},
+    {file = "coverage-7.0.5-cp311-cp311-musllinux_1_1_i686.whl", hash = "sha256:e057e74e53db78122a3979f908973e171909a58ac20df05c33998d52e6d35757"},
+    {file = "coverage-7.0.5-cp311-cp311-musllinux_1_1_x86_64.whl", hash = "sha256:411d4ff9d041be08fdfc02adf62e89c735b9468f6d8f6427f8a14b6bb0a85095"},
+    {file = "coverage-7.0.5-cp311-cp311-win32.whl", hash = "sha256:52ab14b9e09ce052237dfe12d6892dd39b0401690856bcfe75d5baba4bfe2831"},
+    {file = "coverage-7.0.5-cp311-cp311-win_amd64.whl", hash = "sha256:1f66862d3a41674ebd8d1a7b6f5387fe5ce353f8719040a986551a545d7d83ea"},
+    {file = "coverage-7.0.5-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:b69522b168a6b64edf0c33ba53eac491c0a8f5cc94fa4337f9c6f4c8f2f5296c"},
+    {file = "coverage-7.0.5-cp37-cp37m-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:436e103950d05b7d7f55e39beeb4d5be298ca3e119e0589c0227e6d0b01ee8c7"},
+    {file = "coverage-7.0.5-cp37-cp37m-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:b8c56bec53d6e3154eaff6ea941226e7bd7cc0d99f9b3756c2520fc7a94e6d96"},
+    {file = "coverage-7.0.5-cp37-cp37m-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:7a38362528a9115a4e276e65eeabf67dcfaf57698e17ae388599568a78dcb029"},
+    {file = "coverage-7.0.5-cp37-cp37m-musllinux_1_1_aarch64.whl", hash = "sha256:f67472c09a0c7486e27f3275f617c964d25e35727af952869dd496b9b5b7f6a3"},
+    {file = "coverage-7.0.5-cp37-cp37m-musllinux_1_1_i686.whl", hash = "sha256:220e3fa77d14c8a507b2d951e463b57a1f7810a6443a26f9b7591ef39047b1b2"},
+    {file = "coverage-7.0.5-cp37-cp37m-musllinux_1_1_x86_64.whl", hash = "sha256:ecb0f73954892f98611e183f50acdc9e21a4653f294dfbe079da73c6378a6f47"},
+    {file = "coverage-7.0.5-cp37-cp37m-win32.whl", hash = "sha256:d8f3e2e0a1d6777e58e834fd5a04657f66affa615dae61dd67c35d1568c38882"},
+    {file = "coverage-7.0.5-cp37-cp37m-win_amd64.whl", hash = "sha256:9e662e6fc4f513b79da5d10a23edd2b87685815b337b1a30cd11307a6679148d"},
+    {file = "coverage-7.0.5-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:790e4433962c9f454e213b21b0fd4b42310ade9c077e8edcb5113db0818450cb"},
+    {file = "coverage-7.0.5-cp38-cp38-macosx_11_0_arm64.whl", hash = "sha256:49640bda9bda35b057b0e65b7c43ba706fa2335c9a9896652aebe0fa399e80e6"},
+    {file = "coverage-7.0.5-cp38-cp38-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:d66187792bfe56f8c18ba986a0e4ae44856b1c645336bd2c776e3386da91e1dd"},
+    {file = "coverage-7.0.5-cp38-cp38-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:276f4cd0001cd83b00817c8db76730938b1ee40f4993b6a905f40a7278103b3a"},
+    {file = "coverage-7.0.5-cp38-cp38-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:95304068686545aa368b35dfda1cdfbbdbe2f6fe43de4a2e9baa8ebd71be46e2"},
+    {file = "coverage-7.0.5-cp38-cp38-musllinux_1_1_aarch64.whl", hash = "sha256:17e01dd8666c445025c29684d4aabf5a90dc6ef1ab25328aa52bedaa95b65ad7"},
+    {file = "coverage-7.0.5-cp38-cp38-musllinux_1_1_i686.whl", hash = "sha256:ea76dbcad0b7b0deb265d8c36e0801abcddf6cc1395940a24e3595288b405ca0"},
+    {file = "coverage-7.0.5-cp38-cp38-musllinux_1_1_x86_64.whl", hash = "sha256:50a6adc2be8edd7ee67d1abc3cd20678987c7b9d79cd265de55941e3d0d56499"},
+    {file = "coverage-7.0.5-cp38-cp38-win32.whl", hash = "sha256:e4ce984133b888cc3a46867c8b4372c7dee9cee300335e2925e197bcd45b9e16"},
+    {file = "coverage-7.0.5-cp38-cp38-win_amd64.whl", hash = "sha256:4a950f83fd3f9bca23b77442f3a2b2ea4ac900944d8af9993743774c4fdc57af"},
+    {file = "coverage-7.0.5-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:3c2155943896ac78b9b0fd910fb381186d0c345911f5333ee46ac44c8f0e43ab"},
+    {file = "coverage-7.0.5-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:54f7e9705e14b2c9f6abdeb127c390f679f6dbe64ba732788d3015f7f76ef637"},
+    {file = "coverage-7.0.5-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:0ee30375b409d9a7ea0f30c50645d436b6f5dfee254edffd27e45a980ad2c7f4"},
+    {file = "coverage-7.0.5-cp39-cp39-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:b78729038abea6a5df0d2708dce21e82073463b2d79d10884d7d591e0f385ded"},
+    {file = "coverage-7.0.5-cp39-cp39-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:13250b1f0bd023e0c9f11838bdeb60214dd5b6aaf8e8d2f110c7e232a1bff83b"},
+    {file = "coverage-7.0.5-cp39-cp39-musllinux_1_1_aarch64.whl", hash = "sha256:2c407b1950b2d2ffa091f4e225ca19a66a9bd81222f27c56bd12658fc5ca1209"},
+    {file = "coverage-7.0.5-cp39-cp39-musllinux_1_1_i686.whl", hash = "sha256:c76a3075e96b9c9ff00df8b5f7f560f5634dffd1658bafb79eb2682867e94f78"},
+    {file = "coverage-7.0.5-cp39-cp39-musllinux_1_1_x86_64.whl", hash = "sha256:f26648e1b3b03b6022b48a9b910d0ae209e2d51f50441db5dce5b530fad6d9b1"},
+    {file = "coverage-7.0.5-cp39-cp39-win32.whl", hash = "sha256:ba3027deb7abf02859aca49c865ece538aee56dcb4871b4cced23ba4d5088904"},
+    {file = "coverage-7.0.5-cp39-cp39-win_amd64.whl", hash = "sha256:949844af60ee96a376aac1ded2a27e134b8c8d35cc006a52903fc06c24a3296f"},
+    {file = "coverage-7.0.5-pp37.pp38.pp39-none-any.whl", hash = "sha256:b9727ac4f5cf2cbf87880a63870b5b9730a8ae3a4a360241a0fdaa2f71240ff0"},
+    {file = "coverage-7.0.5.tar.gz", hash = "sha256:051afcbd6d2ac39298d62d340f94dbb6a1f31de06dfaf6fcef7b759dd3860c45"},
 ]
 
 [package.dependencies]
@@ -225,22 +300,23 @@ toml = ["tomli"]
 
 [[package]]
 name = "dnspython"
-version = "2.2.1"
+version = "2.3.0"
 description = "DNS toolkit"
 category = "main"
 optional = false
-python-versions = ">=3.6,<4.0"
+python-versions = ">=3.7,<4.0"
 files = [
-    {file = "dnspython-2.2.1-py3-none-any.whl", hash = "sha256:a851e51367fb93e9e1361732c1d60dab63eff98712e503ea7d92e6eccb109b4f"},
-    {file = "dnspython-2.2.1.tar.gz", hash = "sha256:0f7569a4a6ff151958b64304071d370daa3243d15941a7beedf0c9fe5105603e"},
+    {file = "dnspython-2.3.0-py3-none-any.whl", hash = "sha256:89141536394f909066cabd112e3e1a37e4e654db00a25308b0f130bc3152eb46"},
+    {file = "dnspython-2.3.0.tar.gz", hash = "sha256:224e32b03eb46be70e12ef6d64e0be123a64e621ab4c0822ff6d450d52a540b9"},
 ]
 
 [package.extras]
 curio = ["curio (>=1.2,<2.0)", "sniffio (>=1.1,<2.0)"]
-dnssec = ["cryptography (>=2.6,<37.0)"]
-doh = ["h2 (>=4.1.0)", "httpx (>=0.21.1)", "requests (>=2.23.0,<3.0.0)", "requests-toolbelt (>=0.9.1,<0.10.0)"]
+dnssec = ["cryptography (>=2.6,<40.0)"]
+doh = ["h2 (>=4.1.0)", "httpx (>=0.21.1)", "requests (>=2.23.0,<3.0.0)", "requests-toolbelt (>=0.9.1,<0.11.0)"]
+doq = ["aioquic (>=0.9.20)"]
 idna = ["idna (>=2.1,<4.0)"]
-trio = ["trio (>=0.14,<0.20)"]
+trio = ["trio (>=0.14,<0.23)"]
 wmi = ["wmi (>=1.5.1,<2.0.0)"]
 
 [[package]]
@@ -261,14 +337,14 @@ idna = ">=2.0.0"
 
 [[package]]
 name = "exceptiongroup"
-version = "1.0.4"
+version = "1.1.0"
 description = "Backport of PEP 654 (exception groups)"
 category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "exceptiongroup-1.0.4-py3-none-any.whl", hash = "sha256:542adf9dea4055530d6e1279602fa5cb11dab2395fa650b8674eaec35fc4a828"},
-    {file = "exceptiongroup-1.0.4.tar.gz", hash = "sha256:bd14967b79cd9bdb54d97323216f8fdf533e278df937aa2a90089e7d6e06e5ec"},
+    {file = "exceptiongroup-1.1.0-py3-none-any.whl", hash = "sha256:327cbda3da756e2de031a3107b81ab7b3770a602c4d16ca618298c526f4bec1e"},
+    {file = "exceptiongroup-1.1.0.tar.gz", hash = "sha256:bcb67d800a4497e1b404c2dd44fca47d3b7a5e5433dbab67f96c1a685cdfdf23"},
 ]
 
 [package.extras]
@@ -276,14 +352,14 @@ test = ["pytest (>=6)"]
 
 [[package]]
 name = "fastapi"
-version = "0.88.0"
+version = "0.89.1"
 description = "FastAPI framework, high performance, easy to learn, fast to code, ready for production"
 category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "fastapi-0.88.0-py3-none-any.whl", hash = "sha256:263b718bb384422fe3d042ffc9a0c8dece5e034ab6586ff034f6b4b1667c3eee"},
-    {file = "fastapi-0.88.0.tar.gz", hash = "sha256:915bf304180a0e7c5605ec81097b7d4cd8826ff87a02bb198e336fb9f3b5ff02"},
+    {file = "fastapi-0.89.1-py3-none-any.whl", hash = "sha256:f9773ea22290635b2f48b4275b2bf69a8fa721fda2e38228bed47139839dc877"},
+    {file = "fastapi-0.89.1.tar.gz", hash = "sha256:15d9271ee52b572a015ca2ae5c72e1ce4241dd8532a534ad4f7ec70c376a580f"},
 ]
 
 [package.dependencies]
@@ -301,9 +377,9 @@ uvicorn = {version = ">=0.12.0", extras = ["standard"], optional = true, markers
 
 [package.extras]
 all = ["email-validator (>=1.1.1)", "httpx (>=0.23.0)", "itsdangerous (>=1.1.0)", "jinja2 (>=2.11.2)", "orjson (>=3.2.1)", "python-multipart (>=0.0.5)", "pyyaml (>=5.3.1)", "ujson (>=4.0.1,!=4.0.2,!=4.1.0,!=4.2.0,!=4.3.0,!=5.0.0,!=5.1.0)", "uvicorn[standard] (>=0.12.0)"]
-dev = ["pre-commit (>=2.17.0,<3.0.0)", "ruff (==0.0.138)", "uvicorn[standard] (>=0.12.0,<0.19.0)"]
-doc = ["mdx-include (>=1.4.1,<2.0.0)", "mkdocs (>=1.1.2,<2.0.0)", "mkdocs-markdownextradata-plugin (>=0.1.7,<0.3.0)", "mkdocs-material (>=8.1.4,<9.0.0)", "pyyaml (>=5.3.1,<7.0.0)", "typer[all] (>=0.6.1,<0.7.0)"]
-test = ["anyio[trio] (>=3.2.1,<4.0.0)", "black (==22.10.0)", "coverage[toml] (>=6.5.0,<7.0)", "databases[sqlite] (>=0.3.2,<0.7.0)", "email-validator (>=1.1.1,<2.0.0)", "flask (>=1.1.2,<3.0.0)", "httpx (>=0.23.0,<0.24.0)", "isort (>=5.0.6,<6.0.0)", "mypy (==0.982)", "orjson (>=3.2.1,<4.0.0)", "passlib[bcrypt] (>=1.7.2,<2.0.0)", "peewee (>=3.13.3,<4.0.0)", "pytest (>=7.1.3,<8.0.0)", "python-jose[cryptography] (>=3.3.0,<4.0.0)", "python-multipart (>=0.0.5,<0.0.6)", "pyyaml (>=5.3.1,<7.0.0)", "ruff (==0.0.138)", "sqlalchemy (>=1.3.18,<=1.4.41)", "types-orjson (==3.6.2)", "types-ujson (==5.5.0)", "ujson (>=4.0.1,!=4.0.2,!=4.1.0,!=4.2.0,!=4.3.0,!=5.0.0,!=5.1.0,<6.0.0)"]
+dev = ["pre-commit (>=2.17.0,<3.0.0)", "ruff (==0.0.138)", "uvicorn[standard] (>=0.12.0,<0.21.0)"]
+doc = ["mdx-include (>=1.4.1,<2.0.0)", "mkdocs (>=1.1.2,<2.0.0)", "mkdocs-markdownextradata-plugin (>=0.1.7,<0.3.0)", "mkdocs-material (>=8.1.4,<9.0.0)", "pyyaml (>=5.3.1,<7.0.0)", "typer[all] (>=0.6.1,<0.8.0)"]
+test = ["anyio[trio] (>=3.2.1,<4.0.0)", "black (==22.10.0)", "coverage[toml] (>=6.5.0,<8.0)", "databases[sqlite] (>=0.3.2,<0.7.0)", "email-validator (>=1.1.1,<2.0.0)", "flask (>=1.1.2,<3.0.0)", "httpx (>=0.23.0,<0.24.0)", "isort (>=5.0.6,<6.0.0)", "mypy (==0.982)", "orjson (>=3.2.1,<4.0.0)", "passlib[bcrypt] (>=1.7.2,<2.0.0)", "peewee (>=3.13.3,<4.0.0)", "pytest (>=7.1.3,<8.0.0)", "python-jose[cryptography] (>=3.3.0,<4.0.0)", "python-multipart (>=0.0.5,<0.0.6)", "pyyaml (>=5.3.1,<7.0.0)", "ruff (==0.0.138)", "sqlalchemy (>=1.3.18,<1.4.43)", "types-orjson (==3.6.2)", "types-ujson (==5.6.0.0)", "ujson (>=4.0.1,!=4.0.2,!=4.1.0,!=4.2.0,!=4.3.0,!=5.0.0,!=5.1.0,<6.0.0)"]
 
 [[package]]
 name = "flake8"
@@ -375,14 +451,14 @@ files = [
 
 [[package]]
 name = "httpcore"
-version = "0.16.2"
+version = "0.16.3"
 description = "A minimal low-level HTTP client."
 category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "httpcore-0.16.2-py3-none-any.whl", hash = "sha256:52c79095197178856724541e845f2db86d5f1527640d9254b5b8f6f6cebfdee6"},
-    {file = "httpcore-0.16.2.tar.gz", hash = "sha256:c35c5176dc82db732acfd90b581a3062c999a72305df30c0fc8fafd8e4aca068"},
+    {file = "httpcore-0.16.3-py3-none-any.whl", hash = "sha256:da1fb708784a938aa084bde4feb8317056c55037247c787bd7e19eb2c2949dc0"},
+    {file = "httpcore-0.16.3.tar.gz", hash = "sha256:c5d6f04e2fc530f39e0c077e6a30caa53f1451096120f1f38b954afd0b17c0cb"},
 ]
 
 [package.dependencies]
@@ -451,14 +527,14 @@ test = ["Cython (>=0.29.24,<0.30.0)"]
 
 [[package]]
 name = "httpx"
-version = "0.23.1"
+version = "0.23.3"
 description = "The next generation HTTP client."
 category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "httpx-0.23.1-py3-none-any.whl", hash = "sha256:0b9b1f0ee18b9978d637b0776bfd7f54e2ca278e063e3586d8f01cda89e042a8"},
-    {file = "httpx-0.23.1.tar.gz", hash = "sha256:202ae15319be24efe9a8bd4ed4360e68fde7b38bcc2ce87088d416f026667d19"},
+    {file = "httpx-0.23.3-py3-none-any.whl", hash = "sha256:a211fcce9b1254ea24f0cd6af9869b3d29aba40154e947d2a07bb499b3e310d6"},
+    {file = "httpx-0.23.3.tar.gz", hash = "sha256:9818458eb565bb54898ccb9b8b251a28785dd4a55afbc23d0eb410754fe7d0f9"},
 ]
 
 [package.dependencies]
@@ -487,26 +563,26 @@ files = [
 
 [[package]]
 name = "iniconfig"
-version = "1.1.1"
-description = "iniconfig: brain-dead simple config-ini parsing"
+version = "2.0.0"
+description = "brain-dead simple config-ini parsing"
 category = "dev"
 optional = false
-python-versions = "*"
+python-versions = ">=3.7"
 files = [
-    {file = "iniconfig-1.1.1-py2.py3-none-any.whl", hash = "sha256:011e24c64b7f47f6ebd835bb12a743f2fbe9a26d4cecaa7f53bc4f35ee9da8b3"},
-    {file = "iniconfig-1.1.1.tar.gz", hash = "sha256:bc3af051d7d14b2ee5ef9969666def0cd1a000e121eaea580d4a313df4b37f32"},
+    {file = "iniconfig-2.0.0-py3-none-any.whl", hash = "sha256:b6a85871a79d2e3b22d2d1b94ac2824226a63c6b741c88f7ae975f18b6778374"},
+    {file = "iniconfig-2.0.0.tar.gz", hash = "sha256:2d91e135bf72d31a410b17c16da610a82cb55f6b0477d1a902134b24a455b8b3"},
 ]
 
 [[package]]
 name = "isort"
-version = "5.10.1"
+version = "5.11.4"
 description = "A Python utility / library to sort Python imports."
 category = "dev"
 optional = false
-python-versions = ">=3.6.1,<4.0"
+python-versions = ">=3.7.0"
 files = [
-    {file = "isort-5.10.1-py3-none-any.whl", hash = "sha256:6f62d78e2f89b4500b080fe3a81690850cd254227f27f75c3a0c491a1f351ba7"},
-    {file = "isort-5.10.1.tar.gz", hash = "sha256:e8443a5e7a020e9d7f97f1d7d9cd17c88bcb3bc7e218bf9cf5095fe550be2951"},
+    {file = "isort-5.11.4-py3-none-any.whl", hash = "sha256:c033fd0edb91000a7f09527fe5c75321878f98322a77ddcc81adbd83724afb7b"},
+    {file = "isort-5.11.4.tar.gz", hash = "sha256:6db30c5ded9815d813932c04c2f85a360bcdd35fed496f4d8f35495ef0a261b6"},
 ]
 
 [package.extras]
@@ -672,105 +748,97 @@ files = [
 
 [[package]]
 name = "orjson"
-version = "3.8.2"
+version = "3.8.5"
 description = "Fast, correct Python JSON library supporting dataclasses, datetimes, and numpy"
 category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "orjson-3.8.2-cp310-cp310-macosx_10_7_x86_64.whl", hash = "sha256:43e69b360c2851b45c7dbab3b95f7fa8469df73fab325a683f7389c4db63aa71"},
-    {file = "orjson-3.8.2-cp310-cp310-macosx_10_9_x86_64.macosx_11_0_arm64.macosx_10_9_universal2.whl", hash = "sha256:64c5da5c9679ef3d85e9bbcbb62f4ccdc1f1975780caa20f2ec1e37b4da6bd36"},
-    {file = "orjson-3.8.2-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:3c632a2157fa9ec098d655287e9e44809615af99837c49f53d96bfbca453c5bd"},
-    {file = "orjson-3.8.2-cp310-cp310-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:f63da6309c282a2b58d4a846f0717f6440356b4872838b9871dc843ed1fe2b38"},
-    {file = "orjson-3.8.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:5c9be25c313ba2d5478829d949165445c3bd36c62e07092b4ba8dbe5426574d1"},
-    {file = "orjson-3.8.2-cp310-cp310-manylinux_2_28_aarch64.whl", hash = "sha256:4bcce53e9e088f82633f784f79551fcd7637943ab56c51654aaf9d4c1d5cfa54"},
-    {file = "orjson-3.8.2-cp310-cp310-manylinux_2_28_x86_64.whl", hash = "sha256:33edb5379c6e6337f9383c85fe4080ce3aa1057cc2ce29345b7239461f50cbd6"},
-    {file = "orjson-3.8.2-cp310-cp310-musllinux_1_1_aarch64.whl", hash = "sha256:da35d347115758bbc8bfaf39bb213c42000f2a54e3f504c84374041d20835cd6"},
-    {file = "orjson-3.8.2-cp310-cp310-musllinux_1_1_x86_64.whl", hash = "sha256:d755d94a90a941b91b4d39a6b02e289d8ba358af2d1a911edf266be7942609dc"},
-    {file = "orjson-3.8.2-cp310-none-win_amd64.whl", hash = "sha256:7ea96923e26390b2142602ebb030e2a4db9351134696e0b219e5106bddf9b48e"},
-    {file = "orjson-3.8.2-cp311-cp311-macosx_10_7_x86_64.whl", hash = "sha256:a0d89de876e6f1cef917a2338378a60a98584e1c2e1c67781e20b6ed1c512478"},
-    {file = "orjson-3.8.2-cp311-cp311-macosx_10_9_x86_64.macosx_11_0_arm64.macosx_10_9_universal2.whl", hash = "sha256:8d47e7592fe938aec898eb22ea4946298c018133df084bc78442ff18e2c6347c"},
-    {file = "orjson-3.8.2-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:c3d9f1043f618d0c64228aab9711e5bd822253c50b6c56223951e32b51f81d62"},
-    {file = "orjson-3.8.2-cp311-cp311-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:ed10600e8b08f1e87b656ad38ab316191ce94f2c9adec57035680c0dc9e93c81"},
-    {file = "orjson-3.8.2-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:99c49e49a04bf61fee7aaea6d92ac2b1fcf6507aea894bbdf3fbb25fe792168c"},
-    {file = "orjson-3.8.2-cp311-cp311-manylinux_2_28_aarch64.whl", hash = "sha256:1463674f8efe6984902473d7b5ce3edf444c1fcd09dc8aa4779638a28fb9ca01"},
-    {file = "orjson-3.8.2-cp311-cp311-manylinux_2_28_x86_64.whl", hash = "sha256:c1ef75f1d021d817e5c60a42da0b4b7e3123b1b37415260b8415666ddacc7cd7"},
-    {file = "orjson-3.8.2-cp311-none-win_amd64.whl", hash = "sha256:b6007e1ac8564b13b2521720929e8bb3ccd3293d9fdf38f28728dcc06db6248f"},
-    {file = "orjson-3.8.2-cp37-cp37m-macosx_10_7_x86_64.whl", hash = "sha256:a02c13ae523221576b001071354380e277346722cc6b7fdaacb0fd6db5154b3e"},
-    {file = "orjson-3.8.2-cp37-cp37m-macosx_10_9_x86_64.macosx_11_0_arm64.macosx_10_9_universal2.whl", hash = "sha256:fa2e565cf8ffdb37ce1887bd1592709ada7f701e61aa4b1e710be94b0aecbab4"},
-    {file = "orjson-3.8.2-cp37-cp37m-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:d1d8864288f7c5fccc07b43394f83b721ddc999f25dccfb5d0651671a76023f5"},
-    {file = "orjson-3.8.2-cp37-cp37m-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:1874c05d0bb994601fa2d51605cb910d09343c6ebd36e84a573293523fab772a"},
-    {file = "orjson-3.8.2-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:349387ed6989e5db22e08c9af8d7ca14240803edc50de451d48d41a0e7be30f6"},
-    {file = "orjson-3.8.2-cp37-cp37m-manylinux_2_28_aarch64.whl", hash = "sha256:4e42b19619d6e97e201053b865ca4e62a48da71165f4081508ada8e1b91c6a30"},
-    {file = "orjson-3.8.2-cp37-cp37m-manylinux_2_28_x86_64.whl", hash = "sha256:bc112c17e607c59d1501e72afb44226fa53d947d364aed053f0c82d153e29616"},
-    {file = "orjson-3.8.2-cp37-cp37m-musllinux_1_1_aarch64.whl", hash = "sha256:6fda669211f2ed1fc2c8130187ec90c96b4f77b6a250004e666d2ef8ed524e5f"},
-    {file = "orjson-3.8.2-cp37-cp37m-musllinux_1_1_x86_64.whl", hash = "sha256:aebd4e80fea0f20578fd0452908b9206a6a0d5ae9f5c99b6e665bbcd989e56cd"},
-    {file = "orjson-3.8.2-cp37-none-win_amd64.whl", hash = "sha256:9f3cd0394eb6d265beb2a1572b5663bc910883ddbb5cdfbcb660f5a0444e7fd8"},
-    {file = "orjson-3.8.2-cp38-cp38-macosx_10_7_x86_64.whl", hash = "sha256:74e7d54d11b3da42558d69a23bf92c2c48fabf69b38432d5eee2c5b09cd4c433"},
-    {file = "orjson-3.8.2-cp38-cp38-macosx_10_9_x86_64.macosx_11_0_arm64.macosx_10_9_universal2.whl", hash = "sha256:8cbadc9be748a823f9c743c7631b1ee95d3925a9c0b21de4e862a1d57daa10ec"},
-    {file = "orjson-3.8.2-cp38-cp38-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:a07d5a8c69a2947d9554a00302734fe3d8516415c8b280963c92bc1033477890"},
-    {file = "orjson-3.8.2-cp38-cp38-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:6b364ea01d1b71b9f97bf97af9eb79ebee892df302e127a9e2e4f8eaa74d6b98"},
-    {file = "orjson-3.8.2-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:b98a8c825a59db94fbe8e0cce48618624c5a6fb1436467322d90667c08a0bf80"},
-    {file = "orjson-3.8.2-cp38-cp38-manylinux_2_28_aarch64.whl", hash = "sha256:ab63103f60b516c0fce9b62cb4773f689a82ab56e19ef2387b5a3182f80c0d78"},
-    {file = "orjson-3.8.2-cp38-cp38-manylinux_2_28_x86_64.whl", hash = "sha256:73ab3f4288389381ae33ab99f914423b69570c88d626d686764634d5e0eeb909"},
-    {file = "orjson-3.8.2-cp38-cp38-musllinux_1_1_aarch64.whl", hash = "sha256:2ab3fd8728e12c36e20c6d9d70c9e15033374682ce5acb6ed6a08a80dacd254d"},
-    {file = "orjson-3.8.2-cp38-cp38-musllinux_1_1_x86_64.whl", hash = "sha256:cde11822cf71a7f0daaa84223249b2696a2b6cda7fa587e9fd762dff1a8848e4"},
-    {file = "orjson-3.8.2-cp38-none-win_amd64.whl", hash = "sha256:b14765ea5aabfeab1a194abfaa0be62c9fee6480a75ac8c6974b4eeede3340b4"},
-    {file = "orjson-3.8.2-cp39-cp39-macosx_10_7_x86_64.whl", hash = "sha256:6068a27d59d989d4f2864c2fc3440eb7126a0cfdfaf8a4ad136b0ffd932026ae"},
-    {file = "orjson-3.8.2-cp39-cp39-macosx_10_9_x86_64.macosx_11_0_arm64.macosx_10_9_universal2.whl", hash = "sha256:6bf36fa759a1b941fc552ad76b2d7fb10c1d2a20c056be291ea45eb6ae1da09b"},
-    {file = "orjson-3.8.2-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:f436132e62e647880ca6988974c8e3165a091cb75cbed6c6fd93e931630c22fa"},
-    {file = "orjson-3.8.2-cp39-cp39-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:3ecd8936259a5920b52a99faf62d4efeb9f5e25a0aacf0cce1e9fa7c37af154f"},
-    {file = "orjson-3.8.2-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:c13114b345cda33644f64e92fe5d8737828766cf02fbbc7d28271a95ea546832"},
-    {file = "orjson-3.8.2-cp39-cp39-manylinux_2_28_aarch64.whl", hash = "sha256:6e43cdc3ddf96bdb751b748b1984b701125abacca8fc2226b808d203916e8cba"},
-    {file = "orjson-3.8.2-cp39-cp39-manylinux_2_28_x86_64.whl", hash = "sha256:ee39071da2026b11e4352d6fc3608a7b27ee14bc699fd240f4e604770bc7a255"},
-    {file = "orjson-3.8.2-cp39-cp39-musllinux_1_1_aarch64.whl", hash = "sha256:1c3833976ebbeb3b5b6298cb22e23bf18453f6b80802103b7d08f7dd8a61611d"},
-    {file = "orjson-3.8.2-cp39-cp39-musllinux_1_1_x86_64.whl", hash = "sha256:b9a34519d3d70935e1cd3797fbed8fbb6f61025182bea0140ca84d95b6f8fbe5"},
-    {file = "orjson-3.8.2-cp39-none-win_amd64.whl", hash = "sha256:2734086d9a3dd9591c4be7d05aff9beccc086796d3f243685e56b7973ebac5bc"},
-    {file = "orjson-3.8.2.tar.gz", hash = "sha256:a2fb95a45031ccf278e44341027b3035ab99caa32aa173279b1f0a06324f434b"},
+    {file = "orjson-3.8.5-cp310-cp310-macosx_10_7_x86_64.whl", hash = "sha256:143639b9898b094883481fac37733231da1c2ae3aec78a1dd8d3b58c9c9fceef"},
+    {file = "orjson-3.8.5-cp310-cp310-macosx_10_9_x86_64.macosx_11_0_arm64.macosx_10_9_universal2.whl", hash = "sha256:31f43e63e0d94784c55e86bd376df3f80b574bea8c0bc5ecd8041009fa8ec78a"},
+    {file = "orjson-3.8.5-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:c802ea6d4a0d40f096aceb5e7ef0a26c23d276cb9334e1cadcf256bb090b6426"},
+    {file = "orjson-3.8.5-cp310-cp310-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:bf298b55b371c2772420c5ace4d47b0a3ea1253667e20ded3c363160fd0575f6"},
+    {file = "orjson-3.8.5-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:68cb4a8501a463771d55bb22fc72795ec7e21d71ab083e000a2c3b651b6fb2af"},
+    {file = "orjson-3.8.5-cp310-cp310-manylinux_2_28_x86_64.whl", hash = "sha256:4f1427952b3bd92bfb63a61b7ffc33a9f54ec6de296fa8d924cbeba089866acb"},
+    {file = "orjson-3.8.5-cp310-cp310-musllinux_1_1_aarch64.whl", hash = "sha256:c0a9f329468c8eb000742455b83546849bcd69495d6baa6e171c7ee8600a47bd"},
+    {file = "orjson-3.8.5-cp310-cp310-musllinux_1_1_x86_64.whl", hash = "sha256:6535d527aa1e4a757a6ce9b61f3dd74edc762e7d2c6991643aae7c560c8440bd"},
+    {file = "orjson-3.8.5-cp310-none-win_amd64.whl", hash = "sha256:2eee64c028adf6378dd714c8debc96d5b92b6bb4862debb65ca868e59bac6c63"},
+    {file = "orjson-3.8.5-cp311-cp311-macosx_10_7_x86_64.whl", hash = "sha256:f5745ff473dd5c6718bf8c8d5bc183f638b4f3e03c7163ffcda4d4ef453f42ff"},
+    {file = "orjson-3.8.5-cp311-cp311-macosx_10_9_x86_64.macosx_11_0_arm64.macosx_10_9_universal2.whl", hash = "sha256:544f1240b295083697027a5093ec66763218ff16f03521d5020e7a436d2e417b"},
+    {file = "orjson-3.8.5-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:c85c9c6bab97a831e7741089057347d99901b4db2451a076ca8adedc7d96297f"},
+    {file = "orjson-3.8.5-cp311-cp311-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:9bae7347764e7be6dada980fd071e865544c98317ab61af575c9cc5e1dc7e3fe"},
+    {file = "orjson-3.8.5-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:c67f6f6e9d26a06b63126112a7bc8d8529df048d31df2a257a8484b76adf3e5d"},
+    {file = "orjson-3.8.5-cp311-cp311-manylinux_2_28_x86_64.whl", hash = "sha256:758238364142fcbeca34c968beefc0875ffa10aa2f797c82f51cfb1d22d0934e"},
+    {file = "orjson-3.8.5-cp311-none-win_amd64.whl", hash = "sha256:cc7579240fb88a626956a6cb4a181a11b62afbc409ce239a7b866568a2412fa2"},
+    {file = "orjson-3.8.5-cp37-cp37m-macosx_10_7_x86_64.whl", hash = "sha256:79aa3e47cbbd4eedbbde4f988f766d6cf38ccb51d52cfabfeb6b8d1b58654d25"},
+    {file = "orjson-3.8.5-cp37-cp37m-macosx_10_9_x86_64.macosx_11_0_arm64.macosx_10_9_universal2.whl", hash = "sha256:2544cd0d089faa862f5a39f508ee667419e3f9e11f119a6b1505cfce0eb26601"},
+    {file = "orjson-3.8.5-cp37-cp37m-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:f2be0025ca7e460bcacb250aba8ce0239be62957d58cf34045834cc9302611d3"},
+    {file = "orjson-3.8.5-cp37-cp37m-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:0b57bf72902d818506906e49c677a791f90dbd7f0997d60b14bc6c1ce4ce4cf9"},
+    {file = "orjson-3.8.5-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:93ae9832a11c6a9efa8c14224e5caf6e35046efd781de14e59eb69ab4e561cf3"},
+    {file = "orjson-3.8.5-cp37-cp37m-manylinux_2_28_x86_64.whl", hash = "sha256:0e28330cc6d51741cad0edd1b57caf6c5531aff30afe41402acde0a03246b8ed"},
+    {file = "orjson-3.8.5-cp37-cp37m-musllinux_1_1_aarch64.whl", hash = "sha256:155954d725627b5480e6cc1ca488afb4fa685099a4ace5f5bf21a182fabf6706"},
+    {file = "orjson-3.8.5-cp37-cp37m-musllinux_1_1_x86_64.whl", hash = "sha256:ece1b6ef9312df5d5274ca6786e613b7da7de816356e36bcad9ea8a73d15ab71"},
+    {file = "orjson-3.8.5-cp37-none-win_amd64.whl", hash = "sha256:6f58d1f0702332496bc1e2d267c7326c851991b62cf6395370d59c47f9890007"},
+    {file = "orjson-3.8.5-cp38-cp38-macosx_10_7_x86_64.whl", hash = "sha256:933f4ab98362f46a59a6d0535986e1f0cae2f6b42435e24a55922b4bc872af0c"},
+    {file = "orjson-3.8.5-cp38-cp38-macosx_10_9_x86_64.macosx_11_0_arm64.macosx_10_9_universal2.whl", hash = "sha256:47a7ca236b25a138a74b2cb5169adcdc5b2b8abdf661de438ba65967a2cde9dc"},
+    {file = "orjson-3.8.5-cp38-cp38-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:b573ca942c626fcf8a86be4f180b86b2498b18ae180f37b4180c2aced5808710"},
+    {file = "orjson-3.8.5-cp38-cp38-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:a9bab11611d5452efe4ae5315f5eb806f66104c08a089fb84c648d2e8e00f106"},
+    {file = "orjson-3.8.5-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:eee2f5f6476617d01ca166266d70fd5605d3397a41f067022ce04a2e1ced4c8d"},
+    {file = "orjson-3.8.5-cp38-cp38-manylinux_2_28_x86_64.whl", hash = "sha256:ec0b0b6cd0b84f03537f22b719aca705b876c54ab5cf3471d551c9644127284f"},
+    {file = "orjson-3.8.5-cp38-cp38-musllinux_1_1_aarch64.whl", hash = "sha256:df3287dc304c8c4556dc85c4ab89eb333307759c1863f95e72e555c0cfce3e01"},
+    {file = "orjson-3.8.5-cp38-cp38-musllinux_1_1_x86_64.whl", hash = "sha256:09f40add3c2d208e20f8bf185df38f992bf5092202d2d30eced8f6959963f1d5"},
+    {file = "orjson-3.8.5-cp38-none-win_amd64.whl", hash = "sha256:232ec1df0d708f74e0dd1fccac1e9a7008cd120d48fe695e8f0c9d80771da430"},
+    {file = "orjson-3.8.5-cp39-cp39-macosx_10_7_x86_64.whl", hash = "sha256:8fba3e7aede3e88a01e94e6fe63d4580162b212e6da27ae85af50a1787e41416"},
+    {file = "orjson-3.8.5-cp39-cp39-macosx_10_9_x86_64.macosx_11_0_arm64.macosx_10_9_universal2.whl", hash = "sha256:85e22c358cab170c8604e9edfffcc45dd7b0027ce57ed6bcacb556e8bfbbb704"},
+    {file = "orjson-3.8.5-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:eeab1d8247507a75926adf3ca995c74e91f5db1f168815bf3e774f992ba52b50"},
+    {file = "orjson-3.8.5-cp39-cp39-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:daaaef15a41e9e8cadc7677cefe00065ae10bce914eefe8da1cd26b3d063970b"},
+    {file = "orjson-3.8.5-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:6ccc9f52cf46bd353c6ae1153eaf9d18257ddc110d135198b0cd8718474685ce"},
+    {file = "orjson-3.8.5-cp39-cp39-manylinux_2_28_x86_64.whl", hash = "sha256:d48c182c7ff4ea0787806de8a2f9298ca44fd0068ecd5f23a4b2d8e03c745cb6"},
+    {file = "orjson-3.8.5-cp39-cp39-musllinux_1_1_aarch64.whl", hash = "sha256:1848e3b4cc09cc82a67262ae56e2a772b0548bb5a6f9dcaee10dcaaf0a5177b7"},
+    {file = "orjson-3.8.5-cp39-cp39-musllinux_1_1_x86_64.whl", hash = "sha256:38480031bc8add58effe802291e4abf7042ef72ae1a4302efe9a36c8f8bfbfcc"},
+    {file = "orjson-3.8.5-cp39-none-win_amd64.whl", hash = "sha256:0e9a1c2e649cbaed410c882cedc8f3b993d8f1426d9327f31762d3f46fe7cc88"},
+    {file = "orjson-3.8.5.tar.gz", hash = "sha256:77a3b2bd0c4ef7723ea09081e3329dac568a62463aed127c1501441b07ffc64b"},
 ]
 
 [[package]]
 name = "packaging"
-version = "21.3"
+version = "23.0"
 description = "Core utilities for Python packages"
 category = "dev"
 optional = false
-python-versions = ">=3.6"
+python-versions = ">=3.7"
 files = [
-    {file = "packaging-21.3-py3-none-any.whl", hash = "sha256:ef103e05f519cdc783ae24ea4e2e0f508a9c99b2d4969652eed6a2e1ea5bd522"},
-    {file = "packaging-21.3.tar.gz", hash = "sha256:dd47c42927d89ab911e606518907cc2d3a1f38bbd026385970643f9c5b8ecfeb"},
+    {file = "packaging-23.0-py3-none-any.whl", hash = "sha256:714ac14496c3e68c99c29b00845f7a2b85f3bb6f1078fd9f72fd20f0570002b2"},
+    {file = "packaging-23.0.tar.gz", hash = "sha256:b6ad297f8907de0fa2fe1ccbd26fdaf387f5f47c7275fedf8cce89f99446cf97"},
 ]
-
-[package.dependencies]
-pyparsing = ">=2.0.2,<3.0.5 || >3.0.5"
 
 [[package]]
 name = "pathspec"
-version = "0.10.2"
+version = "0.10.3"
 description = "Utility library for gitignore style pattern matching of file paths."
 category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "pathspec-0.10.2-py3-none-any.whl", hash = "sha256:88c2606f2c1e818b978540f73ecc908e13999c6c3a383daf3705652ae79807a5"},
-    {file = "pathspec-0.10.2.tar.gz", hash = "sha256:8f6bf73e5758fd365ef5d58ce09ac7c27d2833a8d7da51712eac6e27e35141b0"},
+    {file = "pathspec-0.10.3-py3-none-any.whl", hash = "sha256:3c95343af8b756205e2aba76e843ba9520a24dd84f68c22b9f93251507509dd6"},
+    {file = "pathspec-0.10.3.tar.gz", hash = "sha256:56200de4077d9d0791465aa9095a01d421861e405b5096955051deefd697d6f6"},
 ]
 
 [[package]]
 name = "platformdirs"
-version = "2.5.4"
+version = "2.6.2"
 description = "A small Python package for determining appropriate platform-specific dirs, e.g. a \"user data dir\"."
 category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "platformdirs-2.5.4-py3-none-any.whl", hash = "sha256:af0276409f9a02373d540bf8480021a048711d572745aef4b7842dad245eba10"},
-    {file = "platformdirs-2.5.4.tar.gz", hash = "sha256:1006647646d80f16130f052404c6b901e80ee4ed6bef6792e1f238a8969106f7"},
+    {file = "platformdirs-2.6.2-py3-none-any.whl", hash = "sha256:83c8f6d04389165de7c9b6f0c682439697887bca0aa2f1c87ef1826be3584490"},
+    {file = "platformdirs-2.6.2.tar.gz", hash = "sha256:e1fea1fe471b9ff8332e229df3cb7de4f53eeea4998d3b6bfff542115e998bd2"},
 ]
 
 [package.extras]
-docs = ["furo (>=2022.9.29)", "proselint (>=0.13)", "sphinx (>=5.3)", "sphinx-autodoc-typehints (>=1.19.4)"]
-test = ["appdirs (==1.4.4)", "pytest (>=7.2)", "pytest-cov (>=4)", "pytest-mock (>=3.10)"]
+docs = ["furo (>=2022.12.7)", "proselint (>=0.13)", "sphinx (>=5.3)", "sphinx-autodoc-typehints (>=1.19.5)"]
+test = ["appdirs (==1.4.4)", "covdefaults (>=2.2.2)", "pytest (>=7.2)", "pytest-cov (>=4)", "pytest-mock (>=3.10)"]
 
 [[package]]
 name = "pluggy"
@@ -802,52 +870,52 @@ files = [
 
 [[package]]
 name = "pydantic"
-version = "1.10.2"
+version = "1.10.4"
 description = "Data validation and settings management using python type hints"
 category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "pydantic-1.10.2-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:bb6ad4489af1bac6955d38ebcb95079a836af31e4c4f74aba1ca05bb9f6027bd"},
-    {file = "pydantic-1.10.2-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:a1f5a63a6dfe19d719b1b6e6106561869d2efaca6167f84f5ab9347887d78b98"},
-    {file = "pydantic-1.10.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:352aedb1d71b8b0736c6d56ad2bd34c6982720644b0624462059ab29bd6e5912"},
-    {file = "pydantic-1.10.2-cp310-cp310-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:19b3b9ccf97af2b7519c42032441a891a5e05c68368f40865a90eb88833c2559"},
-    {file = "pydantic-1.10.2-cp310-cp310-musllinux_1_1_i686.whl", hash = "sha256:e9069e1b01525a96e6ff49e25876d90d5a563bc31c658289a8772ae186552236"},
-    {file = "pydantic-1.10.2-cp310-cp310-musllinux_1_1_x86_64.whl", hash = "sha256:355639d9afc76bcb9b0c3000ddcd08472ae75318a6eb67a15866b87e2efa168c"},
-    {file = "pydantic-1.10.2-cp310-cp310-win_amd64.whl", hash = "sha256:ae544c47bec47a86bc7d350f965d8b15540e27e5aa4f55170ac6a75e5f73b644"},
-    {file = "pydantic-1.10.2-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:a4c805731c33a8db4b6ace45ce440c4ef5336e712508b4d9e1aafa617dc9907f"},
-    {file = "pydantic-1.10.2-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:d49f3db871575e0426b12e2f32fdb25e579dea16486a26e5a0474af87cb1ab0a"},
-    {file = "pydantic-1.10.2-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:37c90345ec7dd2f1bcef82ce49b6235b40f282b94d3eec47e801baf864d15525"},
-    {file = "pydantic-1.10.2-cp311-cp311-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:7b5ba54d026c2bd2cb769d3468885f23f43710f651688e91f5fb1edcf0ee9283"},
-    {file = "pydantic-1.10.2-cp311-cp311-musllinux_1_1_i686.whl", hash = "sha256:05e00dbebbe810b33c7a7362f231893183bcc4251f3f2ff991c31d5c08240c42"},
-    {file = "pydantic-1.10.2-cp311-cp311-musllinux_1_1_x86_64.whl", hash = "sha256:2d0567e60eb01bccda3a4df01df677adf6b437958d35c12a3ac3e0f078b0ee52"},
-    {file = "pydantic-1.10.2-cp311-cp311-win_amd64.whl", hash = "sha256:c6f981882aea41e021f72779ce2a4e87267458cc4d39ea990729e21ef18f0f8c"},
-    {file = "pydantic-1.10.2-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:c4aac8e7103bf598373208f6299fa9a5cfd1fc571f2d40bf1dd1955a63d6eeb5"},
-    {file = "pydantic-1.10.2-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:81a7b66c3f499108b448f3f004801fcd7d7165fb4200acb03f1c2402da73ce4c"},
-    {file = "pydantic-1.10.2-cp37-cp37m-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:bedf309630209e78582ffacda64a21f96f3ed2e51fbf3962d4d488e503420254"},
-    {file = "pydantic-1.10.2-cp37-cp37m-musllinux_1_1_i686.whl", hash = "sha256:9300fcbebf85f6339a02c6994b2eb3ff1b9c8c14f502058b5bf349d42447dcf5"},
-    {file = "pydantic-1.10.2-cp37-cp37m-musllinux_1_1_x86_64.whl", hash = "sha256:216f3bcbf19c726b1cc22b099dd409aa371f55c08800bcea4c44c8f74b73478d"},
-    {file = "pydantic-1.10.2-cp37-cp37m-win_amd64.whl", hash = "sha256:dd3f9a40c16daf323cf913593083698caee97df2804aa36c4b3175d5ac1b92a2"},
-    {file = "pydantic-1.10.2-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:b97890e56a694486f772d36efd2ba31612739bc6f3caeee50e9e7e3ebd2fdd13"},
-    {file = "pydantic-1.10.2-cp38-cp38-macosx_11_0_arm64.whl", hash = "sha256:9cabf4a7f05a776e7793e72793cd92cc865ea0e83a819f9ae4ecccb1b8aa6116"},
-    {file = "pydantic-1.10.2-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:06094d18dd5e6f2bbf93efa54991c3240964bb663b87729ac340eb5014310624"},
-    {file = "pydantic-1.10.2-cp38-cp38-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:cc78cc83110d2f275ec1970e7a831f4e371ee92405332ebfe9860a715f8336e1"},
-    {file = "pydantic-1.10.2-cp38-cp38-musllinux_1_1_i686.whl", hash = "sha256:1ee433e274268a4b0c8fde7ad9d58ecba12b069a033ecc4645bb6303c062d2e9"},
-    {file = "pydantic-1.10.2-cp38-cp38-musllinux_1_1_x86_64.whl", hash = "sha256:7c2abc4393dea97a4ccbb4ec7d8658d4e22c4765b7b9b9445588f16c71ad9965"},
-    {file = "pydantic-1.10.2-cp38-cp38-win_amd64.whl", hash = "sha256:0b959f4d8211fc964772b595ebb25f7652da3f22322c007b6fed26846a40685e"},
-    {file = "pydantic-1.10.2-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:c33602f93bfb67779f9c507e4d69451664524389546bacfe1bee13cae6dc7488"},
-    {file = "pydantic-1.10.2-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:5760e164b807a48a8f25f8aa1a6d857e6ce62e7ec83ea5d5c5a802eac81bad41"},
-    {file = "pydantic-1.10.2-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:6eb843dcc411b6a2237a694f5e1d649fc66c6064d02b204a7e9d194dff81eb4b"},
-    {file = "pydantic-1.10.2-cp39-cp39-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:4b8795290deaae348c4eba0cebb196e1c6b98bdbe7f50b2d0d9a4a99716342fe"},
-    {file = "pydantic-1.10.2-cp39-cp39-musllinux_1_1_i686.whl", hash = "sha256:e0bedafe4bc165ad0a56ac0bd7695df25c50f76961da29c050712596cf092d6d"},
-    {file = "pydantic-1.10.2-cp39-cp39-musllinux_1_1_x86_64.whl", hash = "sha256:2e05aed07fa02231dbf03d0adb1be1d79cabb09025dd45aa094aa8b4e7b9dcda"},
-    {file = "pydantic-1.10.2-cp39-cp39-win_amd64.whl", hash = "sha256:c1ba1afb396148bbc70e9eaa8c06c1716fdddabaf86e7027c5988bae2a829ab6"},
-    {file = "pydantic-1.10.2-py3-none-any.whl", hash = "sha256:1b6ee725bd6e83ec78b1aa32c5b1fa67a3a65badddde3976bca5fe4568f27709"},
-    {file = "pydantic-1.10.2.tar.gz", hash = "sha256:91b8e218852ef6007c2b98cd861601c6a09f1aa32bbbb74fab5b1c33d4a1e410"},
+    {file = "pydantic-1.10.4-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:b5635de53e6686fe7a44b5cf25fcc419a0d5e5c1a1efe73d49d48fe7586db854"},
+    {file = "pydantic-1.10.4-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:6dc1cc241440ed7ca9ab59d9929075445da6b7c94ced281b3dd4cfe6c8cff817"},
+    {file = "pydantic-1.10.4-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:51bdeb10d2db0f288e71d49c9cefa609bca271720ecd0c58009bd7504a0c464c"},
+    {file = "pydantic-1.10.4-cp310-cp310-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:78cec42b95dbb500a1f7120bdf95c401f6abb616bbe8785ef09887306792e66e"},
+    {file = "pydantic-1.10.4-cp310-cp310-musllinux_1_1_i686.whl", hash = "sha256:8775d4ef5e7299a2f4699501077a0defdaac5b6c4321173bcb0f3c496fbadf85"},
+    {file = "pydantic-1.10.4-cp310-cp310-musllinux_1_1_x86_64.whl", hash = "sha256:572066051eeac73d23f95ba9a71349c42a3e05999d0ee1572b7860235b850cc6"},
+    {file = "pydantic-1.10.4-cp310-cp310-win_amd64.whl", hash = "sha256:7feb6a2d401f4d6863050f58325b8d99c1e56f4512d98b11ac64ad1751dc647d"},
+    {file = "pydantic-1.10.4-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:39f4a73e5342b25c2959529f07f026ef58147249f9b7431e1ba8414a36761f53"},
+    {file = "pydantic-1.10.4-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:983e720704431a6573d626b00662eb78a07148c9115129f9b4351091ec95ecc3"},
+    {file = "pydantic-1.10.4-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:75d52162fe6b2b55964fbb0af2ee58e99791a3138588c482572bb6087953113a"},
+    {file = "pydantic-1.10.4-cp311-cp311-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:fdf8d759ef326962b4678d89e275ffc55b7ce59d917d9f72233762061fd04a2d"},
+    {file = "pydantic-1.10.4-cp311-cp311-musllinux_1_1_i686.whl", hash = "sha256:05a81b006be15655b2a1bae5faa4280cf7c81d0e09fcb49b342ebf826abe5a72"},
+    {file = "pydantic-1.10.4-cp311-cp311-musllinux_1_1_x86_64.whl", hash = "sha256:d88c4c0e5c5dfd05092a4b271282ef0588e5f4aaf345778056fc5259ba098857"},
+    {file = "pydantic-1.10.4-cp311-cp311-win_amd64.whl", hash = "sha256:6a05a9db1ef5be0fe63e988f9617ca2551013f55000289c671f71ec16f4985e3"},
+    {file = "pydantic-1.10.4-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:887ca463c3bc47103c123bc06919c86720e80e1214aab79e9b779cda0ff92a00"},
+    {file = "pydantic-1.10.4-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:fdf88ab63c3ee282c76d652fc86518aacb737ff35796023fae56a65ced1a5978"},
+    {file = "pydantic-1.10.4-cp37-cp37m-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:a48f1953c4a1d9bd0b5167ac50da9a79f6072c63c4cef4cf2a3736994903583e"},
+    {file = "pydantic-1.10.4-cp37-cp37m-musllinux_1_1_i686.whl", hash = "sha256:a9f2de23bec87ff306aef658384b02aa7c32389766af3c5dee9ce33e80222dfa"},
+    {file = "pydantic-1.10.4-cp37-cp37m-musllinux_1_1_x86_64.whl", hash = "sha256:cd8702c5142afda03dc2b1ee6bc358b62b3735b2cce53fc77b31ca9f728e4bc8"},
+    {file = "pydantic-1.10.4-cp37-cp37m-win_amd64.whl", hash = "sha256:6e7124d6855b2780611d9f5e1e145e86667eaa3bd9459192c8dc1a097f5e9903"},
+    {file = "pydantic-1.10.4-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:0b53e1d41e97063d51a02821b80538053ee4608b9a181c1005441f1673c55423"},
+    {file = "pydantic-1.10.4-cp38-cp38-macosx_11_0_arm64.whl", hash = "sha256:55b1625899acd33229c4352ce0ae54038529b412bd51c4915349b49ca575258f"},
+    {file = "pydantic-1.10.4-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:301d626a59edbe5dfb48fcae245896379a450d04baeed50ef40d8199f2733b06"},
+    {file = "pydantic-1.10.4-cp38-cp38-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:b6f9d649892a6f54a39ed56b8dfd5e08b5f3be5f893da430bed76975f3735d15"},
+    {file = "pydantic-1.10.4-cp38-cp38-musllinux_1_1_i686.whl", hash = "sha256:d7b5a3821225f5c43496c324b0d6875fde910a1c2933d726a743ce328fbb2a8c"},
+    {file = "pydantic-1.10.4-cp38-cp38-musllinux_1_1_x86_64.whl", hash = "sha256:f2f7eb6273dd12472d7f218e1fef6f7c7c2f00ac2e1ecde4db8824c457300416"},
+    {file = "pydantic-1.10.4-cp38-cp38-win_amd64.whl", hash = "sha256:4b05697738e7d2040696b0a66d9f0a10bec0efa1883ca75ee9e55baf511909d6"},
+    {file = "pydantic-1.10.4-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:a9a6747cac06c2beb466064dda999a13176b23535e4c496c9d48e6406f92d42d"},
+    {file = "pydantic-1.10.4-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:eb992a1ef739cc7b543576337bebfc62c0e6567434e522e97291b251a41dad7f"},
+    {file = "pydantic-1.10.4-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:990406d226dea0e8f25f643b370224771878142155b879784ce89f633541a024"},
+    {file = "pydantic-1.10.4-cp39-cp39-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:2e82a6d37a95e0b1b42b82ab340ada3963aea1317fd7f888bb6b9dfbf4fff57c"},
+    {file = "pydantic-1.10.4-cp39-cp39-musllinux_1_1_i686.whl", hash = "sha256:9193d4f4ee8feca58bc56c8306bcb820f5c7905fd919e0750acdeeeef0615b28"},
+    {file = "pydantic-1.10.4-cp39-cp39-musllinux_1_1_x86_64.whl", hash = "sha256:2b3ce5f16deb45c472dde1a0ee05619298c864a20cded09c4edd820e1454129f"},
+    {file = "pydantic-1.10.4-cp39-cp39-win_amd64.whl", hash = "sha256:9cbdc268a62d9a98c56e2452d6c41c0263d64a2009aac69246486f01b4f594c4"},
+    {file = "pydantic-1.10.4-py3-none-any.whl", hash = "sha256:4948f264678c703f3877d1c8877c4e3b2e12e549c57795107f08cf70c6ec7774"},
+    {file = "pydantic-1.10.4.tar.gz", hash = "sha256:b9a3859f24eb4e097502a3be1fb4b2abb79b6103dd9e2e0edb70613a4459a648"},
 ]
 
 [package.dependencies]
-typing-extensions = ">=4.1.0"
+typing-extensions = ">=4.2.0"
 
 [package.extras]
 dotenv = ["python-dotenv (>=0.10.4)"]
@@ -866,30 +934,15 @@ files = [
 ]
 
 [[package]]
-name = "pyparsing"
-version = "3.0.9"
-description = "pyparsing module - Classes and methods to define and execute parsing grammars"
-category = "dev"
-optional = false
-python-versions = ">=3.6.8"
-files = [
-    {file = "pyparsing-3.0.9-py3-none-any.whl", hash = "sha256:5026bae9a10eeaefb61dab2f09052b9f4307d44aee4eda64b309723d8d206bbc"},
-    {file = "pyparsing-3.0.9.tar.gz", hash = "sha256:2b020ecf7d21b687f219b71ecad3631f644a47f01403fa1d1036b0c6416d70fb"},
-]
-
-[package.extras]
-diagrams = ["jinja2", "railroad-diagrams"]
-
-[[package]]
 name = "pytest"
-version = "7.2.0"
+version = "7.2.1"
 description = "pytest: simple powerful testing with Python"
 category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "pytest-7.2.0-py3-none-any.whl", hash = "sha256:892f933d339f068883b6fd5a459f03d85bfcb355e4981e146d2c7616c21fef71"},
-    {file = "pytest-7.2.0.tar.gz", hash = "sha256:c4014eb40e10f11f355ad4e3c2fb2c6c6d1919c73f3b5a433de4708202cade59"},
+    {file = "pytest-7.2.1-py3-none-any.whl", hash = "sha256:c7c6ca206e93355074ae32f7403e8ea12163b1163c976fee7d4d84027c162be5"},
+    {file = "pytest-7.2.1.tar.gz", hash = "sha256:d45e0952f3727241918b8fd0f376f5ff6b301cc0777c6f9a556935c92d8a7d42"},
 ]
 
 [package.dependencies]
@@ -1016,19 +1069,19 @@ files = [
 
 [[package]]
 name = "requests"
-version = "2.28.1"
+version = "2.28.2"
 description = "Python HTTP for Humans."
 category = "dev"
 optional = false
 python-versions = ">=3.7, <4"
 files = [
-    {file = "requests-2.28.1-py3-none-any.whl", hash = "sha256:8fefa2a1a1365bf5520aac41836fbee479da67864514bdb821f31ce07ce65349"},
-    {file = "requests-2.28.1.tar.gz", hash = "sha256:7c5599b102feddaa661c826c56ab4fee28bfd17f5abca1ebbe3e7f19d7c97983"},
+    {file = "requests-2.28.2-py3-none-any.whl", hash = "sha256:64299f4909223da747622c030b781c0d7811e359c37124b4bd368fb8c6518baa"},
+    {file = "requests-2.28.2.tar.gz", hash = "sha256:98b1b2782e3c6c4904938b84c0eb932721069dfdb9134313beff7c83c2df24bf"},
 ]
 
 [package.dependencies]
 certifi = ">=2017.4.17"
-charset-normalizer = ">=2,<3"
+charset-normalizer = ">=2,<4"
 idna = ">=2.5,<4"
 urllib3 = ">=1.21.1,<1.27"
 
@@ -1110,14 +1163,14 @@ full = ["httpx (>=0.22.0)", "itsdangerous", "jinja2", "python-multipart", "pyyam
 
 [[package]]
 name = "tinydb"
-version = "4.7.0"
+version = "4.7.1"
 description = "TinyDB is a tiny, document oriented database optimized for your happiness :)"
 category = "main"
 optional = false
-python-versions = ">=3.6,<4.0"
+python-versions = ">=3.7,<4.0"
 files = [
-    {file = "tinydb-4.7.0-py3-none-any.whl", hash = "sha256:e2cdf6e2dad49813e9b5fceb3c7943387309a8738125fbff0b58d248a033f7a9"},
-    {file = "tinydb-4.7.0.tar.gz", hash = "sha256:357eb7383dee6915f17b00596ec6dd2a890f3117bf52be28a4c516aeee581100"},
+    {file = "tinydb-4.7.1-py3-none-any.whl", hash = "sha256:1534e498ca23f55c43b0f1e7c0cf174049498ab45a887c82ba9831e0f9868df3"},
+    {file = "tinydb-4.7.1.tar.gz", hash = "sha256:8955c239a79b8a6c8f637900152e2de38690848199d71d870c33c16405433ca5"},
 ]
 
 [[package]]
@@ -1134,14 +1187,29 @@ files = [
 
 [[package]]
 name = "types-beautifulsoup4"
-version = "4.11.6.1"
+version = "4.11.6.2"
 description = "Typing stubs for beautifulsoup4"
 category = "main"
 optional = false
 python-versions = "*"
 files = [
-    {file = "types-beautifulsoup4-4.11.6.1.tar.gz", hash = "sha256:d46be8f409ddccb6daaa9d118484185e70bcf552085c39c6d05b157cd1462e04"},
-    {file = "types_beautifulsoup4-4.11.6.1-py3-none-any.whl", hash = "sha256:c1f803367a2b07ad4fdac40ddbea557010dc4ddd1ee92d801f317eb02e2e3c72"},
+    {file = "types-beautifulsoup4-4.11.6.2.tar.gz", hash = "sha256:dbeb2f82f2d79878107238ab50291361563ae5db99e198a68e91dbb4c0f37b3f"},
+    {file = "types_beautifulsoup4-4.11.6.2-py3-none-any.whl", hash = "sha256:4994a3b5ce66467977d9ce65031f5e212f23af66941669a59f50a1801260d9db"},
+]
+
+[package.dependencies]
+types-html5lib = "*"
+
+[[package]]
+name = "types-html5lib"
+version = "1.1.11.10"
+description = "Typing stubs for html5lib"
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "types-html5lib-1.1.11.10.tar.gz", hash = "sha256:90eeffad04010bf67bcccf77b9cc6cf4783eec13cbd22ebbaaf20f24d5f2ca11"},
+    {file = "types_html5lib-1.1.11.10-py3-none-any.whl", hash = "sha256:18c34ce51eac062321b224365b3aee5b5cdc1613872ed8469c9c0c4ccd3e02e9"},
 ]
 
 [[package]]
@@ -1158,89 +1226,89 @@ files = [
 
 [[package]]
 name = "ujson"
-version = "5.5.0"
+version = "5.7.0"
 description = "Ultra fast JSON encoder and decoder for Python"
 category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "ujson-5.5.0-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:ff4928dc1e9704b567171c16787238201fdbf023665573c12c02146fe1e02eec"},
-    {file = "ujson-5.5.0-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:1dc2f46c31ef22b0aaa28cd71be897bea271e700636658d573df9c43c49ebbd0"},
-    {file = "ujson-5.5.0-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:6019e3480d933d3698f2ecb4b46d64bfadd64e718f04fac36e681f3254b49a93"},
-    {file = "ujson-5.5.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:f5179088ef6487c475604b7898731a6ddeeada7702cfb2162155b016703a8475"},
-    {file = "ujson-5.5.0-cp310-cp310-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:c04ae27e076d81a3839047d8eed57c1e17e361640616fd520d752375e3ba8f0c"},
-    {file = "ujson-5.5.0-cp310-cp310-musllinux_1_1_aarch64.whl", hash = "sha256:60a4b481978ea2aad8fe8af1ecc271624d01b3cf4b09e9b643dd2fe19c07634c"},
-    {file = "ujson-5.5.0-cp310-cp310-musllinux_1_1_i686.whl", hash = "sha256:7a09d203983104918c62f2eef9406f24c355511f9217967df23e70fa7f5b54ff"},
-    {file = "ujson-5.5.0-cp310-cp310-musllinux_1_1_x86_64.whl", hash = "sha256:6b9812638d7aa8ecda2e8e1513fb4da999249603bffab7439a5f8f0bb362b0db"},
-    {file = "ujson-5.5.0-cp310-cp310-win32.whl", hash = "sha256:33cd9084fefc74cbacf88c92fd260b61211e00bcde38d640c369e5dc34a2b4e1"},
-    {file = "ujson-5.5.0-cp310-cp310-win_amd64.whl", hash = "sha256:765d46f3d5e7a1d48075035e2d1a9164f683e3fccde834ca04602e6c588835bc"},
-    {file = "ujson-5.5.0-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:278aa9d7cb56435c96d19f5d702e026bcf69f824e24b41e9b52706abd3565837"},
-    {file = "ujson-5.5.0-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:9585892091ae86045135d6a6129a644142d6a51b23e1428bb5de6d10bc0ce0c7"},
-    {file = "ujson-5.5.0-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:9cdc46859024501c20ab74ad542cdf2f08b94b5ce384f2f569483fa3ed926d04"},
-    {file = "ujson-5.5.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:d5bea13c73f36c4346808df3fa806596163a7962b6d28001ca2a391cab856089"},
-    {file = "ujson-5.5.0-cp311-cp311-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:3f3f4240d99d55eb97cb012e9adf401f5ed9cd827af0341ac44603832202b0d2"},
-    {file = "ujson-5.5.0-cp311-cp311-musllinux_1_1_aarch64.whl", hash = "sha256:d93940664a5ccfd79f72dcb939b0c31a3479889f14f0eb95ec52976f8c0cae7d"},
-    {file = "ujson-5.5.0-cp311-cp311-musllinux_1_1_i686.whl", hash = "sha256:880c84ce59f49776cf120f77e7ca04877c97c6887917078dbc369eb47004d7cf"},
-    {file = "ujson-5.5.0-cp311-cp311-musllinux_1_1_x86_64.whl", hash = "sha256:977bf5be704a88d46bf5b228df8b44521b1f3119d741062191608b3a6a38f224"},
-    {file = "ujson-5.5.0-cp311-cp311-win32.whl", hash = "sha256:e0b36257dc90194784531c3b922d8d31fb2b4d8e5adfd27aff4eee7174176365"},
-    {file = "ujson-5.5.0-cp311-cp311-win_amd64.whl", hash = "sha256:a34a5f034b339f69ef7f6a134c22d04b92e07b6ddc1dd65382e7e4ec65d6437d"},
-    {file = "ujson-5.5.0-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:f26544bc10c83a2ff9aa2e093500c1b473f327faae31fb468d591e5823333376"},
-    {file = "ujson-5.5.0-cp37-cp37m-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:5fd797a4837ba10671954e7c09010cec7aca67e09d193f4920a16beea5f66f65"},
-    {file = "ujson-5.5.0-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:7d7cfac2547c93389fa303fc0c0eb6698825564e8389c41c9b60009c746207b6"},
-    {file = "ujson-5.5.0-cp37-cp37m-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:f4875cafc9a6482c04c7df52a725d1c41beb74913c0ff4ec8f189f1954a2afe9"},
-    {file = "ujson-5.5.0-cp37-cp37m-musllinux_1_1_aarch64.whl", hash = "sha256:0762a4fdf86e01f3f8d8b6b7158d01fdd870799ff3f402b676e358fcd879e7eb"},
-    {file = "ujson-5.5.0-cp37-cp37m-musllinux_1_1_i686.whl", hash = "sha256:6c7ae6e0778ab9610f5e80e0595957d101ab8de18c32a8c053a19943ef4831d0"},
-    {file = "ujson-5.5.0-cp37-cp37m-musllinux_1_1_x86_64.whl", hash = "sha256:94874584b733a18b310b0e954d53168e62cd4a0fd9db85b1903f0902a7eb33e8"},
-    {file = "ujson-5.5.0-cp37-cp37m-win32.whl", hash = "sha256:3b74467564814fbce322427a5664e6bcc7dae6dbc8acbef76300fe43ca4072ab"},
-    {file = "ujson-5.5.0-cp37-cp37m-win_amd64.whl", hash = "sha256:59cdcd934385f36e8bd76aedc234371cc75c848d95bdce804ac8aa8744cfeffa"},
-    {file = "ujson-5.5.0-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:2e506ecf89b6b9d304362ccef770831ec242a52c89dab1b4aabf1ab0eb1d5ed6"},
-    {file = "ujson-5.5.0-cp38-cp38-macosx_11_0_arm64.whl", hash = "sha256:10095160dbe6bba8059ad6677a01da251431f4c68041bf796dcac0956b34f8f7"},
-    {file = "ujson-5.5.0-cp38-cp38-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:5035bb997d163f346c22abcec75190e7e756a5349e7c708bd3d5fd7066a9a854"},
-    {file = "ujson-5.5.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:a7d12f2d2df195c8c4e49d2cdbad640353a856c62ca2c624d8b47aa33b65a2a2"},
-    {file = "ujson-5.5.0-cp38-cp38-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:1a485117f97312bef45f5d79d2ff97eff4da503b8a04f3691f59d31141686459"},
-    {file = "ujson-5.5.0-cp38-cp38-musllinux_1_1_aarch64.whl", hash = "sha256:21678d7e068707e4d54bdfeb8c250ebc548b51e499aed778b22112ca31a79669"},
-    {file = "ujson-5.5.0-cp38-cp38-musllinux_1_1_i686.whl", hash = "sha256:5a9b1320d8363a42d857fae8065a2174d38217cdd58cd8dc4f48d54e0591271e"},
-    {file = "ujson-5.5.0-cp38-cp38-musllinux_1_1_x86_64.whl", hash = "sha256:701e81e047f5c0cffd4ac828efca68b0bd270c616654966a051e9a5f836b385e"},
-    {file = "ujson-5.5.0-cp38-cp38-win32.whl", hash = "sha256:1cef44ea4973344baed3d50a5da4a8843de3a6af7dea7fadf0a594e53ce5892f"},
-    {file = "ujson-5.5.0-cp38-cp38-win_amd64.whl", hash = "sha256:e510d288e613d6927796dfb728e13e4530fc83b9ccac5888a21f7860486eab21"},
-    {file = "ujson-5.5.0-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:e1135264bcd40965cd35b0869e36952f54825024befdc7a923df9a7d83cfd800"},
-    {file = "ujson-5.5.0-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:703fd69d9cb21d6ec2086789df9be2cf8140a76ff127050c24007ea8940dcd3b"},
-    {file = "ujson-5.5.0-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:849f2ff40264152f25589cb48ddb4a43d14db811f841ec73989bfc0c8c4853fa"},
-    {file = "ujson-5.5.0-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:bf416a93e1331820c77e3429df26946dbd4fe105e9b487cd2d1b7298b75784a8"},
-    {file = "ujson-5.5.0-cp39-cp39-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:593a0f6fb0e186c5ba65465ed6f6215a30d1efa898c25e74de1c8577a1bff6d0"},
-    {file = "ujson-5.5.0-cp39-cp39-musllinux_1_1_aarch64.whl", hash = "sha256:7c20cc83b0df47129ec6ed8a47fa7dcfc309c5bad029464004162738502568bb"},
-    {file = "ujson-5.5.0-cp39-cp39-musllinux_1_1_i686.whl", hash = "sha256:6f83be8257b2f2dd6dea5ee62cd28db90584da7a7af1fba77a2102fc7943638a"},
-    {file = "ujson-5.5.0-cp39-cp39-musllinux_1_1_x86_64.whl", hash = "sha256:8141f654432cf75144d6103bfac2286b8adf23467201590b173a74535d6be22d"},
-    {file = "ujson-5.5.0-cp39-cp39-win32.whl", hash = "sha256:3fe1aea596f9539fc20cd9e52f098c842afc090168824fd4ca9744fe13151a03"},
-    {file = "ujson-5.5.0-cp39-cp39-win_amd64.whl", hash = "sha256:a655f7b755cfc5c07f2116b6dcf0ba148c89adef9a6d40c1b0f1fada878c4345"},
-    {file = "ujson-5.5.0-pp37-pypy37_pp73-macosx_10_9_x86_64.whl", hash = "sha256:f19f11055ba2961eb39bdb1ff15763a53fca4fa0b5b624da3c7a528e83cdd09c"},
-    {file = "ujson-5.5.0-pp37-pypy37_pp73-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:7d87c817b292efb748f1974f37e8bb8a8772ef92f05f84e507159360814bcc3f"},
-    {file = "ujson-5.5.0-pp37-pypy37_pp73-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:5f9681ec4c60d0da590552427d770636d9079038c30b265f507ccde23caa7823"},
-    {file = "ujson-5.5.0-pp37-pypy37_pp73-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:f63d1ae1ca17bb2c847e298c7bcf084a73d56d434b4c50509fb93a4b4300b0b2"},
-    {file = "ujson-5.5.0-pp37-pypy37_pp73-win_amd64.whl", hash = "sha256:95603eff711b8f3b9596e1c961dbeb745a792ba1904141612f194e07edd71e5f"},
-    {file = "ujson-5.5.0-pp38-pypy38_pp73-macosx_10_9_x86_64.whl", hash = "sha256:2d90414e3b4b44b39825049185959488e084ea7fcaf6124afd5c00893938b09d"},
-    {file = "ujson-5.5.0-pp38-pypy38_pp73-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:7471d4486f23518cff343f1eec6c68d1b977ed74c3e6cc3e1ac896b9b7d68645"},
-    {file = "ujson-5.5.0-pp38-pypy38_pp73-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:ee9a2c9a4b2421e77f8fe33ed0621dea03c66c710707553020b1e32f3afb6240"},
-    {file = "ujson-5.5.0-pp38-pypy38_pp73-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:4a8cb3c8637006c5bd8237ebb5992a76ba06e39988ad5cff2096227443e8fd6a"},
-    {file = "ujson-5.5.0-pp38-pypy38_pp73-win_amd64.whl", hash = "sha256:d9c89c521dc90c7564358e525f849b93ad1d710553c1491f66b8cce8113bc901"},
-    {file = "ujson-5.5.0-pp39-pypy39_pp73-macosx_10_9_x86_64.whl", hash = "sha256:2ab011e3556a9a1d9461bd686870c527327765ed02fe53550531d6609a8a33ff"},
-    {file = "ujson-5.5.0-pp39-pypy39_pp73-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:603607f56a0ee84d9cd2c7e9b1d29b18a70684b94ee34f07b9ffe8dc9c8a9f81"},
-    {file = "ujson-5.5.0-pp39-pypy39_pp73-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:d75bef34e69e7effb7b4849e3f830e3174d2cc6ec7273503fdde111c222dc9b3"},
-    {file = "ujson-5.5.0-pp39-pypy39_pp73-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:abfe83e082c9208891e2158c1b5044a650ecec408b823bf6bf16cd7f8085cafa"},
-    {file = "ujson-5.5.0-pp39-pypy39_pp73-win_amd64.whl", hash = "sha256:4ef4ab8352861b99bd7fedb1fc6df3ea7f7d5216c789ba6d859e4ea06f1a4c45"},
-    {file = "ujson-5.5.0.tar.gz", hash = "sha256:b25077a971c7da47bd6846a912a747f6963776d90720c88603b1b55d81790780"},
+    {file = "ujson-5.7.0-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:5eba5e69e4361ac3a311cf44fa71bc619361b6e0626768a494771aacd1c2f09b"},
+    {file = "ujson-5.7.0-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:aae4d9e1b4c7b61780f0a006c897a4a1904f862fdab1abb3ea8f45bd11aa58f3"},
+    {file = "ujson-5.7.0-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:d2e43ccdba1cb5c6d3448eadf6fc0dae7be6c77e357a3abc968d1b44e265866d"},
+    {file = "ujson-5.7.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:54384ce4920a6d35fa9ea8e580bc6d359e3eb961fa7e43f46c78e3ed162d56ff"},
+    {file = "ujson-5.7.0-cp310-cp310-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:24ad1aa7fc4e4caa41d3d343512ce68e41411fb92adf7f434a4d4b3749dc8f58"},
+    {file = "ujson-5.7.0-cp310-cp310-musllinux_1_1_aarch64.whl", hash = "sha256:afff311e9f065a8f03c3753db7011bae7beb73a66189c7ea5fcb0456b7041ea4"},
+    {file = "ujson-5.7.0-cp310-cp310-musllinux_1_1_i686.whl", hash = "sha256:6e80f0d03e7e8646fc3d79ed2d875cebd4c83846e129737fdc4c2532dbd43d9e"},
+    {file = "ujson-5.7.0-cp310-cp310-musllinux_1_1_x86_64.whl", hash = "sha256:137831d8a0db302fb6828ee21c67ad63ac537bddc4376e1aab1c8573756ee21c"},
+    {file = "ujson-5.7.0-cp310-cp310-win32.whl", hash = "sha256:7df3fd35ebc14dafeea031038a99232b32f53fa4c3ecddb8bed132a43eefb8ad"},
+    {file = "ujson-5.7.0-cp310-cp310-win_amd64.whl", hash = "sha256:af4639f684f425177d09ae409c07602c4096a6287027469157bfb6f83e01448b"},
+    {file = "ujson-5.7.0-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:9b0f2680ce8a70f77f5d70aaf3f013d53e6af6d7058727a35d8ceb4a71cdd4e9"},
+    {file = "ujson-5.7.0-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:67a19fd8e7d8cc58a169bea99fed5666023adf707a536d8f7b0a3c51dd498abf"},
+    {file = "ujson-5.7.0-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:6abb8e6d8f1ae72f0ed18287245f5b6d40094e2656d1eab6d99d666361514074"},
+    {file = "ujson-5.7.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:d8cd622c069368d5074bd93817b31bdb02f8d818e57c29e206f10a1f9c6337dd"},
+    {file = "ujson-5.7.0-cp311-cp311-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:14f9082669f90e18e64792b3fd0bf19f2b15e7fe467534a35ea4b53f3bf4b755"},
+    {file = "ujson-5.7.0-cp311-cp311-musllinux_1_1_aarch64.whl", hash = "sha256:d7ff6ebb43bc81b057724e89550b13c9a30eda0f29c2f506f8b009895438f5a6"},
+    {file = "ujson-5.7.0-cp311-cp311-musllinux_1_1_i686.whl", hash = "sha256:f7f241488879d91a136b299e0c4ce091996c684a53775e63bb442d1a8e9ae22a"},
+    {file = "ujson-5.7.0-cp311-cp311-musllinux_1_1_x86_64.whl", hash = "sha256:5593263a7fcfb934107444bcfba9dde8145b282de0ee9f61e285e59a916dda0f"},
+    {file = "ujson-5.7.0-cp311-cp311-win32.whl", hash = "sha256:26c2b32b489c393106e9cb68d0a02e1a7b9d05a07429d875c46b94ee8405bdb7"},
+    {file = "ujson-5.7.0-cp311-cp311-win_amd64.whl", hash = "sha256:ed24406454bb5a31df18f0a423ae14beb27b28cdfa34f6268e7ebddf23da807e"},
+    {file = "ujson-5.7.0-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:18679484e3bf9926342b1c43a3bd640f93a9eeeba19ef3d21993af7b0c44785d"},
+    {file = "ujson-5.7.0-cp37-cp37m-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:0ee295761e1c6c30400641f0a20d381633d7622633cdf83a194f3c876a0e4b7e"},
+    {file = "ujson-5.7.0-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:b738282e12a05f400b291966630a98d622da0938caa4bc93cf65adb5f4281c60"},
+    {file = "ujson-5.7.0-cp37-cp37m-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:00343501dbaa5172e78ef0e37f9ebd08040110e11c12420ff7c1f9f0332d939e"},
+    {file = "ujson-5.7.0-cp37-cp37m-musllinux_1_1_aarch64.whl", hash = "sha256:c0d1f7c3908357ee100aa64c4d1cf91edf99c40ac0069422a4fd5fd23b263263"},
+    {file = "ujson-5.7.0-cp37-cp37m-musllinux_1_1_i686.whl", hash = "sha256:a5d2f44331cf04689eafac7a6596c71d6657967c07ac700b0ae1c921178645da"},
+    {file = "ujson-5.7.0-cp37-cp37m-musllinux_1_1_x86_64.whl", hash = "sha256:16b2254a77b310f118717715259a196662baa6b1f63b1a642d12ab1ff998c3d7"},
+    {file = "ujson-5.7.0-cp37-cp37m-win32.whl", hash = "sha256:6faf46fa100b2b89e4db47206cf8a1ffb41542cdd34dde615b2fc2288954f194"},
+    {file = "ujson-5.7.0-cp37-cp37m-win_amd64.whl", hash = "sha256:ff0004c3f5a9a6574689a553d1b7819d1a496b4f005a7451f339dc2d9f4cf98c"},
+    {file = "ujson-5.7.0-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:75204a1dd7ec6158c8db85a2f14a68d2143503f4bafb9a00b63fe09d35762a5e"},
+    {file = "ujson-5.7.0-cp38-cp38-macosx_11_0_arm64.whl", hash = "sha256:7312731c7826e6c99cdd3ac503cd9acd300598e7a80bcf41f604fee5f49f566c"},
+    {file = "ujson-5.7.0-cp38-cp38-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:7b9dc5a90e2149643df7f23634fe202fed5ebc787a2a1be95cf23632b4d90651"},
+    {file = "ujson-5.7.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:b6a6961fc48821d84b1198a09516e396d56551e910d489692126e90bf4887d29"},
+    {file = "ujson-5.7.0-cp38-cp38-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:b01a9af52a0d5c46b2c68e3f258fdef2eacaa0ce6ae3e9eb97983f5b1166edb6"},
+    {file = "ujson-5.7.0-cp38-cp38-musllinux_1_1_aarch64.whl", hash = "sha256:b7316d3edeba8a403686cdcad4af737b8415493101e7462a70ff73dd0609eafc"},
+    {file = "ujson-5.7.0-cp38-cp38-musllinux_1_1_i686.whl", hash = "sha256:4ee997799a23227e2319a3f8817ce0b058923dbd31904761b788dc8f53bd3e30"},
+    {file = "ujson-5.7.0-cp38-cp38-musllinux_1_1_x86_64.whl", hash = "sha256:dda9aa4c33435147262cd2ea87c6b7a1ca83ba9b3933ff7df34e69fee9fced0c"},
+    {file = "ujson-5.7.0-cp38-cp38-win32.whl", hash = "sha256:bea8d30e362180aafecabbdcbe0e1f0b32c9fa9e39c38e4af037b9d3ca36f50c"},
+    {file = "ujson-5.7.0-cp38-cp38-win_amd64.whl", hash = "sha256:c96e3b872bf883090ddf32cc41957edf819c5336ab0007d0cf3854e61841726d"},
+    {file = "ujson-5.7.0-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:6411aea4c94a8e93c2baac096fbf697af35ba2b2ed410b8b360b3c0957a952d3"},
+    {file = "ujson-5.7.0-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:3d3b3499c55911f70d4e074c626acdb79a56f54262c3c83325ffb210fb03e44d"},
+    {file = "ujson-5.7.0-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:341f891d45dd3814d31764626c55d7ab3fd21af61fbc99d070e9c10c1190680b"},
+    {file = "ujson-5.7.0-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:2f242eec917bafdc3f73a1021617db85f9958df80f267db69c76d766058f7b19"},
+    {file = "ujson-5.7.0-cp39-cp39-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:c3af9f9f22a67a8c9466a32115d9073c72a33ae627b11de6f592df0ee09b98b6"},
+    {file = "ujson-5.7.0-cp39-cp39-musllinux_1_1_aarch64.whl", hash = "sha256:4a3d794afbf134df3056a813e5c8a935208cddeae975bd4bc0ef7e89c52f0ce0"},
+    {file = "ujson-5.7.0-cp39-cp39-musllinux_1_1_i686.whl", hash = "sha256:800bf998e78dae655008dd10b22ca8dc93bdcfcc82f620d754a411592da4bbf2"},
+    {file = "ujson-5.7.0-cp39-cp39-musllinux_1_1_x86_64.whl", hash = "sha256:b5ac3d5c5825e30b438ea92845380e812a476d6c2a1872b76026f2e9d8060fc2"},
+    {file = "ujson-5.7.0-cp39-cp39-win32.whl", hash = "sha256:cd90027e6d93e8982f7d0d23acf88c896d18deff1903dd96140613389b25c0dd"},
+    {file = "ujson-5.7.0-cp39-cp39-win_amd64.whl", hash = "sha256:523ee146cdb2122bbd827f4dcc2a8e66607b3f665186bce9e4f78c9710b6d8ab"},
+    {file = "ujson-5.7.0-pp37-pypy37_pp73-macosx_10_9_x86_64.whl", hash = "sha256:e87cec407ec004cf1b04c0ed7219a68c12860123dfb8902ef880d3d87a71c172"},
+    {file = "ujson-5.7.0-pp37-pypy37_pp73-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:bab10165db6a7994e67001733f7f2caf3400b3e11538409d8756bc9b1c64f7e8"},
+    {file = "ujson-5.7.0-pp37-pypy37_pp73-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:b522be14a28e6ac1cf818599aeff1004a28b42df4ed4d7bc819887b9dac915fc"},
+    {file = "ujson-5.7.0-pp37-pypy37_pp73-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:7592f40175c723c032cdbe9fe5165b3b5903604f774ab0849363386e99e1f253"},
+    {file = "ujson-5.7.0-pp37-pypy37_pp73-win_amd64.whl", hash = "sha256:ed22f9665327a981f288a4f758a432824dc0314e4195a0eaeb0da56a477da94d"},
+    {file = "ujson-5.7.0-pp38-pypy38_pp73-macosx_10_9_x86_64.whl", hash = "sha256:adf445a49d9a97a5a4c9bb1d652a1528de09dd1c48b29f79f3d66cea9f826bf6"},
+    {file = "ujson-5.7.0-pp38-pypy38_pp73-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:64772a53f3c4b6122ed930ae145184ebaed38534c60f3d859d8c3f00911eb122"},
+    {file = "ujson-5.7.0-pp38-pypy38_pp73-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:35209cb2c13fcb9d76d249286105b4897b75a5e7f0efb0c0f4b90f222ce48910"},
+    {file = "ujson-5.7.0-pp38-pypy38_pp73-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:90712dfc775b2c7a07d4d8e059dd58636bd6ff1776d79857776152e693bddea6"},
+    {file = "ujson-5.7.0-pp38-pypy38_pp73-win_amd64.whl", hash = "sha256:0e4e8981c6e7e9e637e637ad8ffe948a09e5434bc5f52ecbb82b4b4cfc092bfb"},
+    {file = "ujson-5.7.0-pp39-pypy39_pp73-macosx_10_9_x86_64.whl", hash = "sha256:581c945b811a3d67c27566539bfcb9705ea09cb27c4be0002f7a553c8886b817"},
+    {file = "ujson-5.7.0-pp39-pypy39_pp73-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:d36a807a24c7d44f71686685ae6fbc8793d784bca1adf4c89f5f780b835b6243"},
+    {file = "ujson-5.7.0-pp39-pypy39_pp73-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:8b4257307e3662aa65e2644a277ca68783c5d51190ed9c49efebdd3cbfd5fa44"},
+    {file = "ujson-5.7.0-pp39-pypy39_pp73-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:ea7423d8a2f9e160c5e011119741682414c5b8dce4ae56590a966316a07a4618"},
+    {file = "ujson-5.7.0-pp39-pypy39_pp73-win_amd64.whl", hash = "sha256:4c592eb91a5968058a561d358d0fef59099ed152cfb3e1cd14eee51a7a93879e"},
+    {file = "ujson-5.7.0.tar.gz", hash = "sha256:e788e5d5dcae8f6118ac9b45d0b891a0d55f7ac480eddcb7f07263f2bcf37b23"},
 ]
 
 [[package]]
 name = "urllib3"
-version = "1.26.13"
+version = "1.26.14"
 description = "HTTP library with thread-safe connection pooling, file post, and more."
 category = "dev"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, !=3.5.*"
 files = [
-    {file = "urllib3-1.26.13-py2.py3-none-any.whl", hash = "sha256:47cc05d99aaa09c9e72ed5809b60e7ba354e64b59c9c173ac3018642d8bb41fc"},
-    {file = "urllib3-1.26.13.tar.gz", hash = "sha256:c083dd0dce68dbfbe1129d5271cb90f9447dea7d52097c6e0126120c521ddea8"},
+    {file = "urllib3-1.26.14-py2.py3-none-any.whl", hash = "sha256:75edcdc2f7d85b137124a6c3c9fc3933cdeaa12ecb9a6a959f22797a0feca7e1"},
+    {file = "urllib3-1.26.14.tar.gz", hash = "sha256:076907bf8fd355cde77728471316625a4d2f7e713c125f51953bb5b3eecf4f72"},
 ]
 
 [package.extras]
@@ -1432,4 +1500,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "6518fa4cdba7f8060587b1811633fd56b573d54e672a8644f5081bfdfaffd062"
+content-hash = "45e590ffc364a34359e3cb08e6c94d161ed186980e1c36b650b64ad519313625"

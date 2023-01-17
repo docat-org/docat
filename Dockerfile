@@ -16,7 +16,7 @@ RUN yarn test
 RUN yarn build
 
 # setup Python
-FROM python:3.11.0-alpine3.15 AS backend
+FROM python:3.11-slim AS backend
 
 # configure docker container
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -26,9 +26,8 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     # do not ask any interactive question
     POETRY_NO_INTERACTION=1
 
-RUN apk update && \
-    apk add gcc musl-dev python3-dev libffi-dev openssl-dev cargo
-RUN pip install poetry==1.3.2
+RUN python -m pip install --upgrade pip
+RUN python -m pip install poetry==1.3.2
 COPY /docat/pyproject.toml /docat/poetry.lock /app/
 
 # Install the application
@@ -36,12 +35,12 @@ WORKDIR /app/docat
 RUN poetry install --no-root --no-ansi --only main
 
 # production
-FROM python:3.11.0-alpine3.15
+FROM python:3.11-slim
 
 # set up the system
-RUN apk update && \
-    apk add nginx dumb-init libmagic && \
-    rm -rf /var/cache/apk/*
+RUN apt update && \
+    apt install --yes nginx dumb-init libmagic1 && \
+    rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p /var/docat/doc
 
@@ -51,7 +50,7 @@ COPY --from=frontend /app/frontend/build /var/www/html
 COPY docat /app/docat
 WORKDIR /app/docat
 
-RUN cp docat/nginx/default /etc/nginx/http.d/default.conf
+RUN cp docat/nginx/default /etc/nginx/sites-enabled/default
 
 # Copy the build artifact (.venv)
 COPY --from=backend /app /app/docat
