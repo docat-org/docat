@@ -50,9 +50,9 @@ export default function Project(props: Props): JSX.Element {
         />
       </div>
       <div className={styles.subhead}>
-        {props.project.versions === 1
-          ? `${props.project.versions} version`
-          : `${props.project.versions} versions`}
+        {props.project.versions.length === 1
+          ? `${props.project.versions.length} version`
+          : `${props.project.versions.length} versions`}
       </div>
     </div>
   )

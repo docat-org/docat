@@ -7,15 +7,18 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import ProjectsResponse, { Project } from '../models/ProjectsResponse'
 import { useMessageBanner } from './MessageBannerProvider'
+import ProjectRepository from '../repositories/ProjectRepository'
 
 interface ProjectState {
   projects: Project[] | null
+  projectsWithHiddenVersions: Project[] | null
   loadingFailed: boolean
   reload: () => void
 }
 
 const Context = createContext<ProjectState>({
   projects: null,
+  projectsWithHiddenVersions: null,
   loadingFailed: false,
   reload: (): void => {
     console.warn('ProjectDataProvider not initialized')
@@ -35,7 +38,7 @@ export function ProjectDataProvider({ children }: any): JSX.Element {
   const loadData = (): void => {
     void (async (): Promise<void> => {
       try {
-        const response = await fetch('/api/projects')
+        const response = await fetch('/api/projects?include_hidden=true')
 
         if (!response.ok) {
           throw new Error(
@@ -45,7 +48,8 @@ export function ProjectDataProvider({ children }: any): JSX.Element {
 
         const data: ProjectsResponse = await response.json()
         setProjects({
-          projects: data.projects,
+          projects: ProjectRepository.filterHiddenVersions(data.projects),
+          projectsWithHiddenVersions: data.projects,
           loadingFailed: false,
           reload: loadData
         })
@@ -59,6 +63,7 @@ export function ProjectDataProvider({ children }: any): JSX.Element {
 
         setProjects({
           projects: null,
+          projectsWithHiddenVersions: null,
           loadingFailed: true,
           reload: loadData
         })
@@ -68,6 +73,7 @@ export function ProjectDataProvider({ children }: any): JSX.Element {
 
   const [projects, setProjects] = useState<ProjectState>({
     projects: null,
+    projectsWithHiddenVersions: null,
     loadingFailed: false,
     reload: loadData
   })

@@ -6,7 +6,7 @@ import docat.app as docat
 
 def test_hide(client_with_claimed_project):
     """
-    Tests that the version is no longer returned when getting the details after hiding
+    Tests that the version is marked as hidden when getting the details after hiding
     """
     # create a version
     create_response = client_with_claimed_project.post(
@@ -19,7 +19,7 @@ def test_hide(client_with_claimed_project):
     assert project_details_response.status_code == 200
     assert project_details_response.json() == {
         "name": "some-project",
-        "versions": [{"name": "1.0.0", "tags": []}],
+        "versions": [{"name": "1.0.0", "tags": [], "hidden": False}],
     }
 
     # hide the version
@@ -50,7 +50,7 @@ def test_hide_only_version_not_listed_in_projects(client_with_claimed_project):
     projects_response = client_with_claimed_project.get("/api/projects")
     assert projects_response.status_code == 200
     assert projects_response.json() == {
-        "projects": [{"name": "some-project", "logo": False, "versions": 1}],
+        "projects": [{"name": "some-project", "logo": False, "versions": [{"name": "1.0.0", "tags": [], "hidden": False}]}],
     }
 
     # hide the only version
@@ -189,7 +189,7 @@ def test_hide_fails_invalid_token(client_with_claimed_project):
 
 def test_show(client_with_claimed_project):
     """
-    Tests that the version is returned again after requesting show.
+    Tests that the version is no longer marked as hidden after requesting show.
     """
     # create a version
     create_response = client_with_claimed_project.post(
@@ -220,7 +220,7 @@ def test_show(client_with_claimed_project):
     assert project_details_response.status_code == 200
     assert project_details_response.json() == {
         "name": "some-project",
-        "versions": [{"name": "1.0.0", "tags": []}],
+        "versions": [{"name": "1.0.0", "tags": [], "hidden": False}],
     }
 
 
@@ -356,7 +356,7 @@ def test_show_fails_invalid_token(client_with_claimed_project):
 
 def test_hide_and_show_with_tag(client_with_claimed_project):
     """
-    Tests that the version is returned again after requesting show on a tag.
+    Tests that the version is no longer marked as hidden after requesting show on a tag.
     """
     # create a version
     create_response = client_with_claimed_project.post(
@@ -392,5 +392,5 @@ def test_hide_and_show_with_tag(client_with_claimed_project):
     assert project_details_response.status_code == 200
     assert project_details_response.json() == {
         "name": "some-project",
-        "versions": [{"name": "1.0.0", "tags": ["latest"]}],
+        "versions": [{"name": "1.0.0", "tags": ["latest"], "hidden": False}],
     }

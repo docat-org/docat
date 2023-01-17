@@ -8,7 +8,7 @@ import { useProjects } from '../data-providers/ProjectDataProvider'
 import ProjectRepository from '../repositories/ProjectRepository'
 
 export default function Claim(): JSX.Element {
-  const { projects, loadingFailed } = useProjects()
+  const { projectsWithHiddenVersions: projects, loadingFailed } = useProjects()
 
   const { showMessage } = useMessageBanner()
   const [project, setProject] = useState<string>('none')

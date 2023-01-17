@@ -7,6 +7,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useParams, useSearchParams } from 'react-router-dom'
 import DocumentControlButtons from '../components/DocumentControlButtons'
+import { useProjects } from '../data-providers/ProjectDataProvider'
 import ProjectDetails from '../models/ProjectDetails'
 import ProjectRepository from '../repositories/ProjectRepository'
 
@@ -14,7 +15,7 @@ import styles from './../style/pages/Docs.module.css'
 import LoadingPage from './LoadingPage'
 import NotFound from './NotFound'
 
-export default function Docs (): JSX.Element {
+export default function Docs(): JSX.Element {
   const projectParam = useParams().project ?? ''
   const versionParam = useParams().version ?? 'latest'
   const pageParam = useParams().page ?? 'index.html'
@@ -27,6 +28,7 @@ export default function Docs (): JSX.Element {
   const [versions, setVersions] = useState<ProjectDetails[]>([])
   const [loadingFailed, setLoadingFailed] = useState<boolean>(false)
 
+  const { projectsWithHiddenVersions: projects } = useProjects()
   const iFrameRef = useRef(null)
 
   document.title = `${project} | docat`
@@ -64,50 +66,60 @@ export default function Docs (): JSX.Element {
       return
     }
 
-    void (async () => {
-      try {
-        let res = await ProjectRepository.getVersions(project)
+    if (projects == null || projects.length === 0) {
+      return
+    }
 
-        if (res.length === 0) {
-          setLoadingFailed(true)
-          return
-        }
+    try {
+      const matchingProjects = projects.filter((p) => p.name === project)
 
-        res = res.sort((a, b) => ProjectRepository.compareVersions(a, b))
-        setVersions(res)
-
-        if (version !== 'latest') {
-          // custom version -> check if it exists
-          const versionsAndTags = res.map((v) => [v.name, ...v.tags]).flat()
-
-          if (!versionsAndTags.includes(version)) {
-            // version does not exist -> fail
-            setLoadingFailed(true)
-          }
-
-          return
-        }
-
-        // latest version -> check if there is a latest tag
-        const versionWithLatestTag = res.find((v) =>
-          (v.tags ?? []).includes('latest')
-        )
-
-        // if there is a latest tag, use it,
-        // otherwise use the latest version by sorting
-        const latestVersion =
-          versionWithLatestTag != null
-            ? versionWithLatestTag.name
-            : res[res.length - 1].name
-
-        setVersion(latestVersion)
-        updateRoute(project, latestVersion, page, hideUi)
-      } catch (e) {
-        console.error(e)
+      if (matchingProjects.length !== 1) {
         setLoadingFailed(true)
+        return
       }
-    })()
-  }, [project, version, page, hideUi, updateRoute])
+
+      let res = matchingProjects[0].versions
+
+      if (res.length === 0) {
+        setLoadingFailed(true)
+        return
+      }
+
+      res = res.sort((a, b) => ProjectRepository.compareVersions(a, b))
+      setVersions(res)
+
+      if (version !== 'latest') {
+        // custom version -> check if it exists
+        const versionsAndTags = res.map((v) => [v.name, ...v.tags]).flat()
+
+        if (!versionsAndTags.includes(version)) {
+          // version does not exist -> fail
+          setLoadingFailed(true)
+          console.log("Version doesn't exist")
+        }
+
+        return
+      }
+
+      // latest version -> check if there is a latest tag
+      const versionWithLatestTag = res.find((v) =>
+        (v.tags ?? []).includes('latest')
+      )
+
+      // if there is a latest tag, use it,
+      // otherwise use the latest version by sorting
+      const latestVersion =
+        versionWithLatestTag != null
+          ? versionWithLatestTag.name
+          : res[res.length - 1].name
+
+      setVersion(latestVersion)
+      updateRoute(project, latestVersion, page, hideUi)
+    } catch (e) {
+      console.error(e)
+      setLoadingFailed(true)
+    }
+  }, [project, projects, version, page, hideUi, updateRoute])
 
   const handleVersionChange = (v: string): void => {
     setVersion(v)
@@ -151,12 +163,12 @@ export default function Docs (): JSX.Element {
       })
   }
 
-  if (loadingFailed) {
-    return <NotFound />
+  if (versions == null || versions.length === 0) {
+    return <LoadingPage />
   }
 
-  if (versions.length === 0) {
-    return <LoadingPage />
+  if (loadingFailed) {
+    return <NotFound />
   }
 
   return (

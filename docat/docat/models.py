@@ -17,19 +17,20 @@ class ClaimResponse(ApiResponse):
     token: str
 
 
-class ProjectWithVersionCount(BaseModel):
-    name: str
-    logo: bool
-    versions: int
-
-
-class Projects(BaseModel):
-    projects: list[ProjectWithVersionCount]
-
-
 class ProjectVersion(BaseModel):
     name: str
     tags: list[str]
+    hidden: bool
+
+
+class Project(BaseModel):
+    name: str
+    logo: bool
+    versions: list[ProjectVersion]
+
+
+class Projects(BaseModel):
+    projects: list[Project]
 
 
 class ProjectDetail(BaseModel):

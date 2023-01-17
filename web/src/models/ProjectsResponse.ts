@@ -1,7 +1,9 @@
+import ProjectDetails from './ProjectDetails'
+
 export interface Project {
   name: string
   logo: boolean
-  versions: number
+  versions: ProjectDetails[]
 }
 
 export default interface ProjectsResponse {
