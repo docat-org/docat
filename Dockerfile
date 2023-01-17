@@ -28,7 +28,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 RUN apk update && \
     apk add gcc musl-dev python3-dev libffi-dev openssl-dev cargo
-RUN pip install poetry==1.2.1
+RUN pip install poetry==1.3.2
 COPY /docat/pyproject.toml /docat/poetry.lock /app/
 
 # Install the application
