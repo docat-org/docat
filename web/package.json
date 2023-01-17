@@ -10,7 +10,7 @@
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^13.0.0",
     "@testing-library/user-event": "^13.2.1",
-    "@types/jest": "^27.0.1",
+    "@types/jest": "^29.2.5",
     "@types/lodash": "^4.14.191",
     "@types/node": "^16.7.13",
     "@types/react": "^18.0.26",
