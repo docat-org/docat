@@ -1,19 +1,22 @@
 import { TextField } from '@mui/material'
-import { useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import React from 'react'
 import styles from '../style/components/SearchBar.module.css'
 import { Search } from '@mui/icons-material'
 
 export default function SearchBar(): JSX.Element {
-  const navigate = useNavigate()
+  const linkRef = React.useRef<HTMLAnchorElement>(null)
   const [searchQuery, setSearchQuery] = React.useState<string>('')
+
+  const navigateToSearchPage = (): void => {
+    if (linkRef.current != null) {
+      linkRef.current.click()
+    }
+  }
 
   return (
     <>
-      <Search
-        className={styles['search-icon']}
-        onClick={() => navigate('/search')}
-      />
+      <Search className={styles['search-icon']} onClick={navigateToSearchPage} />
       <div className={styles['search-bar']}>
         <TextField
           label="Search"
@@ -22,12 +25,14 @@ export default function SearchBar(): JSX.Element {
           onChange={(e) => setSearchQuery(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
-              navigate(`/search?query=${searchQuery}`)
+              navigateToSearchPage()
             }
           }}
           variant="standard"
         ></TextField>
       </div>
+
+      <Link ref={linkRef} to={`/search?query=${searchQuery}`} />
     </>
   )
 }

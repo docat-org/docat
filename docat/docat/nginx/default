@@ -13,15 +13,19 @@ server {
 
     server_name _;
 
-    location /doc {
-        root /var/docat;
+    location $PREFIX_PATH/doc {
+        # remove $PREFIX_PATH/doc from the request
+        rewrite ^$PREFIX_PATH/doc(.*) $1 break;
+        
+        root /var/docat/doc;
     }
 
-    location /api {
+    location $PREFIX_PATH/api {
         client_max_body_size 100M;
         proxy_pass http://python_backend;
     }
 
-    location / {
+    location $PREFIX_PATH/ {
+
     }
 }

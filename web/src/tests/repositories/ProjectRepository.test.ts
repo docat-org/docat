@@ -60,7 +60,7 @@ describe('get project logo url', () => {
 
     const result = ProjectRepository.getProjectLogoURL(projectName)
 
-    expect(result).toEqual(`/doc/${projectName}/logo`)
+    expect(result).toEqual(`${ProjectRepository.getURLPrefix()}/doc/${projectName}/logo`)
   })
 })
 
@@ -71,7 +71,7 @@ describe('get project docs url', () => {
 
     const result = ProjectRepository.getProjectDocsURL(projectName, version)
 
-    expect(result).toEqual(`/doc/${projectName}/${version}/`)
+    expect(result).toEqual(`${ProjectRepository.getURLPrefix()}/doc/${projectName}/${version}/`)
   })
 
   test('should return the correct url with path', () => {
@@ -81,8 +81,84 @@ describe('get project docs url', () => {
 
     const result = ProjectRepository.getProjectDocsURL(projectName, version, path)
 
-    expect(result).toEqual(`/doc/${projectName}/${version}/${path}`)
+    expect(result).toEqual(`${ProjectRepository.getURLPrefix()}/doc/${projectName}/${version}/${path}`)
   })
+})
+
+describe('get doc page url', () => {
+  test('should create the correct url for localhost', () => {
+    const currentURL = 'http://localhost:8080/#/test-project/latest'
+    const projectName = 'test-project'
+    const version = '1.0.0'
+    const path = 'index.html'
+    const hideControls = false
+
+    const result = ProjectRepository.getDocPageURL(currentURL, projectName, version, path, hideControls)
+
+    expect(result).toEqual('http://localhost:8080/#/test-project/1.0.0/index.html')
+  })
+
+  test('should create the correct url for a custom domain', () => {
+    const currentURL = 'http://testdomain.com/#/test-project/latest'
+    const projectName = 'test-project'
+    const version = '1.0.0'
+    const path = 'index.html'
+    const hideControls = false
+
+    const result = ProjectRepository.getDocPageURL(currentURL, projectName, version, path, hideControls)
+
+    expect(result).toEqual('http://testdomain.com/#/test-project/1.0.0/index.html')
+  }
+  )
+  test('should work with a long path', () => {
+    const currentURL = 'http://localhost:8080/#/test-project/latest'
+    const projectName = 'test-project'
+    const version = '1.0.0'
+    const path = '/long/path/to/file.html'
+    const hideControls = false
+
+    const result = ProjectRepository.getDocPageURL(currentURL, projectName, version, path, hideControls)
+
+    expect(result).toEqual('http://localhost:8080/#/test-project/1.0.0/long/path/to/file.html')
+  }
+  )
+
+  test('should work with hide controls', () => {
+    const currentURL = 'http://localhost:8080/#/test-project/latest'
+    const projectName = 'test-project'
+    const version = '1.0.0'
+    const path = 'index.html'
+    const hideControls = true
+
+    const result = ProjectRepository.getDocPageURL(currentURL, projectName, version, path, hideControls)
+
+    expect(result).toEqual('http://localhost:8080/#/test-project/1.0.0/index.html?hide-ui=true')
+  })
+
+  test('should work with custom subpath', () => {
+    const currentURL = 'http://testdomain.com/#/test-project/latest'
+    const projectName = 'test-project'
+    const version = '1.0.0'
+    const path = 'index.html'
+    const hideControls = false
+
+    const result = ProjectRepository.getDocPageURL(currentURL, projectName, version, path, hideControls)
+
+    expect(result).toEqual('http://testdomain.com/#/test-project/1.0.0/index.html')
+  })
+
+  test('should work with more than one hashtag in the path', () => {
+    const currentURL = 'http://localhost:8080/#/test-project/latest'
+    const projectName = 'test-project'
+    const version = '1.0.0'
+    const path = '/file/index.html#section'
+    const hideControls = false
+
+    const result = ProjectRepository.getDocPageURL(currentURL, projectName, version, path, hideControls)
+
+    expect(result).toEqual('http://localhost:8080/#/test-project/1.0.0/file/index.html#section')
+  }
+  )
 })
 
 describe('upload', () => {
@@ -98,7 +174,7 @@ describe('upload', () => {
     await ProjectRepository.upload(project, version, body)
 
     expect(global.fetch).toHaveBeenCalledTimes(1)
-    expect(global.fetch).toHaveBeenCalledWith(`/api/${project}/${version}`,
+    expect(global.fetch).toHaveBeenCalledWith(`${ProjectRepository.getURLPrefix()}/api/${project}/${version}`,
       {
         body,
         method: 'POST'
@@ -155,7 +231,7 @@ describe('claim project', () => {
     const respToken = await ProjectRepository.claim(project)
 
     expect(global.fetch).toHaveBeenCalledTimes(1)
-    expect(global.fetch).toHaveBeenCalledWith(`/api/${project}/claim`)
+    expect(global.fetch).toHaveBeenCalledWith(`${ProjectRepository.getURLPrefix()}/api/${project}/claim`)
     expect(respToken.token).toEqual('test-token')
   })
 
@@ -188,7 +264,7 @@ describe('deleteDoc', () => {
     await ProjectRepository.deleteDoc(project, version, token)
 
     expect(global.fetch).toHaveBeenCalledTimes(1)
-    expect(global.fetch).toHaveBeenCalledWith(`/api/${project}/${version}`, { method: 'DELETE', headers: { 'Docat-Api-Key': token } })
+    expect(global.fetch).toHaveBeenCalledWith(`${ProjectRepository.getURLPrefix()}/api/${project}/${version}`, { method: 'DELETE', headers: { 'Docat-Api-Key': token } })
   })
 
   test('should throw invalid token on 401 status code', async () => {

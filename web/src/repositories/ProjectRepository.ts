@@ -5,7 +5,7 @@ import { ApiSearchResponse } from '../models/SearchResult'
 
 const RESOURCE = 'doc'
 
-function filterHiddenVersions(allProjects: Project[]): Project[] {
+function filterHiddenVersions (allProjects: Project[]): Project[] {
   // create deep-copy first
   const projects = JSON.parse(JSON.stringify(allProjects)) as Project[]
 
@@ -21,7 +21,7 @@ function filterHiddenVersions(allProjects: Project[]): Project[] {
  * @param {string} projectName Name of the project
  */
 async function getVersions (projectName: string): Promise<ProjectDetails[]> {
-  const res = await fetch(`/api/projects/${projectName}?include_hidden=true`)
+  const res = await fetch(`${getURLPrefix()}/api/projects/${projectName}?include_hidden=true`)
 
   if (!res.ok) {
     console.error((await res.json() as { message: string }).message)
@@ -41,7 +41,7 @@ async function getVersions (projectName: string): Promise<ProjectDetails[]> {
  * @returns
  */
 async function search (query: string): Promise<ApiSearchResponse> {
-  const response = await fetch(`/api/search?query=${query}`)
+  const response = await fetch(`${getURLPrefix()}/api/search?query=${query}`)
 
   if (response.ok) {
     return await response.json() as ApiSearchResponse
@@ -60,7 +60,7 @@ async function search (query: string): Promise<ApiSearchResponse> {
  * @param {string} projectName Name of the project
  */
 function getProjectLogoURL (projectName: string): string {
-  return `/${RESOURCE}/${projectName}/logo`
+  return `${getURLPrefix()}/${RESOURCE}/${projectName}/logo`
 }
 
 /**
@@ -70,7 +70,28 @@ function getProjectLogoURL (projectName: string): string {
  * @param {string?} docsPath Path to the documentation page
  */
 function getProjectDocsURL (projectName: string, version: string, docsPath?: string): string {
-  return `/${RESOURCE}/${projectName}/${version}/${docsPath ?? ''}`
+  return `${getURLPrefix()}/${RESOURCE}/${projectName}/${version}/${docsPath ?? ''}`
+}
+
+/**
+ * Returns the new URL used on the Docs page
+ * @param {string} currentURL Current URL
+ * @param {string} project Name of the project
+ * @param {string} version Name of the version
+ * @param {string} path Path to the documentation page
+ * @param {boolean} hideControls Whether to hide the controls
+ * @returns {string} New URL
+*/
+function getDocPageURL (currentURL: string, project: string, version: string, path: string, hideControls: boolean): string {
+  if (path.startsWith('/')) {
+    path = path.slice(1)
+  }
+
+  const startOfParams = currentURL.indexOf('#') + 1
+  const oldParams = currentURL.slice(startOfParams)
+  const newParams = `/${project}/${version}/${path}${hideControls ? '?hide-ui=true' : ''}`
+
+  return currentURL.replace(oldParams, newParams)
 }
 
 /**
@@ -80,7 +101,7 @@ function getProjectDocsURL (projectName: string, version: string, docsPath?: str
  * @param {FormData} body Data to upload
  */
 async function upload (projectName: string, version: string, body: FormData): Promise<void> {
-  const resp = await fetch(`/api/${projectName}/${version}`,
+  const resp = await fetch(`${getURLPrefix()}/api/${projectName}/${version}`,
     {
       method: 'POST',
       body
@@ -104,7 +125,7 @@ async function upload (projectName: string, version: string, body: FormData): Pr
  * @param {string} projectName Name of the project
  */
 async function claim (projectName: string): Promise<{ token: string }> {
-  const resp = await fetch(`/api/${projectName}/claim`)
+  const resp = await fetch(`${getURLPrefix()}/api/${projectName}/claim`)
 
   if (resp.ok) {
     const json = await resp.json() as { token: string }
@@ -127,7 +148,7 @@ async function claim (projectName: string): Promise<{ token: string }> {
  */
 async function deleteDoc (projectName: string, version: string, token: string): Promise<void> {
   const headers = { 'Docat-Api-Key': token }
-  const resp = await fetch(`/api/${projectName}/${version}`,
+  const resp = await fetch(`${getURLPrefix()}/api/${projectName}/${version}`,
     {
       method: 'DELETE',
       headers
@@ -199,18 +220,28 @@ function setFavorite (projectName: string, shouldBeFavorite: boolean): void {
   }
 }
 
+/**
+ * Returns the prefix path for the API
+ * @returns {string} - prefix path
+ */
+function getURLPrefix (): string {
+  return process.env.REACT_APP_PREFIX_PATH ?? ''
+}
+
 const exp = {
   getVersions,
   filterHiddenVersions,
   search,
   getProjectLogoURL,
   getProjectDocsURL,
+  getDocPageURL,
   upload,
   claim,
   deleteDoc,
   compareVersions,
   isFavorite,
-  setFavorite
+  setFavorite,
+  getURLPrefix
 }
 
 export default exp

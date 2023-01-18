@@ -9,8 +9,9 @@ import Header from '../components/Header'
 import LoadingPage from './LoadingPage'
 
 import styles from './../style/pages/Help.module.css'
+import ProjectRepository from '../repositories/ProjectRepository'
 
-export default function Help (): JSX.Element {
+export default function Help(): JSX.Element {
   document.title = 'Help | docat'
 
   const [content, setContent] = useState<string>('')
@@ -27,7 +28,7 @@ export default function Help (): JSX.Element {
     const port =
       document.location.port !== '' ? `:${document.location.port}` : ''
 
-    const currentUrl = `${protocol}//${host}${port}`
+    const currentUrl = `${protocol}//${host}${port}/${ProjectRepository.getURLPrefix()}`
 
     return text.replaceAll('http://localhost:8000', currentUrl)
   }

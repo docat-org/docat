@@ -38,7 +38,9 @@ export function ProjectDataProvider({ children }: any): JSX.Element {
   const loadData = (): void => {
     void (async (): Promise<void> => {
       try {
-        const response = await fetch('/api/projects?include_hidden=true')
+        const response = await fetch(
+          `${ProjectRepository.getURLPrefix()}/api/projects?include_hidden=true`
+        )
 
         if (!response.ok) {
           throw new Error(

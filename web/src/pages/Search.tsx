@@ -55,7 +55,7 @@ export default function Search(): JSX.Element {
 
   useEffect(() => {
     searchDebounced.cancel()
-    window.history.pushState({}, '', `/#/search?query=${searchQuery}`)
+    window.history.pushState({}, '', `${ProjectRepository.getURLPrefix()}/#/search?query=${searchQuery}`)
     searchDebounced()
   }, [searchQuery])
 

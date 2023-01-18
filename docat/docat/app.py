@@ -14,7 +14,7 @@ from pathlib import Path
 from typing import Optional
 
 import magic
-from fastapi import Depends, FastAPI, File, Header, Response, UploadFile, status
+from fastapi import APIRouter, Depends, FastAPI, File, Header, Response, UploadFile, status
 from fastapi.staticfiles import StaticFiles
 from starlette.responses import JSONResponse
 from tinydb import Query, TinyDB
@@ -48,7 +48,10 @@ from docat.utils import (
     update_version_index_for_project,
 )
 
-#: Holds the FastAPI application
+PREFIX_PATH = os.getenv("PREFIX_PATH", "")
+
+router = APIRouter(prefix=PREFIX_PATH)
+
 app = FastAPI(
     title="docat",
     description="API for docat, https://github.com/docat-org/docat",
@@ -63,7 +66,7 @@ DOCAT_INDEX_PATH = DOCAT_STORAGE_PATH / INDEX_PATH
 DOCAT_UPLOAD_FOLDER = DOCAT_STORAGE_PATH / UPLOAD_FOLDER
 
 
-@app.on_event("startup")
+@router.on_event("startup")
 def startup_create_folders():
     # Create the folders if they don't exist
     DOCAT_UPLOAD_FOLDER.mkdir(parents=True, exist_ok=True)
@@ -79,28 +82,28 @@ def get_index_db() -> TinyDB:
     return TinyDB(DOCAT_INDEX_PATH)
 
 
-@app.post("/api/index/update", response_model=ApiResponse, status_code=status.HTTP_200_OK)
-@app.post("/api/index/update/", response_model=ApiResponse, status_code=status.HTTP_200_OK)
+@router.post("/api/index/update", response_model=ApiResponse, status_code=status.HTTP_200_OK)
+@router.post("/api/index/update/", response_model=ApiResponse, status_code=status.HTTP_200_OK)
 def update_index():
     index_all_projects(DOCAT_UPLOAD_FOLDER, DOCAT_INDEX_PATH)
 
     return ApiResponse(message="Successfully updated search index")
 
 
-@app.get("/api/projects", response_model=Projects, status_code=status.HTTP_200_OK)
+@router.get("/api/projects", response_model=Projects, status_code=status.HTTP_200_OK)
 def get_projects(include_hidden: bool = False):
     if not DOCAT_UPLOAD_FOLDER.exists():
         return Projects(projects=[])
     return get_all_projects(DOCAT_UPLOAD_FOLDER, include_hidden)
 
 
-@app.get(
+@router.get(
     "/api/projects/{project}",
     response_model=ProjectDetail,
     status_code=status.HTTP_200_OK,
     responses={status.HTTP_404_NOT_FOUND: {"model": ApiResponse}},
 )
-@app.get(
+@router.get(
     "/api/projects/{project}/",
     response_model=ProjectDetail,
     status_code=status.HTTP_200_OK,
@@ -115,8 +118,8 @@ def get_project(project, include_hidden: bool = False):
     return details
 
 
-@app.get("/api/search", response_model=SearchResponse, status_code=status.HTTP_200_OK)
-@app.get("/api/search/", response_model=SearchResponse, status_code=status.HTTP_200_OK)
+@router.get("/api/search", response_model=SearchResponse, status_code=status.HTTP_200_OK)
+@router.get("/api/search/", response_model=SearchResponse, status_code=status.HTTP_200_OK)
 def search(query: str, index_db: TinyDB = Depends(get_index_db)):
     query = query.lower().strip()
 
@@ -193,8 +196,8 @@ def search(query: str, index_db: TinyDB = Depends(get_index_db)):
     return SearchResponse(projects=found_projects, versions=found_versions, files=found_files)
 
 
-@app.post("/api/{project}/icon", response_model=ApiResponse, status_code=status.HTTP_200_OK)
-@app.post("/api/{project}/icon/", response_model=ApiResponse, status_code=status.HTTP_200_OK)
+@router.post("/api/{project}/icon", response_model=ApiResponse, status_code=status.HTTP_200_OK)
+@router.post("/api/{project}/icon/", response_model=ApiResponse, status_code=status.HTTP_200_OK)
 def upload_icon(
     project: str,
     response: Response,
@@ -234,8 +237,8 @@ def upload_icon(
     return ApiResponse(message="Icon successfully uploaded")
 
 
-@app.post("/api/{project}/{version}/hide", response_model=ApiResponse, status_code=status.HTTP_200_OK)
-@app.post("/api/{project}/{version}/hide/", response_model=ApiResponse, status_code=status.HTTP_200_OK)
+@router.post("/api/{project}/{version}/hide", response_model=ApiResponse, status_code=status.HTTP_200_OK)
+@router.post("/api/{project}/{version}/hide/", response_model=ApiResponse, status_code=status.HTTP_200_OK)
 def hide_version(
     project: str,
     version: str,
@@ -274,8 +277,8 @@ def hide_version(
     return ApiResponse(message=f"Version {version} is now hidden")
 
 
-@app.post("/api/{project}/{version}/show", response_model=ApiResponse, status_code=status.HTTP_200_OK)
-@app.post("/api/{project}/{version}/show/", response_model=ApiResponse, status_code=status.HTTP_200_OK)
+@router.post("/api/{project}/{version}/show", response_model=ApiResponse, status_code=status.HTTP_200_OK)
+@router.post("/api/{project}/{version}/show/", response_model=ApiResponse, status_code=status.HTTP_200_OK)
 def show_version(
     project: str,
     version: str,
@@ -313,8 +316,8 @@ def show_version(
     return ApiResponse(message=f"Version {version} is now shown")
 
 
-@app.post("/api/{project}/{version}", response_model=ApiResponse, status_code=status.HTTP_201_CREATED)
-@app.post("/api/{project}/{version}/", response_model=ApiResponse, status_code=status.HTTP_201_CREATED)
+@router.post("/api/{project}/{version}", response_model=ApiResponse, status_code=status.HTTP_201_CREATED)
+@router.post("/api/{project}/{version}/", response_model=ApiResponse, status_code=status.HTTP_201_CREATED)
 def upload(
     project: str,
     version: str,
@@ -365,8 +368,8 @@ def upload(
     return ApiResponse(message="File successfully uploaded")
 
 
-@app.put("/api/{project}/{version}/tags/{new_tag}", response_model=ApiResponse, status_code=status.HTTP_201_CREATED)
-@app.put("/api/{project}/{version}/tags/{new_tag}/", response_model=ApiResponse, status_code=status.HTTP_201_CREATED)
+@router.put("/api/{project}/{version}/tags/{new_tag}", response_model=ApiResponse, status_code=status.HTTP_201_CREATED)
+@router.put("/api/{project}/{version}/tags/{new_tag}/", response_model=ApiResponse, status_code=status.HTTP_201_CREATED)
 def tag(project: str, version: str, new_tag: str, response: Response, index_db: TinyDB = Depends(get_index_db)):
     destination = DOCAT_UPLOAD_FOLDER / project / new_tag
     source = DOCAT_UPLOAD_FOLDER / project / version
@@ -384,13 +387,13 @@ def tag(project: str, version: str, new_tag: str, response: Response, index_db: 
     return ApiResponse(message=f"Tag {new_tag} -> {version} successfully created")
 
 
-@app.get(
+@router.get(
     "/api/{project}/claim",
     response_model=ClaimResponse,
     status_code=status.HTTP_201_CREATED,
     responses={status.HTTP_409_CONFLICT: {"model": ApiResponse}},
 )
-@app.get(
+@router.get(
     "/api/{project}/claim/",
     response_model=ClaimResponse,
     status_code=status.HTTP_201_CREATED,
@@ -411,8 +414,8 @@ def claim(project: str, db: TinyDB = Depends(get_db)):
     return ClaimResponse(message=f"Project {project} successfully claimed", token=token)
 
 
-@app.put("/api/{project}/rename/{new_project_name}", response_model=ApiResponse, status_code=status.HTTP_200_OK)
-@app.put("/api/{project}/rename/{new_project_name}/", response_model=ApiResponse, status_code=status.HTTP_200_OK)
+@router.put("/api/{project}/rename/{new_project_name}", response_model=ApiResponse, status_code=status.HTTP_200_OK)
+@router.put("/api/{project}/rename/{new_project_name}/", response_model=ApiResponse, status_code=status.HTTP_200_OK)
 def rename(
     project: str,
     new_project_name: str,
@@ -462,8 +465,8 @@ def rename(
     return ApiResponse(message=f"Successfully renamed project {project} to {new_project_name}")
 
 
-@app.delete("/api/{project}/{version}", response_model=ApiResponse, status_code=status.HTTP_200_OK)
-@app.delete("/api/{project}/{version}/", response_model=ApiResponse, status_code=status.HTTP_200_OK)
+@router.delete("/api/{project}/{version}", response_model=ApiResponse, status_code=status.HTTP_200_OK)
+@router.delete("/api/{project}/{version}/", response_model=ApiResponse, status_code=status.HTTP_200_OK)
 def delete(
     project: str,
     version: str,
@@ -505,8 +508,10 @@ def check_token_for_project(db, token, project) -> TokenStatus:
 # serve_local_docs for local testing without a nginx
 if os.environ.get("DOCAT_SERVE_FILES"):
     DOCAT_UPLOAD_FOLDER.mkdir(parents=True, exist_ok=True)
-    app.mount("/doc", StaticFiles(directory=DOCAT_UPLOAD_FOLDER, html=True), name="docs")
+    app.mount(f"{PREFIX_PATH}/doc", StaticFiles(directory=DOCAT_UPLOAD_FOLDER, html=True), name="docs")
 
 # index local files on start
 if os.environ.get("DOCAT_INDEX_FILES"):
     index_all_projects(DOCAT_UPLOAD_FOLDER, DOCAT_INDEX_PATH)
+
+app.include_router(router)

@@ -1,6 +1,12 @@
+
 # building frontend
 FROM node:16.14 as frontend
 WORKDIR /app/frontend
+
+ARG PREFIX_PATH_ARG=""
+ENV PREFIX_PATH=$PREFIX_PATH_ARG
+ENV REACT_APP_PREFIX_PATH=$PREFIX_PATH_ARG
+
 COPY web ./
 
 # fix docker not following symlinks
@@ -12,7 +18,6 @@ RUN yarn lint
 # fix test not exiting by default
 ARG CI=true
 RUN yarn test
-
 RUN yarn build
 
 # setup Python
@@ -39,18 +44,19 @@ FROM python:3.11-slim
 
 # set up the system
 RUN apt update && \
-    apt install --yes nginx dumb-init libmagic1 && \
+    apt install --yes nginx dumb-init libmagic1 gettext && \
     rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p /var/docat/doc
 
 # install the application
-RUN mkdir -p /var/www/html
-COPY --from=frontend /app/frontend/build /var/www/html
+RUN mkdir -p /var/www/html${PREFIX_PATH}
+COPY --from=frontend /app/frontend/build /var/www/html${PREFIX_PATH}
 COPY docat /app/docat
 WORKDIR /app/docat
 
-RUN cp docat/nginx/default /etc/nginx/sites-enabled/default
+# substitute the prefix path in the nginx config
+RUN envsubst < docat/nginx/default > /etc/nginx/sites-enabled/default
 
 # Copy the build artifact (.venv)
 COPY --from=backend /app /app/docat

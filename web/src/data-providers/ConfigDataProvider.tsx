@@ -5,7 +5,7 @@
 */
 
 import React, { createContext, useContext, useEffect, useState } from 'react'
-
+import ProjectRepository from '../repositories/ProjectRepository'
 export interface Config {
   headerHTML?: string
 }
@@ -22,8 +22,10 @@ export const ConfigDataProvider = ({ children }: any): JSX.Element => {
   useEffect(() => {
     void (async () => {
       try {
-        const res = await fetch('/doc/config.json')
-        const data = await res.json() as Config
+        const res = await fetch(
+          `${ProjectRepository.getURLPrefix()}/doc/config.json`
+        )
+        const data = (await res.json()) as Config
         setConfig(data)
       } catch (err) {
         console.error(err)

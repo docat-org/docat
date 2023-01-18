@@ -133,3 +133,47 @@ docatl update-index --host http://localhost:8000
 ```
 
 Don't worry if it takes some time :)
+
+## Adding a prefix path
+
+It is possible to run docat on a subpath, for example `/docat/...`. To do this, you will need to perform different steps depending on how you want to run docat.
+
+### Common Configuration
+
+The first thing you will have to do no matter how you start docat, is to specify the prefix path in the `package.json` file (underneath the `version` tag):
+
+> Important: The prefix path must start with a slash and end without one. (eg. `/docat`)
+
+```json
+"homepage": "/docat",
+```
+
+### Docker
+
+To run docat with a prefix path in docker, you will need to rebuild the container with the build argument **PREFIX_PATH_ARG** set to your prefix path:
+
+```sh
+docker build . --no-cache --tag docat:with_prefix --build-arg PREFIX_PATH_ARG="/docat"
+
+docker run --volume $DEV_DOCAT_PATH:/var/docat/ --publish 80:80 docat:with_prefix
+```
+
+### Local
+
+To run docat locally with a prefix path, you have to specify the prefix path in environment variables for both the backend and the frontend:
+
+#### Backend
+
+You can run the backend directly with the **PREFIX_PATH** argument:
+
+```sh
+DOCAT_SERVE_FILES=1 DOCAT_STORAGE_PATH="$DEV_DOCAT_PATH" PREFIX_PATH="/docat" poetry run python -m docat
+```
+
+#### Frontend
+
+For the frontend, you can just add the **REACT_APP_PREFIX_PATH** environment variable into the `.env` file:
+
+```
+REACT_APP_PREFIX_PATH=/docat
+```

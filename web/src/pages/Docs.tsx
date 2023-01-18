@@ -44,16 +44,19 @@ export default function Docs(): JSX.Element {
       page: string,
       hideControls: boolean
     ): void => {
-      const newState = `/#/${project}/${version}/${page}${
-        hideControls ? '?hide-ui=true' : ''
-      }`
+      const oldUrl = window.location.href
 
-      // skip updating the route if the new state is the same as the current one
-      if (window.location.hash === newState.substring(1)) {
-        return
+      const newUrl = ProjectRepository.getDocPageURL(
+        oldUrl,
+        project,
+        version,
+        page,
+        hideControls
+      )
+
+      if (newUrl !== oldUrl) {
+        window.history.pushState({}, '', newUrl)
       }
-
-      window.history.pushState({}, '', newState)
     },
     []
   )
