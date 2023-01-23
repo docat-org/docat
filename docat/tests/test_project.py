@@ -1,6 +1,7 @@
 import io
 from unittest.mock import patch
 
+import httpx
 from fastapi.testclient import TestClient
 
 import docat.app as docat
@@ -17,7 +18,7 @@ def test_project_api(temp_project_version):
     with patch("docat.app.DOCAT_UPLOAD_FOLDER", docs):
         response = client.get("/api/projects")
 
-        assert response.ok
+        assert response.status_code == httpx.codes.OK
         assert response.json() == {
             "projects": [
                 {
@@ -34,7 +35,7 @@ def test_project_api(temp_project_version):
 def test_project_api_without_any_projects():
     response = client.get("/api/projects")
 
-    assert response.ok
+    assert response.status_code == httpx.codes.OK
     assert response.json() == {"projects": []}
 
 
@@ -47,14 +48,14 @@ def test_project_details_api(temp_project_version):
     with patch("docat.app.DOCAT_UPLOAD_FOLDER", docs):
         response = client.get(f"/api/projects/{project}")
 
-        assert response.ok
+        assert response.status_code == httpx.codes.OK
         assert response.json() == {"name": "project", "versions": [{"name": "1.0", "tags": ["latest"], "hidden": False}]}
 
 
 def test_project_details_api_with_a_project_that_does_not_exist():
     response = client.get("/api/projects/i-do-not-exist")
 
-    assert not response.ok
+    assert not response.status_code == httpx.codes.OK
     assert response.json() == {"message": "Project i-do-not-exist does not exist"}
 
 
