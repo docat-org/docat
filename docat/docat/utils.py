@@ -4,6 +4,7 @@ docat utilities
 import hashlib
 import os
 import shutil
+from concurrent.futures import ALL_COMPLETED, ProcessPoolExecutor, wait
 from pathlib import Path
 from zipfile import ZipFile
 
@@ -175,28 +176,77 @@ def index_all_projects(
 ):
     """
     This will extract all content from all versions for each project,
-    and save it into index.json.
+    and save it into into several temporary index databases (one for each project).
+    It then combines all of these databases into one, and moves it to the final location.
     """
-    TMP_DB_PATH = upload_folder_path / "tmp-index.json"
+    temporary_db_path = upload_folder_path / "tmp-index.json"
+    is_indexing_running = temporary_db_path.exists()
 
-    # check already indexing
-    if TMP_DB_PATH.exists():
+    if is_indexing_running:
         return
+
+    temporary_db_path.touch()
 
     all_projects = get_all_projects(upload_folder_path, include_hidden=False).projects
 
-    # make index with seperate db, and swap it afterwards
     try:
-        with TinyDB(TMP_DB_PATH) as tmp_index_db:
-            for project in all_projects:
-                update_version_index_for_project(upload_folder_path, tmp_index_db, project.name)
-                update_file_index_for_project(upload_folder_path, tmp_index_db, project.name)
-        # swap index
-        TMP_DB_PATH.rename(str(index_db_path))
+        index_projects_in_parallel(upload_folder_path, all_projects)
+        combine_temporary_index_databases(upload_folder_path, temporary_db_path, all_projects)
 
+        temporary_db_path.replace(index_db_path)
     finally:
-        if TMP_DB_PATH.exists():
-            TMP_DB_PATH.unlink()
+        if temporary_db_path.exists():
+            temporary_db_path.unlink()
+
+
+def index_projects_in_parallel(upload_folder_path: Path, projects: list[Project]):
+    """
+    Starts a thread for each project so they're indexed in parallel and returns when all are done.
+    """
+    with ProcessPoolExecutor() as executor:
+        futures = [executor.submit(index_project, upload_folder_path, idx, project) for idx, project in enumerate(projects)]
+        wait(futures, return_when=ALL_COMPLETED)
+
+
+def index_project(upload_folder_path: Path, index: int, project: Project):
+    """
+    Indexes a project and saves it to the given index
+    """
+    project_db_path = upload_folder_path / f"tmp-index-{index}.json"
+
+    if project_db_path.exists():
+        project_db_path.unlink()
+
+    with TinyDB(project_db_path) as project_index_db:
+        update_version_index_for_project(upload_folder_path, project_index_db, project.name)
+        update_file_index_for_project(upload_folder_path, project_index_db, project.name)
+
+
+def combine_temporary_index_databases(upload_folder_path: Path, final_db_path: Path, projects: list[Project]):
+    """
+    Combines all temporary index databases into one
+    """
+
+    file_docs: list[dict] = []
+    project_docs: list[dict] = []
+
+    for i in range(len(projects)):
+        project_index_db_path = upload_folder_path / f"tmp-index-{i}.json"
+
+        if not project_index_db_path.exists():
+            continue
+
+        try:
+            with TinyDB(project_index_db_path) as tmp_db:
+                file_docs += [dict(file) for file in tmp_db.table("files").all()]
+                project_docs += [dict(project) for project in tmp_db.table("projects").all()]
+        finally:
+            if project_index_db_path.exists():
+                project_index_db_path.unlink()
+
+    with TinyDB(final_db_path) as final_db:
+        final_db.table("files").insert_multiple(file_docs)
+        final_db.table("projects").insert_multiple(project_docs)
 
 
 def update_file_index_for_project(upload_folder_path: Path, index_db: TinyDB, project: str):

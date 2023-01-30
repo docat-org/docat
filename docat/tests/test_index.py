@@ -5,7 +5,9 @@ from pathlib import Path
 
 # we need ANY because unittest.mock would check the instance of TinyDB
 # which is not the same as the one the app uses
-from unittest.mock import ANY, patch
+from unittest.mock import patch
+
+from tinydb import TinyDB
 
 import docat.app as docat
 from docat.utils import (
@@ -348,10 +350,10 @@ def test_index_all_projects_uses_temp_database(client_with_claimed_project):
     assert create_project_response.status_code == 201
 
     # create a spy as the tmp-index.json db should still be removed
-    with patch.object(Path, "rename", wraps=temp_db_path.rename) as mock_rename:
+    with patch.object(Path, "replace", wraps=temp_db_path.replace) as mock_replace:
         index_all_projects(docat.DOCAT_UPLOAD_FOLDER, docat.DOCAT_INDEX_PATH)
 
-        mock_rename.assert_called_once_with(str(docat.DOCAT_INDEX_PATH))
+        mock_replace.assert_called_once_with(docat.DOCAT_INDEX_PATH)
 
     assert (docat.DOCAT_UPLOAD_FOLDER / "tmp-index.json").exists() is False
     assert docat.DOCAT_INDEX_PATH.exists() is True
@@ -396,7 +398,7 @@ def test_index_all_projects_temp_database_removed(client_with_claimed_project):
     assert docat.DOCAT_INDEX_PATH.exists() is True
 
 
-def test_index_all_projects_temp_database_removed_on_exception(client_with_claimed_project):
+def test_index_all_projects_all_tmp_databases_removed_on_exception(client_with_claimed_project):
     """
     Tests whether the tmp-index.json db is removed even though an exception is raised.
     """
@@ -411,10 +413,10 @@ def test_index_all_projects_temp_database_removed_on_exception(client_with_claim
 
     exception_raised = False
 
-    with patch("docat.utils.update_version_index_for_project") as mock_update_version_index_for_project, patch.object(
-        Path, "rename", wraps=temp_db_path.rename
-    ) as mock_rename:
-        mock_update_version_index_for_project.side_effect = Exception("Some exception")
+    with patch("docat.utils.index_projects_in_parallel") as mock_index_projects_in_parallel, patch.object(
+        Path, "replace", wraps=temp_db_path.replace
+    ) as mock_replace:
+        mock_index_projects_in_parallel.side_effect = Exception("Some exception")
 
         try:
             index_all_projects(docat.DOCAT_UPLOAD_FOLDER, docat.DOCAT_INDEX_PATH)
@@ -422,11 +424,11 @@ def test_index_all_projects_temp_database_removed_on_exception(client_with_claim
             # catch the exception, as the test would fail otherwise
             exception_raised = True
 
-        mock_update_version_index_for_project.assert_called_once()
-        assert mock_rename.called is False
+        assert mock_replace.called is False
+        assert exception_raised is True
 
-    assert exception_raised is True
     assert (docat.DOCAT_UPLOAD_FOLDER / "tmp-index.json").exists() is False
+    assert (docat.DOCAT_UPLOAD_FOLDER / "tmp-index-0.json").exists() is False
     assert docat.DOCAT_INDEX_PATH.exists() is True
 
 
@@ -451,64 +453,31 @@ def test_index_all_projects_creates_version_and_tag_index(client_with_claimed_pr
         tag_project_response = client_with_claimed_project.put(f"/api/{project}/{version}/tags/{tags[i]}")
         assert tag_project_response.status_code == 201
 
-    with patch("docat.utils.insert_version_into_version_index") as mock_insert_version_into_version_index:
-        index_all_projects(docat.DOCAT_UPLOAD_FOLDER, docat.DOCAT_INDEX_PATH)
-        mock_insert_version_into_version_index.assert_any_call(ANY, project, versions[0], [tags[0]])
-        mock_insert_version_into_version_index.assert_any_call(ANY, project, versions[1], [tags[1]])
+    index_all_projects(docat.DOCAT_UPLOAD_FOLDER, docat.DOCAT_INDEX_PATH)
 
+    assert docat.DOCAT_INDEX_PATH.exists() is True
 
-def test_index_all_projects_creates_file_and_version_index(client_with_claimed_project):
-    """
-    Tests wether index_all_projects finds all projects and versions and creates the index accordingly.
-    """
-    projects = ["some-project", "another-project"]
-    versions = ["1.0.0", "2.0.0"]
+    with TinyDB(docat.DOCAT_INDEX_PATH) as index_db:
+        projects = index_db.table("projects").all()
+        files = index_db.table("files").all()
 
-    # create two projects with two versions each
-    for project in projects:
-        for version in versions:
-            create_project_response = client_with_claimed_project.post(
-                f"/api/{project}/{version}",
-                files={"file": ("index.html", io.BytesIO(b"<h1>Hello World</h1>"), "plain/text")},
-            )
-            assert create_project_response.status_code == 201
+        assert len(projects) == 1
+        assert len(files) == 2
 
-    with patch("docat.utils.insert_version_into_version_index") as mock_insert_version_into_version_index, patch(
-        "docat.utils.insert_file_index_into_db"
-    ) as mock_insert_file_index_into_db:
-        index_all_projects(docat.DOCAT_UPLOAD_FOLDER, docat.DOCAT_INDEX_PATH)
-        for project in projects:
-            for version in versions:
-                mock_insert_version_into_version_index.assert_any_call(ANY, project, version, [])
-                mock_insert_file_index_into_db.assert_any_call(ANY, project, version, "index.html", "hello world")
+        assert projects == [
+            {
+                "name": "some-project",
+                "versions": sorted(
+                    [{"name": "1.0.0", "tags": ["latest"]}, {"name": "2.0.0", "tags": ["stable"]}], key=lambda x: x["name"], reverse=True
+                ),
+            }
+        ]
 
-
-def test_index_all_projects_creates_file_and_version_index_api(client_with_claimed_project):
-    """
-    Tests via the API wether index_all_projects finds all projects and versions and creates the index accordingly.
-    """
-    projects = ["some-project", "another-project"]
-    versions = ["1.0.0", "2.0.0"]
-
-    # create two projects with two versions each
-    for project in projects:
-        for version in versions:
-            create_project_response = client_with_claimed_project.post(
-                f"/api/{project}/{version}",
-                files={"file": ("index.html", io.BytesIO(b"<h1>Hello World</h1>"), "plain/text")},
-            )
-            assert create_project_response.status_code == 201
-
-    with patch("docat.utils.insert_version_into_version_index") as mock_insert_version_into_version_index, patch(
-        "docat.utils.insert_file_index_into_db"
-    ) as mock_insert_file_index_into_db:
-        index_all_projects_response = client_with_claimed_project.post("/api/index/update")
-        assert index_all_projects_response.status_code == 200
-
-        for project in projects:
-            for version in versions:
-                mock_insert_version_into_version_index.assert_any_call(ANY, project, version, [])
-                mock_insert_file_index_into_db.assert_any_call(ANY, project, version, "index.html", "hello world")
+        assert files == sorted(
+            [{"path": "index.html", "content": "hello world", "project": "some-project", "version": version} for version in versions],
+            key=lambda x: x["version"],
+            reverse=True,
+        )
 
 
 def test_hide_show_removes_file_index_and_adds_again_only_version(client_with_claimed_project, index_db_files_table):
