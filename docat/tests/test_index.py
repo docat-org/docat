@@ -350,10 +350,10 @@ def test_index_all_projects_uses_temp_database(client_with_claimed_project):
     assert create_project_response.status_code == 201
 
     # create a spy as the tmp-index.json db should still be removed
-    with patch.object(Path, "replace", wraps=temp_db_path.replace) as mock_replace:
+    with patch.object(Path, "rename", wraps=temp_db_path.rename) as mock_rename:
         index_all_projects(docat.DOCAT_UPLOAD_FOLDER, docat.DOCAT_INDEX_PATH)
 
-        mock_replace.assert_called_once_with(docat.DOCAT_INDEX_PATH)
+        mock_rename.assert_called_once_with(docat.DOCAT_INDEX_PATH)
 
     assert (docat.DOCAT_UPLOAD_FOLDER / "tmp-index.json").exists() is False
     assert docat.DOCAT_INDEX_PATH.exists() is True
@@ -414,8 +414,8 @@ def test_index_all_projects_all_tmp_databases_removed_on_exception(client_with_c
     exception_raised = False
 
     with patch("docat.utils.index_projects_in_parallel") as mock_index_projects_in_parallel, patch.object(
-        Path, "replace", wraps=temp_db_path.replace
-    ) as mock_replace:
+        Path, "rename", wraps=temp_db_path.rename
+    ) as mock_rename:
         mock_index_projects_in_parallel.side_effect = Exception("Some exception")
 
         try:
@@ -424,7 +424,7 @@ def test_index_all_projects_all_tmp_databases_removed_on_exception(client_with_c
             # catch the exception, as the test would fail otherwise
             exception_raised = True
 
-        assert mock_replace.called is False
+        assert mock_rename.called is False
         assert exception_raised is True
 
     assert (docat.DOCAT_UPLOAD_FOLDER / "tmp-index.json").exists() is False

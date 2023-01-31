@@ -4,6 +4,7 @@ docat utilities
 import hashlib
 import os
 import shutil
+import sys
 from concurrent.futures import ALL_COMPLETED, ProcessPoolExecutor, wait
 from pathlib import Path
 from zipfile import ZipFile
@@ -193,7 +194,14 @@ def index_all_projects(
         index_projects_in_parallel(upload_folder_path, all_projects)
         combine_temporary_index_databases(upload_folder_path, temporary_db_path, all_projects)
 
-        temporary_db_path.replace(index_db_path)
+        if index_db_path.exists():
+            index_db_path.unlink()
+
+        res = temporary_db_path.rename(index_db_path)
+        print(f"Indexing done : {res}")
+
+        with open(upload_folder_path / "output.txt", "x") as f:
+            f.write(str(res))
     finally:
         if temporary_db_path.exists():
             temporary_db_path.unlink()
@@ -230,6 +238,14 @@ def combine_temporary_index_databases(upload_folder_path: Path, final_db_path: P
     file_docs: list[dict] = []
     project_docs: list[dict] = []
 
+    def save():
+        with TinyDB(final_db_path) as final_db:
+            final_db.table("files").insert_multiple(file_docs)
+            final_db.table("projects").insert_multiple(project_docs)
+
+        file_docs.clear()
+        project_docs.clear()
+
     for i in range(len(projects)):
         project_index_db_path = upload_folder_path / f"tmp-index-{i}.json"
 
@@ -244,9 +260,13 @@ def combine_temporary_index_databases(upload_folder_path: Path, final_db_path: P
             if project_index_db_path.exists():
                 project_index_db_path.unlink()
 
-    with TinyDB(final_db_path) as final_db:
-        final_db.table("files").insert_multiple(file_docs)
-        final_db.table("projects").insert_multiple(project_docs)
+        # save if memory usage is above 200MB to avoid the process getting killed
+        LIMIT = 200 * 1024 * 1024
+        used_memory = sys.getsizeof(file_docs) + sys.getsizeof(project_docs)
+        if used_memory > LIMIT:
+            save()
+
+    save()
 
 
 def update_file_index_for_project(upload_folder_path: Path, index_db: TinyDB, project: str):
