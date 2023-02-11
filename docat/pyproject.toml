@@ -12,7 +12,7 @@ fastapi = {version = "^0.90.1", extras = ["all"]}
 python-multipart = "^0.0.5"
 uvicorn = "^0.20.0"
 python-magic = "^0.4.27"
-beautifulsoup4 = "^4.11.1"
+beautifulsoup4 = "^4.11.2"
 types-beautifulsoup4 = "^4.11.6"
 
 [tool.poetry.dev-dependencies]
