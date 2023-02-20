@@ -335,36 +335,12 @@ def test_index_project_non_html(client_with_claimed_project):
         )
 
 
-def test_index_all_projects_uses_temp_database(client_with_claimed_project):
-    """
-    Tests whether index_all_projects uses the tmp-index.json db and swaps it afterwards.
-    (The contents are checked in other tests.)
-    """
-    temp_db_path = docat.DOCAT_UPLOAD_FOLDER / "tmp-index.json"
-    assert temp_db_path.exists() is False
-
-    create_project_response = client_with_claimed_project.post(
-        "/api/some-project/1.0.0",
-        files={"file": ("index.html", io.BytesIO(b"<h1>Hello World</h1>"), "plain/text")},
-    )
-    assert create_project_response.status_code == 201
-
-    # create a spy as the tmp-index.json db should still be removed
-    with patch.object(Path, "rename", wraps=temp_db_path.rename) as mock_rename:
-        index_all_projects(docat.DOCAT_UPLOAD_FOLDER, docat.DOCAT_INDEX_PATH)
-
-        mock_rename.assert_called_once_with(docat.DOCAT_INDEX_PATH)
-
-    assert (docat.DOCAT_UPLOAD_FOLDER / "tmp-index.json").exists() is False
-    assert docat.DOCAT_INDEX_PATH.exists() is True
-
-
 def test_index_all_projects_returns_if_temp_index_already_exists(client_with_claimed_project):
     """
-    Tests whether index_all_projects returns if the tmp-index.json db already exists.
+    Tests whether index_all_projects returns if the tmp-index-0.json db already exists.
     """
     docat.DOCAT_UPLOAD_FOLDER.mkdir(parents=True, exist_ok=True)
-    temp_db_path = docat.DOCAT_UPLOAD_FOLDER / "tmp-index.json"
+    temp_db_path = docat.DOCAT_UPLOAD_FOLDER / "tmp-index-0.json"
 
     assert temp_db_path.exists() is False
     temp_db_path.touch()
@@ -381,9 +357,9 @@ def test_index_all_projects_returns_if_temp_index_already_exists(client_with_cla
 
 def test_index_all_projects_temp_database_removed(client_with_claimed_project):
     """
-    Tests whether index_all_projects removes the tmp-index.json db after it is done.
+    Tests whether index_all_projects removes the tmp-index-0.json db after it is done.
     """
-    temp_db_path = docat.DOCAT_UPLOAD_FOLDER / "tmp-index.json"
+    temp_db_path = docat.DOCAT_UPLOAD_FOLDER / "tmp-index-0.json"
     assert temp_db_path.exists() is False
 
     create_project_response = client_with_claimed_project.post(
@@ -394,15 +370,15 @@ def test_index_all_projects_temp_database_removed(client_with_claimed_project):
 
     index_all_projects(docat.DOCAT_UPLOAD_FOLDER, docat.DOCAT_INDEX_PATH)
 
-    assert (docat.DOCAT_UPLOAD_FOLDER / "tmp-index.json").exists() is False
+    assert (docat.DOCAT_UPLOAD_FOLDER / "tmp-index-0.json").exists() is False
     assert docat.DOCAT_INDEX_PATH.exists() is True
 
 
 def test_index_all_projects_all_tmp_databases_removed_on_exception(client_with_claimed_project):
     """
-    Tests whether the tmp-index.json db is removed even though an exception is raised.
+    Tests whether the tmp-index-0.json db is removed even though an exception is raised.
     """
-    temp_db_path = docat.DOCAT_UPLOAD_FOLDER / "tmp-index.json"
+    temp_db_path = docat.DOCAT_UPLOAD_FOLDER / "tmp-index-0.json"
     assert temp_db_path.exists() is False
 
     create_project_response = client_with_claimed_project.post(
@@ -427,7 +403,6 @@ def test_index_all_projects_all_tmp_databases_removed_on_exception(client_with_c
         assert mock_rename.called is False
         assert exception_raised is True
 
-    assert (docat.DOCAT_UPLOAD_FOLDER / "tmp-index.json").exists() is False
     assert (docat.DOCAT_UPLOAD_FOLDER / "tmp-index-0.json").exists() is False
     assert docat.DOCAT_INDEX_PATH.exists() is True
 

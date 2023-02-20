@@ -180,31 +180,22 @@ def index_all_projects(
     and save it into into several temporary index databases (one for each project).
     It then combines all of these databases into one, and moves it to the final location.
     """
-    temporary_db_path = upload_folder_path / "tmp-index.json"
-    is_indexing_running = temporary_db_path.exists()
+    indexing_lock_db_file = upload_folder_path / "tmp-index-0.json"
+    is_indexing_running = indexing_lock_db_file.exists()
 
     if is_indexing_running:
         return
 
-    temporary_db_path.touch()
+    indexing_lock_db_file.touch()
 
     all_projects = get_all_projects(upload_folder_path, include_hidden=False).projects
 
     try:
         index_projects_in_parallel(upload_folder_path, all_projects)
-        combine_temporary_index_databases(upload_folder_path, temporary_db_path, all_projects)
-
-        if index_db_path.exists():
-            index_db_path.unlink()
-
-        res = temporary_db_path.rename(index_db_path)
-        print(f"Indexing done : {res}")
-
-        with open(upload_folder_path / "output.txt", "x") as f:
-            f.write(str(res))
+        combine_temporary_index_databases(upload_folder_path, index_db_path, all_projects)
     finally:
-        if temporary_db_path.exists():
-            temporary_db_path.unlink()
+        if indexing_lock_db_file.exists():
+            indexing_lock_db_file.unlink()
 
 
 def index_projects_in_parallel(upload_folder_path: Path, projects: list[Project]):
@@ -234,6 +225,9 @@ def combine_temporary_index_databases(upload_folder_path: Path, final_db_path: P
     """
     Combines all temporary index databases into one
     """
+
+    if final_db_path.exists():
+        final_db_path.unlink()
 
     file_docs: list[dict] = []
     project_docs: list[dict] = []
