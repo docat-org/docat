@@ -110,7 +110,6 @@ def test_hide_fails_version_does_not_exist(client_with_claimed_project):
     Tests that hiding a version fails when the version does not exist
     """
     with patch("docat.app.open") as open_file_mock:
-
         # create a version
         create_response = client_with_claimed_project.post(
             "/api/some-project/1.0.0", files={"file": ("index.html", io.BytesIO(b"<h1>Hello World</h1>"), "plain/text")}

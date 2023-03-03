@@ -87,7 +87,6 @@ def test_rename_rejects_forbidden_project_name(client_with_claimed_project):
 
     with patch("os.rename") as rename_mock:
         for project_name in ["upload", "claim", "delete", "Search ", "help"]:
-
             rename_response = client_with_claimed_project.put(f"/api/some-project/rename/{project_name}", headers={"Docat-Api-Key": "1234"})
             assert rename_response.status_code == 400
             assert rename_response.json() == {
