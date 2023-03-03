@@ -1,5 +1,4 @@
 def test_successfully_claim_token(client):
-
     response = client.get("/api/some-project/claim")
     response_data = response.json()
     assert response.status_code == 201
@@ -8,7 +7,6 @@ def test_successfully_claim_token(client):
 
 
 def test_already_claimed(client):
-
     client.get("/api/some-project/claim")
     response = client.get("/api/some-project/claim")
     response_data = response.json()

@@ -57,7 +57,7 @@ app = FastAPI(
     redoc_url="/api/redoc",
 )
 
-DOCAT_STORAGE_PATH = Path(os.getenv("DOCAT_STORAGE_PATH") or Path("/var/docat"))
+DOCAT_STORAGE_PATH = Path(os.getenv("DOCAT_STORAGE_PATH", Path("/var/docat")))
 DOCAT_DB_PATH = DOCAT_STORAGE_PATH / DB_PATH
 DOCAT_INDEX_PATH = DOCAT_STORAGE_PATH / INDEX_PATH
 DOCAT_UPLOAD_FOLDER = DOCAT_STORAGE_PATH / UPLOAD_FOLDER
@@ -150,7 +150,7 @@ def search(query: str, index_db: TinyDB = Depends(get_index_db)):
     found_projects = sorted(found_projects, key=lambda x: x.name.count(query), reverse=True)
 
     # Collect all versions and tags that contain the query
-    for (project, version) in all_versions:
+    for project, version in all_versions:
         version_name = version.get("name")
         version_tags = version.get("tags")
 
@@ -327,6 +327,10 @@ def upload(
     if is_forbidden_project_name(project):
         response.status_code = status.HTTP_400_BAD_REQUEST
         return ApiResponse(message=f'Project name "{project}" is forbidden, as it conflicts with pages in docat web.')
+
+    if file.filename is None:
+        response.status_code = status.HTTP_400_BAD_REQUEST
+        return ApiResponse(message="Uploaded file is None aborting upload.")
 
     project_base_path = DOCAT_UPLOAD_FOLDER / project
     base_path = project_base_path / version

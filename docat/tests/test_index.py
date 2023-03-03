@@ -447,7 +447,7 @@ def test_index_all_projects_creates_version_and_tag_index(client_with_claimed_pr
         assert create_project_response.status_code == 201
 
     # tag the versions
-    for (i, version) in enumerate(versions):
+    for i, version in enumerate(versions):
         tag_project_response = client_with_claimed_project.put(f"/api/{project}/{version}/tags/{tags[i]}")
         assert tag_project_response.status_code == 201
 
