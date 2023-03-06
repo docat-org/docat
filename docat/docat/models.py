@@ -36,24 +36,3 @@ class Projects(BaseModel):
 class ProjectDetail(BaseModel):
     name: str
     versions: list[ProjectVersion]
-
-
-class SearchResultProject(BaseModel):
-    name: str
-
-
-class SearchResultVersion(BaseModel):
-    project: str
-    version: str
-
-
-class SearchResultFile(BaseModel):
-    project: str
-    version: str
-    path: str
-
-
-class SearchResponse(BaseModel):
-    projects: list[SearchResultProject]
-    versions: list[SearchResultVersion]
-    files: list[SearchResultFile]

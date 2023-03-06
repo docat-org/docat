@@ -11,7 +11,7 @@ The simplest way is to build and run the docker container,
 you can optionally use volumes to persist state:
 
 ```sh
-# run container in background and persist data (docs, nginx configs and tokens database as well as the content index)
+# run container in background and persist data (docs, nginx configs and tokens database)
 # use 'ghcr.io/docat-org/docat:unstable' to get the latest changes
 mkdir -p docat-run/
 docker run \
@@ -107,29 +107,3 @@ Supported config options:
 ### Hide Controls
 
 If you would like to send link to a specific version of the documentation without the option to change the version, you can do so by clicking on the `Hide Controls` button. This will hide the control buttons and change the link, which can then be copied as usual.
-
-### Indexing
-
-Docat uses indexing for better search performance. The index is automatically updated when you upload, modify or delete a project. However, this means that if you already have existing projects, these need to be initially indexed. There are two ways to do this:
-
-#### Using an Environment Variable:
-
-When the **DOCAT_INDEX_FILES** is set, docat forces creation of the index on startup. See [local development](#local-development) for examples.
-
-> Note: This will increase startup time substantially, depending on how many projects you have.
-
-#### Using the API:
-
-You can force the index re-creation using the following request:
-
-```sh
-curl -X POST http://localhost:8000/api/index/update
-```
-
-Using `docatl`:
-
-```sh
-docatl update-index --host http://localhost:8000
-```
-
-Don't worry if it takes some time :)

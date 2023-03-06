@@ -13,13 +13,12 @@ Install the dependencies and run the application:
 # install dependencies
 poetry install
 # run the app
-[DOCAT_SERVE_FILES=1] [DOCAT_INDEX_FILES=1] [FLASK_DEBUG=1] [PORT=8888] poetry run python -m docat
+[DOCAT_SERVE_FILES=1] [FLASK_DEBUG=1] [PORT=8888] poetry run python -m docat
 ```
 
 ### Config Options
 
 * **DOCAT_SERVE_FILES**: Serve static documentation instead of a nginx (for testing)
-* **DOCAT_INDEX_FILES**: Index files on start for searching
 * **DOCAT_STORAGE_PATH**: Upload directory for static files (needs to match nginx config)
 * **FLASK_DEBUG**: Start flask in debug mode
 

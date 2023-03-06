@@ -18,7 +18,6 @@ def setup_docat_paths():
     temp_dir = tempfile.TemporaryDirectory()
     docat.DOCAT_STORAGE_PATH = Path(temp_dir.name)
     docat.DOCAT_DB_PATH = Path(temp_dir.name) / "db.json"
-    docat.DOCAT_INDEX_PATH = Path(temp_dir.name) / "index.json"
     docat.DOCAT_UPLOAD_FOLDER = Path(temp_dir.name) / "doc"
 
     yield
@@ -29,12 +28,10 @@ def setup_docat_paths():
 @pytest.fixture
 def client():
     docat.db = TinyDB(docat.DOCAT_DB_PATH)
-    docat.index_db = TinyDB(docat.DOCAT_INDEX_PATH)
 
     yield TestClient(docat.app)
 
     docat.app.db = None
-    docat.app.index_db = None
 
 
 @pytest.fixture
@@ -57,23 +54,3 @@ def temp_project_version():
         return docat.DOCAT_UPLOAD_FOLDER
 
     yield __create
-
-
-@pytest.fixture
-def index_db_project_table():
-    index_db = TinyDB(docat.DOCAT_INDEX_PATH)
-    projects_table = index_db.table("projects")
-
-    yield projects_table
-
-    index_db.close()
-
-
-@pytest.fixture
-def index_db_files_table():
-    index_db = TinyDB(docat.DOCAT_INDEX_PATH)
-    projects_table = index_db.table("files")
-
-    yield projects_table
-
-    index_db.close()
