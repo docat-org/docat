@@ -17,6 +17,9 @@
   border-radius: 7px;
   font-size: 120%;
   background-color: #e8e8e8;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow-x: hidden;
 }
 
 .highlighted {
