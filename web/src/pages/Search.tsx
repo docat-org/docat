@@ -1,26 +1,24 @@
 import { TextField } from '@mui/material'
 import React, { useEffect, useMemo, useState } from 'react'
+import { debounce } from 'lodash'
 import { useSearchParams } from 'react-router-dom'
 import PageLayout from '../components/PageLayout'
-import { ApiSearchResponse } from '../models/SearchResult'
-import ProjectRepository from '../repositories/ProjectRepository'
-import { debounce } from 'lodash'
-
+import { useProjects } from '../data-providers/ProjectDataProvider'
 import SearchResults from '../components/SearchResults'
-import { useMessageBanner } from '../data-providers/MessageBannerProvider'
+import { SearchResult } from '../models/SearchResult'
+import ProjectRepository from '../repositories/ProjectRepository'
 
-const NO_RESULTS: ApiSearchResponse = {
+const NO_RESULTS: SearchResult = {
   projects: [],
-  versions: [],
-  files: []
+  versions: []
 }
 const debounceMs = 600
 
 export default function Search(): JSX.Element {
   const queryParam = useSearchParams()[0].get('query') ?? ''
 
-  const { showMessage } = useMessageBanner()
-  const [results, setResults] = useState<ApiSearchResponse | null>(null)
+  const { projects, loadingFailed } = useProjects()
+  const [results, setResults] = useState<SearchResult | null>(null)
   const [searchQuery, setSearchQuery] = useState<string>(queryParam)
   // used to prevent the search from being triggered immediately when the query is changed
   const [displayedSearchQuery, setDisplayedSearchQuery] =
@@ -31,38 +29,32 @@ export default function Search(): JSX.Element {
   const searchDebounced = useMemo(
     () =>
       debounce((): void => {
-        if (searchQuery.trim().length === 0) {
+        if (loadingFailed || searchQuery.trim().length === 0) {
           setResults(NO_RESULTS)
           return
         }
 
-        void (async () => {
-          try {
-            const results = await ProjectRepository.search(searchQuery)
-            setResults(results)
-          } catch (e) {
-            console.error(e)
-            setResults(NO_RESULTS)
-            showMessage({
-              text: (e as { message: string }).message,
-              type: 'error'
-            })
-          }
-        })()
+        if (projects == null) {
+          // projects are not loaded yet, set timeout to try again
+          setResults(null)
+          return
+        }
+
+        setResults(ProjectRepository.search(projects, searchQuery))
       }, debounceMs),
-    [searchQuery]
+    [searchQuery, projects, loadingFailed]
   )
 
   useEffect(() => {
     searchDebounced.cancel()
     window.history.pushState({}, '', `/#/search?query=${searchQuery}`)
     searchDebounced()
-  }, [searchQuery])
+  }, [searchQuery, projects, loadingFailed])
 
   return (
     <PageLayout
       title="Search"
-      description="Search for a project, version, tag, document or html content"
+      description="Search for a project, version or tag."
       showSearchBar={false}
     >
       <TextField

@@ -19,33 +19,17 @@ from fastapi.staticfiles import StaticFiles
 from starlette.responses import JSONResponse
 from tinydb import Query, TinyDB
 
-from docat.models import (
-    ApiResponse,
-    ClaimResponse,
-    ProjectDetail,
-    Projects,
-    SearchResponse,
-    SearchResultFile,
-    SearchResultProject,
-    SearchResultVersion,
-    TokenStatus,
-)
+from docat.models import ApiResponse, ClaimResponse, ProjectDetail, Projects, TokenStatus
 from docat.utils import (
     DB_PATH,
-    INDEX_PATH,
     UPLOAD_FOLDER,
     calculate_token,
     create_symlink,
     extract_archive,
     get_all_projects,
     get_project_details,
-    index_all_projects,
     is_forbidden_project_name,
     remove_docs,
-    remove_file_index_from_db,
-    remove_version_from_version_index,
-    update_file_index_for_project_version,
-    update_version_index_for_project,
 )
 
 #: Holds the FastAPI application
@@ -59,7 +43,6 @@ app = FastAPI(
 
 DOCAT_STORAGE_PATH = Path(os.getenv("DOCAT_STORAGE_PATH", Path("/var/docat")))
 DOCAT_DB_PATH = DOCAT_STORAGE_PATH / DB_PATH
-DOCAT_INDEX_PATH = DOCAT_STORAGE_PATH / INDEX_PATH
 DOCAT_UPLOAD_FOLDER = DOCAT_STORAGE_PATH / UPLOAD_FOLDER
 
 
@@ -72,19 +55,6 @@ def startup_create_folders():
 def get_db() -> TinyDB:
     """Return the cached TinyDB instance."""
     return TinyDB(DOCAT_DB_PATH)
-
-
-def get_index_db() -> TinyDB:
-    """Return the cached TinyDB instance."""
-    return TinyDB(DOCAT_INDEX_PATH)
-
-
-@app.post("/api/index/update", response_model=ApiResponse, status_code=status.HTTP_200_OK)
-@app.post("/api/index/update/", response_model=ApiResponse, status_code=status.HTTP_200_OK)
-def update_index():
-    index_all_projects(DOCAT_UPLOAD_FOLDER, DOCAT_INDEX_PATH)
-
-    return ApiResponse(message="Successfully updated search index")
 
 
 @app.get("/api/projects", response_model=Projects, status_code=status.HTTP_200_OK)
@@ -113,84 +83,6 @@ def get_project(project, include_hidden: bool = False):
         return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content={"message": f"Project {project} does not exist"})
 
     return details
-
-
-@app.get("/api/search", response_model=SearchResponse, status_code=status.HTTP_200_OK)
-@app.get("/api/search/", response_model=SearchResponse, status_code=status.HTTP_200_OK)
-def search(query: str, index_db: TinyDB = Depends(get_index_db)):
-    query = query.lower().strip()
-
-    # an empty string would match almost everything
-    if not query:
-        return SearchResponse(projects=[], versions=[], files=[])
-
-    found_projects: list[SearchResultProject] = []
-    found_versions: list[SearchResultVersion] = []
-    found_files: list[SearchResultFile] = []
-
-    project_table = index_db.table("projects")
-    projects = project_table.all()
-    all_versions: list[tuple] = []
-
-    # Collect all projects that contain the query
-    for project in projects:
-        name = project.get("name")
-        versions = project.get("versions")
-
-        if not name or not versions:
-            continue
-
-        all_versions += ((name, version) for version in versions)
-
-        if query in name.lower():
-            project_res = SearchResultProject(name=name)
-            found_projects.append(project_res)
-
-    # Order by occurences of the query
-    found_projects = sorted(found_projects, key=lambda x: x.name.count(query), reverse=True)
-
-    # Collect all versions and tags that contain the query
-    for project, version in all_versions:
-        version_name = version.get("name")
-        version_tags = version.get("tags")
-
-        if query in version_name.lower():
-            version_res = SearchResultVersion(project=project, version=version_name)
-            found_versions.append(version_res)
-
-        for tag in version_tags:
-            if query in tag:
-                tag_res = SearchResultVersion(version=tag, project=project)
-                found_versions.append(tag_res)
-
-    # Order by occurences of the query
-    found_versions = sorted(found_versions, key=lambda x: x.version.count(query), reverse=True)
-
-    # Collect all files whose name contains the query or whose content contains the query
-    files_table = index_db.table("files")
-    files = files_table.all()
-
-    for file in files:
-        file_content = file.get("content")
-        file_path_str = file.get("path")
-        file_project = file.get("project")
-        file_project_version = file.get("version")
-
-        if file_content is None or not file_path_str or not file_project or not file_project_version:
-            continue
-
-        file_path = Path(file_path_str)
-
-        if query in file_path.name.lower():
-            file_res = SearchResultFile(project=file_project, version=file_project_version, path=file_path_str)
-            found_files.append(file_res)
-            continue  # Skip content search if the file name already matches
-
-        if file_path.suffix == ".html" and query in file_content.lower():
-            file_res = SearchResultFile(project=file_project, version=file_project_version, path=file_path_str)
-            found_files.append(file_res)
-
-    return SearchResponse(projects=found_projects, versions=found_versions, files=found_files)
 
 
 @app.post("/api/{project}/icon", response_model=ApiResponse, status_code=status.HTTP_200_OK)
@@ -242,7 +134,6 @@ def hide_version(
     response: Response,
     docat_api_key: Optional[str] = Header(None),
     db: TinyDB = Depends(get_db),
-    index_db: TinyDB = Depends(get_index_db),
 ):
     project_base_path = DOCAT_UPLOAD_FOLDER / project
     version_path = project_base_path / version
@@ -268,9 +159,6 @@ def hide_version(
     with open(hidden_file, "w") as f:
         f.close()
 
-    update_version_index_for_project(DOCAT_UPLOAD_FOLDER, index_db, project)
-    remove_file_index_from_db(index_db, project, version)
-
     return ApiResponse(message=f"Version {version} is now hidden")
 
 
@@ -282,7 +170,6 @@ def show_version(
     response: Response,
     docat_api_key: Optional[str] = Header(None),
     db: TinyDB = Depends(get_db),
-    index_db: TinyDB = Depends(get_index_db),
 ):
     project_base_path = DOCAT_UPLOAD_FOLDER / project
     version_path = project_base_path / version
@@ -307,9 +194,6 @@ def show_version(
 
     os.remove(hidden_file)
 
-    update_version_index_for_project(DOCAT_UPLOAD_FOLDER, index_db, project)
-    update_file_index_for_project_version(DOCAT_UPLOAD_FOLDER, index_db, project, version)
-
     return ApiResponse(message=f"Version {version} is now shown")
 
 
@@ -322,7 +206,6 @@ def upload(
     file: UploadFile = File(...),
     docat_api_key: Optional[str] = Header(None),
     db: TinyDB = Depends(get_db),
-    index_db: TinyDB = Depends(get_index_db),
 ):
     if is_forbidden_project_name(project):
         response.status_code = status.HTTP_400_BAD_REQUEST
@@ -359,15 +242,12 @@ def upload(
 
     extract_archive(target_file, base_path)
 
-    update_version_index_for_project(DOCAT_UPLOAD_FOLDER, index_db, project)
-    update_file_index_for_project_version(DOCAT_UPLOAD_FOLDER, index_db, project, version)
-
     return ApiResponse(message="File successfully uploaded")
 
 
 @app.put("/api/{project}/{version}/tags/{new_tag}", response_model=ApiResponse, status_code=status.HTTP_201_CREATED)
 @app.put("/api/{project}/{version}/tags/{new_tag}/", response_model=ApiResponse, status_code=status.HTTP_201_CREATED)
-def tag(project: str, version: str, new_tag: str, response: Response, index_db: TinyDB = Depends(get_index_db)):
+def tag(project: str, version: str, new_tag: str, response: Response):
     destination = DOCAT_UPLOAD_FOLDER / project / new_tag
     source = DOCAT_UPLOAD_FOLDER / project / version
 
@@ -378,8 +258,6 @@ def tag(project: str, version: str, new_tag: str, response: Response, index_db: 
     if not create_symlink(version, destination):
         response.status_code = status.HTTP_409_CONFLICT
         return ApiResponse(message=f"Tag {new_tag} would overwrite an existing version!")
-
-    update_version_index_for_project(DOCAT_UPLOAD_FOLDER, index_db, project)
 
     return ApiResponse(message=f"Tag {new_tag} -> {version} successfully created")
 
@@ -419,7 +297,6 @@ def rename(
     response: Response,
     docat_api_key: str = Header(None),
     db: TinyDB = Depends(get_db),
-    index_db: TinyDB = Depends(get_index_db),
 ):
     if is_forbidden_project_name(new_project_name):
         response.status_code = status.HTTP_400_BAD_REQUEST
@@ -446,16 +323,6 @@ def rename(
     claims_table = db.table("claims")
     claims_table.update({"name": new_project_name}, Project.name == project)
 
-    # update the version index to the new project name
-    Project = Query()
-    project_table = index_db.table("projects")
-    project_table.update({"name": new_project_name}, Project.name == project)
-
-    # update the file index to the new project name
-    File = Query()
-    file_table = index_db.table("files")
-    file_table.update({"project": new_project_name}, File.project == project)
-
     os.rename(project_base_path, new_project_base_path)
 
     response.status_code = status.HTTP_200_OK
@@ -470,21 +337,18 @@ def delete(
     response: Response,
     docat_api_key: str = Header(None),
     db: TinyDB = Depends(get_db),
-    index_db: TinyDB = Depends(get_index_db),
 ):
     token_status = check_token_for_project(db, docat_api_key, project)
-    if token_status.valid:
-        message = remove_docs(project, version, DOCAT_UPLOAD_FOLDER)
-        if message:
-            response.status_code = status.HTTP_404_NOT_FOUND
-            return ApiResponse(message=message)
-
-        remove_version_from_version_index(index_db, project, version)
-        remove_file_index_from_db(index_db, project, version)
-        return ApiResponse(message=f"Successfully deleted version '{version}'")
-    else:
+    if not token_status.valid:
         response.status_code = status.HTTP_401_UNAUTHORIZED
         return ApiResponse(message=token_status.reason)
+
+    message = remove_docs(project, version, DOCAT_UPLOAD_FOLDER)
+    if message:
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return ApiResponse(message=message)
+
+    return ApiResponse(message=f"Successfully deleted version '{version}'")
 
 
 def check_token_for_project(db, token, project) -> TokenStatus:
@@ -506,7 +370,3 @@ def check_token_for_project(db, token, project) -> TokenStatus:
 if os.environ.get("DOCAT_SERVE_FILES"):
     DOCAT_UPLOAD_FOLDER.mkdir(parents=True, exist_ok=True)
     app.mount("/doc", StaticFiles(directory=DOCAT_UPLOAD_FOLDER, html=True), name="docs")
-
-# index local files on start
-if os.environ.get("DOCAT_INDEX_FILES"):
-    index_all_projects(DOCAT_UPLOAD_FOLDER, DOCAT_INDEX_PATH)

@@ -1,13 +1,13 @@
 import { debounce, uniqueId } from 'lodash'
 import React, { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ApiSearchResponse } from '../models/SearchResult'
+import { SearchResult } from '../models/SearchResult'
 
 import styles from '../style/components/SearchResults.module.css'
 
 interface Props {
   searchQuery: string
-  results: ApiSearchResponse
+  results: SearchResult
 }
 
 export default function SearchResults(props: Props): JSX.Element {
@@ -49,18 +49,7 @@ export default function SearchResults(props: Props): JSX.Element {
           ></Link>
         ))
 
-        const files = props.results.files.map((f) => (
-          <Link
-            className={styles['search-result']}
-            key={`file-${f.project}-${f.version}-${f.path}`}
-            to={`/${f.project}/${f.version}/${f.path}`}
-            dangerouslySetInnerHTML={{
-              __html: highlighedText(`${f.project} v. ${f.version} - ${f.path}`)
-            }}
-          ></Link>
-        ))
-
-        setResultElements([...projects, ...versions, ...files])
+        setResultElements([...projects, ...versions])
       }, 1000),
     [props.results]
   )
@@ -99,8 +88,7 @@ export default function SearchResults(props: Props): JSX.Element {
   if (resultElements.length === 0) {
     if (
       props.results.projects.length > 0 ||
-      props.results.versions.length > 0 ||
-      props.results.files.length > 0
+      props.results.versions.length > 0
     ) {
       return <div className="loading-spinner" />
     }

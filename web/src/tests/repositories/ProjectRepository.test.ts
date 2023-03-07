@@ -54,6 +54,156 @@ describe('get versions', () => {
 }
 )
 
+describe('search', () => {
+  test('should find projects', () => {
+    const projects: Project[] = [
+      {
+        name: 'test-project',
+        logo: false,
+        versions: [
+          {
+            name: '1.0.0',
+            tags: ['tag'],
+            hidden: false
+          }
+        ]
+      }
+    ]
+
+    const result = ProjectRepository.search(projects, 'test')
+
+    expect(result.projects).toEqual([{ name: 'test-project' }])
+    expect(result.versions).toEqual([])
+  })
+
+  test('should find projects full match', () => {
+    const projects: Project[] = [
+      {
+        name: 'test-project',
+        logo: false,
+        versions: [
+          {
+            name: '1.0.0',
+            tags: ['tag'],
+            hidden: false
+          }
+        ]
+      }
+    ]
+
+    const result = ProjectRepository.search(projects, ' test-Project ')
+
+    expect(result.projects).toEqual([{ name: 'test-project' }])
+    expect(result.versions).toEqual([])
+  })
+
+  test('should ignore projects with all versions hidden', () => {
+    const projects: Project[] = [
+      {
+        name: 'test-project',
+        logo: false,
+        versions: [
+          {
+            name: '1.0.0',
+            tags: ['tag'],
+            hidden: true
+          }
+        ]
+      }
+    ]
+
+    const result = ProjectRepository.search(projects, 'test')
+
+    expect(result.projects).toEqual([])
+    expect(result.versions).toEqual([])
+  })
+
+  test('should find versions', () => {
+    const projects: Project[] = [
+      {
+        name: 'test-project',
+        logo: false,
+        versions: [
+          {
+            name: '1.0.0',
+            tags: ['tag'],
+            hidden: false
+          }
+        ]
+      }
+    ]
+
+    const result = ProjectRepository.search(projects, '1.0')
+
+    expect(result.projects).toEqual([])
+    expect(result.versions).toEqual([{ version: '1.0.0', project: 'test-project' }])
+  })
+
+  test('should ignore hidden versions', () => {
+    const projects: Project[] = [
+      {
+        name: 'test-project',
+        logo: false,
+        versions: [
+          {
+            name: '1.0.0',
+            tags: ['tag'],
+            hidden: true
+          }
+        ]
+      }
+    ]
+
+    const result = ProjectRepository.search(projects, '1.0')
+
+    expect(result.projects).toEqual([])
+    expect(result.versions).toEqual([])
+  })
+
+  test('should find tags', () => {
+    const projects: Project[] = [
+      {
+        name: 'test-project',
+        logo: false,
+        versions: [
+          {
+            name: '1.0.0',
+            tags: ['first', 'second'],
+            hidden: false
+          }
+        ]
+      }
+    ]
+
+    const result = ProjectRepository.search(projects, 'fir')
+
+    expect(result.projects).toEqual([])
+    expect(result.versions).toEqual([{ version: 'first', project: 'test-project' }])
+  })
+
+  test('should ignore hidden tags', () => {
+    const projects: Project[] = [
+      {
+        name: 'test-project',
+        logo: false,
+        versions: [
+          {
+            name: '1.0.0',
+            tags: ['first', 'second'],
+            hidden: true
+          }
+        ]
+      }
+    ]
+
+    const result = ProjectRepository.search(projects, 'sec')
+
+    expect(result.projects).toEqual([])
+    expect(result.versions).toEqual([])
+  }
+  )
+})
+
 describe('get project logo url', () => {
   test('should return the correct url', () => {
     const projectName = 'test-project'

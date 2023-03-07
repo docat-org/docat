@@ -7,14 +7,7 @@ export interface VersionSearchResult {
   version: string
 }
 
-export interface FileSearchResult {
-  project: string
-  version: string
-  path: string
-}
-
-export interface ApiSearchResponse {
+export interface SearchResult {
   projects: ProjectSearchResult[]
   versions: VersionSearchResult[]
-  files: FileSearchResult[]
 }
