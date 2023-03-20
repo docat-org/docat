@@ -1,5 +1,4 @@
 import React from 'react'
-import ReactTooltip from 'react-tooltip'
 import { Link } from 'react-router-dom'
 import ProjectRepository from '../repositories/ProjectRepository'
 import styles from './../style/components/Project.module.css'
@@ -15,7 +14,6 @@ interface Props {
 export default function Project(props: Props): JSX.Element {
   return (
     <div className={styles['project-card']}>
-      <ReactTooltip />
       <div className={styles['project-card-header']}>
         <Link to={`/${props.project.name}/latest`}>
           {props.project.logo
@@ -29,7 +27,6 @@ export default function Project(props: Props): JSX.Element {
 
               <div
                 className={styles['project-card-title-with-logo']}
-                data-tip={props.project.name}
               >
                 {props.project.name}
               </div>
@@ -38,7 +35,6 @@ export default function Project(props: Props): JSX.Element {
             : (
             <div
               className={styles['project-card-title']}
-              data-tip={props.project.name}
             >
               {props.project.name}
             </div>

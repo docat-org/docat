@@ -1,7 +1,6 @@
 import { Home, VisibilityOff } from '@mui/icons-material'
 import { FormControl, MenuItem, Select } from '@mui/material'
 import { Link } from 'react-router-dom'
-import ReactTooltip from 'react-tooltip'
 import ProjectDetails from '../models/ProjectDetails'
 import React from 'react'
 
@@ -19,11 +18,9 @@ export default function DocumentControlButtons(props: Props): JSX.Element {
 
   return (
     <div className={styles.controls}>
-      <ReactTooltip />
       <Link
         to="/"
         className={styles['home-button']}
-        data-tip="Project Overview"
       >
         <Home sx={buttonStyle} />
       </Link>
@@ -45,7 +42,6 @@ export default function DocumentControlButtons(props: Props): JSX.Element {
       </FormControl>
       <button
         className={styles['hide-controls-button']}
-        data-tip="Hide Controls"
         onClick={props.onHideUi}
       >
         <VisibilityOff sx={buttonStyle} />
