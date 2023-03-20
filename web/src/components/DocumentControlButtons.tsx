@@ -1,5 +1,5 @@
 import { Home, VisibilityOff } from '@mui/icons-material'
-import { FormControl, MenuItem, Select } from '@mui/material'
+import { FormControl, MenuItem, Select, Tooltip } from '@mui/material'
 import { Link } from 'react-router-dom'
 import ProjectDetails from '../models/ProjectDetails'
 import React from 'react'
@@ -13,17 +13,19 @@ interface Props {
   onHideUi: () => void
 }
 
-export default function DocumentControlButtons(props: Props): JSX.Element {
+export default function DocumentControlButtons (props: Props): JSX.Element {
   const buttonStyle = { width: '25px', height: '25px' }
 
   return (
     <div className={styles.controls}>
-      <Link
-        to="/"
-        className={styles['home-button']}
-      >
-        <Home sx={buttonStyle} />
-      </Link>
+      <Tooltip title="Project Overview" placement="top" arrow>
+        <Link
+          to="/"
+          className={styles['home-button']}
+        >
+          <Home sx={buttonStyle} />
+        </Link>
+      </Tooltip>
 
       <FormControl>
         <Select
@@ -40,12 +42,15 @@ export default function DocumentControlButtons(props: Props): JSX.Element {
             ))}
         </Select>
       </FormControl>
-      <button
-        className={styles['hide-controls-button']}
-        onClick={props.onHideUi}
-      >
-        <VisibilityOff sx={buttonStyle} />
-      </button>
+
+      <Tooltip title="Hide Controls" placement="top" arrow>
+        <button
+          className={styles['hide-controls-button']}
+          onClick={props.onHideUi}
+        >
+          <VisibilityOff sx={buttonStyle} />
+        </button>
+      </Tooltip>
     </div>
   )
 }
