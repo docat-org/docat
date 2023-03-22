@@ -460,3 +460,75 @@ describe('filterHiddenVersions', () => {
     expect(result).toStrictEqual([])
   })
 })
+
+describe('getLatestVersion', () => {
+  test('should return latest version by name', () => {
+    const versions: ProjectDetails[] = [
+      {
+        name: '1.0.0',
+        hidden: false,
+        tags: []
+      },
+      {
+        name: '2.0.0',
+        hidden: false,
+        tags: []
+      }
+    ]
+
+    const latestVersion = ProjectRepository.getLatestVersion(versions)
+    expect(latestVersion).toStrictEqual(versions[1])
+  })
+
+  test('should return version with latest in name', () => {
+    const versions: ProjectDetails[] = [
+      {
+        name: '1.0.0',
+        hidden: false,
+        tags: []
+      },
+      {
+        name: 'latest',
+        hidden: false,
+        tags: []
+      }]
+
+    const latestVersion = ProjectRepository.getLatestVersion(versions)
+    expect(latestVersion).toStrictEqual(versions[1])
+  })
+
+  test('should return version with latest tag', () => {
+    const versions: ProjectDetails[] = [
+      {
+        name: '1.0.0',
+        hidden: false,
+        tags: ['latest']
+      },
+      {
+        name: '2.0.0',
+        hidden: false,
+        tags: []
+      }]
+
+    const latestVersion = ProjectRepository.getLatestVersion(versions)
+    expect(latestVersion).toStrictEqual(versions[0])
+  })
+
+  test('should prefer version with latest in name over latest tag', () => {
+    const versions: ProjectDetails[] = [
+      {
+        name: 'latest',
+        hidden: false,
+        tags: []
+      },
+      {
+        name: '1.0.0',
+        hidden: false,
+        tags: ['latest']
+      }
+    ]
+
+    const latestVersion = ProjectRepository.getLatestVersion(versions)
+    expect(latestVersion).toStrictEqual(versions[0])
+  })
+})

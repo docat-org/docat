@@ -37,6 +37,28 @@ async function getVersions (projectName: string): Promise<ProjectDetails[]> {
 }
 
 /**
+ * Returns the latest version of a project.
+ * Order of precedence: latest, latest tag, latest version
+ * @param versions all versions of a project
+ */
+function getLatestVersion (versions: ProjectDetails[]): ProjectDetails {
+  const latest = versions.find((v) => v.name.includes('latest'))
+  if (latest != null) {
+    return latest
+  }
+
+  const latestTag = versions.find((v) => v.tags.includes('latest'))
+  if (latestTag != null) {
+    return latestTag
+  }
+
+  const sortedVersions = versions
+    .sort((a, b) => compareVersions(a, b))
+
+  return sortedVersions[sortedVersions.length - 1]
+}
+
+/**
  * Returns a SearchResult object containing all projects and versions that contain the search query in their name or tag
  * @param {Project[]} projects List of all projects
  * @param {string} searchQuery Search query
@@ -239,6 +261,7 @@ function setFavorite (projectName: string, shouldBeFavorite: boolean): void {
 
 const exp = {
   getVersions,
+  getLatestVersion,
   filterHiddenVersions,
   search,
   getProjectLogoURL,
