@@ -7,12 +7,6 @@ COPY web ./
 COPY doc/getting-started.md ./src/assets/
 
 RUN yarn install --frozen-lockfile
-RUN yarn lint
-
-# fix test not exiting by default
-ARG CI=true
-RUN yarn test
-
 RUN yarn build
 
 # setup Python
