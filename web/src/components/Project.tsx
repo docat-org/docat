@@ -12,12 +12,12 @@ interface Props {
   onFavoriteChanged: () => void
 }
 
-export default function Project(props: Props): JSX.Element {
+export default function Project (props: Props): JSX.Element {
   return (
     <div className={styles['project-card']}>
       <div className={styles['project-card-header']}>
         <Tooltip title={props.project.name} placement="top-start" arrow>
-          <Link to={`/${props.project.name}/latest`}>
+          <Link to={`${props.project.name}/latest`}>
             {props.project.logo
               ? (
                 <>
