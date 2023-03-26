@@ -6,7 +6,7 @@
     height: 50px;
     display: flex;
   }
-  
+
   .home-button,
   .hide-controls-button {
     height: 50px;
@@ -17,39 +17,41 @@
     justify-content: center;
     border: none;
   }
-  
+
   .home-button {
     background-color: var(--primary-foreground);
     border-top-left-radius: 8px;
     border-bottom-left-radius: 8px;
   }
-  
+
   .hide-controls-button {
     background-color: #868686;
     border-top-right-radius: 8px;
     border-bottom-right-radius: 8px;
   }
-  
+
   .version-select {
     background: white;
     border: 1px solid rgba(0, 0, 0, 0.42);
     overflow: hidden;
-  
+
     padding: 9px;
     width: 200px;
-  
+
     font-size: 1.05em;
+
+    border-radius: 0 !important;
   }
-  
+
   .version-select:focus-visible {
     outline: none;
   }
-  
+
   @media only screen and (max-width: 380px) {
     .controls {
       left: 32px;
     }
-  
+
     .version-select {
       width: calc(100vw - 100px - 64px)
     }
