@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { Delete } from '@mui/icons-material'
-import ReactTooltip from 'react-tooltip'
+import { Tooltip } from '@mui/material'
 import React from 'react'
 
 import styles from './../style/components/ControlButtons.module.css'
@@ -12,18 +12,16 @@ interface Props {
 export default function DeleteButton (props: Props): JSX.Element {
   return (
     <>
-      <ReactTooltip />
-      <Link to="/delete" data-tip="Delete a Documentation Version">
-        <button
-          className={
-            props.isSingleButton === true
-              ? styles['single-control-button']
-              : styles['delete-button']
-          }
+      <Tooltip title="Delete a project version" placement="top" arrow>
+        <Link to="/delete" className={
+          props.isSingleButton === true
+            ? styles['single-control-button']
+            : styles['delete-button']
+        }
         >
           <Delete></Delete>
-        </button>
-      </Link>
+        </Link>
+      </Tooltip>
     </>
   )
 }

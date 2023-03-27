@@ -1,7 +1,7 @@
 import React from 'react'
-import ReactTooltip from 'react-tooltip'
 import { FileUpload } from '@mui/icons-material'
 import { Link } from 'react-router-dom'
+import { Tooltip } from '@mui/material'
 
 import styles from './../style/components/ControlButtons.module.css'
 
@@ -12,9 +12,8 @@ interface Props {
 export default function UploadButton (props: Props): JSX.Element {
   return (
     <>
-      <ReactTooltip />
-      <Link to="/upload" data-tip="Upload Documentation">
-        <button
+      <Tooltip title="Upload Documentation" placement="top" arrow>
+        <Link to="/upload"
           className={
             props.isSingleButton === true
               ? styles['single-control-button']
@@ -22,8 +21,8 @@ export default function UploadButton (props: Props): JSX.Element {
           }
         >
           <FileUpload></FileUpload>
-        </button>
-      </Link>
+        </Link>
+      </Tooltip>
     </>
   )
 }

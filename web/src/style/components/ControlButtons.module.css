@@ -12,6 +12,11 @@
   border: none;
   cursor: pointer;
   z-index: 1; /* Without this, the footer is on top of the controls */
+
+  /* Center the icon */
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .upload-button {
