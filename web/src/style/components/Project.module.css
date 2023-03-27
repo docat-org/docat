@@ -29,6 +29,11 @@
   padding-top: 0.25em;
 }
 
+.project-card-version {
+  color: var(--primary-foreground);
+  opacity: 0.54;
+}
+
 .project-card-title {
   width: calc(100% - 30px);
 }
