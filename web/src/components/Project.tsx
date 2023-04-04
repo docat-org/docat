@@ -30,7 +30,7 @@ export default function Project (props: Props): JSX.Element {
                   <div
                     className={styles['project-card-title-with-logo']}
                   >
-                    {props.project.name} <span className={styles['project-card-version']}>v{props.project.versions[0].name}</span>
+                    {props.project.name} <span className={styles['project-card-version']}>{ProjectRepository.getLatestVersion(props.project.versions).name}</span>
                   </div>
                 </>
                 )
@@ -38,7 +38,7 @@ export default function Project (props: Props): JSX.Element {
                 <div
                   className={styles['project-card-title']}
                 >
-                  {props.project.name} <span className={styles['project-card-version']}>v{props.project.versions[0].name}</span>
+                  {props.project.name} <span className={styles['project-card-version']}>{ProjectRepository.getLatestVersion(props.project.versions).name}</span>
                 </div>
                 )}
           </Link>
