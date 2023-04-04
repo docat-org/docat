@@ -1,11 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call */
 /*
   the iFrameRef is not really compatiple with ts,
-  and we need to use some of it's members, which is unsafe
 */
 
 import React, { useEffect, useRef, useState } from 'react'
-import { useParams, useSearchParams } from 'react-router-dom'
+import { useLocation, useParams, useSearchParams } from 'react-router-dom'
 import DocumentControlButtons from '../components/DocumentControlButtons'
 import ProjectDetails from '../models/ProjectDetails'
 import ProjectRepository from '../repositories/ProjectRepository'
@@ -20,17 +19,19 @@ export default function Docs (): JSX.Element {
   const projectParam = useParams().project ?? ''
   const versionParam = useParams().version ?? 'latest'
   const pageParam = useParams().page ?? 'index.html'
-  const hideUiParam = useSearchParams()[0].get('hide-ui') === 'true'
+  const hashParam = useLocation().hash.split('?')[0] ?? ''
+  const hideUiParam = useSearchParams()[0].get('hide-ui') === 'true' || useLocation().hash.split('?')[1] === 'hide-ui=true'
 
   const [project, setProject] = useState<string>('')
   const [version, setVersion] = useState<string>('')
   const [page, setPage] = useState<string>('')
+  const [hash, setHash] = useState<string>('')
   const [hideUi, setHideUi] = useState<boolean>(false)
 
   const [versions, setVersions] = useState<ProjectDetails[]>([])
   const [loadingFailed, setLoadingFailed] = useState<boolean>(false)
 
-  const iFrameRef = useRef(null)
+  const iFrameRef = useRef<HTMLIFrameElement>(null)
 
   document.title = `${project} | docat`
 
@@ -38,10 +39,18 @@ export default function Docs (): JSX.Element {
     setLoadingFailed(true)
   }
 
-  const updateURL = (newProject: string, newVersion: string, newPage: string, newHideUi: boolean): void => {
-    const url = `#/${newProject}/${newVersion}/${newPage}${newHideUi ? '?hide-ui=true' : ''}`
+  const updateURL = (newProject: string, newVersion: string, newPage: string, newHash: string, newHideUi: boolean): void => {
+    let url = `#/${newProject}/${newVersion}/${newPage}`
 
-    if (project === newProject && version === newVersion && page === newPage && hideUi === newHideUi) {
+    if (newHash.length > 0) {
+      url += newHash
+    }
+
+    if (newHideUi) {
+      url += '?hide-ui=true'
+    }
+
+    if (project === newProject && version === newVersion && page === newPage && hash === newHash && hideUi === newHideUi) {
       // no change
       return
     }
@@ -52,6 +61,7 @@ export default function Docs (): JSX.Element {
     setProject(newProject)
     setVersion(newVersion)
     setPage(newPage)
+    setHash(newHash)
     setHideUi(newHideUi)
 
     if (oldVersion === 'latest' && newVersion !== 'latest') {
@@ -69,20 +79,37 @@ export default function Docs (): JSX.Element {
     window.history.pushState(null, '', url)
   }
 
-  const onIFrameLocationChanged = (url: string): void => {
-    url = url.split('/doc/')[1]
-    if (url.length === 0) {
-      // should never happen
+  const onIFrameLocationChanged = (url?: string): void => {
+    if (url == null) {
       return
     }
+
+    url = url.split('/doc/')[1]
+    if (url == null) {
+      console.error('IFrame URL did not contain "/doc/"')
+      return
+    }
+
+    // make all external links in iframe open in new tab
+    // @ts-expect-error - ts does not find the document on the iframe
+    iFrameRef.current.contentDocument
+      .querySelectorAll('a')
+      .forEach((a: HTMLAnchorElement) => {
+        if (!a.href.startsWith(window.location.origin)) {
+          a.setAttribute('target', '_blank')
+        }
+      })
 
     const parts = url.split('/')
     const urlProject = parts[0]
     const urlVersion = parts[1]
-    const urlPage = parts.slice(2).join('/')
+    const urlPageAndHash = parts.slice(2).join('/')
+    const hashIndex = urlPageAndHash.includes('#') ? urlPageAndHash.indexOf('#') : urlPageAndHash.length
+    const urlPage = urlPageAndHash.slice(0, hashIndex)
+    const urlHash = urlPageAndHash.slice(hashIndex)
 
-    if (urlProject !== project || urlVersion !== version || urlPage !== page) {
-      updateURL(urlProject, urlVersion, urlPage, hideUi)
+    if (urlProject !== project || urlVersion !== version || urlPage !== page || urlHash !== hash) {
+      updateURL(urlProject, urlVersion, urlPage, urlHash, hideUi)
     }
   }
 
@@ -118,7 +145,7 @@ export default function Docs (): JSX.Element {
           versionToUse = version
         }
 
-        updateURL(project, versionToUse, page, hideUi)
+        updateURL(project, versionToUse, page, hash, hideUi)
         setVersions(allVersions)
         setLoadingFailed(false)
       } catch (e) {
@@ -129,13 +156,12 @@ export default function Docs (): JSX.Element {
   }, [project])
 
   useEffect(() => {
-    // set props equal to url params and update the url with the default values if empty
     setProject(p => {
       if (p !== '') {
         return p
       }
 
-      updateURL(projectParam, versionParam, pageParam, hideUiParam)
+      updateURL(projectParam, versionParam, pageParam, hashParam, hideUiParam)
       return projectParam
     })
   }, [])
@@ -153,12 +179,12 @@ export default function Docs (): JSX.Element {
       <iframe
         ref={iFrameRef}
         key={uniqueId()}
-        src={ProjectRepository.getProjectDocsURL(project, version, page)}
+        src={ProjectRepository.getProjectDocsURL(project, version, page, hash)}
         title="docs"
         className={styles['docs-iframe']}
         onLoad={() => {
           // @ts-expect-error ts can't find contentWindow
-          onIFrameLocationChanged(iFrameRef.current?.contentWindow.location.href as string)
+          onIFrameLocationChanged(iFrameRef.current?.contentWindow.location.href)
         }}
       />
 
@@ -166,8 +192,8 @@ export default function Docs (): JSX.Element {
         <DocumentControlButtons
           version={version}
           versions={versions}
-          onVersionChange={(v) => updateURL(project, v, page, hideUi)}
-          onHideUi={() => updateURL(project, version, page, true)}
+          onVersionChange={(v) => updateURL(project, v, page, hash, hideUi)}
+          onHideUi={() => updateURL(project, version, page, hash, true)}
         />
       )}
     </>

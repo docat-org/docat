@@ -532,3 +532,50 @@ describe('getLatestVersion', () => {
     expect(latestVersion).toStrictEqual(versions[0])
   })
 })
+
+describe('escapeSlashesInUrl', () => {
+  test('should ignore version and project name', () => {
+    const url = '/project/1.0.0'
+
+    expect(ProjectRepository.escapeSlashesInUrl(url, '', '')).toBe(url)
+  })
+
+  test('should ignore trailing slash', () => {
+    const given = '/project/1.0.0/'
+    const expected = '/project/1.0.0'
+
+    expect(ProjectRepository.escapeSlashesInUrl(given, '', '')).toBe(expected)
+  })
+
+  test('should escape slashes in path', () => {
+    const given = '/project/1.0.0/path/with/slashes'
+    const expected = '/project/1.0.0/path%2Fwith%2Fslashes'
+
+    expect(ProjectRepository.escapeSlashesInUrl(given, '', '')).toBe(expected)
+  })
+
+  test('should work with query parameters', () => {
+    const given = '/project/1.0.0/path/with/slashes'
+    const query = '?param=value'
+    const expected = '/project/1.0.0/path%2Fwith%2Fslashes?param=value'
+
+    expect(ProjectRepository.escapeSlashesInUrl(given, query, '')).toBe(expected)
+  })
+
+  test('should work with hash', () => {
+    const given = '/project/1.0.0/path/with/slashes'
+    const hash = '#hash'
+    const expected = '/project/1.0.0/path%2Fwith%2Fslashes#hash'
+
+    expect(ProjectRepository.escapeSlashesInUrl(given, '', hash)).toBe(expected)
+  })
+
+  test('should work with query parameters and hash', () => {
+    const given = '/project/1.0.0/path/with/slashes'
+    const query = '?param=value'
+    const hash = '#hash'
+    const expected = '/project/1.0.0/path%2Fwith%2Fslashes#hash?param=value'
+
+    expect(ProjectRepository.escapeSlashesInUrl(given, query, hash)).toBe(expected)
+  })
+})
