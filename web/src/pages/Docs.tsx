@@ -31,6 +31,7 @@ export default function Docs (): JSX.Element {
   const [versions, setVersions] = useState<ProjectDetails[]>([])
   const [loadingFailed, setLoadingFailed] = useState<boolean>(false)
 
+  const location = useLocation()
   const iFrameRef = useRef<HTMLIFrameElement>(null)
 
   document.title = `${project} | docat`
@@ -79,6 +80,24 @@ export default function Docs (): JSX.Element {
     window.history.pushState(null, '', url)
   }
 
+  /**
+   * Event listener for the hashchange event of the iframe
+   * updates the url of the page to match the iframe
+   */
+  const hashChangeEventListener = (): void => {
+    if (iFrameRef.current == null) {
+      console.error('hashChangeEvent from iframe but iFrameRef is null')
+      return
+    }
+
+    // @ts-expect-error - ts does not find the window on the iframe
+    iFrameRef.current.contentWindow.removeEventListener('hashchange', hashChangeEventListener)
+
+    const url = iFrameRef.current?.contentDocument?.location.href
+
+    onIFrameLocationChanged(url)
+  }
+
   const onIFrameLocationChanged = (url?: string): void => {
     if (url == null) {
       return
@@ -111,6 +130,11 @@ export default function Docs (): JSX.Element {
     if (urlProject !== project || urlVersion !== version || urlPage !== page || urlHash !== hash) {
       updateURL(urlProject, urlVersion, urlPage, urlHash, hideUi)
     }
+
+    // add event listener for hashchange to iframe
+    // this is needed because the iframe doesn't trigger the hashchange event otherwise
+    // @ts-expect-error - ts does not find the window on the iframe
+    iFrameRef.current.contentWindow.addEventListener('hashchange', hashChangeEventListener)
   }
 
   useEffect(() => {
@@ -156,15 +180,11 @@ export default function Docs (): JSX.Element {
   }, [project])
 
   useEffect(() => {
-    setProject(p => {
-      if (p !== '') {
-        return p
-      }
-
+    // update the state to the url params on first loadon
+    if (projectParam !== project || versionParam !== version || pageParam !== page || hashParam !== hash || hideUiParam !== hideUi) {
       updateURL(projectParam, versionParam, pageParam, hashParam, hideUiParam)
-      return projectParam
-    })
-  }, [])
+    }
+  }, [location])
 
   if (loadingFailed) {
     return <NotFound />
