@@ -7,8 +7,8 @@ import { useMessageBanner } from '../data-providers/MessageBannerProvider'
 import { useProjects } from '../data-providers/ProjectDataProvider'
 import ProjectRepository from '../repositories/ProjectRepository'
 
-export default function Claim(): JSX.Element {
-  const { projectsWithHiddenVersions: projects, loadingFailed } = useProjects()
+export default function Claim (): JSX.Element {
+  const { projects, loadingFailed } = useProjects()
 
   const { showMessage } = useMessageBanner()
   const [project, setProject] = useState<string>('none')
@@ -78,19 +78,19 @@ export default function Claim(): JSX.Element {
 
         {token !== ''
           ? (
-          <TextField
-            fullWidth
-            label="Token"
-            inputProps={{
-              readOnly: true
-            }}
-            value={token}
-          >
-            {token}
-          </TextField>
+            <TextField
+              fullWidth
+              label="Token"
+              inputProps={{
+                readOnly: true
+              }}
+              value={token}
+            >
+              {token}
+            </TextField>
             )
           : (
-          <></>
+            <></>
             )}
 
         <button

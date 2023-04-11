@@ -19,7 +19,7 @@ export default function Delete(): JSX.Element {
   const [project, setProject] = useState<string>('none')
   const [version, setVersion] = useState<string>('none')
   const [token, setToken] = useState<string>('')
-  const { projectsWithHiddenVersions: projects, loadingFailed, reload } = useProjects()
+  const { projects, loadingFailed, reload } = useProjects()
   const [versions, setVersions] = useState<ProjectDetails[]>([])
   const [validation, setValidation] = useState<Validation>({})
 

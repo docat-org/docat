@@ -1,8 +1,6 @@
-import { some } from 'lodash'
 import semver from 'semver'
 import ProjectDetails from '../models/ProjectDetails'
 import { Project } from '../models/ProjectsResponse'
-import { ProjectSearchResult, SearchResult, VersionSearchResult } from '../models/SearchResult'
 
 const RESOURCE = 'doc'
 
@@ -80,63 +78,6 @@ function getLatestVersion (versions: ProjectDetails[]): ProjectDetails {
     .sort((a, b) => compareVersions(a, b))
 
   return sortedVersions[sortedVersions.length - 1]
-}
-
-/**
- * Returns a SearchResult object containing all projects and versions that contain the search query in their name or tag
- * @param {Project[]} projects List of all projects
- * @param {string} searchQuery Search query
- * @returns {SearchResult} Search result
- */
-function search (projects: Project[], searchQuery: string): SearchResult {
-  const searchQueryLower = searchQuery.toLowerCase().trim()
-
-  const projectResults: ProjectSearchResult[] = projects
-    .filter((project) =>
-      project.name.toLowerCase().includes(searchQueryLower) &&
-      some(project.versions, (v) => !v.hidden)
-    )
-    .map((project) => ({
-      name: project.name
-    }))
-
-  const versionResults: VersionSearchResult[] = projects
-    .map((project) =>
-      project.versions
-        .filter((version) =>
-          version.name.toLowerCase().includes(searchQueryLower) &&
-          !version.hidden
-        )
-        .map((version) => ({
-          project: project.name,
-          version: version.name
-        }))
-    )
-    .flat()
-
-  const tagResults: VersionSearchResult[] = projects
-    .map((project) =>
-      project.versions
-        .filter((version) => !version.hidden)
-        .map((version) =>
-          version.tags.filter((tag) =>
-            tag.toLowerCase().includes(searchQueryLower)
-          )
-        )
-        .map((version) =>
-          version.map((tag) => ({
-            project: project.name,
-            version: tag
-          }))
-        )
-        .flat()
-    )
-    .flat()
-
-  return {
-    projects: projectResults,
-    versions: [...versionResults, ...tagResults]
-  }
 }
 
 /**
@@ -289,7 +230,6 @@ const exp = {
   getVersions,
   getLatestVersion,
   filterHiddenVersions,
-  search,
   getProjectLogoURL,
   getProjectDocsURL,
   upload,
