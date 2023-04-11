@@ -1,158 +1,115 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call */
 /*
   the iFrameRef is not really compatiple with ts,
-  and we need to use some of it's members, which is unsafe
 */
 
-import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { useParams, useSearchParams } from 'react-router-dom'
+import React, { useEffect, useRef, useState } from 'react'
+import { useLocation, useParams, useSearchParams } from 'react-router-dom'
 import DocumentControlButtons from '../components/DocumentControlButtons'
-import { useProjects } from '../data-providers/ProjectDataProvider'
 import ProjectDetails from '../models/ProjectDetails'
 import ProjectRepository from '../repositories/ProjectRepository'
 
-import styles from './../style/pages/Docs.module.css'
 import LoadingPage from './LoadingPage'
 import NotFound from './NotFound'
 
-export default function Docs(): JSX.Element {
+import styles from './../style/pages/Docs.module.css'
+import { uniqueId } from 'lodash'
+
+export default function Docs (): JSX.Element {
   const projectParam = useParams().project ?? ''
   const versionParam = useParams().version ?? 'latest'
   const pageParam = useParams().page ?? 'index.html'
-  const hideUiParam = useSearchParams()[0].get('hide-ui') === 'true'
+  const hashParam = useLocation().hash.split('?')[0] ?? ''
+  const hideUiParam = useSearchParams()[0].get('hide-ui') === 'true' || useLocation().hash.split('?')[1] === 'hide-ui=true'
 
-  const [project] = useState<string>(projectParam)
-  const [version, setVersion] = useState<string>(versionParam)
-  const [page, setPage] = useState<string>(pageParam)
-  const [hideUi, setHideUi] = useState<boolean>(hideUiParam)
+  const [project, setProject] = useState<string>('')
+  const [version, setVersion] = useState<string>('')
+  const [page, setPage] = useState<string>('')
+  const [hash, setHash] = useState<string>('')
+  const [hideUi, setHideUi] = useState<boolean>(false)
+
   const [versions, setVersions] = useState<ProjectDetails[]>([])
   const [loadingFailed, setLoadingFailed] = useState<boolean>(false)
 
-  const { projectsWithHiddenVersions: projects } = useProjects()
-  const iFrameRef = useRef(null)
+  const location = useLocation()
+  const iFrameRef = useRef<HTMLIFrameElement>(null)
 
   document.title = `${project} | docat`
 
-  if (project === '') {
+  if (projectParam === '') {
     setLoadingFailed(true)
   }
 
-  const updateRoute = useCallback(
-    (
-      project: string,
-      version: string,
-      page: string,
-      hideControls: boolean
-    ): void => {
-      const newState = `/#/${project}/${version}/${page}${
-        hideControls ? '?hide-ui=true' : ''
-      }`
+  const updateURL = (newProject: string, newVersion: string, newPage: string, newHash: string, newHideUi: boolean): void => {
+    let url = `#/${newProject}/${newVersion}/${newPage}`
 
-      // skip updating the route if the new state is the same as the current one
-      if (window.location.hash === newState.substring(1)) {
-        return
-      }
+    if (newHash.length > 0) {
+      url += newHash
+    }
 
-      window.history.pushState({}, '', newState)
-    },
-    []
-  )
+    if (newHideUi) {
+      url += '?hide-ui=true'
+    }
 
-  updateRoute(project, version, page, hideUi)
-
-  useEffect(() => {
-    if (project === '' || project === 'none') {
-      setVersions([])
+    if (project === newProject && version === newVersion && page === newPage && hash === newHash && hideUi === newHideUi) {
+      // no change
       return
     }
 
-    if (projects == null || projects.length === 0) {
+    const oldVersion = version
+    const oldPage = page
+
+    setProject(newProject)
+    setVersion(newVersion)
+    setPage(newPage)
+    setHash(newHash)
+    setHideUi(newHideUi)
+
+    if (oldVersion === 'latest' && newVersion !== 'latest') {
+      // replace the url if 'latest' was updated to the actual version
+      window.history.replaceState(null, '', url)
       return
     }
 
-    try {
-      const matchingProjects = projects.filter((p) => p.name === project)
-
-      if (matchingProjects.length !== 1) {
-        setLoadingFailed(true)
-        return
-      }
-
-      let res = matchingProjects[0].versions
-
-      if (res.length === 0) {
-        setLoadingFailed(true)
-        return
-      }
-
-      res = res.sort((a, b) => ProjectRepository.compareVersions(a, b))
-      setVersions(res)
-
-      if (version !== 'latest') {
-        // custom version -> check if it exists
-        const versionsAndTags = res.map((v) => [v.name, ...v.tags]).flat()
-
-        if (!versionsAndTags.includes(version)) {
-          // version does not exist -> fail
-          setLoadingFailed(true)
-          console.log("Version doesn't exist")
-        }
-
-        return
-      }
-
-      // latest version -> check if there is a latest tag
-      const versionWithLatestTag = res.find((v) =>
-        (v.tags ?? []).includes('latest')
-      )
-
-      // if there is a latest tag, use it,
-      // otherwise use the latest version by sorting
-      const latestVersion =
-        versionWithLatestTag != null
-          ? versionWithLatestTag.name
-          : res[res.length - 1].name
-
-      setVersion(latestVersion)
-      updateRoute(project, latestVersion, page, hideUi)
-    } catch (e) {
-      console.error(e)
-      setLoadingFailed(true)
+    if (oldPage === '' && newPage !== '') {
+      // replace the url if the page was updated from '' to the actual page
+      window.history.replaceState(null, '', url)
+      return
     }
-  }, [project, projects, version, page, hideUi, updateRoute])
 
-  const handleVersionChange = (v: string): void => {
-    setVersion(v)
-    updateRoute(project, v, page, hideUi)
-  }
-
-  const handleHideControls = (): void => {
-    updateRoute(project, version, page, true)
-    setHideUi(true)
+    window.history.pushState(null, '', url)
   }
 
   /**
-   * This makes all external links in the iFrame open in a new tab
-   * and updates the page url when the location in the iFrame changes
+   * Event listener for the hashchange event of the iframe
+   * updates the url of the page to match the iframe
    */
-  const onIframeLocationChanged = (): void => {
-    if (iFrameRef?.current == null) {
+  const hashChangeEventListener = (): void => {
+    if (iFrameRef.current == null) {
+      console.error('hashChangeEvent from iframe but iFrameRef is null')
       return
     }
 
-    // update the path in the url
-    // @ts-expect-error - ts does not find the location on the iframe
-    const path: string = iFrameRef.current.contentWindow.location.href as string
-    const page = path.split(`${version}/`)[1]
+    // @ts-expect-error - ts does not find the window on the iframe
+    iFrameRef.current.contentWindow.removeEventListener('hashchange', hashChangeEventListener)
 
-    if (page == null || page.trim().length < 1) {
+    const url = iFrameRef.current?.contentDocument?.location.href
+
+    onIFrameLocationChanged(url)
+  }
+
+  const onIFrameLocationChanged = (url?: string): void => {
+    if (url == null) {
       return
     }
 
-    setPage(page)
-    updateRoute(project, version, page, hideUi)
+    url = url.split('/doc/')[1]
+    if (url == null) {
+      console.error('IFrame URL did not contain "/doc/"')
+      return
+    }
 
-    // make all links in iframe open in new tab
+    // make all external links in iframe open in new tab
     // @ts-expect-error - ts does not find the document on the iframe
     iFrameRef.current.contentDocument
       .querySelectorAll('a')
@@ -161,32 +118,102 @@ export default function Docs(): JSX.Element {
           a.setAttribute('target', '_blank')
         }
       })
+
+    const parts = url.split('/')
+    const urlProject = parts[0]
+    const urlVersion = parts[1]
+    const urlPageAndHash = parts.slice(2).join('/')
+    const hashIndex = urlPageAndHash.includes('#') ? urlPageAndHash.indexOf('#') : urlPageAndHash.length
+    const urlPage = urlPageAndHash.slice(0, hashIndex)
+    const urlHash = urlPageAndHash.slice(hashIndex)
+
+    if (urlProject !== project || urlVersion !== version || urlPage !== page || urlHash !== hash) {
+      updateURL(urlProject, urlVersion, urlPage, urlHash, hideUi)
+    }
+
+    // add event listener for hashchange to iframe
+    // this is needed because the iframe doesn't trigger the hashchange event otherwise
+    // @ts-expect-error - ts does not find the window on the iframe
+    iFrameRef.current.contentWindow.addEventListener('hashchange', hashChangeEventListener)
   }
 
-  if (versions == null || versions.length === 0) {
-    return <LoadingPage />
-  }
+  useEffect(() => {
+    if (project === '') {
+      return
+    }
+
+    void (async (): Promise<void> => {
+      try {
+        let allVersions = await ProjectRepository.getVersions(project)
+
+        if (allVersions.length === 0) {
+          setLoadingFailed(true)
+          return
+        }
+
+        allVersions = allVersions.sort((a, b) => ProjectRepository.compareVersions(a, b))
+        let versionToUse = ''
+
+        if (version === 'latest') {
+          versionToUse = ProjectRepository.getLatestVersion(allVersions).name
+        } else {
+          // custom version -> check if it exists
+          const versionsAndTags = allVersions.map((v) => [v.name, ...v.tags]).flat()
+          if (!versionsAndTags.includes(version)) {
+            // version does not exist -> fail
+            setLoadingFailed(true)
+            console.error("Version doesn't exist")
+            return
+          }
+
+          versionToUse = version
+        }
+
+        updateURL(project, versionToUse, page, hash, hideUi)
+        setVersions(allVersions)
+        setLoadingFailed(false)
+      } catch (e) {
+        console.error(e)
+        setLoadingFailed(true)
+      }
+    })()
+  }, [project])
+
+  useEffect(() => {
+    // update the state to the url params on first loadon
+    if (projectParam !== project || versionParam !== version || pageParam !== page || hashParam !== hash || hideUiParam !== hideUi) {
+      updateURL(projectParam, versionParam, pageParam, hashParam, hideUiParam)
+    }
+  }, [location])
 
   if (loadingFailed) {
     return <NotFound />
   }
 
+  if (versions.length === 0) {
+    return <LoadingPage />
+  }
+
   return (
     <>
       <iframe
-        title="docs"
         ref={iFrameRef}
-        src={ProjectRepository.getProjectDocsURL(project, version, page)}
-        onLoad={onIframeLocationChanged}
+        key={uniqueId()}
+        src={ProjectRepository.getProjectDocsURL(project, version, page, hash)}
+        title="docs"
         className={styles['docs-iframe']}
-      ></iframe>
+        onLoad={() => {
+          // @ts-expect-error ts can't find contentWindow
+          onIFrameLocationChanged(iFrameRef.current?.contentWindow.location.href)
+        }}
+      />
 
       {!hideUi && (
         <DocumentControlButtons
           version={version}
           versions={versions}
-          onVersionChange={handleVersionChange}
-          onHideUi={handleHideControls}
+          onVersionChange={(v) => updateURL(project, v, page, hash, hideUi)}
+          onHideUi={() => updateURL(project, version, page, hash, true)}
         />
       )}
     </>

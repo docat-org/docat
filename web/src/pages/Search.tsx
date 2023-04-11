@@ -14,7 +14,7 @@ const NO_RESULTS: SearchResult = {
 }
 const debounceMs = 600
 
-export default function Search(): JSX.Element {
+export default function Search (): JSX.Element {
   const queryParam = useSearchParams()[0].get('query') ?? ''
 
   const { projects, loadingFailed } = useProjects()
@@ -47,7 +47,9 @@ export default function Search(): JSX.Element {
 
   useEffect(() => {
     searchDebounced.cancel()
-    window.history.pushState({}, '', `/#/search?query=${searchQuery}`)
+    if (window.location.hash !== `#/search?query=${searchQuery}`) {
+      window.history.pushState({}, '', `/#/search?query=${searchQuery}`)
+    }
     searchDebounced()
   }, [searchQuery, projects, loadingFailed])
 
@@ -69,10 +71,10 @@ export default function Search(): JSX.Element {
       />
       {results === null
         ? (
-        <div className="loading-spinner" />
+          <div className="loading-spinner" />
           )
         : (
-        <SearchResults searchQuery={searchQuery} results={results} />
+          <SearchResults searchQuery={searchQuery} results={results} />
           )}
     </PageLayout>
   )
