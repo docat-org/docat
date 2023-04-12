@@ -57,8 +57,9 @@ export function ProjectDataProvider({ children }: any): JSX.Element {
         console.error(e)
 
         showMessage({
-          text: 'Failed to load projects',
-          type: 'error'
+          content: 'Failed to load projects',
+          type: 'error',
+          showMs: 6000
         })
 
         setProjects({

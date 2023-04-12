@@ -8,8 +8,9 @@ import React, { useState, useCallback, useContext } from 'react'
 import Banner from '../components/InfoBanner'
 
 export interface Message {
-  text: string | undefined
-  type: 'error' | 'success'
+  content: string | JSX.Element | undefined
+  type: 'success' | 'info' | 'warning' | 'error'
+  showMs: number | null // null = infinite
 }
 
 interface MessageBannerState {
@@ -22,14 +23,13 @@ export const Context = React.createContext<MessageBannerState>({
   }
 })
 
-export function MessageBannerProvider({ children }: any): JSX.Element {
+export function MessageBannerProvider ({ children }: any): JSX.Element {
   // We need to store the last timeout, so we can clear when a new message is shown
-  const [lastTimeout, setLastTimeout] = useState<NodeJS.Timeout | undefined>(
-    undefined
-  )
+  const [lastTimeout, setLastTimeout] = useState<NodeJS.Timeout>()
   const [message, setMessage] = useState<Message>({
-    text: undefined,
-    type: 'success'
+    content: undefined,
+    type: 'success',
+    showMs: 6000
   })
 
   const showMessage = useCallback((message: Message) => {
@@ -39,14 +39,20 @@ export function MessageBannerProvider({ children }: any): JSX.Element {
 
     setMessage(message)
 
+    if (message.showMs === null) {
+      // don't hide message
+      return
+    }
+
     // Hide message after 6 seconds
     const newTimeout = setTimeout(
       () =>
         setMessage({
-          text: undefined,
-          type: 'success'
+          content: undefined,
+          type: 'success',
+          showMs: 6000
         }),
-      6000
+      message.showMs
     )
 
     setLastTimeout(newTimeout)
@@ -54,10 +60,7 @@ export function MessageBannerProvider({ children }: any): JSX.Element {
 
   return (
     <Context.Provider value={{ showMessage }}>
-      <Banner
-        successMsg={message.type === 'success' ? message.text : undefined}
-        errorMsg={message.type === 'error' ? message.text : undefined}
-      />
+      <Banner message={message} />
       {children}
     </Context.Provider>
   )

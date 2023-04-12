@@ -30,8 +30,9 @@ export default function Claim(): JSX.Element {
     } catch (e) {
       console.error(e)
       showMessage({
-        text: (e as { message: string }).message,
-        type: 'error'
+        content: (e as { message: string }).message,
+        type: 'error',
+        showMs: 6000
       })
     }
   }

@@ -4,43 +4,29 @@ import React, { useEffect, useState } from 'react'
 import { Message } from '../data-providers/MessageBannerProvider'
 
 interface Props {
-  errorMsg?: string
-  successMsg?: string
+  message: Message
 }
 
-export default function Banner(props: Props): JSX.Element {
-  const messageFromProps = (props: Props): Message => {
-    if (props.errorMsg != null && props.errorMsg.trim() !== '') {
-      return { text: props.errorMsg, type: 'error' }
-    }
-    if (props.successMsg != null && props.successMsg.trim() !== '') {
-      return { text: props.successMsg, type: 'success' }
-    }
-
-    return { text: undefined, type: 'success' }
-  }
-
-  const [msg, setMsg] = useState<Message>(messageFromProps(props))
+export default function Banner (props: Props): JSX.Element {
   const [show, setShow] = useState<boolean>(false)
 
   useEffect(() => {
     setShow(true)
-    setMsg(messageFromProps(props))
-  }, [props])
+  }, [props.message])
 
   return (
     <Snackbar
       key={uniqueId()}
-      open={show && msg.text != null}
-      autoHideDuration={6000}
+      open={show && props.message.content != null}
+      autoHideDuration={props.message.showMs}
       onClose={() => setShow(false)}
     >
       <Alert
         onClose={() => setShow(false)}
-        severity={msg.type}
+        severity={props.message.type}
         sx={{ width: '100%' }}
       >
-        {msg.text}
+        {props.message.content}
       </Alert>
     </Snackbar>
   )

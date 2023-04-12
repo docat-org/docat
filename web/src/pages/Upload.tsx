@@ -110,7 +110,8 @@ export default function Upload(): JSX.Element {
         setValidation({})
         showMessage({
           type: 'success',
-          text: 'Documentation uploaded successfully'
+          content: 'Documentation uploaded successfully',
+          showMs: 6000
         })
 
         // reload the projects
@@ -121,7 +122,8 @@ export default function Upload(): JSX.Element {
         const message = (e as { message: string }).message
         showMessage({
           type: 'error',
-          text: message
+          content: message,
+          showMs: 6000
         })
       } finally {
         setIsUploading(false)
