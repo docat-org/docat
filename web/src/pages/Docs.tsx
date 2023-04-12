@@ -14,6 +14,7 @@ import NotFound from './NotFound'
 
 import styles from './../style/pages/Docs.module.css'
 import { uniqueId } from 'lodash'
+import { useMessageBanner } from '../data-providers/MessageBannerProvider'
 
 export default function Docs (): JSX.Element {
   const projectParam = useParams().project ?? ''
@@ -31,6 +32,7 @@ export default function Docs (): JSX.Element {
   const [versions, setVersions] = useState<ProjectDetails[]>([])
   const [loadingFailed, setLoadingFailed] = useState<boolean>(false)
 
+  const { showMessage } = useMessageBanner()
   const location = useLocation()
   const iFrameRef = useRef<HTMLIFrameElement>(null)
 
@@ -185,6 +187,25 @@ export default function Docs (): JSX.Element {
       updateURL(projectParam, versionParam, pageParam, hashParam, hideUiParam)
     }
   }, [location])
+
+  useEffect(() => {
+    // check every time the version changes whether the version
+    // is the latest version and if not, show a banner
+    if (versions.length === 0) {
+      return
+    }
+
+    const latestVersion = ProjectRepository.getLatestVersion(versions).name
+    if (version === latestVersion) {
+      return
+    }
+
+    showMessage({
+      content: 'You are viewing an outdated version of the documentation.',
+      type: 'warning',
+      showMs: null
+    })
+  }, [version, versions])
 
   if (loadingFailed) {
     return <NotFound />

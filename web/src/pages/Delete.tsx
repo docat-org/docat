@@ -54,7 +54,8 @@ export default function Delete(): JSX.Element {
 
         showMessage({
           type: 'success',
-          text: `Documentation for ${project} (${version}) deleted successfully.`
+          content: `Documentation for ${project} (${version}) deleted successfully.`,
+          showMs: 6000
         })
         setProject('none')
         setVersion('none')
@@ -65,7 +66,8 @@ export default function Delete(): JSX.Element {
 
         showMessage({
           type: 'error',
-          text: (e as { message: string }).message
+          content: (e as { message: string }).message,
+          showMs: 6000
         })
       }
     })()
