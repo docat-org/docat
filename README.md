@@ -13,10 +13,10 @@ you can optionally use volumes to persist state:
 ```sh
 # run container in background and persist data (docs, nginx configs and tokens database)
 # use 'ghcr.io/docat-org/docat:unstable' to get the latest changes
-mkdir -p docat-run/
+mkdir -p docat-run/doc
 docker run \
   --detach \
-  --volume $PWD/docat-run/doc:/var/docat/ \
+  --volume $PWD/docat-run:/var/docat/ \
   --publish 8000:80 \
   ghcr.io/docat-org/docat
 ```
