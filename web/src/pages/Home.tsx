@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from 'react'
 
-import ProjectRepository from '../repositories/ProjectRepository'
 import { useProjects } from '../data-providers/ProjectDataProvider'
+import { ErrorOutline } from '@mui/icons-material'
+import { Project } from '../models/ProjectsResponse'
+import { useLocation } from 'react-router'
+import { useSearch } from '../data-providers/SearchProvider'
 
+import ProjectRepository from '../repositories/ProjectRepository'
 import Help from './Help'
 import UploadButton from '../components/UploadButton'
 import ClaimButton from '../components/ClaimButton'
@@ -13,12 +17,10 @@ import Footer from '../components/Footer'
 import LoadingPage from './LoadingPage'
 
 import styles from './../style/pages/Home.module.css'
-import { ErrorOutline } from '@mui/icons-material'
-import { Project } from '../models/ProjectsResponse'
-import { useLocation } from 'react-router'
 
 export default function Home (): JSX.Element {
-  const { projects, loadingFailed } = useProjects()
+  const { loadingFailed } = useProjects()
+  const { filteredProjects: projects, query } = useSearch()
   const [nonFavoriteProjects, setNonFavoriteProjects] = useState<Project[]>([])
   const [favoriteProjects, setFavoriteProjects] = useState<Project[]>([])
 
@@ -48,6 +50,10 @@ export default function Home (): JSX.Element {
     )
   }
 
+  useEffect(() => {
+    updateFavorites()
+  }, [projects])
+
   if (loadingFailed) {
     return (
       <div className={styles.home}>
@@ -61,6 +67,20 @@ export default function Home (): JSX.Element {
     )
   }
 
+  // no results for query
+  if (projects != null && projects.length === 0 && query.length > 0) {
+    return (
+      <div className={styles.home}>
+        <Header />
+        <div className={styles['no-results']}>No results for &lsquo;{query}&rsquo;</div>
+        <UploadButton></UploadButton>
+        <ClaimButton></ClaimButton>
+        <DeleteButton></DeleteButton>
+        <Footer />
+      </div>
+    )
+  }
+
   if (projects == null) {
     return <LoadingPage />
   }
@@ -68,11 +88,6 @@ export default function Home (): JSX.Element {
   // no projects
   if (projects.length === 0) {
     return <Help />
-  }
-
-  // update favorites when they aren't loaded yet
-  if (favoriteProjects.length === 0 && nonFavoriteProjects.length === 0) {
-    updateFavorites()
   }
 
   return (

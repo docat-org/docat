@@ -5,6 +5,12 @@
   font-size: large;
 }
 
+.no-results {
+  text-align: center;
+  font-size: 130%;
+  margin: 16px;
+}
+
 .divider {
   border-bottom: 1px solid var(--secondary-foreground);
   margin-bottom: 16px;

@@ -9,11 +9,11 @@ import Help from './pages/Help'
 import Home from './pages/Home'
 import NotFound from './pages/NotFound'
 import Upload from './pages/Upload'
-import Search from './pages/Search'
 import EscapeSlashForDocsPath from './pages/EscapeSlashForDocsPath'
 import { MessageBannerProvider } from './data-providers/MessageBannerProvider'
+import { SearchProvider } from './data-providers/SearchProvider'
 
-function App(): JSX.Element {
+function App (): JSX.Element {
   const router = createHashRouter([
     {
       path: '/',
@@ -38,10 +38,6 @@ function App(): JSX.Element {
         {
           path: 'help',
           element: <Help />
-        },
-        {
-          path: 'search',
-          element: <Search />
         },
         {
           path: ':project',
@@ -83,7 +79,9 @@ function App(): JSX.Element {
       <MessageBannerProvider>
         <ConfigDataProvider>
           <ProjectDataProvider>
-            <RouterProvider router={router} />
+            <SearchProvider>
+              <RouterProvider router={router} />
+            </SearchProvider>
           </ProjectDataProvider>
         </ConfigDataProvider>
       </MessageBannerProvider>

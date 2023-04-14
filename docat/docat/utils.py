@@ -101,7 +101,7 @@ def is_forbidden_project_name(name: str) -> bool:
     a page on the docat website.
     """
     name = name.lower().strip()
-    return name in ["upload", "claim", "delete", "search", "help"]
+    return name in ["upload", "claim", "delete", "help"]
 
 
 def get_all_projects(upload_folder_path: Path, include_hidden: bool) -> Projects:

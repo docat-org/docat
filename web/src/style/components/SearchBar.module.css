@@ -1,24 +1,12 @@
-.search-icon {
-  float: right;
-  margin: 16px 16px 0 0;
-  height: 32px !important;
-  cursor: pointer;
-}
-
 .search-bar {
   border: 1px solid #e8e8e8;
   float: right;
-  margin-right: 16px;
+  margin: 8px 16px 0 0;
+  border: none;
 }
 
-@media only screen and (max-width: 600px) {
+@media only screen and (max-width: 500px) {
   .search-bar {
     display: none;
-  }
-}
-
-@media only screen and (min-width: 600px) {
-  .search-icon {
-    display: none !important;
   }
 }

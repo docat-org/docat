@@ -7,18 +7,15 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import ProjectsResponse, { Project } from '../models/ProjectsResponse'
 import { useMessageBanner } from './MessageBannerProvider'
-import ProjectRepository from '../repositories/ProjectRepository'
 
 interface ProjectState {
   projects: Project[] | null
-  projectsWithHiddenVersions: Project[] | null
   loadingFailed: boolean
   reload: () => void
 }
 
 const Context = createContext<ProjectState>({
   projects: null,
-  projectsWithHiddenVersions: null,
   loadingFailed: false,
   reload: (): void => {
     console.warn('ProjectDataProvider not initialized')
@@ -32,7 +29,7 @@ const Context = createContext<ProjectState>({
  *
  * If reloading is required, call the reload function.
  */
-export function ProjectDataProvider({ children }: any): JSX.Element {
+export function ProjectDataProvider ({ children }: any): JSX.Element {
   const { showMessage } = useMessageBanner()
 
   const loadData = (): void => {
@@ -47,9 +44,8 @@ export function ProjectDataProvider({ children }: any): JSX.Element {
         }
 
         const data: ProjectsResponse = await response.json()
-        setProjects({
-          projects: ProjectRepository.filterHiddenVersions(data.projects),
-          projectsWithHiddenVersions: data.projects,
+        setState({
+          projects: data.projects,
           loadingFailed: false,
           reload: loadData
         })
@@ -62,9 +58,8 @@ export function ProjectDataProvider({ children }: any): JSX.Element {
           showMs: 6000
         })
 
-        setProjects({
+        setState({
           projects: null,
-          projectsWithHiddenVersions: null,
           loadingFailed: true,
           reload: loadData
         })
@@ -72,9 +67,8 @@ export function ProjectDataProvider({ children }: any): JSX.Element {
     })()
   }
 
-  const [projects, setProjects] = useState<ProjectState>({
+  const [state, setState] = useState<ProjectState>({
     projects: null,
-    projectsWithHiddenVersions: null,
     loadingFailed: false,
     reload: loadData
   })
@@ -83,7 +77,7 @@ export function ProjectDataProvider({ children }: any): JSX.Element {
     loadData()
   }, [])
 
-  return <Context.Provider value={projects}>{children}</Context.Provider>
+  return <Context.Provider value={state}>{children}</Context.Provider>
 }
 
 export const useProjects = (): ProjectState => useContext(Context)
