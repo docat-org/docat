@@ -20,7 +20,7 @@ flake8-black = "^0.3.6"
 pytest = "^7.2.2"
 pytest-cov = "^4.0.0"
 requests = "^2.28.0"
-mypy = "^1.0"
+mypy = "^1.2"
 
 [tool.pytest.ini_options]
 minversion = "6.0"
