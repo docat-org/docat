@@ -359,7 +359,7 @@ def check_token_for_project(db, token, project) -> TokenStatus:
     if result and token:
         token_hash = calculate_token(token, bytes.fromhex(result[0]["salt"]))
         if result[0]["token"] == token_hash:
-            return TokenStatus(True)
+            return TokenStatus(True, "Docat-Api-Key token is valid")
         else:
             return TokenStatus(False, f"Docat-Api-Key token is not valid for {project}")
     else:

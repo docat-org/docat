@@ -6,7 +6,7 @@ from pydantic import BaseModel
 @dataclass(frozen=True)
 class TokenStatus:
     valid: bool
-    reason: str | None = None
+    reason: str
 
 
 class ApiResponse(BaseModel):
