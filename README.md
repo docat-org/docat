@@ -25,6 +25,16 @@ Go to [localhost:8000](http://localhost:8000) to view your docat instance:
 
 ![docat screenshot](doc/assets/docat-screenshot.png)
 
+You can also use docker compose:
+```yaml
+services:
+  docat:
+    image: ghcr.io/docat-org/docat
+    volumes:
+      - $PWD/docat:/var/docat
+    ports:
+      - '8000:80'
+```
 ### Local Development
 
 For local development, first configure and start the backend (inside the `docat/` folder):
