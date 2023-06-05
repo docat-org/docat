@@ -12,6 +12,7 @@ def test_successfully_upload(client):
 
         assert response.status_code == 201
         assert response_data["message"] == "File successfully uploaded"
+        assert (docat.DOCAT_UPLOAD_FOLDER / "some-project" / "1.0.0" / "index.html").exists()
 
 
 def test_successfully_override(client_with_claimed_project):
@@ -167,3 +168,20 @@ def test_upload_rejects_forbidden_project_name(client_with_claimed_project):
             assert response.json() == {"message": f'Project name "{project_name}" is forbidden, as it conflicts with pages in docat web.'}
 
             assert remove_mock.mock_calls == []
+
+
+def test_upload_issues_warning_missing_index_file(client_with_claimed_project):
+    """
+    When a project is uploaded without an index.html file,
+    a warning should be issued, but the upload should succeed.
+    """
+
+    response = client_with_claimed_project.post(
+        "/api/some-project/1.0.0", files={"file": ("some-other-file.html", io.BytesIO(b"<h1>Hello World</h1>"), "plain/text")}
+    )
+    response_data = response.json()
+
+    assert response.status_code == 201
+    assert response_data["message"] == "File successfully uploaded, but no index.html found at root of archive."
+    assert (docat.DOCAT_UPLOAD_FOLDER / "some-project" / "1.0.0" / "some-other-file.html").exists()
+    assert not (docat.DOCAT_UPLOAD_FOLDER / "some-project" / "1.0.0" / "index.html").exists()

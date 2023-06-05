@@ -217,7 +217,7 @@ def upload(
 
     project_base_path = DOCAT_UPLOAD_FOLDER / project
     base_path = project_base_path / version
-    target_file = base_path / file.filename
+    target_file = base_path / str(file.filename)
 
     if base_path.is_symlink():
         # disallow overwriting of tags (symlinks) with new uploads
@@ -226,11 +226,11 @@ def upload(
 
     if base_path.exists():
         token_status = check_token_for_project(db, docat_api_key, project)
-        if token_status.valid:
-            remove_docs(project, version, DOCAT_UPLOAD_FOLDER)
-        else:
+        if not token_status.valid:
             response.status_code = status.HTTP_401_UNAUTHORIZED
             return ApiResponse(message=token_status.reason)
+
+        remove_docs(project, version, DOCAT_UPLOAD_FOLDER)
 
     # ensure directory for the uploaded doc exists
     base_path.mkdir(parents=True, exist_ok=True)
@@ -241,6 +241,9 @@ def upload(
         shutil.copyfileobj(file.file, buffer)
 
     extract_archive(target_file, base_path)
+
+    if not (base_path / "index.html").exists():
+        return ApiResponse(message="File successfully uploaded, but no index.html found at root of archive.")
 
     return ApiResponse(message="File successfully uploaded")
 
