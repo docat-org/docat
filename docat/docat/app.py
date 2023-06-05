@@ -243,9 +243,9 @@ def upload(
     extract_archive(target_file, base_path)
 
     if not (base_path / "index.html").exists():
-        return ApiResponse(message="File successfully uploaded, but no index.html found at root of archive.")
+        return ApiResponse(message="Documentation uploaded successfully, but no index.html found at root of archive.")
 
-    return ApiResponse(message="File successfully uploaded")
+    return ApiResponse(message="Documentation uploaded successfully")
 
 
 @app.put("/api/{project}/{version}/tags/{new_tag}", response_model=ApiResponse, status_code=status.HTTP_201_CREATED)
