@@ -90,12 +90,12 @@ describe('upload', () => {
     const project = 'test-project'
     const version = '1.0.0'
 
-    mockFetchData({})
+    mockFetchData({ message: 'Documentation was uploaded successfully' })
 
     const body = new FormData()
     body.append('file', new Blob([''], { type: 'text/plain' }))
 
-    await ProjectRepository.upload(project, version, body)
+    const { success, message } = await ProjectRepository.upload(project, version, body)
 
     expect(global.fetch).toHaveBeenCalledTimes(1)
     expect(global.fetch).toHaveBeenCalledWith(`/api/${project}/${version}`,
@@ -104,6 +104,9 @@ describe('upload', () => {
         method: 'POST'
       }
     )
+
+    expect(success).toEqual(true)
+    expect(message).toEqual('Documentation was uploaded successfully')
   })
 
   test('should throw version already exists on 401 status code', async () => {
@@ -115,8 +118,10 @@ describe('upload', () => {
     const body = new FormData()
     body.append('file', new Blob([''], { type: 'text/plain' }))
 
-    expect(ProjectRepository.upload(project, version, body)
-    ).rejects.toThrow('Failed to upload documentation: Version already exists')
+    const { success, message } = await ProjectRepository.upload(project, version, body)
+
+    expect(success).toEqual(false)
+    expect(message).toEqual('Failed to upload documentation: Version already exists')
   })
 
   test('should throw server unreachable on 504 status code', async () => {
@@ -128,8 +133,10 @@ describe('upload', () => {
     const body = new FormData()
     body.append('file', new Blob([''], { type: 'text/plain' }))
 
-    expect(ProjectRepository.upload(project, version, body)
-    ).rejects.toThrow('Failed to upload documentation: Server unreachable')
+    const { success, message } = await ProjectRepository.upload(project, version, body)
+
+    expect(success).toEqual(false)
+    expect(message).toEqual('Failed to upload documentation: Server unreachable')
   })
 
   test('should throw error on other status code', async () => {
@@ -141,8 +148,10 @@ describe('upload', () => {
     const body = new FormData()
     body.append('file', new Blob([''], { type: 'text/plain' }))
 
-    expect(ProjectRepository.upload(project, version, body)
-    ).rejects.toThrow('Failed to upload documentation: Test Error')
+    const { success, message } = await ProjectRepository.upload(project, version, body)
+
+    expect(success).toEqual(false)
+    expect(message).toEqual('Failed to upload documentation: Test Error')
   })
 })
 

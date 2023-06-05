@@ -104,24 +104,45 @@ function getProjectDocsURL (projectName: string, version: string, docsPath?: str
  * @param {string} projectName Name of the project
  * @param {string} version Name of the version
  * @param {FormData} body Data to upload
+ * @returns {Promise<{ success: boolean, message: string }>} Success status and (error) message
  */
-async function upload (projectName: string, version: string, body: FormData): Promise<void> {
-  const resp = await fetch(`/api/${projectName}/${version}`,
-    {
-      method: 'POST',
-      body
+async function upload (projectName: string, version: string, body: FormData): Promise<{ success: boolean, message: string }> {
+  try {
+    const resp = await fetch(`/api/${projectName}/${version}`,
+      {
+        method: 'POST',
+        body
+      }
+    )
+
+    if (resp.ok) {
+      const json = await resp.json() as { message: string }
+      const msg = json.message
+      return { success: true, message: msg }
     }
-  )
 
-  if (resp.ok) return
-
-  switch (resp.status) {
-    case 401:
-      throw new Error('Failed to upload documentation: Version already exists')
-    case 504:
-      throw new Error('Failed to upload documentation: Server unreachable')
-    default:
-      throw new Error(`Failed to upload documentation: ${(await resp.json() as { message: string }).message}`)
+    switch (resp.status) {
+      case 401:
+        return {
+          success: false,
+          message: 'Failed to upload documentation: Version already exists'
+        }
+      case 504:
+        return {
+          success: false,
+          message: 'Failed to upload documentation: Server unreachable'
+        }
+      default:
+        return {
+          success: false,
+          message: `Failed to upload documentation: ${(await resp.json() as { message: string }).message}`
+        }
+    }
+  } catch (e) {
+    return {
+      success: false,
+      message: `Failed to upload documentation: ${(e as { message: string }).message}}`
+    }
   }
 }
 

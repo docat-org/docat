@@ -25,7 +25,7 @@ const okFileTypes = [
   'application/x-zip-compressed'
 ]
 
-export default function Upload(): JSX.Element {
+export default function Upload (): JSX.Element {
   document.title = 'Upload | docat'
 
   const { reload: reloadProjects } = useProjects()
@@ -97,37 +97,36 @@ export default function Upload(): JSX.Element {
       if (!validateFile(file) || file === undefined) return
 
       setIsUploading(true)
-      try {
-        const formData = new FormData()
-        formData.append('file', file)
+      const formData = new FormData()
+      formData.append('file', file)
 
-        await ProjectRepository.upload(project, version, formData)
+      const { success, message } = await ProjectRepository.upload(project, version, formData)
 
-        // reset the form
-        setProject('')
-        setVersion('')
-        setFile(undefined)
-        setValidation({})
-        showMessage({
-          type: 'success',
-          content: 'Documentation uploaded successfully',
-          showMs: 6000
-        })
-
-        // reload the projects
-        reloadProjects()
-      } catch (e) {
-        console.error(e)
-
-        const message = (e as { message: string }).message
+      if (!success) {
+        console.error(message)
         showMessage({
           type: 'error',
           content: message,
           showMs: 6000
         })
-      } finally {
         setIsUploading(false)
+        return
       }
+
+      // reset the form
+      setProject('')
+      setVersion('')
+      setFile(undefined)
+      setValidation({})
+
+      showMessage({
+        type: 'success',
+        content: message,
+        showMs: 6000
+      })
+
+      reloadProjects()
+      setIsUploading(false)
     })()
   }
 
