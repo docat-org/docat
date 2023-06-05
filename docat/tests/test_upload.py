@@ -11,7 +11,7 @@ def test_successfully_upload(client):
         response_data = response.json()
 
         assert response.status_code == 201
-        assert response_data["message"] == "File successfully uploaded"
+        assert response_data["message"] == "Documentation uploaded successfully"
         assert (docat.DOCAT_UPLOAD_FOLDER / "some-project" / "1.0.0" / "index.html").exists()
 
 
@@ -30,7 +30,7 @@ def test_successfully_override(client_with_claimed_project):
         response_data = response.json()
 
         assert response.status_code == 201
-        assert response_data["message"] == "File successfully uploaded"
+        assert response_data["message"] == "Documentation uploaded successfully"
         assert remove_mock.mock_calls == [call("some-project", "1.0.0", docat.DOCAT_UPLOAD_FOLDER)]
 
 
@@ -182,6 +182,6 @@ def test_upload_issues_warning_missing_index_file(client_with_claimed_project):
     response_data = response.json()
 
     assert response.status_code == 201
-    assert response_data["message"] == "File successfully uploaded, but no index.html found at root of archive."
+    assert response_data["message"] == "Documentation uploaded successfully, but no index.html found at root of archive."
     assert (docat.DOCAT_UPLOAD_FOLDER / "some-project" / "1.0.0" / "some-other-file.html").exists()
     assert not (docat.DOCAT_UPLOAD_FOLDER / "some-project" / "1.0.0" / "index.html").exists()
