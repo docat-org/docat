@@ -88,7 +88,7 @@ Same thing with `docatl`:
 
 ```sh
 # tag the version VERSION of project PROJECT as latest
-docatl tag --host http://localhost:8000 PROJECT VERSION
+docatl tag --host http://localhost:8000 PROJECT VERSION latest
 ```
 
 ## Advanced `config.json`
