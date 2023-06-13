@@ -1050,13 +1050,13 @@ full = ["httpx (>=0.22.0)", "itsdangerous", "jinja2", "python-multipart", "pyyam
 
 [[package]]
 name = "tinydb"
-version = "4.7.1"
+version = "4.8.0"
 description = "TinyDB is a tiny, document oriented database optimized for your happiness :)"
 optional = false
 python-versions = ">=3.7,<4.0"
 files = [
-    {file = "tinydb-4.7.1-py3-none-any.whl", hash = "sha256:1534e498ca23f55c43b0f1e7c0cf174049498ab45a887c82ba9831e0f9868df3"},
-    {file = "tinydb-4.7.1.tar.gz", hash = "sha256:8955c239a79b8a6c8f637900152e2de38690848199d71d870c33c16405433ca5"},
+    {file = "tinydb-4.8.0-py3-none-any.whl", hash = "sha256:30c06d12383d7c332e404ca6a6103fb2b32cbf25712689648c39d9a6bd34bd3d"},
+    {file = "tinydb-4.8.0.tar.gz", hash = "sha256:6dd686a9c5a75dfa9280088fd79a419aefe19cd7f4bd85eba203540ef856d564"},
 ]
 
 [[package]]
@@ -1356,4 +1356,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "c0861fddcb0ff6ab6d6955ec4f37dafa963167b62234b736a8f8f75d2e062a04"
+content-hash = "e512a0c69a7feacd6d1ffcc8e7da05c82edde891d25ca6be4a218d65b70e6d30"
