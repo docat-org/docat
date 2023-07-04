@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from datetime import datetime
 
 from pydantic import BaseModel
 
@@ -21,6 +22,7 @@ class ProjectVersion(BaseModel):
     name: str
     tags: list[str]
     hidden: bool
+    upload_date: datetime
 
 
 class Project(BaseModel):

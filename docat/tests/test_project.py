@@ -7,6 +7,7 @@ from fastapi.testclient import TestClient
 import docat.app as docat
 from docat.models import ProjectDetail, ProjectVersion
 from docat.utils import get_project_details
+from tests.conftest import MOCK_TIMESTAMP_DATETIME, MOCK_TIMESTAMP_ISO
 
 client = TestClient(docat.app)
 
@@ -25,7 +26,7 @@ def test_project_api(temp_project_version):
                     "name": "project",
                     "logo": False,
                     "versions": [
-                        {"name": "1.0", "tags": ["latest"], "hidden": False},
+                        {"name": "1.0", "tags": ["latest"], "hidden": False, "upload_date": MOCK_TIMESTAMP_ISO},
                     ],
                 }
             ]
@@ -49,7 +50,10 @@ def test_project_details_api(temp_project_version):
         response = client.get(f"/api/projects/{project}")
 
         assert response.status_code == httpx.codes.OK
-        assert response.json() == {"name": "project", "versions": [{"name": "1.0", "tags": ["latest"], "hidden": False}]}
+        assert response.json() == {
+            "name": "project",
+            "versions": [{"name": "1.0", "tags": ["latest"], "hidden": False, "upload_date": MOCK_TIMESTAMP_ISO}],
+        }
 
 
 def test_project_details_api_with_a_project_that_does_not_exist():
@@ -71,7 +75,9 @@ def test_get_project_details_with_hidden_versions(client_with_claimed_project):
 
     # check detected before hiding
     details = get_project_details(docat.DOCAT_UPLOAD_FOLDER, "some-project", include_hidden=True)
-    assert details == ProjectDetail(name="some-project", versions=[ProjectVersion(name="1.0.0", tags=[], hidden=False)])
+    assert details == ProjectDetail(
+        name="some-project", versions=[ProjectVersion(name="1.0.0", tags=[], hidden=False, upload_date=MOCK_TIMESTAMP_DATETIME)]
+    )
 
     # hide the version
     hide_response = client_with_claimed_project.post("/api/some-project/1.0.0/hide", headers={"Docat-Api-Key": "1234"})
@@ -80,7 +86,9 @@ def test_get_project_details_with_hidden_versions(client_with_claimed_project):
 
     # check hidden
     details = get_project_details(docat.DOCAT_UPLOAD_FOLDER, "some-project", include_hidden=True)
-    assert details == ProjectDetail(name="some-project", versions=[ProjectVersion(name="1.0.0", tags=[], hidden=True)])
+    assert details == ProjectDetail(
+        name="some-project", versions=[ProjectVersion(name="1.0.0", tags=[], hidden=True, upload_date=MOCK_TIMESTAMP_DATETIME)]
+    )
 
 
 def test_project_details_without_hidden_versions(client_with_claimed_project):
@@ -95,7 +103,9 @@ def test_project_details_without_hidden_versions(client_with_claimed_project):
 
     # check detected before hiding
     details = get_project_details(docat.DOCAT_UPLOAD_FOLDER, "some-project", include_hidden=False)
-    assert details == ProjectDetail(name="some-project", versions=[ProjectVersion(name="1.0.0", tags=[], hidden=False)])
+    assert details == ProjectDetail(
+        name="some-project", versions=[ProjectVersion(name="1.0.0", tags=[], hidden=False, upload_date=MOCK_TIMESTAMP_DATETIME)]
+    )
 
     # hide the version
     hide_response = client_with_claimed_project.post("/api/some-project/1.0.0/hide", headers={"Docat-Api-Key": "1234"})
@@ -121,14 +131,26 @@ def test_include_hidden_parameter_for_get_projects(client_with_claimed_project):
     get_projects_response = client_with_claimed_project.get("/api/projects")
     assert get_projects_response.status_code == 200
     assert get_projects_response.json() == {
-        "projects": [{"name": "some-project", "logo": False, "versions": [{"name": "1.0.0", "tags": [], "hidden": False}]}]
+        "projects": [
+            {
+                "name": "some-project",
+                "logo": False,
+                "versions": [{"name": "1.0.0", "tags": [], "hidden": False, "upload_date": MOCK_TIMESTAMP_ISO}],
+            }
+        ]
     }
 
     # check include_hidden=True
     get_projects_response = client_with_claimed_project.get("/api/projects?include_hidden=true")
     assert get_projects_response.status_code == 200
     assert get_projects_response.json() == {
-        "projects": [{"name": "some-project", "logo": False, "versions": [{"name": "1.0.0", "tags": [], "hidden": False}]}]
+        "projects": [
+            {
+                "name": "some-project",
+                "logo": False,
+                "versions": [{"name": "1.0.0", "tags": [], "hidden": False, "upload_date": MOCK_TIMESTAMP_ISO}],
+            }
+        ]
     }
 
     # hide the version
@@ -145,7 +167,13 @@ def test_include_hidden_parameter_for_get_projects(client_with_claimed_project):
     get_projects_response = client_with_claimed_project.get("/api/projects?include_hidden=true")
     assert get_projects_response.status_code == 200
     assert get_projects_response.json() == {
-        "projects": [{"name": "some-project", "logo": False, "versions": [{"name": "1.0.0", "tags": [], "hidden": True}]}]
+        "projects": [
+            {
+                "name": "some-project",
+                "logo": False,
+                "versions": [{"name": "1.0.0", "tags": [], "hidden": True, "upload_date": MOCK_TIMESTAMP_ISO}],
+            }
+        ]
     }
 
 
@@ -164,7 +192,7 @@ def test_include_hidden_parameter_for_get_project_details(client_with_claimed_pr
     assert get_projects_response.status_code == 200
     assert get_projects_response.json() == {
         "name": "some-project",
-        "versions": [{"name": "1.0.0", "tags": [], "hidden": False}],
+        "versions": [{"name": "1.0.0", "tags": [], "hidden": False, "upload_date": MOCK_TIMESTAMP_ISO}],
     }
 
     # check include_hidden=True
@@ -172,7 +200,7 @@ def test_include_hidden_parameter_for_get_project_details(client_with_claimed_pr
     assert get_projects_response.status_code == 200
     assert get_projects_response.json() == {
         "name": "some-project",
-        "versions": [{"name": "1.0.0", "tags": [], "hidden": False}],
+        "versions": [{"name": "1.0.0", "tags": [], "hidden": False, "upload_date": MOCK_TIMESTAMP_ISO}],
     }
 
     # hide the version
@@ -193,5 +221,5 @@ def test_include_hidden_parameter_for_get_project_details(client_with_claimed_pr
     assert get_projects_response.status_code == 200
     assert get_projects_response.json() == {
         "name": "some-project",
-        "versions": [{"name": "1.0.0", "tags": [], "hidden": True}],
+        "versions": [{"name": "1.0.0", "tags": [], "hidden": True, "upload_date": MOCK_TIMESTAMP_ISO}],
     }

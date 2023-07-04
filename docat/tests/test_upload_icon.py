@@ -3,6 +3,7 @@ import io
 from unittest.mock import call, patch
 
 import docat.app as docat
+from tests.conftest import MOCK_TIMESTAMP_ISO
 
 ONE_PIXEL_PNG = base64.decodebytes(
     b"iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAA1JREFUGFdjYGBg+A8AAQQBAHAgZQsAAAAASUVORK5CYII="
@@ -160,7 +161,7 @@ def test_get_project_recongizes_icon(client_with_claimed_project):
             {
                 "name": "some-project",
                 "logo": False,
-                "versions": [{"name": "1.0.0", "tags": [], "hidden": False}],
+                "versions": [{"name": "1.0.0", "tags": [], "hidden": False, "upload_date": MOCK_TIMESTAMP_ISO}],
             }
         ]
     }
@@ -178,7 +179,7 @@ def test_get_project_recongizes_icon(client_with_claimed_project):
             {
                 "name": "some-project",
                 "logo": True,
-                "versions": [{"name": "1.0.0", "tags": [], "hidden": False}],
+                "versions": [{"name": "1.0.0", "tags": [], "hidden": False, "upload_date": MOCK_TIMESTAMP_ISO}],
             }
         ]
     }

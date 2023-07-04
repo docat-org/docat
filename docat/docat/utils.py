@@ -4,6 +4,7 @@ docat utilities
 import hashlib
 import os
 import shutil
+from datetime import datetime
 from pathlib import Path
 from zipfile import ZipFile
 
@@ -129,6 +130,10 @@ def get_all_projects(upload_folder_path: Path, include_hidden: bool) -> Projects
     return Projects(projects=projects)
 
 
+def get_upload_date(docs_folder: Path):
+    return datetime.fromtimestamp(docs_folder.stat().st_mtime)
+
+
 def get_project_details(upload_folder_path: Path, project_name: str, include_hidden: bool) -> ProjectDetail | None:
     """
     Returns all versions and tags for a project.
@@ -154,6 +159,7 @@ def get_project_details(upload_folder_path: Path, project_name: str, include_hid
                     name=str(x.relative_to(docs_folder)),
                     tags=[str(t.relative_to(docs_folder)) for t in tags if t.resolve() == x],
                     hidden=(docs_folder / x.name / ".hidden").exists(),
+                    upload_date=get_upload_date(docs_folder),
                 )
                 for x in docs_folder.iterdir()
                 if x.is_dir() and not x.is_symlink() and should_include(x.name)

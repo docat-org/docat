@@ -2,6 +2,7 @@ import io
 from unittest.mock import patch
 
 import docat.app as docat
+from tests.conftest import MOCK_TIMESTAMP_ISO
 
 
 def test_hide(client_with_claimed_project):
@@ -19,7 +20,7 @@ def test_hide(client_with_claimed_project):
     assert project_details_response.status_code == 200
     assert project_details_response.json() == {
         "name": "some-project",
-        "versions": [{"name": "1.0.0", "tags": [], "hidden": False}],
+        "versions": [{"name": "1.0.0", "tags": [], "hidden": False, "upload_date": MOCK_TIMESTAMP_ISO}],
     }
 
     # hide the version
@@ -50,7 +51,13 @@ def test_hide_only_version_not_listed_in_projects(client_with_claimed_project):
     projects_response = client_with_claimed_project.get("/api/projects")
     assert projects_response.status_code == 200
     assert projects_response.json() == {
-        "projects": [{"name": "some-project", "logo": False, "versions": [{"name": "1.0.0", "tags": [], "hidden": False}]}],
+        "projects": [
+            {
+                "name": "some-project",
+                "logo": False,
+                "versions": [{"name": "1.0.0", "tags": [], "hidden": False, "upload_date": MOCK_TIMESTAMP_ISO}],
+            }
+        ],
     }
 
     # hide the only version
@@ -219,7 +226,7 @@ def test_show(client_with_claimed_project):
     assert project_details_response.status_code == 200
     assert project_details_response.json() == {
         "name": "some-project",
-        "versions": [{"name": "1.0.0", "tags": [], "hidden": False}],
+        "versions": [{"name": "1.0.0", "tags": [], "hidden": False, "upload_date": MOCK_TIMESTAMP_ISO}],
     }
 
 
@@ -391,5 +398,5 @@ def test_hide_and_show_with_tag(client_with_claimed_project):
     assert project_details_response.status_code == 200
     assert project_details_response.json() == {
         "name": "some-project",
-        "versions": [{"name": "1.0.0", "tags": ["latest"], "hidden": False}],
+        "versions": [{"name": "1.0.0", "tags": ["latest"], "hidden": False, "upload_date": MOCK_TIMESTAMP_ISO}],
     }
