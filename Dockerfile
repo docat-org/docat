@@ -1,5 +1,5 @@
 # building frontend
-FROM node:20.2 as frontend
+FROM node:20.4 as frontend
 WORKDIR /app/frontend
 COPY web ./
 
