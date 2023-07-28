@@ -8,7 +8,7 @@ license = "MIT"
 [tool.poetry.dependencies]
 python = "^3.10"
 tinydb = "^4.7.0"
-fastapi = {version = "^0.97.0", extras = ["all"]}
+fastapi = {version = "^0.100.1", extras = ["all"]}
 python-multipart = "^0.0.6"
 uvicorn = "^0.22.0"
 python-magic = "^0.4.27"
