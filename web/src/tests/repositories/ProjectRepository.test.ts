@@ -30,7 +30,7 @@ describe('get versions', () => {
   test('should return versions', async () => {
     const projectName = 'test'
     const versions = ['1.0.0', '2.0.0']
-    const responseData = versions.map(version => (new ProjectDetails(version, ['tag'], false)))
+    const responseData = versions.map(version => (new ProjectDetails(version, ['tag'], false, "2023-08-07T23:00:59.607Z")))
 
     mockFetchData({ versions: responseData })
 
@@ -271,14 +271,16 @@ describe('filterHiddenVersions', () => {
 
       name: 'v-2',
       tags: ['stable'],
-      hidden: false
+      hidden: false,
+      upload_date: new Date(0)
     }
 
     const hiddenVersion: ProjectDetails =
     {
       name: 'v-1',
       tags: ['latest'],
-      hidden: true
+      hidden: true,
+      upload_date: new Date(0)
     }
 
     const allProjects: Project[] = [
@@ -308,7 +310,8 @@ describe('filterHiddenVersions', () => {
           {
             name: 'v-1',
             tags: ['latest'],
-            hidden: true
+            hidden: true,
+            upload_date: new Date(0)
           }
         ],
         logo: true
@@ -326,12 +329,14 @@ describe('getLatestVersion', () => {
       {
         name: '1.0.0',
         hidden: false,
-        tags: []
+        tags: [],
+        upload_date: new Date(0)
       },
       {
         name: '2.0.0',
         hidden: false,
-        tags: []
+        tags: [],
+        upload_date: new Date(0)
       }
     ]
 
@@ -344,12 +349,14 @@ describe('getLatestVersion', () => {
       {
         name: '1.0.0',
         hidden: false,
-        tags: []
+        tags: [],
+        upload_date: new Date(0)
       },
       {
         name: 'latest',
         hidden: false,
-        tags: []
+        tags: [],
+        upload_date: new Date(0)
       }]
 
     const latestVersion = ProjectRepository.getLatestVersion(versions)
@@ -361,12 +368,14 @@ describe('getLatestVersion', () => {
       {
         name: '1.0.0',
         hidden: false,
-        tags: ['latest']
+        tags: ['latest'],
+        upload_date: new Date(0)
       },
       {
         name: '2.0.0',
         hidden: false,
-        tags: []
+        tags: [],
+        upload_date: new Date(0)
       }]
 
     const latestVersion = ProjectRepository.getLatestVersion(versions)
@@ -378,12 +387,14 @@ describe('getLatestVersion', () => {
       {
         name: 'latest',
         hidden: false,
-        tags: []
+        tags: [],
+        upload_date: new Date(0)
       },
       {
         name: '1.0.0',
         hidden: false,
-        tags: ['latest']
+        tags: ['latest'],
+        upload_date: new Date(0)
       }
     ]
 

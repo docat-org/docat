@@ -13,7 +13,7 @@ interface Props {
   onHideUi: () => void
 }
 
-export default function DocumentControlButtons (props: Props): JSX.Element {
+export default function DocumentControlButtons(props: Props): JSX.Element {
   const buttonStyle = { width: '25px', height: '25px' }
 
   return (
@@ -37,7 +37,7 @@ export default function DocumentControlButtons (props: Props): JSX.Element {
             .filter((v) => !v.hidden || v.name === props.version)
             .map((v) => (
               <MenuItem key={v.name} value={v.name}>
-                {v.name + (v.tags.length > 0 ? ` (${v.tags.join(', ')})` : '')}
+                {v.name + ` (${v.upload_date.toLocaleString()}) ` + (v.tags.length > 0 ? ` (${v.tags.join(', ')})` : '')}
               </MenuItem>
             ))}
         </Select>

@@ -12,7 +12,7 @@ interface Props {
   onFavoriteChanged: () => void
 }
 
-export default function Project (props: Props): JSX.Element {
+export default function Project(props: Props): JSX.Element {
   return (
     <div className={styles['project-card']}>
       <div className={styles['project-card-header']}>
@@ -33,14 +33,14 @@ export default function Project (props: Props): JSX.Element {
                     {props.project.name} <span className={styles['project-card-version']}>{ProjectRepository.getLatestVersion(props.project.versions).name}</span>
                   </div>
                 </>
-                )
+              )
               : (
                 <div
                   className={styles['project-card-title']}
                 >
                   {props.project.name} <span className={styles['project-card-version']}>{ProjectRepository.getLatestVersion(props.project.versions).name}</span>
                 </div>
-                )}
+              )}
           </Link>
         </Tooltip>
         <FavoriteStar
@@ -53,6 +53,11 @@ export default function Project (props: Props): JSX.Element {
           ? `${props.project.versions.length} version`
           : `${props.project.versions.length} versions`}
       </div>
+
+      <div className={styles.subhead}>
+        Updated: {new Date(ProjectRepository.getLatestVersion(props.project.versions).upload_date).toLocaleString()}
+      </div>
+
     </div>
   )
 }
