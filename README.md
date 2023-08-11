@@ -104,6 +104,20 @@ Supported config options:
 
 ## Advanced Usage
 
+### Install using Helm Chart
+
+Example:
+
+```bash
+cd charts/
+
+helm upgrade --install \
+  --namespace default \
+  docat ./docat
+```
+
+This chart is under construction
+
 ### Hide Controls
 
 If you would like to send link to a specific version of the documentation without the option to change the version, you can do so by clicking on the `Hide Controls` button. This will hide the control buttons and change the link, which can then be copied as usual.
