@@ -1,3 +1,17 @@
+.nav-title {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+@media only screen and (min-width: 1400px) {
+  .nav-title {
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
 .page-header {
   display: flex;
   flex-direction: row;

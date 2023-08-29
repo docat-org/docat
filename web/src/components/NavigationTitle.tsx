@@ -12,7 +12,7 @@ interface Props {
 
 export default function NavigationTitle (props: Props): JSX.Element {
   return (
-    <>
+    <div className={styles['nav-title']}>
       <div className={styles['page-header']}>
         <Link
           to={props.backLink != null ? props.backLink : '/'}
@@ -24,6 +24,6 @@ export default function NavigationTitle (props: Props): JSX.Element {
       </div>
 
       <div className={styles['page-description']}>{props.description}</div>
-    </>
+    </div>
   )
 }

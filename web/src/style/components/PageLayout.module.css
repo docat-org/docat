@@ -6,13 +6,13 @@
 @media only screen and (min-width: 650px) {
   .main {
     padding: 1% 0;
-    margin: 3% 16% 0 16%;
+    margin: 3% 16% 1% 16%;
   }
 }
 
 @media only screen and (max-width: 650px) {
   .main {
     padding: 1% 0;
-    margin: 3% 3% 0 3%;
+    margin: 3%;
   }
 }

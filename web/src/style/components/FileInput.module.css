@@ -5,10 +5,13 @@
 }
 
 .file-drop-zone {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: max(150px, 25vh);
   border-radius: 5px;
   border: 1px solid rgba(0, 0, 0, 0.23);
-  text-align: center;
-  padding: 13% 5%;
   cursor: pointer;
 }
 

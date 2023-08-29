@@ -195,7 +195,7 @@ export default function Upload (): JSX.Element {
           {validation.fileMsg}
         </p>
 
-        <button type="submit" onClick={upload}>
+        <button type="submit" onClick={upload} className={styles['upload-btn']}>
           Upload
         </button>
       </StyledForm>
