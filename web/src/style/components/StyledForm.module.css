@@ -9,13 +9,15 @@
   min-height: 5em;
 }
 
-@media only screen and (min-width: 1000px) {
+@media only screen and (min-width: 1400px) {
   .form {
     width: 50%;
+    margin-left: auto;
+    margin-right: auto;
   }
 }
 
-@media only screen and (max-width: 1000px) {
+@media only screen and (max-width: 1400px) {
   .form {
     width: 100%;
   }

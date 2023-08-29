@@ -141,7 +141,7 @@ async function upload (projectName: string, version: string, body: FormData): Pr
   } catch (e) {
     return {
       success: false,
-      message: `Failed to upload documentation: ${(e as { message: string }).message}}`
+      message: `Failed to upload documentation: ${(e as { message: string }).message}`
     }
   }
 }
