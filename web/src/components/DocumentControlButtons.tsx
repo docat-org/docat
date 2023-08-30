@@ -1,7 +1,7 @@
 import { Home, VisibilityOff } from '@mui/icons-material'
 import { FormControl, MenuItem, Select, Tooltip } from '@mui/material'
 import { Link } from 'react-router-dom'
-import ProjectDetails from '../models/ProjectDetails'
+import type ProjectDetails from '../models/ProjectDetails'
 import React from 'react'
 
 import styles from './../style/components/DocumentControlButtons.module.css'
@@ -30,7 +30,7 @@ export default function DocumentControlButtons (props: Props): JSX.Element {
       <FormControl>
         <Select
           className={styles['version-select']}
-          onChange={(e) => props.onVersionChange(e.target.value)}
+          onChange={(e) => { props.onVersionChange(e.target.value) }}
           value={props.versions.length > 0 ? props.version : ''}
         >
           {props.versions

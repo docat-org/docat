@@ -3,7 +3,7 @@
 
 import ProjectRepository from '../../repositories/ProjectRepository'
 import ProjectDetails from '../../models/ProjectDetails'
-import { Project } from '../../models/ProjectsResponse'
+import { type Project } from '../../models/ProjectsResponse'
 const mockFetchData = (fetchData: any): void => {
   global.fetch = vi.fn().mockImplementation(async () => await Promise.resolve({
     ok: true,

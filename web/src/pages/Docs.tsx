@@ -6,7 +6,7 @@
 import React, { useEffect, useRef, useMemo, useState } from 'react'
 import { useLocation, useParams, useSearchParams } from 'react-router-dom'
 import DocumentControlButtons from '../components/DocumentControlButtons'
-import ProjectDetails from '../models/ProjectDetails'
+import type ProjectDetails from '../models/ProjectDetails'
 import ProjectRepository from '../repositories/ProjectRepository'
 
 import LoadingPage from './LoadingPage'
@@ -234,8 +234,8 @@ export default function Docs (): JSX.Element {
         <DocumentControlButtons
           version={version}
           versions={versions}
-          onVersionChange={(v) => updateURL(project, v, page, hash, hideUi)}
-          onHideUi={() => updateURL(project, version, page, hash, true)}
+          onVersionChange={(v) => { updateURL(project, v, page, hash, hideUi) }}
+          onHideUi={() => { updateURL(project, version, page, hash, true) }}
         />
       )}
     </>

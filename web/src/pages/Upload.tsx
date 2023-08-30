@@ -187,7 +187,7 @@ export default function Upload (): JSX.Element {
         <FileInput
           label="Zip File"
           file={file}
-          onChange={(file) => setFile(file)}
+          onChange={(file) => { setFile(file) }}
           okTypes={okFileTypes}
           isValid={validateFile}
         ></FileInput>
