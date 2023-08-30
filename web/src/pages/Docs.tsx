@@ -44,12 +44,17 @@ export default function Docs (): JSX.Element {
         title="docs"
         className={styles['docs-iframe']}
         onLoad={() => {
+          if (iFrameRef.current == null) {
+            console.error('iFrameRef is null')
+            return
+          }
+
           // @ts-expect-error ts can't find contentWindow
-          onIFrameLocationChanged(iFrameRef.current?.contentWindow.location.href)
+          onIFrameLocationChanged(iFrameRef.current.contentWindow.location.href)
         }}
       />
     )
-  }, [project, version, page])
+  }, [project, version])
 
   document.title = `${project} | docat`
 
