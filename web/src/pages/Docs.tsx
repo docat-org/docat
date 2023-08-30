@@ -3,7 +3,7 @@
   the iFrameRef is not really compatiple with ts,
 */
 
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useMemo, useState } from 'react'
 import { useLocation, useParams, useSearchParams } from 'react-router-dom'
 import DocumentControlButtons from '../components/DocumentControlButtons'
 import ProjectDetails from '../models/ProjectDetails'
@@ -36,6 +36,26 @@ export default function Docs (): JSX.Element {
   const location = useLocation()
   const iFrameRef = useRef<HTMLIFrameElement>(null)
 
+  const iFrame = useMemo(() => {
+    return (<iframe
+        ref={iFrameRef}
+        key={uniqueId()}
+        src={ProjectRepository.getProjectDocsURL(project, version, page, hash)}
+        title="docs"
+        className={styles['docs-iframe']}
+        onLoad={() => {
+          if (iFrameRef.current == null) {
+            console.error('iFrameRef is null')
+            return
+          }
+
+          // @ts-expect-error ts can't find contentWindow
+          onIFrameLocationChanged(iFrameRef.current.contentWindow.location.href)
+        }}
+      />
+    )
+  }, [project, version])
+
   document.title = `${project} | docat`
 
   if (projectParam === '') {
@@ -43,15 +63,7 @@ export default function Docs (): JSX.Element {
   }
 
   const updateURL = (newProject: string, newVersion: string, newPage: string, newHash: string, newHideUi: boolean): void => {
-    let url = `#/${newProject}/${newVersion}/${newPage}`
-
-    if (newHash.length > 0) {
-      url += newHash
-    }
-
-    if (newHideUi) {
-      url += '?hide-ui=true'
-    }
+    const url = `#/${newProject}/${newVersion}/${newPage}${newHash}${newHideUi ? '?hide-ui=true' : ''}`
 
     if (project === newProject && version === newVersion && page === newPage && hash === newHash && hideUi === newHideUi) {
       // no change
@@ -217,18 +229,7 @@ export default function Docs (): JSX.Element {
 
   return (
     <>
-      <iframe
-        ref={iFrameRef}
-        key={uniqueId()}
-        src={ProjectRepository.getProjectDocsURL(project, version, page, hash)}
-        title="docs"
-        className={styles['docs-iframe']}
-        onLoad={() => {
-          // @ts-expect-error ts can't find contentWindow
-          onIFrameLocationChanged(iFrameRef.current?.contentWindow.location.href)
-        }}
-      />
-
+      {iFrame}
       {!hideUi && (
         <DocumentControlButtons
           version={version}
