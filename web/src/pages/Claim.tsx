@@ -100,7 +100,7 @@ export default function Claim (): JSX.Element {
           onClick={() => {
             (async () => {
               await claim()
-            })().catch((e) => console.error(e))
+            })().catch((e) => { console.error(e) })
           }}
         >
           Claim

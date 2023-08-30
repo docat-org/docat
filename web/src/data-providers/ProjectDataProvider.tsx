@@ -5,7 +5,8 @@
 */
 
 import React, { createContext, useContext, useEffect, useState } from 'react'
-import ProjectsResponse, { Project } from '../models/ProjectsResponse'
+import { type Project } from '../models/ProjectsResponse'
+import type ProjectsResponse from '../models/ProjectsResponse'
 import { useMessageBanner } from './MessageBannerProvider'
 
 interface ProjectState {

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 
 import { useProjects } from '../data-providers/ProjectDataProvider'
 import { ErrorOutline } from '@mui/icons-material'
-import { Project } from '../models/ProjectsResponse'
+import { type Project } from '../models/ProjectsResponse'
 import { useLocation } from 'react-router'
 import { useSearch } from '../data-providers/SearchProvider'
 
@@ -96,14 +96,14 @@ export default function Home (): JSX.Element {
       <div className={styles['project-overview']}>
         <ProjectList
           projects={favoriteProjects}
-          onFavoriteChanged={() => updateFavorites()}
+          onFavoriteChanged={() => { updateFavorites() }}
         />
         {nonFavoriteProjects.length > 0 && favoriteProjects.length > 0 && (
           <div className={styles.divider} />
         )}
         <ProjectList
           projects={nonFavoriteProjects}
-          onFavoriteChanged={() => updateFavorites()}
+          onFavoriteChanged={() => { updateFavorites() }}
         />
       </div>
       <UploadButton></UploadButton>

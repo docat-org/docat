@@ -1,6 +1,6 @@
 import semver from 'semver'
-import ProjectDetails from '../models/ProjectDetails'
-import { Project } from '../models/ProjectsResponse'
+import type ProjectDetails from '../models/ProjectDetails'
+import { type Project } from '../models/ProjectsResponse'
 
 const RESOURCE = 'doc'
 

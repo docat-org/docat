@@ -1,4 +1,4 @@
-import ProjectDetails from './ProjectDetails'
+import type ProjectDetails from './ProjectDetails'
 
 export interface Project {
   name: string

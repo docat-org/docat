@@ -5,7 +5,7 @@ import ProjectRepository from '../repositories/ProjectRepository'
 import StyledForm from '../components/StyledForm'
 import PageLayout from '../components/PageLayout'
 import { useProjects } from '../data-providers/ProjectDataProvider'
-import ProjectDetails from '../models/ProjectDetails'
+import type ProjectDetails from '../models/ProjectDetails'
 import { useMessageBanner } from '../data-providers/MessageBannerProvider'
 
 interface Validation {

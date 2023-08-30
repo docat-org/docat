@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import ProjectRepository from '../repositories/ProjectRepository'
 import styles from './../style/components/Project.module.css'
-import { Project as ProjectType } from '../models/ProjectsResponse'
+import { type Project as ProjectType } from '../models/ProjectsResponse'
 
 import FavoriteStar from './FavoriteStar'
 import { Tooltip } from '@mui/material'

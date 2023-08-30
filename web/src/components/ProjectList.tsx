@@ -2,7 +2,7 @@ import Project from './Project'
 import React from 'react'
 
 import styles from './../style/components/ProjectList.module.css'
-import { Project as ProjectType } from '../models/ProjectsResponse'
+import { type Project as ProjectType } from '../models/ProjectsResponse'
 
 interface Props {
   projects: ProjectType[]
@@ -20,7 +20,7 @@ export default function ProjectList (props: Props): JSX.Element {
         <Project
           project={project}
           key={project.name}
-          onFavoriteChanged={() => props.onFavoriteChanged()}
+          onFavoriteChanged={() => { props.onFavoriteChanged() }}
         />
       ))}
     </div>

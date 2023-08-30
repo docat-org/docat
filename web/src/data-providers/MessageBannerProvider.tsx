@@ -46,12 +46,13 @@ export function MessageBannerProvider ({ children }: any): JSX.Element {
 
     // Hide message after 6 seconds
     const newTimeout = setTimeout(
-      () =>
+      () => {
         setMessage({
           content: undefined,
           type: 'success',
           showMs: 6000
-        }),
+        })
+      },
       message.showMs
     )
 

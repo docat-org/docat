@@ -5,7 +5,7 @@
 */
 
 import React, { createContext, useContext, useEffect, useState } from 'react'
-import { Project } from '../models/ProjectsResponse'
+import { type Project } from '../models/ProjectsResponse'
 import { useProjects } from './ProjectDataProvider'
 import Fuse from 'fuse.js'
 
