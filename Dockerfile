@@ -40,7 +40,7 @@ RUN mkdir -p /var/docat/doc
 
 # install the application
 RUN mkdir -p /var/www/html
-COPY --from=frontend /app/frontend/build /var/www/html
+COPY --from=frontend /app/frontend/dist /var/www/html
 COPY docat /app/docat
 WORKDIR /app/docat
 

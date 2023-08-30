@@ -5,21 +5,21 @@ import ProjectRepository from '../../repositories/ProjectRepository'
 import ProjectDetails from '../../models/ProjectDetails'
 import { Project } from '../../models/ProjectsResponse'
 const mockFetchData = (fetchData: any): void => {
-  global.fetch = jest.fn().mockImplementation(async () => await Promise.resolve({
+  global.fetch = vi.fn().mockImplementation(async () => await Promise.resolve({
     ok: true,
     json: async () => await Promise.resolve(fetchData)
   }))
 }
 
 const mockFetchError = (errorMsg = 'Error'): void => {
-  global.fetch = jest.fn().mockImplementation(async () => await Promise.resolve({
+  global.fetch = vi.fn().mockImplementation(async () => await Promise.resolve({
     ok: false,
     json: async () => await Promise.resolve({ message: errorMsg })
   }))
 }
 
 const mockFetchStatus = (status: number, message?: string): void => {
-  global.fetch = jest.fn().mockImplementation(async () => await Promise.resolve({
+  global.fetch = vi.fn().mockImplementation(async () => await Promise.resolve({
     ok: false,
     status,
     json: async () => await Promise.resolve({ message: message ?? 'Error' })
@@ -44,7 +44,7 @@ describe('get versions', () => {
     const projectName = 'test'
 
     mockFetchError('Test Error')
-    console.error = jest.fn()
+    console.error = vi.fn()
 
     const result = await ProjectRepository.getVersions(projectName)
 

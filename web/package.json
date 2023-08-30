@@ -20,23 +20,29 @@
     "@types/react": "^18.2.8",
     "@types/react-dom": "^18.0.10",
     "@typescript-eslint/parser": "^5.54.1",
+    "@vitejs/plugin-react-swc": "^3.3.2",
+    "@vitest/coverage-v8": "^0.34.3",
     "eslint": "^8.0.1",
     "fuse.js": "^6.6.2",
     "http-proxy-middleware": "^2.0.6",
+    "jsdom": "^22.1.0",
     "lodash": "^4.17.21",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-markdown": "^8.0.3",
     "react-router-dom": "^6.4.2",
-    "react-scripts": "5.0.1",
     "typescript": "*",
+    "vite": "^4.4.9",
+    "vite-plugin-svgr": "^3.2.0",
+    "vite-tsconfig-paths": "^4.2.0",
+    "vitest": "^0.34.3",
     "web-vitals": "^3.1.1"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --watchAll=false --testMatch **/src/**/*.test.ts",
-    "eject": "react-scripts eject",
+    "start": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "test": "vitest --watch=false",
     "lint": "eslint ./src --ext .js,.jsx,.ts,.tsx"
   },
   "eslintConfig": {
@@ -57,7 +63,6 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://localhost:5000/",
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "eslint-config-standard-with-typescript": "^23.0.0",
