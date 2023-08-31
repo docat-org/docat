@@ -4,7 +4,7 @@
 */
 
 import React, { useEffect, useRef, useMemo, useState } from 'react'
-import { useLocation, useParams, useSearchParams } from 'react-router-dom'
+import { useLocation, useParams, useSearchParams, useNavigate } from 'react-router-dom'
 import DocumentControlButtons from '../components/DocumentControlButtons'
 import type ProjectDetails from '../models/ProjectDetails'
 import ProjectRepository from '../repositories/ProjectRepository'
@@ -17,6 +17,9 @@ import { uniqueId } from 'lodash'
 import { useMessageBanner } from '../data-providers/MessageBannerProvider'
 
 export default function Docs (): JSX.Element {
+  const location = useLocation()
+  const navigate = useNavigate()
+
   const projectParam = useParams().project ?? ''
   const versionParam = useParams().version ?? 'latest'
   const pageParam = useParams().page ?? 'index.html'
@@ -33,26 +36,25 @@ export default function Docs (): JSX.Element {
   const [loadingFailed, setLoadingFailed] = useState<boolean>(false)
 
   const { showMessage } = useMessageBanner()
-  const location = useLocation()
   const iFrameRef = useRef<HTMLIFrameElement>(null)
 
   const iFrame = useMemo(() => {
     return (<iframe
-        ref={iFrameRef}
-        key={uniqueId()}
-        src={ProjectRepository.getProjectDocsURL(project, version, page, hash)}
-        title="docs"
-        className={styles['docs-iframe']}
-        onLoad={() => {
-          if (iFrameRef.current == null) {
-            console.error('iFrameRef is null')
-            return
-          }
+      ref={iFrameRef}
+      key={uniqueId()}
+      src={ProjectRepository.getProjectDocsURL(project, version, page, hash)}
+      title="docs"
+      className={styles['docs-iframe']}
+      onLoad={() => {
+        if (iFrameRef.current == null) {
+          console.error('iFrameRef is null')
+          return
+        }
 
-          // @ts-expect-error ts can't find contentWindow
-          onIFrameLocationChanged(iFrameRef.current.contentWindow.location.href)
-        }}
-      />
+        // @ts-expect-error ts can't find contentWindow
+        onIFrameLocationChanged(iFrameRef.current.contentWindow.location.href)
+      }}
+    />
     )
   }, [project, version])
 
@@ -62,16 +64,13 @@ export default function Docs (): JSX.Element {
     setLoadingFailed(true)
   }
 
-  const updateURL = (newProject: string, newVersion: string, newPage: string, newHash: string, newHideUi: boolean): void => {
-    const url = `#/${newProject}/${newVersion}/${newPage}${newHash}${newHideUi ? '?hide-ui=true' : ''}`
+  const updateURL = (newProject: string, newVersion: string, newPage: string, newHash: string, newHideUi: boolean, historyMode: 'push' | 'replace' | 'skip'): void => {
+    const url = `/${newProject}/${newVersion}/${newPage}${newHash}${newHideUi ? '?hide-ui=true' : ''}`
 
     if (project === newProject && version === newVersion && page === newPage && hash === newHash && hideUi === newHideUi) {
       // no change
       return
     }
-
-    const oldVersion = version
-    const oldPage = page
 
     setProject(newProject)
     setVersion(newVersion)
@@ -79,19 +78,16 @@ export default function Docs (): JSX.Element {
     setHash(newHash)
     setHideUi(newHideUi)
 
-    if (oldVersion === 'latest' && newVersion !== 'latest') {
-      // replace the url if 'latest' was updated to the actual version
-      window.history.replaceState(null, '', url)
+    if (historyMode === 'skip') {
       return
     }
 
-    if (oldPage === '' && newPage !== '') {
-      // replace the url if the page was updated from '' to the actual page
-      window.history.replaceState(null, '', url)
+    if (historyMode === 'replace') {
+      navigate(url, { replace: true })
       return
     }
 
-    window.history.pushState(null, '', url)
+    navigate(url)
   }
 
   /**
@@ -142,7 +138,7 @@ export default function Docs (): JSX.Element {
     const urlHash = urlPageAndHash.slice(hashIndex)
 
     if (urlProject !== project || urlVersion !== version || urlPage !== page || urlHash !== hash) {
-      updateURL(urlProject, urlVersion, urlPage, urlHash, hideUi)
+      updateURL(urlProject, urlVersion, urlPage, urlHash, hideUi, 'push')
     }
 
     // add event listener for hashchange to iframe
@@ -183,7 +179,7 @@ export default function Docs (): JSX.Element {
           versionToUse = version
         }
 
-        updateURL(project, versionToUse, page, hash, hideUi)
+        updateURL(project, versionToUse, page, hash, hideUi, 'replace')
         setVersions(allVersions)
         setLoadingFailed(false)
       } catch (e) {
@@ -196,7 +192,7 @@ export default function Docs (): JSX.Element {
   useEffect(() => {
     // update the state to the url params on first loadon
     if (projectParam !== project || versionParam !== version || pageParam !== page || hashParam !== hash || hideUiParam !== hideUi) {
-      updateURL(projectParam, versionParam, pageParam, hashParam, hideUiParam)
+      updateURL(projectParam, versionParam, pageParam, hashParam, hideUiParam, 'replace')
     }
   }, [location])
 
@@ -219,6 +215,20 @@ export default function Docs (): JSX.Element {
     })
   }, [version, versions])
 
+  useEffect(() => {
+    const popstateListener = (): void => {
+      // Somehow clicking back once isn't enough, so we do it twice automatically.
+      window.history.back()
+      updateURL(projectParam, versionParam, pageParam, hashParam, hideUiParam, 'skip')
+    }
+
+    window.addEventListener('popstate', popstateListener)
+
+    return (): void => {
+      window.removeEventListener('popstate', popstateListener)
+    }
+  }, [])
+
   if (loadingFailed) {
     return <NotFound />
   }
@@ -234,8 +244,8 @@ export default function Docs (): JSX.Element {
         <DocumentControlButtons
           version={version}
           versions={versions}
-          onVersionChange={(v) => { updateURL(project, v, page, hash, hideUi) }}
-          onHideUi={() => { updateURL(project, version, page, hash, true) }}
+          onVersionChange={(v) => { updateURL(project, v, page, hash, hideUi, 'push') }}
+          onHideUi={() => { updateURL(project, version, page, hash, true, 'push') }}
         />
       )}
     </>
