@@ -1,6 +1,6 @@
 name: docat ci
 
-on: [push, pull_request]
+on: push
 
 jobs:
   python-test:
