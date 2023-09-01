@@ -31,7 +31,7 @@ export default function DocumentControlButtons (props: Props): JSX.Element {
         <Select
           className={styles['version-select']}
           onChange={(e) => { props.onVersionChange(e.target.value) }}
-          value={props.versions.length > 0 ? props.version : ''}
+          value={props.versions.find(v => v.name === props.version) !== undefined ? props.version : ''}
         >
           {props.versions
             .filter((v) => !v.hidden || v.name === props.version)
