@@ -8,6 +8,7 @@ server {
 
     root /var/www/html;
 
+    add_header Content-Security-Policy "frame-ancestors 'self';";
     index index.html index.htm index.pdf /index.html;
 
     server_name _;
