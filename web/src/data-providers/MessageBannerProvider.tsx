@@ -15,10 +15,14 @@ export interface Message {
 
 interface MessageBannerState {
   showMessage: (message: Message) => void
+  clearMessages: () => void
 }
 
 export const Context = React.createContext<MessageBannerState>({
   showMessage: (): void => {
+    console.warn('MessageBannerProvider not initialized')
+  },
+  clearMessages: (): void => {
     console.warn('MessageBannerProvider not initialized')
   }
 })
@@ -59,8 +63,20 @@ export function MessageBannerProvider ({ children }: any): JSX.Element {
     setLastTimeout(newTimeout)
   }, [])
 
+  const clearMessages = useCallback(() => {
+    if (lastTimeout !== undefined) {
+      clearTimeout(lastTimeout)
+    }
+
+    setMessage({
+      content: undefined,
+      type: 'success',
+      showMs: 6000
+    })
+  }, [])
+
   return (
-    <Context.Provider value={{ showMessage }}>
+    <Context.Provider value={{ showMessage, clearMessages }}>
       <Banner message={message} />
       {children}
     </Context.Provider>

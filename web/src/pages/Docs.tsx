@@ -6,11 +6,13 @@ import NotFound from './NotFound'
 import DocumentControlButtons from '../components/DocumentControlButtons'
 import IFrame from '../components/IFrame'
 import { useLocation, useParams, useSearchParams } from 'react-router-dom'
+import { useMessageBanner } from '../data-providers/MessageBannerProvider'
 
 export default function Docs (): JSX.Element {
   const params = useParams()
   const searchParams = useSearchParams()[0]
   const location = useLocation()
+  const { showMessage, clearMessages } = useMessageBanner()
 
   const [versions, setVersions] = useState<ProjectDetails[]>([])
   const [loadingFailed, setLoadingFailed] = useState<boolean>(false)
@@ -148,6 +150,26 @@ export default function Docs (): JSX.Element {
       setIframeUpdateTrigger(v => v + 1)
     }
   }, [location])
+
+  useEffect(() => {
+    // check every time the version changes whether the version
+    // is the latest version and if not, show a banner
+    if (versions.length === 0) {
+      return
+    }
+
+    const latestVersion = ProjectRepository.getLatestVersion(versions).name
+    if (version === latestVersion) {
+      clearMessages()
+      return
+    }
+
+    showMessage({
+      content: 'You are viewing an outdated version of the documentation.',
+      type: 'warning',
+      showMs: null
+    })
+  }, [version, versions])
 
   if (loadingFailed || project.current === '') {
     return <NotFound />
