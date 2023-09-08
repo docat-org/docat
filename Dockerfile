@@ -8,6 +8,10 @@ RUN yarn install --frozen-lockfile
 # fix docker not following symlinks
 COPY web ./
 COPY doc/getting-started.md ./src/assets/
+
+ARG DOCAT_VERSION=unknown
+ENV VITE_DOCAT_VERSION=$DOCAT_VERSION
+
 RUN yarn build
 
 # setup Python

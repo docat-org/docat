@@ -10,3 +10,9 @@
     color: black;
     font-size: 15px;
 }
+
+.version-info {
+    font-size: 12px;
+    margin-top: 0.8em;
+    color: var(--primary-foreground);
+}

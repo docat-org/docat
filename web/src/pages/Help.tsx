@@ -6,6 +6,7 @@ import gettingStarted from './../assets/getting-started.md'
 
 import UploadButton from '../components/UploadButton'
 import Header from '../components/Header'
+import Footer from '../components/Footer'
 import LoadingPage from './LoadingPage'
 
 import styles from './../style/pages/Help.module.css'
@@ -62,6 +63,7 @@ export default function Help (): JSX.Element {
         {content}
       </ReactMarkdown>
       <UploadButton isSingleButton={true} />
+      <Footer />
     </>
   )
 }

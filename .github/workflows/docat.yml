@@ -81,7 +81,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Build Image
         run: |
-          docker build . --tag ${{ matrix.registry.name }}/${{ matrix.registry.org }}/docat:${{ github.sha }}
+          docker build . --build-arg DOCAT_VERSION=$(git describe --tags --always) --tag ${{ matrix.registry.name }}/${{ matrix.registry.org }}/docat:${{ github.sha }}
           docker tag ${{ matrix.registry.name }}/${{ matrix.registry.org }}/docat:${{ github.sha }} ${{ matrix.registry.name }}/${{ matrix.registry.org }}/docat:unstable
 
       - name: tag latest and version on release
