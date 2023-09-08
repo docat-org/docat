@@ -37,9 +37,10 @@ export default function IFrame(props: Props): JSX.Element {
           return
         }
 
-        if (a.href.trim() === '') {
-          // ignore empty links, may be handled with js internally,
-          // so we'll ignore it. Will inevitably cause the user to have to click back
+        const href = a.getAttribute('href') ?? ''
+        if (href.trim() === '') {
+          // ignore empty links, may be handled with js internally.
+          // Will inevitably cause the user to have to click back
           // multiple times to get back to the previous page.
           return
         }
