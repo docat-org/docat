@@ -79,6 +79,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Build Image
         run: |
           docker build . --build-arg DOCAT_VERSION=$(git describe --tags --always) --tag ${{ matrix.registry.name }}/${{ matrix.registry.org }}/docat:${{ github.sha }}
