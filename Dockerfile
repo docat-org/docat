@@ -1,12 +1,13 @@
 # building frontend
-FROM node:20.5 as frontend
+FROM node:20-slim as frontend
 WORKDIR /app/frontend
-COPY web ./
+
+COPY web/package.json web/yarn.lock ./
+RUN yarn install --frozen-lockfile
 
 # fix docker not following symlinks
+COPY web ./
 COPY doc/getting-started.md ./src/assets/
-
-RUN yarn install --frozen-lockfile
 RUN yarn build
 
 # setup Python
