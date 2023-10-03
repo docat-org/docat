@@ -8,19 +8,23 @@ yarn install [--pure-lockfile]
 
 ### Compiles and hot-reloads for development
 
-Configure both the frontend port and the backend connection
-by setting them in `.env.development.local`.
-```sh
-PORT=8080
-BACKEND_HOST=127.0.0.1
-BACKEND_PORT=5000
-```
+The script for `yarn start` automatically sets `VITE_DOCAT_VERSION` to display the current version in the footer,
+so you can just run:
 
 ```sh
 yarn start
 ```
 
 ### Compiles and minifies for production
+
+To display the current version of docat in the footer, use the following script to set `VITE_DOCAT_VERSION`.
+This one liner uses the latest tag, if there is one on the current commit, and the current commit if not.
+
+```sh
+VITE_DOCAT_VERSION=$(git describe --tags --always) yarn build
+```
+
+Otherwise you can just use the following and the footer will show `unknown`.
 
 ```sh
 yarn build

@@ -32,7 +32,7 @@
     "web-vitals": "^3.1.1"
   },
   "scripts": {
-    "start": "vite",
+    "start": "VITE_DOCAT_VERSION=$(git describe --tags --always) vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "test": "vitest --watch=false",

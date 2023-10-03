@@ -8,6 +8,10 @@ export default function Footer (): JSX.Element {
       <Link to="/help" className={styles['help-link']}>
         Help
       </Link>
+
+      <div className={styles['version-info']}>
+        Docat Version <code>{import.meta.env.VITE_DOCAT_VERSION ?? 'unknown'}</code>
+      </div>
     </div>
   )
 }
