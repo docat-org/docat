@@ -1,25 +1,44 @@
 version: 2
 updates:
 
-  # Maintain dependencies for GitHub Actions
+  # -- github actions
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "daily"
 
-  # Maintain dependencies for npm
+  # -- node
   - package-ecosystem: "npm"
     directory: "/web"
     schedule:
       interval: "daily"
+    groups:
+      dependencies:
+        patterns:
+        - "*"
+        exclude-patterns:
+        # FIXME: currently fails due to incompatibility with react:
+        # https://github.com/facebook/create-react-app/issues/13080#issue-1635236109
+        - "typescript"
+    ignore:
+    - dependency-name: "*"
+      update-types: ["version-update:semver-major"]
 
-  # Maintain dependencies for poetry
+
+  # -- poetry
   - package-ecosystem: "pip"
     directory: "/docat"
     schedule:
       interval: "daily"
+    groups:
+      dependencies:
+        patterns:
+        - "*"
+    ignore:
+    - dependency-name: "*"
+      update-types: ["version-update:semver-major"]
 
-  # Maintain dependencies for docker
+  # -- docker
   - package-ecosystem: "docker"
     directory: "/"
     schedule:
