@@ -380,12 +380,13 @@ develop = ["build", "twine"]
 
 [[package]]
 name = "flake8-isort"
-version = "6.1.0"
-description = "flake8 plugin that integrates isort ."
+version = "6.1.1"
+description = "flake8 plugin that integrates isort"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "flake8-isort-6.1.0.tar.gz", hash = "sha256:d4639343bac540194c59fb1618ac2c285b3e27609f353bef6f50904d40c1643e"},
+    {file = "flake8_isort-6.1.1-py3-none-any.whl", hash = "sha256:0fec4dc3a15aefbdbe4012e51d5531a2eb5fa8b981cdfbc882296a59b54ede12"},
+    {file = "flake8_isort-6.1.1.tar.gz", hash = "sha256:c1f82f3cf06a80c13e1d09bfae460e9666255d5c780b859f19f8318d420370b3"},
 ]
 
 [package.dependencies]
@@ -1322,13 +1323,13 @@ zstd = ["zstandard (>=0.18.0)"]
 
 [[package]]
 name = "uvicorn"
-version = "0.23.2"
+version = "0.24.0"
 description = "The lightning-fast ASGI server."
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "uvicorn-0.23.2-py3-none-any.whl", hash = "sha256:1f9be6558f01239d4fdf22ef8126c39cb1ad0addf76c40e760549d2c2f43ab53"},
-    {file = "uvicorn-0.23.2.tar.gz", hash = "sha256:4d3cc12d7727ba72b64d12d3cc7743124074c0a69f7b201512fc50c3e3f1569a"},
+    {file = "uvicorn-0.24.0-py3-none-any.whl", hash = "sha256:3d19f13dfd2c2af1bfe34dd0f7155118ce689425fdf931177abe832ca44b8a04"},
+    {file = "uvicorn-0.24.0.tar.gz", hash = "sha256:368d5d81520a51be96431845169c225d771c9dd22a58613e1a181e6c4512ac33"},
 ]
 
 [package.dependencies]
@@ -1506,4 +1507,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "afbb34e434d5dc6001804b50e05fa0671bef268fc34532a6fe114f8a568643f2"
+content-hash = "609db2681af1b3e6e38ba3145f235ddd1c3c52f8f2a53f3bf79a4f007efc7d13"
