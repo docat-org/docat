@@ -13,7 +13,7 @@
     "@types/react": "^18.2.37",
     "@types/react-dom": "^18.2.15",
     "@typescript-eslint/parser": "^5.54.1",
-    "@vitejs/plugin-react-swc": "^3.4.1",
+    "@vitejs/plugin-react-swc": "^3.5.0",
     "eslint": "^8.53.0",
     "eslint-config-react-app": "^7.0.1",
     "fuse.js": "^6.6.2",
