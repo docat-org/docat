@@ -15,7 +15,7 @@ ENV VITE_DOCAT_VERSION=$DOCAT_VERSION
 RUN yarn build
 
 # setup Python
-FROM python:3.11-slim AS backend
+FROM python:3.12-slim AS backend
 
 # configure docker container
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -34,7 +34,7 @@ WORKDIR /app/docat
 RUN poetry install --no-root --no-ansi --only main
 
 # production
-FROM python:3.11-slim
+FROM python:3.12-slim
 
 # set up the system
 RUN apt update && \
