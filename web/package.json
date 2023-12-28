@@ -29,7 +29,7 @@
     "vite": "^4.5.1",
     "vite-plugin-svgr": "^3.3.0",
     "vitest": "^0.34.6",
-    "web-vitals": "^3.5.0"
+    "web-vitals": "^3.5.1"
   },
   "scripts": {
     "start": "VITE_DOCAT_VERSION=$(git describe --tags --always) vite",
