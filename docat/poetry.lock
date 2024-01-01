@@ -326,17 +326,16 @@ test = ["pytest (>=6)"]
 
 [[package]]
 name = "fastapi"
-version = "0.106.0"
+version = "0.108.0"
 description = "FastAPI framework, high performance, easy to learn, fast to code, ready for production"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "fastapi-0.106.0-py3-none-any.whl", hash = "sha256:193c2f1b495d1d6561a3dc1ca02a150757322247d895ff6bf15b6eefee24feb9"},
-    {file = "fastapi-0.106.0.tar.gz", hash = "sha256:c7e7453ac8c4b7414bbafcf90127d743559808eee286ae2c9f99a501f0b534a0"},
+    {file = "fastapi-0.108.0-py3-none-any.whl", hash = "sha256:8c7bc6d315da963ee4cdb605557827071a9a7f95aeb8fcdd3bde48cdc8764dd7"},
+    {file = "fastapi-0.108.0.tar.gz", hash = "sha256:5056e504ac6395bf68493d71fcfc5352fdbd5fda6f88c21f6420d80d81163296"},
 ]
 
 [package.dependencies]
-anyio = ">=3.7.1,<4.0.0"
 email-validator = {version = ">=2.0.0", optional = true, markers = "extra == \"all\""}
 httpx = {version = ">=0.23.0", optional = true, markers = "extra == \"all\""}
 itsdangerous = {version = ">=1.1.0", optional = true, markers = "extra == \"all\""}
@@ -347,7 +346,7 @@ pydantic-extra-types = {version = ">=2.0.0", optional = true, markers = "extra =
 pydantic-settings = {version = ">=2.0.0", optional = true, markers = "extra == \"all\""}
 python-multipart = {version = ">=0.0.5", optional = true, markers = "extra == \"all\""}
 pyyaml = {version = ">=5.3.1", optional = true, markers = "extra == \"all\""}
-starlette = ">=0.27.0,<0.28.0"
+starlette = ">=0.29.0,<0.33.0"
 typing-extensions = ">=4.8.0"
 ujson = {version = ">=4.0.1,<4.0.2 || >4.0.2,<4.1.0 || >4.1.0,<4.2.0 || >4.2.0,<4.3.0 || >4.3.0,<5.0.0 || >5.0.0,<5.1.0 || >5.1.0", optional = true, markers = "extra == \"all\""}
 uvicorn = {version = ">=0.12.0", extras = ["standard"], optional = true, markers = "extra == \"all\""}
@@ -1020,13 +1019,13 @@ files = [
 
 [[package]]
 name = "pytest"
-version = "7.4.3"
+version = "7.4.4"
 description = "pytest: simple powerful testing with Python"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "pytest-7.4.3-py3-none-any.whl", hash = "sha256:0d009c083ea859a71b76adf7c1d502e4bc170b80a8ef002da5806527b9591fac"},
-    {file = "pytest-7.4.3.tar.gz", hash = "sha256:d989d136982de4e3b29dabcc838ad581c64e8ed52c11fbe86ddebd9da0818cd5"},
+    {file = "pytest-7.4.4-py3-none-any.whl", hash = "sha256:b090cdf5ed60bf4c45261be03239c2c1c22df034fbffe691abe93cd80cea01d8"},
+    {file = "pytest-7.4.4.tar.gz", hash = "sha256:2cf0005922c6ace4a3e2ec8b4080eb0d9753fdc93107415332f50ce9e7994280"},
 ]
 
 [package.dependencies]
@@ -1190,13 +1189,13 @@ files = [
 
 [[package]]
 name = "starlette"
-version = "0.27.0"
+version = "0.32.0.post1"
 description = "The little ASGI library that shines."
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=3.8"
 files = [
-    {file = "starlette-0.27.0-py3-none-any.whl", hash = "sha256:918416370e846586541235ccd38a474c08b80443ed31c578a418e2209b3eef91"},
-    {file = "starlette-0.27.0.tar.gz", hash = "sha256:6a6b0d042acb8d469a01eba54e9cda6cbd24ac602c4cd016723117d6a7e73b75"},
+    {file = "starlette-0.32.0.post1-py3-none-any.whl", hash = "sha256:cd0cb10ddb49313f609cedfac62c8c12e56c7314b66d89bb077ba228bada1b09"},
+    {file = "starlette-0.32.0.post1.tar.gz", hash = "sha256:e54e2b7e2fb06dff9eac40133583f10dfa05913f5a85bf26f427c7a40a9a3d02"},
 ]
 
 [package.dependencies]
@@ -1565,4 +1564,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "8af7741fe1767ccfc2a0ca165f32c931b130e255ea9fa033ee30cd22b12926e7"
+content-hash = "d36edbe888bd63ba066b9e9a4e0bac21f136c6f19904631779856e28e6c654fb"
