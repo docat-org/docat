@@ -9,8 +9,8 @@
     "@mui/material": "^5.15.2",
     "@types/jest": "^29.5.11",
     "@types/lodash": "^4.14.202",
-    "@types/node": "^20.10.5",
-    "@types/react": "^18.2.45",
+    "@types/node": "^20.10.6",
+    "@types/react": "^18.2.46",
     "@types/react-dom": "^18.2.18",
     "@typescript-eslint/parser": "^5.54.1",
     "@vitejs/plugin-react-swc": "^3.5.0",
@@ -29,7 +29,7 @@
     "vite": "^4.5.1",
     "vite-plugin-svgr": "^3.3.0",
     "vitest": "^0.34.6",
-    "web-vitals": "^3.5.0"
+    "web-vitals": "^3.5.1"
   },
   "scripts": {
     "start": "VITE_DOCAT_VERSION=$(git describe --tags --always) vite",
@@ -60,7 +60,7 @@
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "eslint-config-standard-with-typescript": "^37.0.0",
     "eslint-plugin-import": "^2.29.1",
-    "eslint-plugin-n": "^16.5.0",
+    "eslint-plugin-n": "^16.6.0",
     "eslint-plugin-promise": "^6.0.0",
     "eslint-plugin-react": "^7.32.1"
   }
