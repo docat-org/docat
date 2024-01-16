@@ -245,9 +245,9 @@ def upload(
     extract_archive(target_file, base_path)
     index_file_exists = (base_path / "index.html").exists()
 
-    token: Optional[str] = None
-    if global_claim_token is not None:
-        token = claim_project(project=project, db=db)
+    token: Optional[str] = global_claim_token or docat_api_key
+    if token is not None:
+        token = claim_project(project=project, db=db, token=token)
         if index_file_exists:
             message = "Documentation uploaded and claimed successfully"
         else:

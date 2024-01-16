@@ -6,6 +6,7 @@ import os
 import secrets
 import shutil
 from pathlib import Path
+from typing import Optional
 from zipfile import ZipFile
 
 from tinydb import Query, TinyDB
@@ -168,12 +169,19 @@ def get_project_details(upload_folder_path: Path, project_name: str, include_hid
     )
 
 
-def claim_project(project: str, db: TinyDB) -> str:
+def claim_project(project: str, db: TinyDB, token: Optional[str] = None) -> str:
     """Claims a project.
+
+    The token used for claiming is determined as follows.
+
+        1. If a token has been sent in the upload request, this will be used.
+        2. Otherwise, the system checks whether the global token is set.
+        3. If both cases do not apply, a randomly generated token is used.
 
     Args:
         project: The project name.
         db: The database to use.
+        token: The optional token to use for claiming the project.
 
     Raises:
         PermissionError: If the project has already been claimed.
@@ -187,11 +195,10 @@ def claim_project(project: str, db: TinyDB) -> str:
     if table.search(Query().name == project):
         raise PermissionError(f"Project {project} is already claimed!")
 
-    # Check if the global claim token/salt is configured. Otherwise, use randomly generated values.
-    token = get_global_claim_token() or secrets.token_hex(16)
-    salt = get_global_claim_salt() or os.urandom(32)
+    _token = token or get_global_claim_token() or secrets.token_hex(16)
+    _salt = get_global_claim_salt() or os.urandom(32)
 
-    token_hash = calculate_token(token, salt)
-    table.insert({"name": project, "token": token_hash, "salt": salt.hex()})
+    token_hash = calculate_token(_token, _salt)
+    table.insert({"name": project, "token": token_hash, "salt": _salt.hex()})
 
-    return token
+    return _token

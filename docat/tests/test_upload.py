@@ -33,6 +33,24 @@ def test_successfully_upload_with_global_claim(client):
     assert True is status.valid
 
 
+def test_successfully_upload_with_header_token(client):
+    with patch("docat.app.remove_docs"):
+        response = client.post(
+            "/api/some-project/1.0.0",
+            files={"file": ("index.html", io.BytesIO(b"<h1>Hello World</h1>"), "plain/text")},
+            headers={"Docat-Api-Key": "1234"},
+        )
+        response_data = response.json()
+
+        assert response.status_code == 201
+        assert response_data["message"] == "Documentation uploaded and claimed successfully"
+        assert "1234" == response_data["token"]
+        assert (docat.DOCAT_UPLOAD_FOLDER / "some-project" / "1.0.0" / "index.html").exists()
+
+    status = check_token_for_project(db=docat.db, token="1234", project="some-project")
+    assert True is status.valid
+
+
 def test_successfully_override(client_with_claimed_project):
     with patch("docat.app.remove_docs") as remove_mock:
         response = client_with_claimed_project.post(
