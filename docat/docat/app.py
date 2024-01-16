@@ -8,10 +8,9 @@ Host your docs. Simple. Versioned. Fancy.
 :license: MIT, see LICENSE for more details.
 """
 import os
-import secrets
 import shutil
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Union
 
 import magic
 from fastapi import Depends, FastAPI, File, Header, Response, UploadFile, status
@@ -19,11 +18,13 @@ from fastapi.staticfiles import StaticFiles
 from starlette.responses import JSONResponse
 from tinydb import Query, TinyDB
 
+from docat.constants import get_global_claim_token
 from docat.models import ApiResponse, ClaimResponse, ProjectDetail, Projects, TokenStatus
 from docat.utils import (
     DB_PATH,
     UPLOAD_FOLDER,
     calculate_token,
+    claim_project,
     create_symlink,
     extract_archive,
     get_all_projects,
@@ -197,8 +198,8 @@ def show_version(
     return ApiResponse(message=f"Version {version} is now shown")
 
 
-@app.post("/api/{project}/{version}", response_model=ApiResponse, status_code=status.HTTP_201_CREATED)
-@app.post("/api/{project}/{version}/", response_model=ApiResponse, status_code=status.HTTP_201_CREATED)
+@app.post("/api/{project}/{version}", response_model=Union[ApiResponse, ClaimResponse], status_code=status.HTTP_201_CREATED)
+@app.post("/api/{project}/{version}/", response_model=Union[ApiResponse, ClaimResponse], status_code=status.HTTP_201_CREATED)
 def upload(
     project: str,
     version: str,
@@ -206,6 +207,7 @@ def upload(
     file: UploadFile = File(...),
     docat_api_key: Optional[str] = Header(None),
     db: TinyDB = Depends(get_db),
+    global_claim_token: bool = Depends(get_global_claim_token),
 ):
     if is_forbidden_project_name(project):
         response.status_code = status.HTTP_400_BAD_REQUEST
@@ -241,11 +243,24 @@ def upload(
         shutil.copyfileobj(file.file, buffer)
 
     extract_archive(target_file, base_path)
+    index_file_exists = (base_path / "index.html").exists()
 
-    if not (base_path / "index.html").exists():
-        return ApiResponse(message="Documentation uploaded successfully, but no index.html found at root of archive.")
+    token: Optional[str] = None
+    if global_claim_token is not None:
+        token = claim_project(project=project, db=db)
+        if index_file_exists:
+            message = "Documentation uploaded and claimed successfully"
+        else:
+            message = "Documentation uploaded and claimed successfully, but no index.html found at root of archive."
+    else:
+        if index_file_exists:
+            message = "Documentation uploaded successfully"
+        else:
+            message = "Documentation uploaded successfully, but no index.html found at root of archive."
 
-    return ApiResponse(message="Documentation uploaded successfully")
+    if token:
+        return ClaimResponse(message=message, token=token)
+    return ApiResponse(message=message)
 
 
 @app.put("/api/{project}/{version}/tags/{new_tag}", response_model=ApiResponse, status_code=status.HTTP_201_CREATED)
@@ -278,18 +293,14 @@ def tag(project: str, version: str, new_tag: str, response: Response):
     responses={status.HTTP_409_CONFLICT: {"model": ApiResponse}},
 )
 def claim(project: str, db: TinyDB = Depends(get_db)):
-    Project = Query()
-    table = db.table("claims")
-    result = table.search(Project.name == project)
-    if result:
-        return JSONResponse(status_code=status.HTTP_409_CONFLICT, content={"message": f"Project {project} is already claimed!"})
-
-    token = secrets.token_hex(16)
-    salt = os.urandom(32)
-    token_hash = calculate_token(token, salt)
-    table.insert({"name": project, "token": token_hash, "salt": salt.hex()})
-
-    return ClaimResponse(message=f"Project {project} successfully claimed", token=token)
+    try:
+        token = claim_project(project=project, db=db)
+        return ClaimResponse(message=f"Project {project} successfully claimed", token=token)
+    except PermissionError as error:
+        return JSONResponse(
+            status_code=status.HTTP_409_CONFLICT,
+            content={"message": str(error)},
+        )
 
 
 @app.put("/api/{project}/rename/{new_project_name}", response_model=ApiResponse, status_code=status.HTTP_200_OK)

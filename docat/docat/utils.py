@@ -3,10 +3,14 @@ docat utilities
 """
 import hashlib
 import os
+import secrets
 import shutil
 from pathlib import Path
 from zipfile import ZipFile
 
+from tinydb import Query, TinyDB
+
+from docat.constants import get_global_claim_salt, get_global_claim_token
 from docat.models import Project, ProjectDetail, Projects, ProjectVersion
 
 NGINX_CONFIG_PATH = Path("/etc/nginx/locations.d")
@@ -162,3 +166,32 @@ def get_project_details(upload_folder_path: Path, project_name: str, include_hid
             reverse=True,
         ),
     )
+
+
+def claim_project(project: str, db: TinyDB) -> str:
+    """Claims a project.
+
+    Args:
+        project: The project name.
+        db: The database to use.
+
+    Raises:
+        PermissionError: If the project has already been claimed.
+
+    Returns:
+        The claim token.
+    """
+    table = db.table("claims")
+
+    # Check if the project has already been claimed
+    if table.search(Query().name == project):
+        raise PermissionError(f"Project {project} is already claimed!")
+
+    # Check if the global claim token/salt is configured. Otherwise, use randomly generated values.
+    token = get_global_claim_token() or secrets.token_hex(16)
+    salt = get_global_claim_salt() or os.urandom(32)
+
+    token_hash = calculate_token(token, salt)
+    table.insert({"name": project, "token": token_hash, "salt": salt.hex()})
+
+    return token

@@ -1,8 +1,11 @@
 import io
+import os
 from pathlib import Path
 from unittest.mock import call, patch
 
 import docat.app as docat
+from docat.app import check_token_for_project
+from docat.constants import ENV_GLOBAL_CLAIM_SALT, ENV_GLOBAL_CLAIM_TOKEN
 
 
 def test_successfully_upload(client):
@@ -13,6 +16,21 @@ def test_successfully_upload(client):
         assert response.status_code == 201
         assert response_data["message"] == "Documentation uploaded successfully"
         assert (docat.DOCAT_UPLOAD_FOLDER / "some-project" / "1.0.0" / "index.html").exists()
+
+
+@patch.dict(os.environ, {ENV_GLOBAL_CLAIM_SALT: "test-salt", ENV_GLOBAL_CLAIM_TOKEN: "test-token"})
+def test_successfully_upload_with_global_claim(client):
+    with patch("docat.app.remove_docs"):
+        response = client.post("/api/some-project/1.0.0", files={"file": ("index.html", io.BytesIO(b"<h1>Hello World</h1>"), "plain/text")})
+        response_data = response.json()
+
+        assert response.status_code == 201
+        assert response_data["message"] == "Documentation uploaded and claimed successfully"
+        assert "test-token" == response_data["token"]
+        assert (docat.DOCAT_UPLOAD_FOLDER / "some-project" / "1.0.0" / "index.html").exists()
+
+    status = check_token_for_project(db=docat.db, token="test-token", project="some-project")
+    assert True is status.valid
 
 
 def test_successfully_override(client_with_claimed_project):

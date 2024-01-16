@@ -77,6 +77,11 @@ Using `docatl`:
 docatl claim awesome-project --host http://localhost:8000
 ```
 
+In addition, it is possible to claim all projects with a token previously defined via environment variables
+instead of generating a new token for each project. This is particularly useful for CI/CD applications where the
+documentation is automatically uploaded by a build server. This feature needs to be enabled in the backend. You can
+read more about this feature in the [backend documentation](../docat/README.md).
+
 #### Authentication
 
 To make an authenticated call, specify a header with the key `Docat-Api-Key` and your token as the value:
