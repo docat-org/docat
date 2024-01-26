@@ -10,7 +10,8 @@
     },
     "extends": [
         "plugin:react/recommended",
-        "standard-with-typescript"
+        "standard-with-typescript",
+        "plugin:prettier/recommended"
     ],
     "overrides": [
         {
@@ -28,7 +29,8 @@
                 ]
             },
             "rules": {
-                "@typescript-eslint/space-before-function-paren": "off"
+                "@typescript-eslint/space-before-function-paren": "off",
+                "@typescript-eslint/no-extra-semi": "off"
             }
         },
         {
