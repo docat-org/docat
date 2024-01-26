@@ -15,7 +15,11 @@ const RESOURCE = 'doc'
  * @param hash useLocation().hash
  * @returns a url with escaped slashes
  */
-function escapeSlashesInUrl (pathname: string, search: string, hash: string): string {
+function escapeSlashesInUrl(
+  pathname: string,
+  search: string,
+  hash: string
+): string {
   const url = pathname + hash + search
   const projectAndVersion = url.split('/', 3).join('/')
   let path = url.substring(projectAndVersion.length + 1)
@@ -28,30 +32,30 @@ function escapeSlashesInUrl (pathname: string, search: string, hash: string): st
   return projectAndVersion + '/' + path
 }
 
-function filterHiddenVersions (allProjects: Project[]): Project[] {
+function filterHiddenVersions(allProjects: Project[]): Project[] {
   // create deep-copy first
   const projects = JSON.parse(JSON.stringify(allProjects)) as Project[]
 
-  projects.forEach(p => {
-    p.versions = p.versions.filter(v => !v.hidden)
+  projects.forEach((p) => {
+    p.versions = p.versions.filter((v) => !v.hidden)
   })
 
-  return projects.filter(p => p.versions.length > 0)
+  return projects.filter((p) => p.versions.length > 0)
 }
 
 /**
  * Returns a list of all versions of a project.
  * @param {string} projectName Name of the project
  */
-async function getVersions (projectName: string): Promise<ProjectDetails[]> {
+async function getVersions(projectName: string): Promise<ProjectDetails[]> {
   const res = await fetch(`/api/projects/${projectName}?include_hidden=true`)
 
   if (!res.ok) {
-    console.error((await res.json() as { message: string }).message)
+    console.error(((await res.json()) as { message: string }).message)
     return []
   }
 
-  const json = await res.json() as {
+  const json = (await res.json()) as {
     versions: ProjectDetails[]
   }
 
@@ -63,7 +67,7 @@ async function getVersions (projectName: string): Promise<ProjectDetails[]> {
  * Order of precedence: latest, latest tag, latest version
  * @param versions all versions of a project
  */
-function getLatestVersion (versions: ProjectDetails[]): ProjectDetails {
+function getLatestVersion(versions: ProjectDetails[]): ProjectDetails {
   const latest = versions.find((v) => v.name.includes('latest'))
   if (latest != null) {
     return latest
@@ -74,8 +78,7 @@ function getLatestVersion (versions: ProjectDetails[]): ProjectDetails {
     return latestTag
   }
 
-  const sortedVersions = versions
-    .sort((a, b) => compareVersions(a, b))
+  const sortedVersions = versions.sort((a, b) => compareVersions(a, b))
 
   return sortedVersions[sortedVersions.length - 1]
 }
@@ -84,7 +87,7 @@ function getLatestVersion (versions: ProjectDetails[]): ProjectDetails {
  * Returns the logo URL of a given project
  * @param {string} projectName Name of the project
  */
-function getProjectLogoURL (projectName: string): string {
+function getProjectLogoURL(projectName: string): string {
   return `/${RESOURCE}/${projectName}/logo`
 }
 
@@ -95,7 +98,12 @@ function getProjectLogoURL (projectName: string): string {
  * @param {string?} docsPath Path to the documentation page
  * @param {string?} hash Hash part of the url (html id)
  */
-function getProjectDocsURL (projectName: string, version: string, docsPath?: string, hash?: string): string {
+function getProjectDocsURL(
+  projectName: string,
+  version: string,
+  docsPath?: string,
+  hash?: string
+): string {
   return `/${RESOURCE}/${projectName}/${version}/${docsPath ?? ''}${hash ?? ''}`
 }
 
@@ -106,17 +114,19 @@ function getProjectDocsURL (projectName: string, version: string, docsPath?: str
  * @param {FormData} body Data to upload
  * @returns {Promise<{ success: boolean, message: string }>} Success status and (error) message
  */
-async function upload (projectName: string, version: string, body: FormData): Promise<{ success: boolean, message: string }> {
+async function upload(
+  projectName: string,
+  version: string,
+  body: FormData
+): Promise<{ success: boolean; message: string }> {
   try {
-    const resp = await fetch(`/api/${projectName}/${version}`,
-      {
-        method: 'POST',
-        body
-      }
-    )
+    const resp = await fetch(`/api/${projectName}/${version}`, {
+      method: 'POST',
+      body
+    })
 
     if (resp.ok) {
-      const json = await resp.json() as { message: string }
+      const json = (await resp.json()) as { message: string }
       const msg = json.message
       return { success: true, message: msg }
     }
@@ -135,7 +145,7 @@ async function upload (projectName: string, version: string, body: FormData): Pr
       default:
         return {
           success: false,
-          message: `Failed to upload documentation: ${(await resp.json() as { message: string }).message}`
+          message: `Failed to upload documentation: ${((await resp.json()) as { message: string }).message}`
         }
     }
   } catch (e) {
@@ -150,11 +160,11 @@ async function upload (projectName: string, version: string, body: FormData): Pr
  * Claim the project token
  * @param {string} projectName Name of the project
  */
-async function claim (projectName: string): Promise<{ token: string }> {
+async function claim(projectName: string): Promise<{ token: string }> {
   const resp = await fetch(`/api/${projectName}/claim`)
 
   if (resp.ok) {
-    const json = await resp.json() as { token: string }
+    const json = (await resp.json()) as { token: string }
     return json
   }
 
@@ -162,7 +172,9 @@ async function claim (projectName: string): Promise<{ token: string }> {
     case 504:
       throw new Error('Failed to claim project: Server unreachable')
     default:
-      throw new Error(`Failed to claim project: ${(await resp.json() as { message: string }).message}`)
+      throw new Error(
+        `Failed to claim project: ${((await resp.json()) as { message: string }).message}`
+      )
   }
 }
 
@@ -172,14 +184,16 @@ async function claim (projectName: string): Promise<{ token: string }> {
  * @param {string} version Name of the version
  * @param {string} token Token to authenticate
  */
-async function deleteDoc (projectName: string, version: string, token: string): Promise<void> {
+async function deleteDoc(
+  projectName: string,
+  version: string,
+  token: string
+): Promise<void> {
   const headers = { 'Docat-Api-Key': token }
-  const resp = await fetch(`/api/${projectName}/${version}`,
-    {
-      method: 'DELETE',
-      headers
-    }
-  )
+  const resp = await fetch(`/api/${projectName}/${version}`, {
+    method: 'DELETE',
+    headers
+  })
 
   if (resp.ok) return
 
@@ -189,7 +203,9 @@ async function deleteDoc (projectName: string, version: string, token: string): 
     case 504:
       throw new Error('Failed to delete documentation: Server unreachable')
     default:
-      throw new Error(`Failed to delete documentation: ${(await resp.json() as { message: string }).message}`)
+      throw new Error(
+        `Failed to delete documentation: ${((await resp.json()) as { message: string }).message}`
+      )
   }
 }
 
@@ -205,7 +221,10 @@ async function deleteDoc (projectName: string, version: string, token: string): 
  * @param {string} versionB.name version name
  * @param {string[] | undefined} versionB.tags optional tags for this vertion
  */
-function compareVersions (versionA: { name: string, tags?: string[] }, versionB: { name: string, tags?: string[] }): number {
+function compareVersions(
+  versionA: { name: string; tags?: string[] },
+  versionB: { name: string; tags?: string[] }
+): number {
   if ((versionA.tags ?? []).includes('latest')) {
     return 1
   }
@@ -217,7 +236,7 @@ function compareVersions (versionA: { name: string, tags?: string[] }, versionB:
   const semverA = semver.coerce(versionA.name)
   const semverB = semver.coerce(versionB.name)
 
-  if ((semverA == null) || (semverB == null)) {
+  if (semverA == null || semverB == null) {
     return versionA.name.localeCompare(versionB.name)
   }
 
@@ -225,20 +244,20 @@ function compareVersions (versionA: { name: string, tags?: string[] }, versionB:
 }
 
 /**
-* Returns boolean indicating if the project name is part of the favorites.
-* @param {string} projectName name of the project
-* @returns {boolean} - true is project is favorite
-*/
-function isFavorite (projectName: string): boolean {
+ * Returns boolean indicating if the project name is part of the favorites.
+ * @param {string} projectName name of the project
+ * @returns {boolean} - true is project is favorite
+ */
+function isFavorite(projectName: string): boolean {
   return localStorage.getItem(projectName) === 'favorite'
 }
 
 /**
-   * Sets favorite preference on project
-   * @param {string} projectName
-   * @param {boolean} shouldBeFavorite
-   */
-function setFavorite (projectName: string, shouldBeFavorite: boolean): void {
+ * Sets favorite preference on project
+ * @param {string} projectName
+ * @param {boolean} shouldBeFavorite
+ */
+function setFavorite(projectName: string, shouldBeFavorite: boolean): void {
   if (shouldBeFavorite) {
     localStorage.setItem(projectName, 'favorite')
   } else {

@@ -7,7 +7,7 @@ interface Props {
   onFavoriteChanged: () => void
 }
 
-export default function FavoriteStar (props: Props): JSX.Element {
+export default function FavoriteStar(props: Props): JSX.Element {
   const [isFavorite, setIsFavorite] = useState<boolean>(
     ProjectRepository.isFavorite(props.projectName)
   )

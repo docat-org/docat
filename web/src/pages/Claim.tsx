@@ -7,7 +7,7 @@ import { useMessageBanner } from '../data-providers/MessageBannerProvider'
 import { useProjects } from '../data-providers/ProjectDataProvider'
 import ProjectRepository from '../repositories/ProjectRepository'
 
-export default function Claim (): JSX.Element {
+export default function Claim(): JSX.Element {
   const { projects, loadingFailed } = useProjects()
 
   const { showMessage } = useMessageBanner()
@@ -77,30 +77,30 @@ export default function Claim (): JSX.Element {
           }
         />
 
-        {token !== ''
-          ? (
-            <TextField
-              fullWidth
-              label="Token"
-              inputProps={{
-                readOnly: true
-              }}
-              value={token}
-            >
-              {token}
-            </TextField>
-            )
-          : (
-            <></>
-            )}
+        {token !== '' ? (
+          <TextField
+            fullWidth
+            label="Token"
+            inputProps={{
+              readOnly: true
+            }}
+            value={token}
+          >
+            {token}
+          </TextField>
+        ) : (
+          <></>
+        )}
 
         <button
           type="submit"
           disabled={token !== ''}
           onClick={() => {
-            (async () => {
+            ;(async () => {
               await claim()
-            })().catch((e) => { console.error(e) })
+            })().catch((e) => {
+              console.error(e)
+            })
           }}
         >
           Claim

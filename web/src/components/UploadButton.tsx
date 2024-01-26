@@ -9,11 +9,12 @@ interface Props {
   isSingleButton?: boolean
 }
 
-export default function UploadButton (props: Props): JSX.Element {
+export default function UploadButton(props: Props): JSX.Element {
   return (
     <>
       <Tooltip title="Upload Documentation" placement="top" arrow>
-        <Link to="/upload"
+        <Link
+          to="/upload"
           className={
             props.isSingleButton === true
               ? styles['single-control-button']

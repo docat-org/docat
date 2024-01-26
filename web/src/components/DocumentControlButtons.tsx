@@ -13,16 +13,13 @@ interface Props {
   onHideUi: () => void
 }
 
-export default function DocumentControlButtons (props: Props): JSX.Element {
+export default function DocumentControlButtons(props: Props): JSX.Element {
   const buttonStyle = { width: '25px', height: '25px' }
 
   return (
     <div className={styles.controls}>
       <Tooltip title="Project Overview" placement="top" arrow>
-        <Link
-          to="/"
-          className={styles['home-button']}
-        >
+        <Link to="/" className={styles['home-button']}>
           <Home sx={buttonStyle} />
         </Link>
       </Tooltip>
@@ -30,8 +27,14 @@ export default function DocumentControlButtons (props: Props): JSX.Element {
       <FormControl>
         <Select
           className={styles['version-select']}
-          onChange={(e) => { props.onVersionChange(e.target.value) }}
-          value={props.versions.find(v => v.name === props.version) !== undefined ? props.version : ''}
+          onChange={(e) => {
+            props.onVersionChange(e.target.value)
+          }}
+          value={
+            props.versions.find((v) => v.name === props.version) !== undefined
+              ? props.version
+              : ''
+          }
         >
           {props.versions
             .filter((v) => !v.hidden || v.name === props.version)

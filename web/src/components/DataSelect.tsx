@@ -10,7 +10,7 @@ interface Props {
   onChange: (value: string) => void
 }
 
-export default function DataSelect (props: Props): JSX.Element {
+export default function DataSelect(props: Props): JSX.Element {
   const [selectedValue, setSelectedValue] = useState<string>(
     props.value ?? 'none'
   )

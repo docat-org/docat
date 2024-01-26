@@ -9,7 +9,7 @@ interface Props {
   onFavoriteChanged: () => void
 }
 
-export default function ProjectList (props: Props): JSX.Element {
+export default function ProjectList(props: Props): JSX.Element {
   if (props.projects.length === 0) {
     return <></>
   }
@@ -20,7 +20,9 @@ export default function ProjectList (props: Props): JSX.Element {
         <Project
           project={project}
           key={project.name}
-          onFavoriteChanged={() => { props.onFavoriteChanged() }}
+          onFavoriteChanged={() => {
+            props.onFavoriteChanged()
+          }}
         />
       ))}
     </div>

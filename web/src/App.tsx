@@ -13,7 +13,7 @@ import EscapeSlashForDocsPath from './pages/EscapeSlashForDocsPath'
 import { MessageBannerProvider } from './data-providers/MessageBannerProvider'
 import { SearchProvider } from './data-providers/SearchProvider'
 
-function App (): JSX.Element {
+function App(): JSX.Element {
   const router = createHashRouter([
     {
       path: '/',

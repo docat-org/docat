@@ -25,7 +25,7 @@ const okFileTypes = [
   'application/x-zip-compressed'
 ]
 
-export default function Upload (): JSX.Element {
+export default function Upload(): JSX.Element {
   document.title = 'Upload | docat'
 
   const { reload: reloadProjects } = useProjects()
@@ -100,7 +100,11 @@ export default function Upload (): JSX.Element {
       const formData = new FormData()
       formData.append('file', file)
 
-      const { success, message } = await ProjectRepository.upload(project, version, formData)
+      const { success, message } = await ProjectRepository.upload(
+        project,
+        version,
+        formData
+      )
 
       if (!success) {
         console.error(message)
@@ -187,7 +191,9 @@ export default function Upload (): JSX.Element {
         <FileInput
           label="Zip File"
           file={file}
-          onChange={(file) => { setFile(file) }}
+          onChange={(file) => {
+            setFile(file)
+          }}
           okTypes={okFileTypes}
           isValid={validateFile}
         ></FileInput>

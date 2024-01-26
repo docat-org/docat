@@ -10,7 +10,7 @@ interface Props {
   description?: string | JSX.Element
 }
 
-export default function NavigationTitle (props: Props): JSX.Element {
+export default function NavigationTitle(props: Props): JSX.Element {
   return (
     <div className={styles['nav-title']}>
       <div className={styles['page-header']}>

@@ -9,15 +9,17 @@ interface Props {
   isSingleButton?: boolean
 }
 
-export default function DeleteButton (props: Props): JSX.Element {
+export default function DeleteButton(props: Props): JSX.Element {
   return (
     <>
       <Tooltip title="Delete a project version" placement="top" arrow>
-        <Link to="/delete" className={
-          props.isSingleButton === true
-            ? styles['single-control-button']
-            : styles['delete-button']
-        }
+        <Link
+          to="/delete"
+          className={
+            props.isSingleButton === true
+              ? styles['single-control-button']
+              : styles['delete-button']
+          }
         >
           <Delete></Delete>
         </Link>
