@@ -8,7 +8,7 @@ import IFrame from '../components/IFrame'
 import { useLocation, useParams, useSearchParams } from 'react-router-dom'
 import { useMessageBanner } from '../data-providers/MessageBannerProvider'
 
-export default function Docs (): JSX.Element {
+export default function Docs(): JSX.Element {
   const params = useParams()
   const searchParams = useSearchParams()[0]
   const location = useLocation()
@@ -22,7 +22,10 @@ export default function Docs (): JSX.Element {
   const hash = useRef(location.hash.split('?')[0] ?? '')
 
   const [version, setVersion] = useState<string>(params.version ?? 'latest')
-  const [hideUi, setHideUi] = useState<boolean>(searchParams.get('hide-ui') === 'true' || location.hash.split('?')[1] === 'hide-ui=true')
+  const [hideUi, setHideUi] = useState<boolean>(
+    searchParams.get('hide-ui') === 'true' ||
+      location.hash.split('?')[1] === 'hide-ui=true'
+  )
   const [iframeUpdateTrigger, setIframeUpdateTrigger] = useState<number>(0)
 
   // This provides the url for the iframe.
@@ -31,7 +34,12 @@ export default function Docs (): JSX.Element {
   // is not needed when only the page or hash changes, because
   // the iframe keeps track of that itself.
   const iFrameSrc = useMemo(() => {
-    return ProjectRepository.getProjectDocsURL(project.current, version, page.current, hash.current)
+    return ProjectRepository.getProjectDocsURL(
+      project.current,
+      version,
+      page.current,
+      hash.current
+    )
   }, [version, iframeUpdateTrigger])
 
   useEffect(() => {
@@ -47,10 +55,13 @@ export default function Docs (): JSX.Element {
           return
         }
 
-        allVersions = allVersions.sort((a, b) => ProjectRepository.compareVersions(a, b))
+        allVersions = allVersions.sort((a, b) =>
+          ProjectRepository.compareVersions(a, b)
+        )
         setVersions(allVersions)
 
-        const latestVersion = ProjectRepository.getLatestVersion(allVersions).name
+        const latestVersion =
+          ProjectRepository.getLatestVersion(allVersions).name
         if (version === 'latest') {
           if (latestVersion === 'latest') {
             return
@@ -61,7 +72,9 @@ export default function Docs (): JSX.Element {
 
         // custom version -> check if it exists
         // if it does. do nothing, as it should be set already
-        const versionsAndTags = allVersions.map((v) => [v.name, ...v.tags]).flat()
+        const versionsAndTags = allVersions
+          .map((v) => [v.name, ...v.tags])
+          .flat()
         if (versionsAndTags.includes(version)) {
           return
         }
@@ -81,12 +94,24 @@ export default function Docs (): JSX.Element {
    * @example
    * getUrl('project', 'version', 'path/to/page.html', '#hash', false) -> '#/project/version/path%2Fto%2Fpage.html#hash'
    */
-  const getUrl = (project: string, version: string, page: string, hash: string, hideUi: boolean): string => {
+  const getUrl = (
+    project: string,
+    version: string,
+    page: string,
+    hash: string,
+    hideUi: boolean
+  ): string => {
     return `#/${project}/${version}/${encodeURIComponent(page)}${hash}${hideUi ? '?hide-ui=true' : ''}`
   }
 
   const updateUrl = (newVersion: string, hideUi: boolean): void => {
-    const url = getUrl(project.current, newVersion, page.current, hash.current, hideUi)
+    const url = getUrl(
+      project.current,
+      newVersion,
+      page.current,
+      hash.current,
+      hideUi
+    )
     window.history.pushState(null, '', url)
   }
 
@@ -125,7 +150,9 @@ export default function Docs (): JSX.Element {
     const urlVersion = params.version ?? 'latest'
     const urlPage = params.page ?? 'index.html'
     const urlHash = location.hash.split('?')[0] ?? ''
-    const urlHideUi = searchParams.get('hide-ui') === 'true' || location.hash.split('?')[1] === 'hide-ui=true'
+    const urlHideUi =
+      searchParams.get('hide-ui') === 'true' ||
+      location.hash.split('?')[1] === 'hide-ui=true'
 
     // update the state to the url params on first loadon
     if (urlProject !== project.current) {
@@ -143,11 +170,11 @@ export default function Docs (): JSX.Element {
 
     if (urlPage !== page.current) {
       page.current = urlPage
-      setIframeUpdateTrigger(v => v + 1)
+      setIframeUpdateTrigger((v) => v + 1)
     }
     if (urlHash !== hash.current) {
       hash.current = urlHash
-      setIframeUpdateTrigger(v => v + 1)
+      setIframeUpdateTrigger((v) => v + 1)
     }
   }, [location])
 
@@ -192,7 +219,8 @@ export default function Docs (): JSX.Element {
           versions={versions}
           onVersionChange={onVersionChanged}
           onHideUi={onHideUi}
-        />)}
+        />
+      )}
     </>
   )
 }

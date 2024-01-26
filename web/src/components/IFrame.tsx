@@ -18,7 +18,10 @@ export default function IFrame(props: Props): JSX.Element {
     }
 
     // remove the hashchange event listener to prevent memory leaks
-    iFrameRef.current.contentWindow?.removeEventListener('hashchange', hashChangeEventListener)
+    iFrameRef.current.contentWindow?.removeEventListener(
+      'hashchange',
+      hashChangeEventListener
+    )
 
     const url = iFrameRef.current?.contentDocument?.location.href
     if (url == null) {
@@ -53,11 +56,16 @@ export default function IFrame(props: Props): JSX.Element {
       })
 
     // Add the event listener again
-    iFrameRef.current.contentWindow?.addEventListener('hashchange', hashChangeEventListener)
+    iFrameRef.current.contentWindow?.addEventListener(
+      'hashchange',
+      hashChangeEventListener
+    )
 
     const parts = url.split('/doc/').slice(1).join('/doc/').split('/')
     const urlPageAndHash = parts.slice(2).join('/')
-    const hashIndex = urlPageAndHash.includes('#') ? urlPageAndHash.indexOf('#') : urlPageAndHash.length
+    const hashIndex = urlPageAndHash.includes('#')
+      ? urlPageAndHash.indexOf('#')
+      : urlPageAndHash.length
     const urlPage = urlPageAndHash.slice(0, hashIndex)
     const urlHash = urlPageAndHash.slice(hashIndex)
 
@@ -85,12 +93,14 @@ export default function IFrame(props: Props): JSX.Element {
     props.onHashChanged(hash)
   }
 
-  return (<iframe
-    ref={iFrameRef}
-    key={uniqueId()}
-    className={styles['docs-iframe']}
-    src={props.src}
-    title="docs"
-    onLoad={onIframeLoad}
-  />)
+  return (
+    <iframe
+      ref={iFrameRef}
+      key={uniqueId()}
+      className={styles['docs-iframe']}
+      src={props.src}
+      title="docs"
+      onLoad={onIframeLoad}
+    />
+  )
 }

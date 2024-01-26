@@ -7,7 +7,16 @@ import React from 'react'
  * It replaces all slashes with "%2F" and redirects to the new path.
  * @returns <Navigate to={newLocation} replace={true}/>
  */
-export default function EscapeSlashForDocsPath (): JSX.Element {
+export default function EscapeSlashForDocsPath(): JSX.Element {
   const location = useLocation()
-  return <Navigate to={ProjectRepository.escapeSlashesInUrl(location.pathname, location.search, location.hash)} replace={true}></Navigate>
+  return (
+    <Navigate
+      to={ProjectRepository.escapeSlashesInUrl(
+        location.pathname,
+        location.search,
+        location.hash
+      )}
+      replace={true}
+    ></Navigate>
+  )
 }

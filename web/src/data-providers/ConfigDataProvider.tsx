@@ -23,7 +23,7 @@ export const ConfigDataProvider = ({ children }: any): JSX.Element => {
     void (async () => {
       try {
         const res = await fetch('/doc/config.json')
-        const data = await res.json() as Config
+        const data = (await res.json()) as Config
         setConfig(data)
       } catch (err) {
         console.error(err)

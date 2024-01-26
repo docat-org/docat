@@ -30,7 +30,7 @@ const Context = createContext<ProjectState>({
  *
  * If reloading is required, call the reload function.
  */
-export function ProjectDataProvider ({ children }: any): JSX.Element {
+export function ProjectDataProvider({ children }: any): JSX.Element {
   const { showMessage } = useMessageBanner()
 
   const loadData = (): void => {

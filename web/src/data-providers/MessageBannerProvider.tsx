@@ -27,7 +27,7 @@ export const Context = React.createContext<MessageBannerState>({
   }
 })
 
-export function MessageBannerProvider ({ children }: any): JSX.Element {
+export function MessageBannerProvider({ children }: any): JSX.Element {
   // We need to store the last timeout, so we can clear when a new message is shown
   const [lastTimeout, setLastTimeout] = useState<NodeJS.Timeout>()
   const [message, setMessage] = useState<Message>({
@@ -49,16 +49,13 @@ export function MessageBannerProvider ({ children }: any): JSX.Element {
     }
 
     // Hide message after 6 seconds
-    const newTimeout = setTimeout(
-      () => {
-        setMessage({
-          content: undefined,
-          type: 'success',
-          showMs: 6000
-        })
-      },
-      message.showMs
-    )
+    const newTimeout = setTimeout(() => {
+      setMessage({
+        content: undefined,
+        type: 'success',
+        showMs: 6000
+      })
+    }, message.showMs)
 
     setLastTimeout(newTimeout)
   }, [])

@@ -18,7 +18,7 @@ import LoadingPage from './LoadingPage'
 
 import styles from './../style/pages/Home.module.css'
 
-export default function Home (): JSX.Element {
+export default function Home(): JSX.Element {
   const { loadingFailed } = useProjects()
   const { filteredProjects: projects, query } = useSearch()
   const [nonFavoriteProjects, setNonFavoriteProjects] = useState<Project[]>([])
@@ -72,7 +72,9 @@ export default function Home (): JSX.Element {
     return (
       <div className={styles.home}>
         <Header />
-        <div className={styles['no-results']}>No results for &lsquo;{query}&rsquo;</div>
+        <div className={styles['no-results']}>
+          No results for &lsquo;{query}&rsquo;
+        </div>
         <UploadButton></UploadButton>
         <ClaimButton></ClaimButton>
         <DeleteButton></DeleteButton>
@@ -96,14 +98,18 @@ export default function Home (): JSX.Element {
       <div className={styles['project-overview']}>
         <ProjectList
           projects={favoriteProjects}
-          onFavoriteChanged={() => { updateFavorites() }}
+          onFavoriteChanged={() => {
+            updateFavorites()
+          }}
         />
         {nonFavoriteProjects.length > 0 && favoriteProjects.length > 0 && (
           <div className={styles.divider} />
         )}
         <ProjectList
           projects={nonFavoriteProjects}
-          onFavoriteChanged={() => { updateFavorites() }}
+          onFavoriteChanged={() => {
+            updateFavorites()
+          }}
         />
       </div>
       <UploadButton></UploadButton>

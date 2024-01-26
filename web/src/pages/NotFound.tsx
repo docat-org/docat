@@ -4,7 +4,7 @@ import Header from '../components/Header'
 import styles from './../style/pages/NotFound.module.css'
 import React from 'react'
 
-export default function NotFound (): JSX.Element {
+export default function NotFound(): JSX.Element {
   return (
     <div className={styles['not-found']}>
       <Header />

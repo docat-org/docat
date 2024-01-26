@@ -11,7 +11,7 @@ interface Props {
   showSearchBar?: boolean
 }
 
-export default function Header (props: Props): JSX.Element {
+export default function Header(props: Props): JSX.Element {
   const defaultHeader = (
     <>
       <img alt="docat logo" src={docatLogo} />

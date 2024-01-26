@@ -23,7 +23,7 @@ const Context = createContext<SearchState>({
   }
 })
 
-export function SearchProvider ({ children }: any): JSX.Element {
+export function SearchProvider({ children }: any): JSX.Element {
   const { projects } = useProjects()
 
   const filterProjects = (query: string): Project[] | null => {

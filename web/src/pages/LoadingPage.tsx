@@ -2,7 +2,7 @@ import React from 'react'
 import Footer from '../components/Footer'
 import Header from '../components/Header'
 
-export default function LoadingPage (): JSX.Element {
+export default function LoadingPage(): JSX.Element {
   return (
     <>
       <Header />

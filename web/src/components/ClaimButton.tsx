@@ -9,16 +9,18 @@ interface Props {
   isSingleButton?: boolean
 }
 
-export default function ClaimButton (props: Props): JSX.Element {
+export default function ClaimButton(props: Props): JSX.Element {
   return (
     <>
       <Tooltip title="Claim a Project" placement="top" arrow>
-        <Link to="/claim"
+        <Link
+          to="/claim"
           className={
             props.isSingleButton === true
               ? styles['single-control-button']
               : styles['claim-button']
-          }>
+          }
+        >
           <Lock></Lock>
         </Link>
       </Tooltip>
