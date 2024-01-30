@@ -7,9 +7,11 @@ Host your docs. Simple. Versioned. Fancy.
 :copyright: (c) 2019 by docat, https://github.com/docat-org/docat
 :license: MIT, see LICENSE for more details.
 """
+
 import os
 import secrets
 import shutil
+from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Optional
 
@@ -32,6 +34,23 @@ from docat.utils import (
     remove_docs,
 )
 
+DOCAT_STORAGE_PATH = Path(os.getenv("DOCAT_STORAGE_PATH", Path("/var/docat")))
+DOCAT_DB_PATH = DOCAT_STORAGE_PATH / DB_PATH
+DOCAT_UPLOAD_FOLDER = DOCAT_STORAGE_PATH / UPLOAD_FOLDER
+
+
+@asynccontextmanager
+async def lifespan(_: FastAPI):
+    # Create the folders if they don't exist
+    DOCAT_UPLOAD_FOLDER.mkdir(parents=True, exist_ok=True)
+    yield
+
+
+def get_db() -> TinyDB:
+    """Return the cached TinyDB instance."""
+    return TinyDB(DOCAT_DB_PATH)
+
+
 #: Holds the FastAPI application
 app = FastAPI(
     title="docat",
@@ -39,22 +58,8 @@ app = FastAPI(
     openapi_url="/api/v1/openapi.json",
     docs_url="/api/docs",
     redoc_url="/api/redoc",
+    lifespan=lifespan,
 )
-
-DOCAT_STORAGE_PATH = Path(os.getenv("DOCAT_STORAGE_PATH", Path("/var/docat")))
-DOCAT_DB_PATH = DOCAT_STORAGE_PATH / DB_PATH
-DOCAT_UPLOAD_FOLDER = DOCAT_STORAGE_PATH / UPLOAD_FOLDER
-
-
-@app.on_event("startup")
-def startup_create_folders():
-    # Create the folders if they don't exist
-    DOCAT_UPLOAD_FOLDER.mkdir(parents=True, exist_ok=True)
-
-
-def get_db() -> TinyDB:
-    """Return the cached TinyDB instance."""
-    return TinyDB(DOCAT_DB_PATH)
 
 
 @app.get("/api/projects", response_model=Projects, status_code=status.HTTP_200_OK)
