@@ -1,8 +1,17 @@
-import { Home, VisibilityOff } from '@mui/icons-material'
-import { FormControl, MenuItem, Select, Tooltip } from '@mui/material'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { Home, Share } from '@mui/icons-material'
+import {
+  Checkbox,
+  FormControl,
+  FormControlLabel,
+  FormGroup,
+  MenuItem,
+  Modal,
+  Select,
+  Tooltip
+} from '@mui/material'
 import type ProjectDetails from '../models/ProjectDetails'
-import React from 'react'
 
 import styles from './../style/components/DocumentControlButtons.module.css'
 
@@ -10,11 +19,31 @@ interface Props {
   version: string
   versions: ProjectDetails[]
   onVersionChange: (version: string) => void
-  onHideUi: () => void
 }
 
 export default function DocumentControlButtons(props: Props): JSX.Element {
   const buttonStyle = { width: '25px', height: '25px' }
+
+  const [shareModalOpen, setShareModalOpen] = useState<boolean>(false)
+  const [shareModalUseLatest, setShareModalUseLatest] = useState<boolean>(false)
+  const [shareModalHideUi, setShareModalHideUi] = useState<boolean>(false)
+
+  const getShareUrl = (): string => {
+    // adapt the current URL so we can leave Docs.tsx's state as refs
+    // (which means if the page was passed down as a prop it wouldn't update correctly)
+
+    let url = window.location.href
+
+    if (shareModalUseLatest) {
+      url = url.replace(props.version, 'latest')
+    }
+
+    if (shareModalHideUi && !url.includes('?hide-ui=true')) {
+      url = `${url}?hide-ui=true`
+    }
+
+    return url
+  }
 
   return (
     <div className={styles.controls}>
@@ -46,14 +75,79 @@ export default function DocumentControlButtons(props: Props): JSX.Element {
         </Select>
       </FormControl>
 
-      <Tooltip title="Hide Controls" placement="top" arrow>
+      <Tooltip title="Share Link" placement="top" arrow>
         <button
-          className={styles['hide-controls-button']}
-          onClick={props.onHideUi}
+          className={styles['share-button']}
+          onClick={() => {
+            setShareModalOpen(true)
+          }}
         >
-          <VisibilityOff sx={buttonStyle} />
+          <Share sx={buttonStyle} />
         </button>
       </Tooltip>
+
+      <Modal
+        open={shareModalOpen}
+        onClose={() => {
+          setShareModalOpen(false)
+        }}
+        aria-labelledby="share-modal-title"
+        aria-describedby="share-modal-description"
+      >
+        <div className={styles['share-modal']}>
+          <div className={styles['share-modal-link-container']}>
+            <p className={styles['share-modal-link']}>{getShareUrl()}</p>
+            <div className={styles['share-modal-copy-container']}>
+              <button
+                className={styles['share-modal-copy']}
+                onClick={() => {
+                  void (async () => {
+                    await navigator.clipboard.writeText(getShareUrl())
+                  })()
+                }}
+              >
+                Copy
+              </button>
+            </div>
+          </div>
+
+          <FormGroup>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={shareModalHideUi}
+                  onChange={(e) => {
+                    setShareModalHideUi(e.target.checked)
+                  }}
+                />
+              }
+              label="Hide Version Selector"
+              className={styles['share-modal-label']}
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={shareModalUseLatest}
+                  onChange={(e) => {
+                    setShareModalUseLatest(e.target.checked)
+                  }}
+                />
+              }
+              label="Always use latest version"
+              className={styles['share-modal-label']}
+            />
+          </FormGroup>
+
+          <button
+            className={styles['share-modal-close']}
+            onClick={() => {
+              setShareModalOpen(false)
+            }}
+          >
+            Close
+          </button>
+        </div>
+      </Modal>
     </div>
   )
 }

@@ -140,11 +140,6 @@ export default function Docs(): JSX.Element {
     updateUrl(newVersion, hideUi)
   }
 
-  const onHideUi = (): void => {
-    setHideUi(true)
-    updateUrl(version, true)
-  }
-
   useEffect(() => {
     const urlProject = params.project ?? ''
     const urlVersion = params.version ?? 'latest'
@@ -218,7 +213,6 @@ export default function Docs(): JSX.Element {
           version={version}
           versions={versions}
           onVersionChange={onVersionChanged}
-          onHideUi={onHideUi}
         />
       )}
     </>
