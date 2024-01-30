@@ -7,6 +7,7 @@ import DocumentControlButtons from '../components/DocumentControlButtons'
 import IFrame from '../components/IFrame'
 import { useLocation, useParams, useSearchParams } from 'react-router-dom'
 import { useMessageBanner } from '../data-providers/MessageBannerProvider'
+import IframeNotFound from './IframePageNotFound'
 
 export default function Docs(): JSX.Element {
   const params = useParams()
@@ -14,6 +15,7 @@ export default function Docs(): JSX.Element {
   const location = useLocation()
   const { showMessage, clearMessages } = useMessageBanner()
 
+  const [iframePageNotFound, setIframePageNotFound] = useState<boolean>(false)
   const [versions, setVersions] = useState<ProjectDetails[]>([])
   const [loadingFailed, setLoadingFailed] = useState<boolean>(false)
 
@@ -132,6 +134,10 @@ export default function Docs(): JSX.Element {
     updateUrl(version, hideUi)
   }
 
+  const iFrameNotFound = (): void => {
+    setIframePageNotFound(true)
+  }
+
   const onVersionChanged = (newVersion: string): void => {
     if (newVersion === version) {
       return
@@ -171,6 +177,8 @@ export default function Docs(): JSX.Element {
       hash.current = urlHash
       setIframeUpdateTrigger((v) => v + 1)
     }
+
+    setIframePageNotFound(false)
   }, [location])
 
   useEffect(() => {
@@ -197,6 +205,16 @@ export default function Docs(): JSX.Element {
     return <NotFound />
   }
 
+  if (iframePageNotFound) {
+    return (
+      <IframeNotFound
+        project={project.current}
+        version={version}
+        hideUi={hideUi}
+      />
+    )
+  }
+
   if (versions.length === 0) {
     return <LoadingPage />
   }
@@ -207,6 +225,7 @@ export default function Docs(): JSX.Element {
         src={iFrameSrc}
         onPageChanged={iFramePageChanged}
         onHashChanged={iFrameHashChanged}
+        onNotFound={iFrameNotFound}
       />
       {!hideUi && (
         <DocumentControlButtons
