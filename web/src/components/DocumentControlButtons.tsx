@@ -28,6 +28,9 @@ export default function DocumentControlButtons(props: Props): JSX.Element {
   const [shareModalUseLatest, setShareModalUseLatest] = useState<boolean>(false)
   const [shareModalHideUi, setShareModalHideUi] = useState<boolean>(false)
 
+  // Cannot copy when page is served over HTTP
+  const canCopy = navigator.clipboard !== undefined
+
   const getShareUrl = (): string => {
     // adapt the current URL so we can leave Docs.tsx's state as refs
     // (which means if the page was passed down as a prop it wouldn't update correctly)
@@ -97,18 +100,20 @@ export default function DocumentControlButtons(props: Props): JSX.Element {
         <div className={styles['share-modal']}>
           <div className={styles['share-modal-link-container']}>
             <p className={styles['share-modal-link']}>{getShareUrl()}</p>
-            <div className={styles['share-modal-copy-container']}>
-              <button
-                className={styles['share-modal-copy']}
-                onClick={() => {
-                  void (async () => {
-                    await navigator.clipboard.writeText(getShareUrl())
-                  })()
-                }}
-              >
-                Copy
-              </button>
-            </div>
+            {canCopy && (
+              <div className={styles['share-modal-copy-container']}>
+                <button
+                  className={styles['share-modal-copy']}
+                  onClick={() => {
+                    void (async () => {
+                      await navigator.clipboard.writeText(getShareUrl())
+                    })()
+                  }}
+                >
+                  Copy
+                </button>
+              </div>
+            )}
           </div>
 
           <FormGroup>
