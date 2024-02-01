@@ -1,0 +1,34 @@
+.iframe-page-not-found {
+  height: fit-content;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.iframe-page-not-found-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  width: 100vw;
+}
+
+.iframe-page-not-found-title {
+  font-weight: 600;
+}
+
+.iframe-page-not-found-text {
+  margin-top: 10px;
+  font-size: 1.2rem;
+  text-align: center;
+}
+
+.iframe-page-not-found-link {
+  background-color: var(--button-primary);
+  color: white;
+  margin: 15px 0;
+  padding: 8px 16px;
+  border-radius: 8px;
+}

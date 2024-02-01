@@ -6,6 +6,7 @@ interface Props {
   src: string
   onPageChanged: (page: string, hash: string) => void
   onHashChanged: (hash: string) => void
+  onNotFound: () => void
 }
 
 export default function IFrame(props: Props): JSX.Element {
@@ -54,6 +55,14 @@ export default function IFrame(props: Props): JSX.Element {
           return false
         }
       })
+
+    // React to page 404ing
+    void (async (): Promise<void> => {
+      const response = await fetch(url, { method: 'HEAD' })
+      if (response.status === 404) {
+        props.onNotFound()
+      }
+    })()
 
     // Add the event listener again
     iFrameRef.current.contentWindow?.addEventListener(
