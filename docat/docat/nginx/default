@@ -18,7 +18,7 @@ server {
     }
 
     location /api {
-        client_max_body_size 100M;
+        client_max_body_size $MAX_UPLOAD_SIZE;
         proxy_pass http://python_backend;
     }
 

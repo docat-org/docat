@@ -91,7 +91,7 @@ Same thing with `docatl`:
 docatl tag --host http://localhost:8000 PROJECT VERSION latest
 ```
 
-## Advanced `config.json`
+## Advanced Frontend `config.json`
 
 It is possible to configure some things after the fact.
 
@@ -101,3 +101,10 @@ It is possible to configure some things after the fact.
 Supported config options:
 
 - headerHTML
+
+## Advanced System Config
+
+Further proxy configurations can be done through the following environmental variables:
+| Varaiable | Default (Link to Definition) | Description |
+|---|---|---|
+| MAX_UPLOAD_SIZE | [100M](./Dockerfile) | Limits the size of individual archives posted to the API |
