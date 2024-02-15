@@ -36,9 +36,12 @@ RUN poetry install --no-root --no-ansi --only main
 # production
 FROM python:3.12-slim
 
+# defaults
+ENV MAX_UPLOAD_SIZE=100M
+
 # set up the system
 RUN apt update && \
-    apt install --yes nginx dumb-init libmagic1 && \
+    apt install --yes nginx dumb-init libmagic1 gettext && \
     rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p /var/docat/doc
@@ -49,10 +52,8 @@ COPY --from=frontend /app/frontend/dist /var/www/html
 COPY docat /app/docat
 WORKDIR /app/docat
 
-RUN cp docat/nginx/default /etc/nginx/sites-enabled/default
-
 # Copy the build artifact (.venv)
 COPY --from=backend /app /app/docat
 
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]
-CMD ["sh", "-c", "nginx && .venv/bin/python -m uvicorn --host 0.0.0.0 --port 5000 docat.app:app"]
+CMD ["sh", "-c", "envsubst '$MAX_UPLOAD_SIZE' < /app/docat/docat/nginx/default > /etc/nginx/sites-enabled/default && nginx && .venv/bin/python -m uvicorn --host 0.0.0.0 --port 5000 docat.app:app"]
