@@ -245,7 +245,11 @@ def upload(
     with target_file.open("wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
 
-    extract_archive(target_file, base_path)
+    try:
+        extract_archive(target_file, base_path)
+    except Exception:
+        response.status_code = status.HTTP_400_BAD_REQUEST
+        return ApiResponse(message="Cannot extract zip file.")
 
     if not (base_path / "index.html").exists():
         return ApiResponse(message="Documentation uploaded successfully, but no index.html found at root of archive.")
