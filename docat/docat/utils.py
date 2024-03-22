@@ -6,13 +6,32 @@ import hashlib
 import os
 import shutil
 from pathlib import Path
-from zipfile import ZipFile
+from zipfile import ZipFile, ZipInfo
 
 from docat.models import Project, ProjectDetail, Projects, ProjectVersion
 
 NGINX_CONFIG_PATH = Path("/etc/nginx/locations.d")
 UPLOAD_FOLDER = "doc"
 DB_PATH = "db.json"
+
+
+def is_dir(self):
+    """Return True if this archive member is a directory."""
+    if self.filename.endswith("/"):
+        return True
+    # The ZIP format specification requires to use forward slashes
+    # as the directory separator, but in practice some ZIP files
+    # created on Windows can use backward slashes.  For compatibility
+    # with the extraction code which already handles this:
+    if os.path.altsep:
+        return self.filename.endswith((os.path.sep, os.path.altsep))
+    return False
+
+
+# Patch is_dir to allow windows zip files to be
+# extracted correctly
+# see: https://github.com/python/cpython/issues/117084
+ZipInfo.is_dir = is_dir  # type: ignore[method-assign]
 
 
 def create_symlink(source, destination):
