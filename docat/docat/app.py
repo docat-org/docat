@@ -8,6 +8,7 @@ Host your docs. Simple. Versioned. Fancy.
 :license: MIT, see LICENSE for more details.
 """
 
+import logging
 import os
 import secrets
 import shutil
@@ -37,6 +38,8 @@ from docat.utils import (
 DOCAT_STORAGE_PATH = Path(os.getenv("DOCAT_STORAGE_PATH", Path("/var/docat")))
 DOCAT_DB_PATH = DOCAT_STORAGE_PATH / DB_PATH
 DOCAT_UPLOAD_FOLDER = DOCAT_STORAGE_PATH / UPLOAD_FOLDER
+
+logger = logging.getLogger(__name__)
 
 
 @asynccontextmanager
@@ -248,6 +251,7 @@ def upload(
     try:
         extract_archive(target_file, base_path)
     except Exception:
+        logger.exception("Failed to unzip {target_file=}")
         response.status_code = status.HTTP_400_BAD_REQUEST
         return ApiResponse(message="Cannot extract zip file.")
 
