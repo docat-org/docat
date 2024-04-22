@@ -16,15 +16,17 @@ export default function ProjectList(props: Props): JSX.Element {
 
   return (
     <div className={styles['project-list']}>
-      {props.projects.map((project) => (
-        <Project
-          project={project}
-          key={project.name}
-          onFavoriteChanged={() => {
-            props.onFavoriteChanged()
-          }}
-        />
-      ))}
+      {props.projects
+        .sort((a, b) => (a.name > b.name ? 1 : -1))
+        .map((project) => (
+          <Project
+            project={project}
+            key={project.name}
+            onFavoriteChanged={() => {
+              props.onFavoriteChanged()
+            }}
+          />
+        ))}
     </div>
   )
 }
