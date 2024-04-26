@@ -96,7 +96,7 @@ docatl tag --host http://localhost:8000 PROJECT VERSION latest
 It is possible to configure some things after the fact.
 
 1. Create a `config.json` file
-2. Mount it inside your docker container `--volume /path/to/config.json:/var/www/html/config.json`
+2. Mount it inside your docker container `--volume /path/to/config.json:/var/docat/doc/config.json`
 
 Supported config options:
 
