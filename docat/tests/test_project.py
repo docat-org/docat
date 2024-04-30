@@ -12,8 +12,8 @@ client = TestClient(docat.app)
 
 
 def test_project_api(temp_project_version):
-    project = "project"
-    docs = temp_project_version(project, "1.0")
+    docs = temp_project_version("project", "1.0")
+    docs = temp_project_version("different-project", "1.0")
 
     with patch("docat.app.DOCAT_UPLOAD_FOLDER", docs):
         response = client.get("/api/projects")
@@ -22,12 +22,19 @@ def test_project_api(temp_project_version):
         assert response.json() == {
             "projects": [
                 {
+                    "name": "different-project",
+                    "logo": False,
+                    "versions": [
+                        {"name": "1.0", "tags": ["latest"], "hidden": False},
+                    ],
+                },
+                {
                     "name": "project",
                     "logo": False,
                     "versions": [
                         {"name": "1.0", "tags": ["latest"], "hidden": False},
                     ],
-                }
+                },
             ]
         }
 

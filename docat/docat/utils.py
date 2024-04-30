@@ -130,7 +130,7 @@ def get_all_projects(upload_folder_path: Path, include_hidden: bool) -> Projects
     """
     projects: list[Project] = []
 
-    for project in upload_folder_path.iterdir():
+    for project in sorted(upload_folder_path.iterdir()):
         if not project.is_dir():
             continue
 
