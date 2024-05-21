@@ -8,7 +8,7 @@ license = "MIT"
 [tool.poetry.dependencies]
 python = "^3.10"
 tinydb = "^4.8.0"
-fastapi = {version = "^0.110.0", extras = ["all"]}
+fastapi = {version = "^0.111.0", extras = ["all"]}
 python-multipart = "^0.0.9"
 uvicorn = "^0.29.0"
 python-magic = "^0.4.27"
@@ -17,9 +17,9 @@ python-magic = "^0.4.27"
 flake8 = "^7.0.0"
 flake8-isort = "^6.1.1"
 flake8-black = "^0.3.6"
-pytest = "^8.1.1"
+pytest = "^8.2.1"
 pytest-cov = "^4.1.0"
-requests = "^2.31.0"
+requests = "^2.32.1"
 mypy = "^1.9.0"
 
 [tool.pytest.ini_options]
