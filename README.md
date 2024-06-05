@@ -105,6 +105,6 @@ Supported config options:
 ## Advanced System Config
 
 Further proxy configurations can be done through the following environmental variables:
-| Varaiable | Default (Link to Definition) | Description |
+| Variable | Default (Link to Definition) | Description |
 |---|---|---|
 | MAX_UPLOAD_SIZE | [100M](./Dockerfile) | Limits the size of individual archives posted to the API |
