@@ -1,7 +1,7 @@
 format:
-	poetry run isort docat tests
-	poetry run black docat tests
+	poetry run ruff check --fix
+	poetry run ruff format
 lint:
-	poetry run flake8 docat tests
+	poetry run ruff check
 pytest:
 	poetry run pytest

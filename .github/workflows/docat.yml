@@ -27,7 +27,8 @@ jobs:
       - name: run backend linter
         working-directory: docat
         run: |
-          python -m poetry run flake8 docat tests
+          python -m poetry run ruff check
+          python -m poetry run ruff format --check
 
       - name: run backend static code analysis
         working-directory: docat
