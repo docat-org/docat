@@ -37,13 +37,7 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "test": "vitest --watch=false",
-    "lint": "eslint ./src --ext .js,.jsx,.ts,.tsx"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
+    "lint": "eslint"
   },
   "browserslist": {
     "production": [
