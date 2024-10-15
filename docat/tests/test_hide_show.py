@@ -1,10 +1,12 @@
 import io
+from datetime import datetime
 from unittest.mock import patch
 
 import docat.app as docat
 
 
-def test_hide(client_with_claimed_project):
+@patch("docat.utils.get_version_timestamp", return_value=datetime(2000, 1, 1, 1, 1, 0))
+def test_hide(_, client_with_claimed_project):
     """
     Tests that the version is marked as hidden when getting the details after hiding
     """
@@ -19,7 +21,7 @@ def test_hide(client_with_claimed_project):
     assert project_details_response.status_code == 200
     assert project_details_response.json() == {
         "name": "some-project",
-        "versions": [{"name": "1.0.0", "tags": [], "hidden": False}],
+        "versions": [{"name": "1.0.0", "timestamp": "2000-01-01T01:01:00", "tags": [], "hidden": False}],
     }
 
     # hide the version
@@ -36,7 +38,8 @@ def test_hide(client_with_claimed_project):
     }
 
 
-def test_hide_only_version_not_listed_in_projects(client_with_claimed_project):
+@patch("docat.utils.get_version_timestamp", return_value=datetime(2000, 1, 1, 1, 1, 0))
+def test_hide_only_version_not_listed_in_projects(_, client_with_claimed_project):
     """
     Test that the project is not listed in the projects endpoint when the only version is hidden
     """
@@ -50,7 +53,13 @@ def test_hide_only_version_not_listed_in_projects(client_with_claimed_project):
     projects_response = client_with_claimed_project.get("/api/projects")
     assert projects_response.status_code == 200
     assert projects_response.json() == {
-        "projects": [{"name": "some-project", "logo": False, "versions": [{"name": "1.0.0", "tags": [], "hidden": False}]}],
+        "projects": [
+            {
+                "name": "some-project",
+                "logo": False,
+                "versions": [{"name": "1.0.0", "timestamp": "2000-01-01T01:01:00", "tags": [], "hidden": False}],
+            }
+        ],
     }
 
     # hide the only version
@@ -186,7 +195,8 @@ def test_hide_fails_invalid_token(client_with_claimed_project):
         open_file_mock.assert_not_called()
 
 
-def test_show(client_with_claimed_project):
+@patch("docat.utils.get_version_timestamp", return_value=datetime(2000, 1, 1, 1, 1, 0))
+def test_show(_, client_with_claimed_project):
     """
     Tests that the version is no longer marked as hidden after requesting show.
     """
@@ -219,7 +229,7 @@ def test_show(client_with_claimed_project):
     assert project_details_response.status_code == 200
     assert project_details_response.json() == {
         "name": "some-project",
-        "versions": [{"name": "1.0.0", "tags": [], "hidden": False}],
+        "versions": [{"name": "1.0.0", "timestamp": "2000-01-01T01:01:00", "tags": [], "hidden": False}],
     }
 
 
@@ -353,7 +363,8 @@ def test_show_fails_invalid_token(client_with_claimed_project):
         remove_file_mock.assert_not_called()
 
 
-def test_hide_and_show_with_tag(client_with_claimed_project):
+@patch("docat.utils.get_version_timestamp", return_value=datetime(2000, 1, 1, 1, 1, 0))
+def test_hide_and_show_with_tag(_, client_with_claimed_project):
     """
     Tests that the version is no longer marked as hidden after requesting show on a tag.
     """
@@ -391,5 +402,5 @@ def test_hide_and_show_with_tag(client_with_claimed_project):
     assert project_details_response.status_code == 200
     assert project_details_response.json() == {
         "name": "some-project",
-        "versions": [{"name": "1.0.0", "tags": ["latest"], "hidden": False}],
+        "versions": [{"name": "1.0.0", "timestamp": "2000-01-01T01:01:00", "tags": ["latest"], "hidden": False}],
     }

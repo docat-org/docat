@@ -1,5 +1,6 @@
 import base64
 import io
+from datetime import datetime
 from unittest.mock import call, patch
 
 import docat.app as docat
@@ -143,7 +144,8 @@ def test_icon_upload_fails_no_image(client_with_claimed_project):
         assert copyfileobj_mock.mock_calls == []
 
 
-def test_get_project_recongizes_icon(client_with_claimed_project):
+@patch("docat.utils.get_version_timestamp", return_value=datetime(2000, 1, 1, 1, 1, 0))
+def test_get_project_recongizes_icon(_, client_with_claimed_project):
     """
     get_projects should return true, if the project has an icon
     """
@@ -160,7 +162,7 @@ def test_get_project_recongizes_icon(client_with_claimed_project):
             {
                 "name": "some-project",
                 "logo": False,
-                "versions": [{"name": "1.0.0", "tags": [], "hidden": False}],
+                "versions": [{"name": "1.0.0", "timestamp": "2000-01-01T01:01:00", "tags": [], "hidden": False}],
             }
         ]
     }
@@ -178,7 +180,7 @@ def test_get_project_recongizes_icon(client_with_claimed_project):
             {
                 "name": "some-project",
                 "logo": True,
-                "versions": [{"name": "1.0.0", "tags": [], "hidden": False}],
+                "versions": [{"name": "1.0.0", "timestamp": "2000-01-01T01:01:00", "tags": [], "hidden": False}],
             }
         ]
     }

@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from datetime import datetime
 
 from pydantic import BaseModel
 
@@ -19,6 +20,7 @@ class ClaimResponse(ApiResponse):
 
 class ProjectVersion(BaseModel):
     name: str
+    timestamp: datetime
     tags: list[str]
     hidden: bool
 
