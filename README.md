@@ -36,7 +36,7 @@ docker run \
 
 Go to [localhost:8000](http://localhost:8000) to view your docat instance:
 
-![docat screenshot](doc/assets/docat-screenshot.png)
+<img src="doc/assets/docat.gif" width="100%" />
 
 ### Using DoCat
 
