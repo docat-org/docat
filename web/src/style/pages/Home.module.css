@@ -22,6 +22,22 @@
   flex-direction: column;
 }
 
+.card {
+  border: 1px solid var(--secondary-foreground);
+  border-radius: 5px;
+  width: 250px;
+  padding: 16px;
+  margin-left: 16px;
+}
+
+.clear {
+  clear: both;
+}
+
+.card-header {
+  margin-top: 8px;
+}
+
 @media only screen and (min-width: 1000px) {
   .project-overview {
     margin: 20px 15%;

@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return, @typescript-eslint/require-await, @typescript-eslint/no-floating-promises */
 // -> we need any for our mocks, and we need to disable require-await because we need to mock async functions that throw errors
 
-import ProjectRepository from '../../repositories/ProjectRepository'
 import ProjectDetails from '../../models/ProjectDetails'
 import { type Project } from '../../models/ProjectsResponse'
+import ProjectRepository from '../../repositories/ProjectRepository'
 const mockFetchData = (fetchData: any): void => {
   global.fetch = vi.fn().mockImplementation(
     async () =>
@@ -40,7 +40,7 @@ describe('get versions', () => {
     const projectName = 'test'
     const versions = ['1.0.0', '2.0.0']
     const responseData = versions.map(
-      (version) => new ProjectDetails(version, ['tag'], false)
+      (version) => new ProjectDetails(version, ['tag'], false, new Date())
     )
 
     mockFetchData({ versions: responseData })
@@ -338,13 +338,15 @@ describe('filterHiddenVersions', () => {
     const shownVersion: ProjectDetails = {
       name: 'v-2',
       tags: ['stable'],
-      hidden: false
+      hidden: false,
+      timestamp: new Date()
     }
 
     const hiddenVersion: ProjectDetails = {
       name: 'v-1',
       tags: ['latest'],
-      hidden: true
+      hidden: true,
+      timestamp: new Date()
     }
 
     const allProjects: Project[] = [
@@ -374,7 +376,8 @@ describe('filterHiddenVersions', () => {
           {
             name: 'v-1',
             tags: ['latest'],
-            hidden: true
+            hidden: true,
+            timestamp: new Date()
           }
         ],
         logo: true
@@ -392,12 +395,14 @@ describe('getLatestVersion', () => {
       {
         name: '1.0.0',
         hidden: false,
-        tags: []
+        tags: [],
+        timestamp: new Date()
       },
       {
         name: '2.0.0',
         hidden: false,
-        tags: []
+        tags: [],
+        timestamp: new Date()
       }
     ]
 
@@ -410,12 +415,14 @@ describe('getLatestVersion', () => {
       {
         name: '1.0.0',
         hidden: false,
-        tags: []
+        tags: [],
+        timestamp: new Date()
       },
       {
         name: 'latest',
         hidden: false,
-        tags: []
+        tags: [],
+        timestamp: new Date()
       }
     ]
 
@@ -428,12 +435,14 @@ describe('getLatestVersion', () => {
       {
         name: '1.0.0',
         hidden: false,
-        tags: ['latest']
+        tags: ['latest'],
+        timestamp: new Date()
       },
       {
         name: '2.0.0',
         hidden: false,
-        tags: []
+        tags: [],
+        timestamp: new Date()
       }
     ]
 
@@ -446,12 +455,14 @@ describe('getLatestVersion', () => {
       {
         name: 'latest',
         hidden: false,
-        tags: []
+        tags: [],
+        timestamp: new Date()
       },
       {
         name: '1.0.0',
         hidden: false,
-        tags: ['latest']
+        tags: ['latest'],
+        timestamp: new Date()
       }
     ]
 

@@ -1,27 +1,26 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
 
-import { useProjects } from '../data-providers/ProjectDataProvider'
-import { ErrorOutline } from '@mui/icons-material'
-import { type Project } from '../models/ProjectsResponse'
-import { useLocation } from 'react-router'
-import { useSearch } from '../data-providers/SearchProvider'
+import { Delete, ErrorOutline, FileUpload, Lock } from '@mui/icons-material';
+import { useLocation } from 'react-router';
+import { useProjects } from '../data-providers/ProjectDataProvider';
+import { useSearch } from '../data-providers/SearchProvider';
+import { type Project } from '../models/ProjectsResponse';
 
-import ProjectRepository from '../repositories/ProjectRepository'
-import Help from './Help'
-import UploadButton from '../components/UploadButton'
-import ClaimButton from '../components/ClaimButton'
-import DeleteButton from '../components/DeleteButton'
-import ProjectList from '../components/ProjectList'
-import Header from '../components/Header'
-import Footer from '../components/Footer'
-import LoadingPage from './LoadingPage'
+import Footer from '../components/Footer';
+import Header from '../components/Header';
+import ProjectList from '../components/ProjectList';
+import ProjectRepository from '../repositories/ProjectRepository';
+import LoadingPage from './LoadingPage';
 
-import styles from './../style/pages/Home.module.css'
+import { Box, Button, IconButton, Tooltip, Typography } from '@mui/material';
+import SearchBar from '../components/SearchBar';
+import styles from './../style/pages/Home.module.css';
+
 
 export default function Home(): JSX.Element {
   const { loadingFailed } = useProjects()
-  const { filteredProjects: projects, query } = useSearch()
-  const [nonFavoriteProjects, setNonFavoriteProjects] = useState<Project[]>([])
+  const { filteredProjects: projects, query, setQuery } = useSearch()
+  const [showAll, setShowAll] = useState(false);
   const [favoriteProjects, setFavoriteProjects] = useState<Project[]>([])
 
   const location = useLocation()
@@ -37,7 +36,7 @@ export default function Home(): JSX.Element {
     }
 
     window.location.replace(`/#${nonHostPart}`)
-  }, [location])
+  }, [location, setQuery, projects])
 
   const updateFavorites = (): void => {
     if (projects == null) return
@@ -45,9 +44,10 @@ export default function Home(): JSX.Element {
     setFavoriteProjects(
       projects.filter((project) => ProjectRepository.isFavorite(project.name))
     )
-    setNonFavoriteProjects(
-      projects.filter((project) => !ProjectRepository.isFavorite(project.name))
-    )
+  }
+
+  const onShowFavourites = (all: boolean): void => {
+    setShowAll(all);
   }
 
   useEffect(() => {
@@ -67,54 +67,93 @@ export default function Home(): JSX.Element {
     )
   }
 
-  // no results for query
-  if (projects != null && projects.length === 0 && query.length > 0) {
-    return (
-      <div className={styles.home}>
-        <Header />
-        <div className={styles['no-results']}>
-          No results for &lsquo;{query}&rsquo;
-        </div>
-        <UploadButton></UploadButton>
-        <ClaimButton></ClaimButton>
-        <DeleteButton></DeleteButton>
-        <Footer />
-      </div>
-    )
-  }
-
   if (projects == null) {
     return <LoadingPage />
-  }
-
-  // no projects
-  if (projects.length === 0) {
-    return <Help />
   }
 
   return (
     <div className={styles.home}>
       <Header />
+
       <div className={styles['project-overview']}>
-        <ProjectList
-          projects={favoriteProjects}
-          onFavoriteChanged={() => {
-            updateFavorites()
-          }}
-        />
-        {nonFavoriteProjects.length > 0 && favoriteProjects.length > 0 && (
-          <div className={styles.divider} />
-        )}
-        <ProjectList
-          projects={nonFavoriteProjects}
-          onFavoriteChanged={() => {
-            updateFavorites()
-          }}
-        />
+        <Box sx={{
+          display: 'flex'
+        }}>
+
+          <SearchBar showFavourites={!showAll} onShowFavourites={onShowFavourites} />
+
+          <Tooltip title="Upload Documentation" placement="right" arrow>
+            <IconButton
+              sx={{ marginLeft: 2, height: '46px', width: '46px', marginTop: '26px'}}
+              href="/upload"
+            >
+              <FileUpload></FileUpload>
+            </IconButton>
+          </Tooltip>
+
+          <Tooltip title="Claim a Project" placement="right" arrow>
+            <IconButton
+              sx={{ marginLeft: 2, height: '46px', width: '46px', marginTop: '26px'}}
+              href="/upload"
+            >
+              <Lock></Lock>
+            </IconButton>
+          </Tooltip>
+
+          <Tooltip title="Delete a project version" placement="right" arrow>
+            <IconButton
+              sx={{ marginLeft: 2, height: '46px', width: '46px', marginTop: '26px'}}
+              href="/delete"
+            >
+              <Delete></Delete>
+            </IconButton>
+          </Tooltip>
+        </Box>
+
+        { projects.length === 0 ?
+          <>{ query !== "" ?
+            <Box sx={{marginLeft: '24px', color: '#6e6e6e'}}>
+              Couldn't find any docs
+            </Box> :
+            <Box sx={{marginLeft: '24px'}}>
+              Looks like you don't have any docs yet.
+              <Button href="/help" onClick={() => onShowFavourites(true)}>
+                Get started now!
+              </Button>
+            </Box>
+          }</> :
+          <>
+          { (query || showAll) ?
+            <ProjectList
+              projects={projects}
+              onFavoriteChanged={() => {
+                updateFavorites()
+              }}
+            />
+            :
+            <>
+              <Typography sx={{ marginLeft: '24px', marginBottom: 1.5 }} fontWeight={200} fontSize={20}>FAVOURITES</Typography>
+              { (favoriteProjects.length === 0) ?
+                <Box sx={{marginLeft: '24px'}}>
+                  No docs favourited at the moment, search for docs or
+                  <Button onClick={() => onShowFavourites(true)}>
+                    Show all docs.
+                  </Button>
+
+                </Box> :
+                <ProjectList
+                  projects={favoriteProjects}
+                  onFavoriteChanged={() => {
+                    updateFavorites()
+                  }}
+                />
+              }
+            </>
+          }
+          </>
+        }
+
       </div>
-      <UploadButton></UploadButton>
-      <ClaimButton></ClaimButton>
-      <DeleteButton></DeleteButton>
       <Footer />
     </div>
   )
