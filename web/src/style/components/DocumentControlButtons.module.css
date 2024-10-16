@@ -11,7 +11,7 @@
 .share-button {
   height: 50px;
   width: 50px;
-  color: white;
+  color: rgba(0, 0, 0, 0.87);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -19,20 +19,20 @@
 }
 
 .home-button {
-  background-color: var(--primary-foreground);
+  background-color: #efefef;
   border-top-left-radius: 0.5rem;
   border-bottom-left-radius: 0.5rem;
 }
 
 .share-button {
-  background-color: #868686;
-  border-top-right-radius: 0.5rem;
-  border-bottom-right-radius: 0.5rem;
+  color: rgba(0, 0, 0, 0.87);
+  margin-left: 8px;
+  border-radius: 0.5rem;
+  cursor: pointer;
 }
 
 .version-select {
   background: white;
-  border: 1px solid rgba(0, 0, 0, 0.42);
   overflow: hidden;
 
   padding: 9px;
@@ -40,8 +40,12 @@
 
   font-size: 1.05em;
 
-  border-radius: 0 !important;
+  border-left-color: #efefef !important;
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+
 }
+
 
 .version-select:focus-visible {
   outline: none;
