@@ -3,7 +3,7 @@ import { type Project as ProjectType } from '../models/ProjectsResponse'
 import ProjectRepository from '../repositories/ProjectRepository'
 import styles from './../style/components/Project.module.css'
 
-import { Tooltip } from '@mui/material'
+import { Box, Tooltip } from '@mui/material'
 import FavoriteStar from './FavoriteStar'
 
 interface Props {
@@ -65,10 +65,15 @@ export default function Project(props: Props): JSX.Element {
           </div>
         </Link>
 
-        <Tooltip title={new Date(latestVersion.timestamp).toISOString().slice(0, -8).replace('T', ' ')} placement="left" arrow>
-          <div className={styles['secondary-typography']}>
+        <Tooltip title={new Date(latestVersion.timestamp).toISOString().slice(0, -8).replace('T', ' ')} placement="left" arrow >
+          <Box sx={{
+              display: {
+                xs: 'none',
+                sm: 'inherit'
+              }
+            }} className={styles['secondary-typography']}>
             {timeSince(new Date(latestVersion.timestamp))} ago
-          </div>
+          </Box>
         </Tooltip>
       </div>
       <div className={styles['project-header']}>
