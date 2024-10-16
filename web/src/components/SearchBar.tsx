@@ -59,10 +59,8 @@ export default function SearchBar(props: Props): JSX.Element {
         p: '2px 4px',
         display: 'flex',
         alignItems: 'center',
-        width: 600,
-        marginTop: '24px',
+        maxWidth: 600,
         marginLeft: '16px',
-        marginBottom: '32px'
       }}
     >
       <InputBase

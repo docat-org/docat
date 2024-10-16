@@ -77,37 +77,53 @@ export default function Home(): JSX.Element {
 
       <div className={styles['project-overview']}>
         <Box sx={{
-          display: 'flex'
+          display: 'flex',
+          marginTop: '24px',
+          marginBottom: '32px',
+          flexWrap: {
+            sm: 'nowrap',
+            xs: 'wrap'
+          }
         }}>
 
-          <SearchBar showFavourites={!showAll} onShowFavourites={onShowFavourites} />
+          <Box sx={{
+            width: {
+              sm: '100%'
+            },
+            maxWidth: '600px',
+            marginBottom: '8px'
+          }}>
+            <SearchBar showFavourites={!showAll} onShowFavourites={onShowFavourites} />
+          </Box>
 
-          <Tooltip title="Upload Documentation" placement="right" arrow>
-            <IconButton
-              sx={{ marginLeft: 2, height: '46px', width: '46px', marginTop: '26px'}}
-              href="/upload"
-            >
-              <FileUpload></FileUpload>
-            </IconButton>
-          </Tooltip>
+          <Box sx={{ display: 'flex' }}>
+            <Tooltip title="Upload Documentation" placement="right" arrow>
+              <IconButton
+                sx={{ marginLeft: 2, height: '46px', width: '46px', marginTop: '2px'}}
+                href="/upload"
+              >
+                <FileUpload></FileUpload>
+              </IconButton>
+            </Tooltip>
 
-          <Tooltip title="Claim a Project" placement="right" arrow>
-            <IconButton
-              sx={{ marginLeft: 2, height: '46px', width: '46px', marginTop: '26px'}}
-              href="/upload"
-            >
-              <Lock></Lock>
-            </IconButton>
-          </Tooltip>
+            <Tooltip title="Claim a Project" placement="right" arrow>
+              <IconButton
+                sx={{ marginLeft: 2, height: '46px', width: '46px', marginTop: '2px'}}
+                href="/upload"
+              >
+                <Lock></Lock>
+              </IconButton>
+            </Tooltip>
 
-          <Tooltip title="Delete a project version" placement="right" arrow>
-            <IconButton
-              sx={{ marginLeft: 2, height: '46px', width: '46px', marginTop: '26px'}}
-              href="/delete"
-            >
-              <Delete></Delete>
-            </IconButton>
-          </Tooltip>
+            <Tooltip title="Delete a project version" placement="right" arrow>
+              <IconButton
+                sx={{ marginLeft: 2, height: '46px', width: '46px', marginTop: '2px'}}
+                href="/delete"
+              >
+                <Delete></Delete>
+              </IconButton>
+            </Tooltip>
+          </Box>
         </Box>
 
         { projects.length === 0 ?
