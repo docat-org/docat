@@ -28,6 +28,7 @@ class ProjectVersion(BaseModel):
 class Project(BaseModel):
     name: str
     logo: bool
+    storage: str
     versions: list[ProjectVersion]
 
 
@@ -35,6 +36,13 @@ class Projects(BaseModel):
     projects: list[Project]
 
 
+class Stats(BaseModel):
+    n_projects: int
+    n_versions: int
+    storage: str
+
+
 class ProjectDetail(BaseModel):
     name: str
+    storage: str
     versions: list[ProjectVersion]

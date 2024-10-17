@@ -22,7 +22,7 @@ from fastapi.staticfiles import StaticFiles
 from starlette.responses import JSONResponse
 from tinydb import Query, TinyDB
 
-from docat.models import ApiResponse, ClaimResponse, ProjectDetail, Projects, TokenStatus
+from docat.models import ApiResponse, ClaimResponse, ProjectDetail, Projects, Stats, TokenStatus
 from docat.utils import (
     DB_PATH,
     UPLOAD_FOLDER,
@@ -31,6 +31,7 @@ from docat.utils import (
     extract_archive,
     get_all_projects,
     get_project_details,
+    get_system_stats,
     is_forbidden_project_name,
     remove_docs,
 )
@@ -63,6 +64,13 @@ app = FastAPI(
     redoc_url="/api/redoc",
     lifespan=lifespan,
 )
+
+
+@app.get("/api/stats", response_model=Stats, status_code=status.HTTP_200_OK)
+def get_stats():
+    if not DOCAT_UPLOAD_FOLDER.exists():
+        return Projects(projects=[])
+    return get_system_stats(DOCAT_UPLOAD_FOLDER)
 
 
 @app.get("/api/projects", response_model=Projects, status_code=status.HTTP_200_OK)
