@@ -9,10 +9,10 @@ import pytest
 @pytest.mark.parametrize(
     ("project_config", "n_projects", "n_versions", "storage"),
     [
-        ([("some-project", ["1.0.0"])], 1, 1, "20 bytes"),
-        ([("some-project", ["1.0.0", "2.0.0"])], 1, 2, "40 bytes"),
-        ([("some-project", ["1.0.0", "2.0.0"])], 1, 2, "40 bytes"),
-        ([("some-project", ["1.0.0", "2.0.0"]), ("another-project", ["1"])], 2, 3, "60 bytes"),
+        ([("some-project", ["1.0.0"])], 1, 1, "22 bytes"),
+        ([("some-project", ["1.0.0", "2.0.0"])], 1, 2, "44 bytes"),
+        ([("some-project", ["1.0.0", "2.0.0"])], 1, 2, "44 bytes"),
+        ([("some-project", ["1.0.0", "2.0.0"]), ("another-project", ["1"])], 2, 3, "66 bytes"),
     ],
 )
 def test_get_stats(_, project_config, n_projects, n_versions, storage, client_with_claimed_project):

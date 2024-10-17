@@ -93,6 +93,9 @@ def remove_docs(project: str, version: str, upload_folder_path: Path):
             if not link.resolve().exists():
                 link.unlink()
 
+        # remove size info
+        (upload_folder_path / project / ".size").unlink(missing_ok=True)
+
         # remove empty projects
         if not [d for d in docs.parent.iterdir() if d.is_dir()]:
             docs.parent.rmdir()
@@ -158,8 +161,19 @@ def readable_size(bytes: int) -> str:
     return str(amount) + size_suffix
 
 
-def directory_size(path: Path) -> int:
-    return sum(file.stat().st_size for file in path.rglob("*") if file.is_file())
+def directory_size(path: Path, recalculate: bool = False) -> int:
+    """
+    Returns the size of a directory and caches it's size unless
+    recalculate is set to true or the cache is missed
+    """
+    size_info = path / ".size"
+    if size_info.exists() and not recalculate:
+        return int(size_info.read_text())
+
+    dir_size = sum(file.stat().st_size for file in path.rglob("*") if file.is_file())
+    size_info.write_text(str(dir_size))  # cache directory size
+
+    return dir_size
 
 
 def get_system_stats(upload_folder_path: Path) -> Stats:
