@@ -1,48 +1,40 @@
 .project-card {
-  border-radius: 4px;
-  margin: 0 16px 10px 16px;
-  padding: 16px 0 16px 16px;
-  border: 1px solid var(--secondary-foreground);
+  max-width: 800px;
+  margin-left: 24px;
+  margin-bottom: 8px;
+  margin-top: 8px;
 }
 
-.project-card-header {
-  display: inline-block;
-  width: 90%;
-  height: 40px;
+.secondary-typography {
+  color: var(--primary-foreground);
+  opacity: 0.6;
+}
+
+.project-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.project-footer {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
 }
 
 .subhead {
   color: var(--primary-foreground);
   opacity: 0.54;
-  font-size: 14px;
-  letter-spacing: 0.01em;
-  line-height: 20px;
-}
-
-.project-card-title,
-.project-card-title-with-logo {
-  font-weight: lighter;
-  display: inline-block;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  padding-top: 0.25em;
-}
-
-.project-card-version {
-  color: var(--primary-foreground);
-  opacity: 0.54;
+  font-size: 16px;
 }
 
 .project-card-title {
-  width: calc(100% - 30px);
-}
-
-.project-card-title-with-logo {
-  width: calc(100% - 86px);
+  font-weight: 400;
+  font-size: 1.1em;
 }
 
 .project-logo {
+  float: left;
   width: 40px;
   height: 40px;
   border-radius: 50%;

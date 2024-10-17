@@ -22,15 +22,17 @@ from fastapi.staticfiles import StaticFiles
 from starlette.responses import JSONResponse
 from tinydb import Query, TinyDB
 
-from docat.models import ApiResponse, ClaimResponse, ProjectDetail, Projects, TokenStatus
+from docat.models import ApiResponse, ClaimResponse, ProjectDetail, Projects, Stats, TokenStatus
 from docat.utils import (
     DB_PATH,
     UPLOAD_FOLDER,
     calculate_token,
     create_symlink,
+    directory_size,
     extract_archive,
     get_all_projects,
     get_project_details,
+    get_system_stats,
     is_forbidden_project_name,
     remove_docs,
 )
@@ -63,6 +65,13 @@ app = FastAPI(
     redoc_url="/api/redoc",
     lifespan=lifespan,
 )
+
+
+@app.get("/api/stats", response_model=Stats, status_code=status.HTTP_200_OK)
+def get_stats():
+    if not DOCAT_UPLOAD_FOLDER.exists():
+        return Projects(projects=[])
+    return get_system_stats(DOCAT_UPLOAD_FOLDER)
 
 
 @app.get("/api/projects", response_model=Projects, status_code=status.HTTP_200_OK)
@@ -130,6 +139,10 @@ def upload_icon(
     file.file.seek(0)
     with icon_path.open("wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
+
+    # recalculate size cache
+    directory_size(project_base_path, recalculate=True)
+    directory_size(DOCAT_UPLOAD_FOLDER, recalculate=True)
 
     return ApiResponse(message="Icon successfully uploaded")
 
@@ -258,6 +271,10 @@ def upload(
     if not (base_path / "index.html").exists():
         return ApiResponse(message="Documentation uploaded successfully, but no index.html found at root of archive.")
 
+    # recalculate size cache
+    directory_size(project_base_path, recalculate=True)
+    directory_size(DOCAT_UPLOAD_FOLDER, recalculate=True)
+
     return ApiResponse(message="Documentation uploaded successfully")
 
 
@@ -363,6 +380,9 @@ def delete(
     if message:
         response.status_code = status.HTTP_404_NOT_FOUND
         return ApiResponse(message=message)
+
+    # recalculate size cache
+    directory_size(DOCAT_UPLOAD_FOLDER, recalculate=True)
 
     return ApiResponse(message=f"Successfully deleted version '{version}'")
 

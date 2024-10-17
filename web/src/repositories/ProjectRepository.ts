@@ -32,9 +32,16 @@ function escapeSlashesInUrl(
   return projectAndVersion + '/' + path
 }
 
+function dateTimeReviver(key: string, value: any) {
+  if (key === 'timestamp') {
+    return new Date(value)
+  }
+  return value;
+}
+
 function filterHiddenVersions(allProjects: Project[]): Project[] {
   // create deep-copy first
-  const projects = JSON.parse(JSON.stringify(allProjects)) as Project[]
+  const projects = JSON.parse(JSON.stringify(allProjects), dateTimeReviver) as Project[]
 
   projects.forEach((p) => {
     p.versions = p.versions.filter((v) => !v.hidden)

@@ -2,7 +2,6 @@ import styles from './../style/components/PageLayout.module.css'
 import Footer from './Footer'
 import Header from './Header'
 import NavigationTitle from './NavigationTitle'
-import React from 'react'
 
 interface Props {
   title: string
@@ -14,7 +13,7 @@ interface Props {
 export default function PageLayout(props: Props): JSX.Element {
   return (
     <>
-      <Header showSearchBar={props.showSearchBar} />
+      <Header />
       <div className={styles.main}>
         <NavigationTitle title={props.title} description={props.description} />
         {props.children}
