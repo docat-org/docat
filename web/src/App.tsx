@@ -1,17 +1,17 @@
 import { createHashRouter, RouterProvider } from 'react-router-dom'
-import React from 'react'
 import { ConfigDataProvider } from './data-providers/ConfigDataProvider'
+import { MessageBannerProvider } from './data-providers/MessageBannerProvider'
 import { ProjectDataProvider } from './data-providers/ProjectDataProvider'
+import { SearchProvider } from './data-providers/SearchProvider'
+import { StatsDataProvider } from './data-providers/StatsDataProvider'
 import Claim from './pages/Claim'
 import Delete from './pages/Delete'
 import Docs from './pages/Docs'
+import EscapeSlashForDocsPath from './pages/EscapeSlashForDocsPath'
 import Help from './pages/Help'
 import Home from './pages/Home'
 import NotFound from './pages/NotFound'
 import Upload from './pages/Upload'
-import EscapeSlashForDocsPath from './pages/EscapeSlashForDocsPath'
-import { MessageBannerProvider } from './data-providers/MessageBannerProvider'
-import { SearchProvider } from './data-providers/SearchProvider'
 
 function App(): JSX.Element {
   const router = createHashRouter([
@@ -79,9 +79,11 @@ function App(): JSX.Element {
       <MessageBannerProvider>
         <ConfigDataProvider>
           <ProjectDataProvider>
-            <SearchProvider>
-              <RouterProvider router={router} />
-            </SearchProvider>
+            <StatsDataProvider>
+              <SearchProvider>
+                <RouterProvider router={router} />
+              </SearchProvider>
+            </StatsDataProvider>
           </ProjectDataProvider>
         </ConfigDataProvider>
       </MessageBannerProvider>

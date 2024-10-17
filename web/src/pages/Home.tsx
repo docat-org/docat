@@ -14,11 +14,13 @@ import LoadingPage from './LoadingPage';
 
 import { Box, Button, IconButton, Tooltip, Typography } from '@mui/material';
 import SearchBar from '../components/SearchBar';
+import { useStats } from '../data-providers/StatsDataProvider';
 import styles from './../style/pages/Home.module.css';
 
 
 export default function Home(): JSX.Element {
   const { loadingFailed } = useProjects()
+  const { stats, loadingFailed: statsLoadingFailed } = useStats()
   const { filteredProjects: projects, query, setQuery } = useSearch()
   const [showAll, setShowAll] = useState(false);
   const [favoriteProjects, setFavoriteProjects] = useState<Project[]>([])
@@ -54,7 +56,7 @@ export default function Home(): JSX.Element {
     updateFavorites()
   }, [projects])
 
-  if (loadingFailed) {
+  if (loadingFailed || statsLoadingFailed) {
     return (
       <div className={styles.home}>
         <Header />
@@ -67,7 +69,7 @@ export default function Home(): JSX.Element {
     )
   }
 
-  if (projects == null) {
+  if (projects == null || stats == null) {
     return <LoadingPage />
   }
 
@@ -76,6 +78,9 @@ export default function Home(): JSX.Element {
       <Header />
 
       <div className={styles['project-overview']}>
+        <Box sx={{ width: '80%', maxWidth: '800px'}}>
+
+
         <Box sx={{
           display: 'flex',
           marginTop: '24px',
@@ -148,7 +153,7 @@ export default function Home(): JSX.Element {
             />
             :
             <>
-              <Typography sx={{ marginLeft: '24px', marginBottom: 1.5 }} fontWeight={200} fontSize={20}>FAVOURITES</Typography>
+              <Typography sx={{ marginLeft: '24px', marginBottom: 1.5 }} fontWeight={300} fontSize={20}>FAVOURITES</Typography>
               { (favoriteProjects.length === 0) ?
                 <Box sx={{marginLeft: '24px'}}>
                   No docs favourited at the moment, search for docs or
@@ -168,7 +173,34 @@ export default function Home(): JSX.Element {
           }
           </>
         }
+        </Box>
+        <Box sx={{
+          display: {
+            sm: 'block',
+            xs: 'none'
+          },
+          borderLeft:
+          '1px solid #efefef',
+          paddingLeft: 3,
+          marginTop: 15,
+           width: '400px'
+        }}>
+          <Typography sx={{display: 'inline-block'}} fontWeight={300} fontSize={'1.1em'} component={'span'}>INSTANCE STATS</Typography>
+          <Box />
 
+          <Typography fontSize={'1em'} fontWeight={200} sx={{ opacity: 0.8 }} component={'span'}># </Typography>
+          <Typography sx={{width: 100, display: 'inline-block', marginTop: 1}} fontWeight={300} fontSize={'1em'} component={'span'}>DOCS </Typography>
+          <Typography fontSize={'1em'} fontWeight={200} sx={{ opacity: 0.8 }} component={'span'}>{stats.n_projects}</Typography>
+
+          <Box />
+          <Typography fontSize={'1em'} fontWeight={200} sx={{ opacity: 0.8 }} component={'span'}># </Typography>
+          <Typography sx={{width: 100, display: 'inline-block',  marginTop: 0.4}} fontWeight={300} fontSize={'1em'} component={'span'}>VERSIONS </Typography>
+          <Typography fontSize={'1em'} fontWeight={200} sx={{ opacity: 0.8 }} component={'span'}>{stats.n_versions}</Typography>
+
+          <Box />
+          <Typography sx={{width: 115, display: 'inline-block',  marginTop: 0.4}} fontWeight={300} fontSize={'1em'} component={'span'}>STORAGE </Typography>
+          <Typography fontSize={'1em'} fontWeight={200} sx={{ opacity: 0.8 }} component={'span'}>{stats.storage}</Typography>
+        </Box>
       </div>
       <Footer />
     </div>
