@@ -7,16 +7,16 @@
 
 ## Why DoCat?
 
-When generating static developer documentation using
+When generating static documentation using
 [mkdocs](https://www.mkdocs.org/), [sphinx](http://www.sphinx-doc.org/en/master/), ...
 hosting just one version of the docs might not be enough.
 Many users might still use older versions and might need to read
 those versions of the documentation.
 
-Docat solves this problem by providing a simple tool that can
-host multiple documentation projects with multiple versions.
+Docat solves this problem by providing a simple tool that
+hosts multiple documentation projects with multiple versions.
 
-*The main design decision with docat was to keep the tool as simpel as possible*
+*The main design decision with docat was to keep the tool as simple as possible.*
 
 ## Getting started
 
@@ -40,19 +40,21 @@ Go to [localhost:8000](http://localhost:8000) to view your docat instance:
 
 ### Using DoCat
 
-> 🛈 Please note that docat does not provide any way to write documentation
-> the tool only hosts documentation.
+> 🛈 Please note that docat does not provide any way to write documentation.
+> It's sole responsibility is to host documentation.
 >
-> There are many awesome tools to write developer documenation:
-> [mkdocs](https://www.mkdocs.org/), [sphinx](http://www.sphinx-doc.org/en/master/),
-> [mdbook](https://rust-lang.github.io/mdBook/) ...
+> There are many awesome tools to write documenation:
+> - [mkdocs](https://www.mkdocs.org/)
+> - [sphinx](http://www.sphinx-doc.org/en/master/)
+> - [mdbook](https://rust-lang.github.io/mdBook/)
+> - ...
 
 
-A small tool called [docatl](https://github.com/docat-org/docatl) is provided
+A CLI tool called [docatl](https://github.com/docat-org/docatl) is available
 for easy interaction with the docat server.
 However, interacting with docat can also be done through [`curl`](doc/getting-started.md).
 
-So in order to push documentation (and tag as `latest`) in the folder `docs/` simply run:
+To push documentation (and tag as `latest`) in the folder `docs/` simply run:
 
 ```sh
 docatl push --host http://localhost:8000 ./docs PROJECT VERSION --tag latest
