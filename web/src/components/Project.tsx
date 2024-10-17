@@ -3,7 +3,7 @@ import { type Project as ProjectType } from '../models/ProjectsResponse'
 import ProjectRepository from '../repositories/ProjectRepository'
 import styles from './../style/components/Project.module.css'
 
-import { Box, Tooltip } from '@mui/material'
+import { Box, Tooltip, Typography } from '@mui/material'
 import FavoriteStar from './FavoriteStar'
 
 interface Props {
@@ -81,6 +81,7 @@ export default function Project(props: Props): JSX.Element {
           {props.project.versions.length === 1
             ? `${props.project.versions.length} version`
             : `${props.project.versions.length} versions`}
+            <Typography sx={{ marginLeft: 1.5 }} fontSize={'0.9em'} component={'span'} fontWeight={300}>{props.project.storage}</Typography>
         </div>
 
         <FavoriteStar
