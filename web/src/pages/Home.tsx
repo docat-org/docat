@@ -78,7 +78,7 @@ export default function Home(): JSX.Element {
       <Header />
 
       <div className={styles['project-overview']}>
-        <Box sx={{ width: '80%', maxWidth: '800px'}}>
+        <Box sx={{ width: { sm: '80%' }, maxWidth: '800px'}}>
 
 
         <Box sx={{
@@ -114,7 +114,7 @@ export default function Home(): JSX.Element {
             <Tooltip title="Claim a Project" placement="right" arrow>
               <IconButton
                 sx={{ marginLeft: 2, height: '46px', width: '46px', marginTop: '2px'}}
-                href="/upload"
+                href="/claim"
               >
                 <Lock></Lock>
               </IconButton>
@@ -176,7 +176,8 @@ export default function Home(): JSX.Element {
         </Box>
         <Box sx={{
           display: {
-            sm: 'block',
+            md: 'block',
+            sm: 'none',
             xs: 'none'
           },
           borderLeft:
