@@ -28,6 +28,7 @@ from docat.utils import (
     UPLOAD_FOLDER,
     calculate_token,
     create_symlink,
+    directory_size,
     extract_archive,
     get_all_projects,
     get_project_details,
@@ -138,6 +139,10 @@ def upload_icon(
     file.file.seek(0)
     with icon_path.open("wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
+
+    # recalculate size cache
+    directory_size(project_base_path, recalculate=True)
+    directory_size(DOCAT_UPLOAD_FOLDER, recalculate=True)
 
     return ApiResponse(message="Icon successfully uploaded")
 
@@ -266,6 +271,10 @@ def upload(
     if not (base_path / "index.html").exists():
         return ApiResponse(message="Documentation uploaded successfully, but no index.html found at root of archive.")
 
+    # recalculate size cache
+    directory_size(project_base_path, recalculate=True)
+    directory_size(DOCAT_UPLOAD_FOLDER, recalculate=True)
+
     return ApiResponse(message="Documentation uploaded successfully")
 
 
@@ -371,6 +380,9 @@ def delete(
     if message:
         response.status_code = status.HTTP_404_NOT_FOUND
         return ApiResponse(message=message)
+
+    # recalculate size cache
+    directory_size(DOCAT_UPLOAD_FOLDER, recalculate=True)
 
     return ApiResponse(message=f"Successfully deleted version '{version}'")
 
