@@ -21,6 +21,7 @@ def test_hide(_, client_with_claimed_project):
     assert project_details_response.status_code == 200
     assert project_details_response.json() == {
         "name": "some-project",
+        "storage": "20 bytes",
         "versions": [{"name": "1.0.0", "timestamp": "2000-01-01T01:01:00", "tags": [], "hidden": False}],
     }
 
@@ -34,6 +35,7 @@ def test_hide(_, client_with_claimed_project):
     assert project_details_response.status_code == 200
     assert project_details_response.json() == {
         "name": "some-project",
+        "storage": "20 bytes",
         "versions": [],
     }
 
@@ -57,6 +59,7 @@ def test_hide_only_version_not_listed_in_projects(_, client_with_claimed_project
             {
                 "name": "some-project",
                 "logo": False,
+                "storage": "20 bytes",
                 "versions": [{"name": "1.0.0", "timestamp": "2000-01-01T01:01:00", "tags": [], "hidden": False}],
             }
         ],
@@ -77,7 +80,7 @@ def test_hide_only_version_not_listed_in_projects(_, client_with_claimed_project
     # check versions hidden
     project_details_response = client_with_claimed_project.get("/api/projects/some-project")
     assert project_details_response.status_code == 200
-    assert project_details_response.json() == {"name": "some-project", "versions": []}
+    assert project_details_response.json() == {"name": "some-project", "storage": "20 bytes", "versions": []}
 
 
 def test_hide_creates_hidden_file(client_with_claimed_project):
@@ -216,6 +219,7 @@ def test_show(_, client_with_claimed_project):
     assert project_details_response.status_code == 200
     assert project_details_response.json() == {
         "name": "some-project",
+        "storage": "20 bytes",
         "versions": [],
     }
 
@@ -229,6 +233,7 @@ def test_show(_, client_with_claimed_project):
     assert project_details_response.status_code == 200
     assert project_details_response.json() == {
         "name": "some-project",
+        "storage": "20 bytes",
         "versions": [{"name": "1.0.0", "timestamp": "2000-01-01T01:01:00", "tags": [], "hidden": False}],
     }
 
@@ -389,6 +394,7 @@ def test_hide_and_show_with_tag(_, client_with_claimed_project):
     assert project_details_response.status_code == 200
     assert project_details_response.json() == {
         "name": "some-project",
+        "storage": "20 bytes",
         "versions": [],
     }
 
@@ -402,5 +408,6 @@ def test_hide_and_show_with_tag(_, client_with_claimed_project):
     assert project_details_response.status_code == 200
     assert project_details_response.json() == {
         "name": "some-project",
+        "storage": "20 bytes",
         "versions": [{"name": "1.0.0", "timestamp": "2000-01-01T01:01:00", "tags": ["latest"], "hidden": False}],
     }
