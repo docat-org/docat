@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { Delete, ErrorOutline, FileUpload, Lock } from '@mui/icons-material';
+import { Delete, ErrorOutline, FileUpload, KeyboardArrowDown, Lock } from '@mui/icons-material';
 import { useLocation } from 'react-router';
 import { useProjects } from '../data-providers/ProjectDataProvider';
 import { useSearch } from '../data-providers/SearchProvider';
@@ -13,6 +13,7 @@ import ProjectRepository from '../repositories/ProjectRepository';
 import LoadingPage from './LoadingPage';
 
 import { Box, Button, IconButton, Tooltip, Typography } from '@mui/material';
+import { Link } from 'react-router-dom';
 import SearchBar from '../components/SearchBar';
 import { useStats } from '../data-providers/StatsDataProvider';
 import styles from './../style/pages/Home.module.css';
@@ -162,12 +163,23 @@ export default function Home(): JSX.Element {
                   </Button>
 
                 </Box> :
-                <ProjectList
-                  projects={favoriteProjects}
-                  onFavoriteChanged={() => {
-                    updateFavorites()
-                  }}
-                />
+                <>
+                  <ProjectList
+                    projects={favoriteProjects}
+                    onFavoriteChanged={() => {
+                      updateFavorites()
+                    }}
+                  />
+
+                  <Box sx={{ marginTop: 3, marginLeft: '24px', opacity: 0.6, '&:hover': {
+                    opacity: 0.8,
+                  }, }}>
+                    <Link to={''} onClick={() => onShowFavourites(true)} >
+                      <Typography fontWeight={'300'} fontSize={'1.1em'} component={'span'}>SHOW ALL DOCS </Typography>
+                      <KeyboardArrowDown sx={{ marginBottom: -0.6, marginLeft: 1 }} />
+                    </Link>
+                  </Box>
+                </>
               }
             </>
           }
