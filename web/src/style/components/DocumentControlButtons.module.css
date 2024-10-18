@@ -18,6 +18,11 @@
   border: none;
 }
 
+.home-button:hover,
+.share-button:hover {
+  background-color: #dbdbdb;
+}
+
 .home-button {
   background-color: #efefef;
   border-top-left-radius: 0.5rem;
