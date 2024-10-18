@@ -49,6 +49,7 @@ export default function SearchBar(props: Props): JSX.Element {
   }
 
   const onSearch = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    setShowFavourites(false)
     updateSearch(e.target.value)
   }
 
