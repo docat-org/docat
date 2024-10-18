@@ -5,7 +5,7 @@
 [![build](https://github.com/docat-org/docat/workflows/docat%20ci/badge.svg)](https://github.com/docat-org/docat/actions)
 [![Gitter](https://badges.gitter.im/docat-docs-hosting/community.svg)](https://gitter.im/docat-docs-hosting/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
-## Why DoCat?
+## Why DOCAT?
 
 When generating static documentation using
 [mkdocs](https://www.mkdocs.org/), [sphinx](http://www.sphinx-doc.org/en/master/), ...
@@ -38,7 +38,7 @@ Go to [localhost:8000](http://localhost:8000) to view your docat instance:
 
 <img src="doc/assets/docat.gif" width="100%" />
 
-### Using DoCat
+### Using DOCAT
 
 > 🛈 Please note that docat does not provide any way to write documentation.
 > It's sole responsibility is to host documentation.
@@ -72,7 +72,64 @@ When hosting docat publicly, it is recommended to use
 [http basic auth](https://docs.nginx.com/nginx/admin-guide/security-controls/configuring-http-basic-authentication/)
 for all `POST`/`PUT` and `DELETE` http calls.
 
-## Configuring DoCat
+<details>
+  <summary>docat http basic authentication example</summary>
+
+This example shows how to configure the NGINX inside the docker image
+to be password protected using http basic auth.
+
+1) Create your `htpasswd` file.
+2) And a custom `default.conf` NGINX config:
+
+  ```
+  upstream python_backend {
+      server 127.0.0.1:5000;
+  }
+
+  server {
+      listen 80 default_server;
+      listen [::]:80 default_server;
+
+      auth_basic           "Administrator’s Area";
+      auth_basic_user_file htpasswd;
+
+      root /var/www/html;
+
+      # Add index.php to the list if you are using PHP
+      index index.html index.htm index.nginx-debian.html;
+
+      server_name _;
+
+      location /doc {
+          root /var/docat;
+          autoindex on;
+          autoindex_format json;
+      }
+
+      location /api {
+          client_max_body_size 100M;
+          proxy_pass http://python_backend;
+      }
+
+      location / {
+      }
+  }
+  ```
+
+3) Mounted to the correct location inside the container:
+
+  ```
+  docker run \
+    --detach \
+    --volume $PWD/docat-run:/var/docat/ \
+    --volume $PWD/nginx/default.conf:/etc/nginx/http.d/default.conf \
+    --volume $PWD/nginx/htpasswd:/etc/nginx/htpasswd \
+    --publish 8000:80 \
+    ghcr.io/docat-org/docat
+  ```
+</details>
+
+## Configuring DOCAT
 
 #### Frontend Config
 
