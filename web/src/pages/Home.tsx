@@ -105,7 +105,7 @@ export default function Home(): JSX.Element {
             <Tooltip title="Upload Documentation" placement="right" arrow>
               <IconButton
                 sx={{ marginLeft: 2, height: '46px', width: '46px', marginTop: '2px'}}
-                href="/upload"
+                href="/#/upload"
               >
                 <FileUpload></FileUpload>
               </IconButton>
@@ -114,7 +114,7 @@ export default function Home(): JSX.Element {
             <Tooltip title="Claim a Project" placement="right" arrow>
               <IconButton
                 sx={{ marginLeft: 2, height: '46px', width: '46px', marginTop: '2px'}}
-                href="/claim"
+                href="/#/claim"
               >
                 <Lock></Lock>
               </IconButton>
@@ -123,7 +123,7 @@ export default function Home(): JSX.Element {
             <Tooltip title="Delete a project version" placement="right" arrow>
               <IconButton
                 sx={{ marginLeft: 2, height: '46px', width: '46px', marginTop: '2px'}}
-                href="/delete"
+                href="/#/delete"
               >
                 <Delete></Delete>
               </IconButton>
