@@ -1,8 +1,7 @@
 import Project from './Project'
-import React from 'react'
 
-import styles from './../style/components/ProjectList.module.css'
 import { type Project as ProjectType } from '../models/ProjectsResponse'
+import styles from './../style/components/ProjectList.module.css'
 
 interface Props {
   projects: ProjectType[]

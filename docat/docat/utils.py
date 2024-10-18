@@ -5,10 +5,11 @@ docat utilities
 import hashlib
 import os
 import shutil
+from datetime import datetime
 from pathlib import Path
 from zipfile import ZipFile, ZipInfo
 
-from docat.models import Project, ProjectDetail, Projects, ProjectVersion
+from docat.models import Project, ProjectDetail, Projects, ProjectVersion, Stats
 
 NGINX_CONFIG_PATH = Path("/etc/nginx/locations.d")
 UPLOAD_FOLDER = "doc"
@@ -92,6 +93,9 @@ def remove_docs(project: str, version: str, upload_folder_path: Path):
             if not link.resolve().exists():
                 link.unlink()
 
+        # remove size info
+        (upload_folder_path / project / ".size").unlink(missing_ok=True)
+
         # remove empty projects
         if not [d for d in docs.parent.iterdir() if d.is_dir()]:
             docs.parent.rmdir()
@@ -124,6 +128,65 @@ def is_forbidden_project_name(name: str) -> bool:
     return name in ["upload", "claim", "delete", "help"]
 
 
+UNITS_MAPPING = [
+    (1 << 50, " PB"),
+    (1 << 40, " TB"),
+    (1 << 30, " GB"),
+    (1 << 20, " MB"),
+    (1 << 10, " KB"),
+    (1, " byte"),
+]
+
+
+def readable_size(bytes: int) -> str:
+    """
+    Get human-readable file sizes.
+    simplified version of https://pypi.python.org/pypi/hurry.filesize/
+
+    https://stackoverflow.com/a/12912296/12356463
+    """
+    size_suffix = ""
+    for factor, suffix in UNITS_MAPPING:
+        if bytes >= factor:
+            size_suffix = suffix
+            break
+
+    amount = int(bytes / factor)
+    if size_suffix == " byte" and amount > 1:
+        size_suffix = size_suffix + "s"
+
+    if amount == 0:
+        size_suffix = " bytes"
+
+    return str(amount) + size_suffix
+
+
+def directory_size(path: Path, recalculate: bool = False) -> int:
+    """
+    Returns the size of a directory and caches it's size unless
+    recalculate is set to true or the cache is missed
+    """
+    size_info = path / ".size"
+    if size_info.exists() and not recalculate:
+        return int(size_info.read_text())
+
+    dir_size = sum(file.stat().st_size for file in path.rglob("*") if file.is_file())
+    size_info.write_text(str(dir_size))  # cache directory size
+
+    return dir_size
+
+
+def get_system_stats(upload_folder_path: Path) -> Stats:
+    """
+    Return all docat statistics
+    """
+    return Stats(
+        n_projects=len([p for p in upload_folder_path.iterdir() if p.is_dir()]),
+        n_versions=sum(len([p for p in d.iterdir() if p.is_dir() and not p.is_symlink()]) for d in upload_folder_path.glob("*/")),
+        storage=readable_size(directory_size(upload_folder_path)),
+    )
+
+
 def get_all_projects(upload_folder_path: Path, include_hidden: bool) -> Projects:
     """
     Returns all projects in the upload folder.
@@ -144,9 +207,23 @@ def get_all_projects(upload_folder_path: Path, include_hidden: bool) -> Projects
 
         project_name = str(project.relative_to(upload_folder_path))
         project_has_logo = (upload_folder_path / project / "logo").exists()
-        projects.append(Project(name=project_name, logo=project_has_logo, versions=details.versions))
+        projects.append(
+            Project(
+                name=project_name,
+                logo=project_has_logo,
+                versions=details.versions,
+                storage=readable_size(directory_size(upload_folder_path / project)),
+            )
+        )
 
     return Projects(projects=projects)
+
+
+def get_version_timestamp(version_folder: Path) -> datetime:
+    """
+    Returns the timestamp of a version
+    """
+    return datetime.fromtimestamp(version_folder.stat().st_ctime)
 
 
 def get_project_details(upload_folder_path: Path, project_name: str, include_hidden: bool) -> ProjectDetail | None:
@@ -168,11 +245,13 @@ def get_project_details(upload_folder_path: Path, project_name: str, include_hid
 
     return ProjectDetail(
         name=project_name,
+        storage=readable_size(directory_size(docs_folder)),
         versions=sorted(
             [
                 ProjectVersion(
                     name=str(x.relative_to(docs_folder)),
                     tags=[str(t.relative_to(docs_folder)) for t in tags if t.resolve() == x],
+                    timestamp=get_version_timestamp(x),
                     hidden=(docs_folder / x.name / ".hidden").exists(),
                 )
                 for x in docs_folder.iterdir()

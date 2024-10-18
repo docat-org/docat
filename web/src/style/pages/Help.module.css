@@ -60,6 +60,7 @@
   font-size: 16px;
   line-height: 1.5;
   word-wrap: break-word;
+  max-width: 800px;
 }
 
 .markdown-container .octicon {

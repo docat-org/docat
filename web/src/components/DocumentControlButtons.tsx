@@ -1,5 +1,3 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
 import { Home, Share } from '@mui/icons-material'
 import {
   Checkbox,
@@ -11,6 +9,8 @@ import {
   Select,
   Tooltip
 } from '@mui/material'
+import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import type ProjectDetails from '../models/ProjectDetails'
 
 import styles from './../style/components/DocumentControlButtons.module.css'
@@ -50,7 +50,7 @@ export default function DocumentControlButtons(props: Props): JSX.Element {
 
   return (
     <div className={styles.controls}>
-      <Tooltip title="Project Overview" placement="top" arrow>
+      <Tooltip title="Docs Overview" placement="top" arrow>
         <Link to="/" className={styles['home-button']}>
           <Home sx={buttonStyle} />
         </Link>
@@ -58,6 +58,16 @@ export default function DocumentControlButtons(props: Props): JSX.Element {
 
       <FormControl>
         <Select
+          sx={{
+            "&.MuiOutlinedInput-root": {
+              "&:hover fieldset": {
+                borderColor: "rgba(0, 0, 0, 0.33)"
+              },
+              "&.Mui-focused fieldset": {
+                borderColor: "rgba(0, 0, 0, 0.33)"
+              }
+            }
+          }}
           className={styles['version-select']}
           onChange={(e) => {
             props.onVersionChange(e.target.value)

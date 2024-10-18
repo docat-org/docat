@@ -1,31 +1,73 @@
-import _ from 'lodash'
-import { TextField } from '@mui/material'
-import React, { useCallback } from 'react'
-import styles from '../style/components/SearchBar.module.css'
-import { useSearch } from '../data-providers/SearchProvider'
+import SearchIcon from '@mui/icons-material/Search';
+import StarIcon from '@mui/icons-material/Star';
+import StarBorderIcon from '@mui/icons-material/StarBorder';
+import { Divider, IconButton, InputBase, Paper, Tooltip } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { useSearch } from '../data-providers/SearchProvider';
 
-export default function SearchBar(): JSX.Element {
+
+interface Props {
+  showFavourites: boolean
+  onShowFavourites: (all: boolean) => void
+}
+
+export default function SearchBar(props: Props): JSX.Element {
+  const [showFavourites, setShowFavourites] = useState(true);
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const { query, setQuery } = useSearch()
   const [searchQuery, setSearchQuery] = React.useState<string>(query)
 
-  const updateSearchQueryInDataProvider = useCallback(
-    _.debounce((query: string): void => {
-      setQuery(query)
-    }, 500),
-    []
-  )
+
+  const updateSearch = (q: string) => {
+    setSearchQuery(q)
+    setQuery(q)
+
+    if (q) {
+      setSearchParams({q})
+    } else {
+      setSearchParams({})
+    }
+  }
+
+  useEffect(() => {
+    const q = searchParams.get("q")
+    if (q) {
+      updateSearch(q)
+    }
+    setShowFavourites(props.showFavourites)
+  }, [props.showFavourites]);
+
+  const onFavourites = (show: boolean): void => {
+    setSearchParams({})
+    setSearchQuery("")
+    setQuery("")
+
+    setShowFavourites(show)
+    props.onShowFavourites(!show)
+  }
 
   const onSearch = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    setSearchQuery(e.target.value)
-    updateSearchQueryInDataProvider.cancel()
-    updateSearchQueryInDataProvider(e.target.value)
+    setShowFavourites(false)
+    updateSearch(e.target.value)
   }
 
   return (
-    <div className={styles['search-bar']}>
-      <TextField
-        label="Search"
-        type="search"
+    <Paper
+      component="form"
+      sx={{
+        p: '2px 4px',
+        display: 'flex',
+        alignItems: 'center',
+        maxWidth: 600,
+        marginLeft: '16px',
+      }}
+    >
+      <InputBase
+        sx={{ ml: 1, flex: 1 }}
+        placeholder="Search Docs"
+        inputProps={{ 'aria-label': 'search docs' }}
         value={searchQuery}
         onChange={onSearch}
         onKeyDown={(e): void => {
@@ -34,8 +76,17 @@ export default function SearchBar(): JSX.Element {
             setQuery(searchQuery)
           }
         }}
-        variant="standard"
-      ></TextField>
-    </div>
+
+      />
+      <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
+        <SearchIcon />
+      </IconButton>
+      <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
+      <Tooltip title={`Show ${showFavourites ? 'all docs' : 'favourites only'}`} placement="right" arrow>
+        <IconButton onClick={() => onFavourites(!showFavourites)} sx={{ p: '10px' }} aria-label="directions">
+          { showFavourites  ?  <StarIcon /> : <StarBorderIcon /> }
+        </IconButton>
+      </Tooltip>
+    </Paper>
   )
 }

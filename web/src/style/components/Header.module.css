@@ -1,9 +1,9 @@
 .header {
-  --header-height: 64px;
+  --header-height: 74px;
 
   min-width: 230px;
   height: var(--header-height);
-  background-color: var(--background);
+  border-bottom: 1px solid var(--secondary-foreground);
 }
 
 @media only screen and (min-width: 1000px) {
@@ -34,5 +34,5 @@ h1 {
   margin-top: calc(var(--header-height) / 2 - 15px);
   margin-left: 10px;
   font-size: 30px;
-  font-weight: 800;
+  font-weight: 00;
 }
