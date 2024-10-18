@@ -48,7 +48,10 @@ Not happy with the default Docat logo and header?
 Just add your custom html header to the `/var/www/html/config.json` file.
 
 ```json
-{ "headerHTML": "<h1>MyCompany</h1>" }
+{
+  "headerHTML": "<h1>MyCompany</h1>",
+  "footerHTML": "Contact <a href='mailto:maintainers@contact.mail'>Maintainers</a>"
+}
 ```
 
 

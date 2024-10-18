@@ -86,6 +86,7 @@ Supported config options:
 ```json
 {
   "headerHTML": "<h1 style='color: #115fbf;'>Custom Header HTML!</h1>",
+  "footerHTML": "CONTACT: <a href='mailto:maintainer@mail.invalid'>Maintainers</a>"
 }
 ```
 
