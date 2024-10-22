@@ -152,9 +152,9 @@ Supported config options:
 
 Further proxy configurations can be done through the following environmental variables:
 
-| Variable | Default (Link to Definition) | Description |
+| Variable | Default | Description |
 |---|---|---|
-| MAX_UPLOAD_SIZE | [100M](./Dockerfile) | Limits the size of individual archives posted to the API |
+| `MAX_UPLOAD_SIZE` | [100M](./Dockerfile) | Limits the size of individual archives posted to the API |
 
 
 ## Local Development
