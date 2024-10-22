@@ -78,8 +78,8 @@ for all `POST`/`PUT` and `DELETE` http calls.
 This example shows how to configure the NGINX inside the docker image
 to be password protected using http basic auth.
 
-1) Create your `htpasswd` file.
-2) And a custom `default.conf` NGINX config:
+1) Create your [`.htpasswd` file](https://docs.nginx.com/nginx/admin-guide/security-controls/configuring-http-basic-authentication/#creating-a-password-file).
+2) And a custom `default` NGINX config:
 
   ```
   upstream python_backend {
@@ -90,40 +90,41 @@ to be password protected using http basic auth.
       listen 80 default_server;
       listen [::]:80 default_server;
 
-      auth_basic           "Administrator’s Area";
-      auth_basic_user_file htpasswd;
-
       root /var/www/html;
 
-      # Add index.php to the list if you are using PHP
-      index index.html index.htm index.nginx-debian.html;
+      add_header Content-Security-Policy "frame-ancestors 'self';";
+      index index.html index.htm index.pdf /index.html;
 
       server_name _;
 
       location /doc {
           root /var/docat;
-          autoindex on;
-          autoindex_format json;
       }
 
       location /api {
-          client_max_body_size 100M;
+          limit_except GET HEAD {
+              auth_basic 'Restricted';
+              auth_basic_user_file /etc/nginx/.htpasswd;
+          }
+
+          client_max_body_size $MAX_UPLOAD_SIZE;
           proxy_pass http://python_backend;
       }
 
       location / {
+          try_files $uri $uri/ =404;
       }
   }
   ```
 
-3) Mounted to the correct location inside the container:
+1) Mounted to the correct location inside the container:
 
   ```
   docker run \
     --detach \
     --volume $PWD/docat-run:/var/docat/ \
-    --volume $PWD/nginx/default.conf:/etc/nginx/http.d/default.conf \
-    --volume $PWD/nginx/htpasswd:/etc/nginx/htpasswd \
+    --volume $PWD/nginx/default:/app/docat/docat/nginx/default \
+    --volume $PWD/nginx/.htpasswd:/etc/nginx/.htpasswd \
     --publish 8000:80 \
     ghcr.io/docat-org/docat
   ```
@@ -136,7 +137,7 @@ to be password protected using http basic auth.
 It is possible to configure some things after the fact.
 
 1. Create a `config.json` file
-2. Mount it inside your docker container `--volume /path/to/config.json:/var/docat/doc/config.json`
+2. Mount it inside your docker container `--volume $PWD/config.json:/var/docat/doc/config.json`
 
 Supported config options:
 
