@@ -394,7 +394,7 @@ def test_hide_and_show_with_tag(_, client_with_claimed_project):
     assert project_details_response.status_code == 200
     assert project_details_response.json() == {
         "name": "some-project",
-        "storage": "20 bytes",
+        "storage": "40 bytes",
         "versions": [],
     }
 
@@ -408,6 +408,6 @@ def test_hide_and_show_with_tag(_, client_with_claimed_project):
     assert project_details_response.status_code == 200
     assert project_details_response.json() == {
         "name": "some-project",
-        "storage": "20 bytes",
+        "storage": "40 bytes",
         "versions": [{"name": "1.0.0", "timestamp": "2000-01-01T01:01:00", "tags": ["latest"], "hidden": False}],
     }

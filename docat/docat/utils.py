@@ -6,6 +6,7 @@ import hashlib
 import os
 import shutil
 from datetime import datetime
+from functools import cache
 from pathlib import Path
 from zipfile import ZipFile, ZipInfo
 
@@ -161,29 +162,50 @@ def readable_size(bytes: int) -> str:
     return str(amount) + size_suffix
 
 
-def directory_size(path: Path, recalculate: bool = False) -> int:
+@cache
+def get_dir_size(path: Path) -> int:
     """
-    Returns the size of a directory and caches it's size unless
-    recalculate is set to true or the cache is missed
+    Calculate the total size of a directory.
+
+    Results are cached (memoizing) by path.
     """
-    size_info = path / ".size"
-    if size_info.exists() and not recalculate:
-        return int(size_info.read_text())
+    total = 0
+    with os.scandir(path) as it:
+        for entry in it:
+            if entry.is_file():
+                total += entry.stat().st_size
+            elif entry.is_dir():
+                total += get_dir_size(entry.path)
+    return total
 
-    dir_size = sum(file.stat().st_size for file in path.rglob("*") if file.is_file())
-    size_info.write_text(str(dir_size))  # cache directory size
 
-    return dir_size
-
-
+@cache
 def get_system_stats(upload_folder_path: Path) -> Stats:
     """
-    Return all docat statistics
+    Return all docat statistics.
+
+    Results are cached (memoizing) by path.
     """
+
+    dirs = 0
+    versions = 0
+    size = 0
+    # Note: Not great nesting with the deep nesting
+    # but it needs to run fast, consider speed when refactoring!
+    with os.scandir(upload_folder_path) as root:
+        for f in root:
+            if f.is_dir():
+                dirs += 1
+                with os.scandir(f.path) as project:
+                    for v in project:
+                        if v.is_dir() and not v.is_symlink():
+                            size += get_dir_size(v.path)
+                            versions += 1
+
     return Stats(
-        n_projects=len([p for p in upload_folder_path.iterdir() if p.is_dir()]),
-        n_versions=sum(len([p for p in d.iterdir() if p.is_dir() and not p.is_symlink()]) for d in upload_folder_path.glob("*/")),
-        storage=readable_size(directory_size(upload_folder_path)),
+        n_projects=dirs,
+        n_versions=versions,
+        storage=readable_size(size),
     )
 
 
@@ -212,7 +234,7 @@ def get_all_projects(upload_folder_path: Path, include_hidden: bool) -> Projects
                 name=project_name,
                 logo=project_has_logo,
                 versions=details.versions,
-                storage=readable_size(directory_size(upload_folder_path / project)),
+                storage=readable_size(get_dir_size(upload_folder_path / project)),
             )
         )
 
@@ -245,7 +267,7 @@ def get_project_details(upload_folder_path: Path, project_name: str, include_hid
 
     return ProjectDetail(
         name=project_name,
-        storage=readable_size(directory_size(docs_folder)),
+        storage=readable_size(get_dir_size(docs_folder)),
         versions=sorted(
             [
                 ProjectVersion(

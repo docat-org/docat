@@ -28,9 +28,9 @@ from docat.utils import (
     UPLOAD_FOLDER,
     calculate_token,
     create_symlink,
-    directory_size,
     extract_archive,
     get_all_projects,
+    get_dir_size,
     get_project_details,
     get_system_stats,
     is_forbidden_project_name,
@@ -140,9 +140,9 @@ def upload_icon(
     with icon_path.open("wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
 
-    # recalculate size cache
-    directory_size(project_base_path, recalculate=True)
-    directory_size(DOCAT_UPLOAD_FOLDER, recalculate=True)
+    # force cache revalidation
+    get_system_stats.cache_clear()
+    get_dir_size.cache_clear()
 
     return ApiResponse(message="Icon successfully uploaded")
 
@@ -268,12 +268,12 @@ def upload(
         response.status_code = status.HTTP_400_BAD_REQUEST
         return ApiResponse(message="Cannot extract zip file.")
 
+    # force cache revalidation
+    get_system_stats.cache_clear()
+    get_dir_size.cache_clear()
+
     if not (base_path / "index.html").exists():
         return ApiResponse(message="Documentation uploaded successfully, but no index.html found at root of archive.")
-
-    # recalculate size cache
-    directory_size(project_base_path, recalculate=True)
-    directory_size(DOCAT_UPLOAD_FOLDER, recalculate=True)
 
     return ApiResponse(message="Documentation uploaded successfully")
 
@@ -381,8 +381,9 @@ def delete(
         response.status_code = status.HTTP_404_NOT_FOUND
         return ApiResponse(message=message)
 
-    # recalculate size cache
-    directory_size(DOCAT_UPLOAD_FOLDER, recalculate=True)
+    # force cache revalidation
+    get_system_stats.cache_clear()
+    get_dir_size.cache_clear()
 
     return ApiResponse(message=f"Successfully deleted version '{version}'")
 
