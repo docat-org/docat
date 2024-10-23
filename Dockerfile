@@ -1,5 +1,5 @@
 # building frontend
-FROM node:22-slim as frontend
+FROM node:22-slim AS frontend
 WORKDIR /app/frontend
 
 COPY web/package.json web/yarn.lock ./
@@ -40,8 +40,8 @@ FROM python:3.12-slim
 ENV MAX_UPLOAD_SIZE=100M
 
 # set up the system
-RUN apt update && \
-    apt install --yes nginx dumb-init libmagic1 gettext && \
+RUN apt-get update && \
+    apt-get install --yes nginx dumb-init libmagic1 gettext && \
     rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p /var/docat/doc

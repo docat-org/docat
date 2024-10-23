@@ -103,7 +103,7 @@ export default function Docs(): JSX.Element {
     hash: string,
     hideUi: boolean
   ): string => {
-    return `#/${project}/${version}/${encodeURIComponent(page)}${hash}${hideUi ? '?hide-ui=true' : ''}`
+    return `/${project}/${version}/${encodeURIComponent(page)}${hash}${hideUi ? '?hide-ui=true' : ''}`
   }
 
   const updateUrl = (newVersion: string, hideUi: boolean): void => {

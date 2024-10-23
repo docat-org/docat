@@ -1,4 +1,4 @@
-import { createHashRouter, RouterProvider } from 'react-router-dom'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { ConfigDataProvider } from './data-providers/ConfigDataProvider'
 import { MessageBannerProvider } from './data-providers/MessageBannerProvider'
 import { ProjectDataProvider } from './data-providers/ProjectDataProvider'
@@ -14,7 +14,7 @@ import NotFound from './pages/NotFound'
 import Upload from './pages/Upload'
 
 function App(): JSX.Element {
-  const router = createHashRouter([
+  const router = createBrowserRouter([
     {
       path: '/',
       errorElement: <NotFound />,
