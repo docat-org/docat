@@ -1,5 +1,4 @@
 import styles from './../style/components/StyledForm.module.css'
-import React from 'react'
 
 interface Props {
   children: JSX.Element[]

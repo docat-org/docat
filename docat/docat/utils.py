@@ -5,10 +5,12 @@ docat utilities
 import hashlib
 import os
 import shutil
+from datetime import datetime
+from functools import cache
 from pathlib import Path
 from zipfile import ZipFile, ZipInfo
 
-from docat.models import Project, ProjectDetail, Projects, ProjectVersion
+from docat.models import Project, ProjectDetail, Projects, ProjectVersion, Stats
 
 NGINX_CONFIG_PATH = Path("/etc/nginx/locations.d")
 UPLOAD_FOLDER = "doc"
@@ -92,6 +94,9 @@ def remove_docs(project: str, version: str, upload_folder_path: Path):
             if not link.resolve().exists():
                 link.unlink()
 
+        # remove size info
+        (upload_folder_path / project / ".size").unlink(missing_ok=True)
+
         # remove empty projects
         if not [d for d in docs.parent.iterdir() if d.is_dir()]:
             docs.parent.rmdir()
@@ -124,6 +129,86 @@ def is_forbidden_project_name(name: str) -> bool:
     return name in ["upload", "claim", "delete", "help"]
 
 
+UNITS_MAPPING = [
+    (1 << 50, " PB"),
+    (1 << 40, " TB"),
+    (1 << 30, " GB"),
+    (1 << 20, " MB"),
+    (1 << 10, " KB"),
+    (1, " byte"),
+]
+
+
+def readable_size(bytes: int) -> str:
+    """
+    Get human-readable file sizes.
+    simplified version of https://pypi.python.org/pypi/hurry.filesize/
+
+    https://stackoverflow.com/a/12912296/12356463
+    """
+    size_suffix = ""
+    for factor, suffix in UNITS_MAPPING:
+        if bytes >= factor:
+            size_suffix = suffix
+            break
+
+    amount = int(bytes / factor)
+    if size_suffix == " byte" and amount > 1:
+        size_suffix = size_suffix + "s"
+
+    if amount == 0:
+        size_suffix = " bytes"
+
+    return str(amount) + size_suffix
+
+
+@cache
+def get_dir_size(path: Path) -> int:
+    """
+    Calculate the total size of a directory.
+
+    Results are cached (memoizing) by path.
+    """
+    total = 0
+    with os.scandir(path) as it:
+        for entry in it:
+            if entry.is_file():
+                total += entry.stat().st_size
+            elif entry.is_dir():
+                total += get_dir_size(entry.path)
+    return total
+
+
+@cache
+def get_system_stats(upload_folder_path: Path) -> Stats:
+    """
+    Return all docat statistics.
+
+    Results are cached (memoizing) by path.
+    """
+
+    dirs = 0
+    versions = 0
+    size = 0
+    # Note: Not great nesting with the deep nesting
+    # but it needs to run fast, consider speed when refactoring!
+    with os.scandir(upload_folder_path) as root:
+        for f in root:
+            if f.is_dir():
+                dirs += 1
+                with os.scandir(f.path) as project:
+                    for v in project:
+                        if v.is_dir() and not v.is_symlink():
+                            size += get_dir_size(v.path)
+                            versions += 1
+
+    return Stats(
+        n_projects=dirs,
+        n_versions=versions,
+        storage=readable_size(size),
+    )
+
+
 def get_all_projects(upload_folder_path: Path, include_hidden: bool) -> Projects:
     """
     Returns all projects in the upload folder.
@@ -144,9 +229,23 @@ def get_all_projects(upload_folder_path: Path, include_hidden: bool) -> Projects
 
         project_name = str(project.relative_to(upload_folder_path))
         project_has_logo = (upload_folder_path / project / "logo").exists()
-        projects.append(Project(name=project_name, logo=project_has_logo, versions=details.versions))
+        projects.append(
+            Project(
+                name=project_name,
+                logo=project_has_logo,
+                versions=details.versions,
+                storage=readable_size(get_dir_size(upload_folder_path / project)),
+            )
+        )
 
     return Projects(projects=projects)
+
+
+def get_version_timestamp(version_folder: Path) -> datetime:
+    """
+    Returns the timestamp of a version
+    """
+    return datetime.fromtimestamp(version_folder.stat().st_ctime)
 
 
 def get_project_details(upload_folder_path: Path, project_name: str, include_hidden: bool) -> ProjectDetail | None:
@@ -168,11 +267,13 @@ def get_project_details(upload_folder_path: Path, project_name: str, include_hid
 
     return ProjectDetail(
         name=project_name,
+        storage=readable_size(get_dir_size(docs_folder)),
         versions=sorted(
             [
                 ProjectVersion(
                     name=str(x.relative_to(docs_folder)),
                     tags=[str(t.relative_to(docs_folder)) for t in tags if t.resolve() == x],
+                    timestamp=get_version_timestamp(x),
                     hidden=(docs_folder / x.name / ".hidden").exists(),
                 )
                 for x in docs_folder.iterdir()

@@ -4,10 +4,11 @@
   and we need the return those children again which is an "unsafe return"
 */
 
-import React, { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useState } from 'react'
 
 export interface Config {
   headerHTML?: string
+  footerHTML?: string
 }
 
 const Context = createContext<Config>({})

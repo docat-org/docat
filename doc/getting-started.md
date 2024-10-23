@@ -1,22 +1,31 @@
-## Getting started with DOCAT
+## Getting Started with DOCAT
 
-### docatl, the docat CLI 🙀
 
-The most convenient way to interact with docat is with it's official CLI tool, [docatl](https://github.com/docat-org/docatl).
 
-You can download a standalone binary of the latest release for your platform [here](https://github.com/docat-org/docatl/releases/latest) or [use go](https://github.com/docat-org/docatl#using-go) or [docker](https://github.com/docat-org/docatl#using-docker) to install it.
 
-The commands below contain examples both using `curl` and `docatl`. Do note that the host address and api-key can be omitted if specified in a `.docatl.yml` file. See the [docatl documentation](https://github.com/docat-org/docatl/blob/main/README.md) for more information.
+### Using `docatl`, the docat CLI 🙀
+
+The most convenient way to interact with docat is with it's official CLI tool,
+[docatl](https://github.com/docat-org/docatl).
+
+You can download a standalone binary of the latest release for your platform
+[here](https://github.com/docat-org/docatl/releases/latest) or
+[use go](https://github.com/docat-org/docatl#using-go) or
+[docker](https://github.com/docat-org/docatl#using-docker) to install it.
+
+The commands below contain examples both using `curl` and `docatl`.
+Do note that the host address and api-key can be omitted if specified in a `.docatl.yml` file.
+See the [docatl documentation](https://github.com/docat-org/docatl/blob/main/README.md) for more information.
 
 Use `docatl --help` to discover all commands available to manage your `docat` documentation!
 
-### Raw API endpoints
+### API endpoints
 
 The following sections document the RAW API endpoints you can `curl`.
 
-The API specification is exposed as an OpenAPI Documentation at http://localhost:8000/api/v1/openapi.json, 
-via Swagger UI at http://localhost:8000/api/docs and 
-as a pure documentation with redoc at http://localhost:8000/api/redoc.
+The API specification is exposed as an [OpenAPI Documentation](/api/v1/openapi.json),
+via Swagger UI at [/api/docs](/api/docs) and
+as a pure documentation with redoc at [/api/redoc](/api/redoc).
 
 #### Upload your documentation
 
@@ -31,7 +40,7 @@ For example to upload the file `docs.zip` as version `1.0.0` for `awesome-projec
 curl -X POST -F "file=@docs.zip" http://localhost:8000/api/awesome-project/1.0.0
 ```
 
-Using `docatl`: 
+Using `docatl`:
 
 ```sh
 docatl push docs.zip awesome-project 1.0.0 --host http://localhost:8000
@@ -55,7 +64,7 @@ To tag the version `1.0.0` as `latest` for `awesome-project`:
 curl -X PUT http://localhost:8000/api/awesome-project/1.0.0/tags/latest
 ```
 
-Using `docatl`: 
+Using `docatl`:
 
 ```sh
 docatl tag awesome-project 1.0.0 latest --host http://localhost:8000
@@ -71,7 +80,7 @@ Each Project can be claimed **exactly once**, so best store the token safely.
 curl -X GET http://localhost:8000/api/awesome-project/claim
 ```
 
-Using `docatl`: 
+Using `docatl`:
 
 ```sh
 docatl claim awesome-project --host http://localhost:8000
@@ -85,7 +94,7 @@ To make an authenticated call, specify a header with the key `Docat-Api-Key` and
 curl -X DELETE --header "Docat-Api-Key: <token>" http://localhost:8000/api/awesome-project/1.0.0
 ```
 
-Using `docatl`: 
+Using `docatl`:
 
 ```sh
 docatl delete awesome-project 1.0.0 --host http://localhost:8000 --api-key <token>
@@ -101,7 +110,7 @@ To remove the version `1.0.0` from `awesome-project`:
 curl -X DELETE --header "Docat-Api-Key: <token>" http://localhost:8000/api/awesome-project/1.0.0
 ```
 
-Using `docatl`: 
+Using `docatl`:
 
 ```sh
 docatl delete awesome-project 1.0.0 --host http://localhost:8000 --api-key <token>
@@ -117,7 +126,7 @@ To set `example-image.png` as the icon for `awesome-project`, which already has 
 curl -X POST -F "file=@example-image.png" --header "Docat-Api-Key: <token>" http://localhost:8000/api/awesome-project/icon
 ```
 
-Using `docatl`: 
+Using `docatl`:
 
 ```sh
 docatl push-icon awesome-project example-image.png --host http://localhost:8000 --api-key <token>

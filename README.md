@@ -5,9 +5,22 @@
 [![build](https://github.com/docat-org/docat/workflows/docat%20ci/badge.svg)](https://github.com/docat-org/docat/actions)
 [![Gitter](https://badges.gitter.im/docat-docs-hosting/community.svg)](https://gitter.im/docat-docs-hosting/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
+## Why DOCAT?
+
+When generating static documentation using
+[mkdocs](https://www.mkdocs.org/), [sphinx](http://www.sphinx-doc.org/en/master/), ...
+hosting just one version of the docs might not be enough.
+Many users might still use older versions and might need to read
+those versions of the documentation.
+
+Docat solves this problem by providing a simple tool that
+hosts multiple documentation projects with multiple versions.
+
+*The main design decision with docat was to keep the tool as simple as possible.*
+
 ## Getting started
 
-The simplest way is to build and run the docker container,
+The simplest way to get started is to run the docker container,
 you can optionally use volumes to persist state:
 
 ```sh
@@ -23,9 +36,128 @@ docker run \
 
 Go to [localhost:8000](http://localhost:8000) to view your docat instance:
 
-![docat screenshot](doc/assets/docat-screenshot.png)
+<img src="doc/assets/docat.gif" width="100%" />
 
-### Local Development
+### Using DOCAT
+
+> 🛈 Please note that docat does not provide any way to write documentation.
+> It's sole responsibility is to host documentation.
+>
+> There are many awesome tools to write documenation:
+> - [mkdocs](https://www.mkdocs.org/)
+> - [sphinx](http://www.sphinx-doc.org/en/master/)
+> - [mdbook](https://rust-lang.github.io/mdBook/)
+> - ...
+
+
+A CLI tool called [docatl](https://github.com/docat-org/docatl) is available
+for easy interaction with the docat server.
+However, interacting with docat can also be done through [`curl`](doc/getting-started.md).
+
+To push documentation (and tag as `latest`) in the folder `docs/` simply run:
+
+```sh
+docatl push --host http://localhost:8000 ./docs PROJECT VERSION --tag latest
+```
+
+More detailed instructions can be found in the [**getting started guide**](doc/getting-started.md).
+
+## Authentication
+
+By default, anyone can upload new documentation or add a new version to documentation.
+A project can be claimed. A claim returns a token that then must be used
+to add or delete versions.
+
+When hosting docat publicly, it is recommended to use
+[http basic auth](https://docs.nginx.com/nginx/admin-guide/security-controls/configuring-http-basic-authentication/)
+for all `POST`/`PUT` and `DELETE` http calls.
+
+<details>
+  <summary>docat http basic authentication example</summary>
+
+This example shows how to configure the NGINX inside the docker image
+to be password protected using http basic auth.
+
+1) Create your [`.htpasswd` file](https://docs.nginx.com/nginx/admin-guide/security-controls/configuring-http-basic-authentication/#creating-a-password-file).
+2) And a custom `default` NGINX config:
+
+  ```
+  upstream python_backend {
+      server 127.0.0.1:5000;
+  }
+
+  server {
+      listen 80 default_server;
+      listen [::]:80 default_server;
+
+      root /var/www/html;
+
+      add_header Content-Security-Policy "frame-ancestors 'self';";
+      index index.html index.htm index.pdf /index.html;
+
+      server_name _;
+
+      location /doc {
+          root /var/docat;
+      }
+
+      location /api {
+          limit_except GET HEAD {
+              auth_basic 'Restricted';
+              auth_basic_user_file /etc/nginx/.htpasswd;
+          }
+
+          client_max_body_size $MAX_UPLOAD_SIZE;
+          proxy_pass http://python_backend;
+      }
+
+      location / {
+          try_files $uri $uri/ =404;
+      }
+  }
+  ```
+
+1) Mounted to the correct location inside the container:
+
+  ```
+  docker run \
+    --detach \
+    --volume $PWD/docat-run:/var/docat/ \
+    --volume $PWD/nginx/default:/app/docat/docat/nginx/default \
+    --volume $PWD/nginx/.htpasswd:/etc/nginx/.htpasswd \
+    --publish 8000:80 \
+    ghcr.io/docat-org/docat
+  ```
+</details>
+
+## Configuring DOCAT
+
+#### Frontend Config
+
+It is possible to configure some things after the fact.
+
+1. Create a `config.json` file
+2. Mount it inside your docker container `--volume $PWD/config.json:/var/docat/doc/config.json`
+
+Supported config options:
+
+```json
+{
+  "headerHTML": "<h1 style='color: #115fbf;'>Custom Header HTML!</h1>",
+  "footerHTML": "CONTACT: <a href='mailto:maintainer@mail.invalid'>Maintainers</a>"
+}
+```
+
+#### System Config
+
+Further proxy configurations can be done through the following environmental variables:
+
+| Variable | Default | Description |
+|---|---|---|
+| `MAX_UPLOAD_SIZE` | [100M](./Dockerfile) | Limits the size of individual archives posted to the API |
+
+
+## Local Development
 
 For local development, first configure and start the backend (inside the `docat/` folder):
 
@@ -52,59 +184,3 @@ yarn serve
 
 For more advanced options, have a look at the
 [backend](docat/README.md) and [web](web/README.md) docs.
-
-### Push Documentation to docat
-
-The preferred way to push documentation to a docat server is using the [docatl](https://github.com/docat-org/docatl)
-command line application:
-
-```sh
-docatl push --host http://localhost:8000 /path/to/your/docs PROJECT VERSION
-```
-
-There are also docker images available for CI systems.
-
-#### Using Standard UNIX Command Line Tools
-
-If you have static html documentation or use something like
-[mkdocs](https://www.mkdocs.org/), [sphinx](http://www.sphinx-doc.org/en/master/), ...
-to generate your documentation, you can push it to docat:
-
-```sh
-# create a zip of your docs
-zip -r docs.zip /path/to/your-docs
-# upload them to the docat server (replace PROJECT/VERSION with your projectname and the version of the docs)
-curl -X POST -F "file=@docs.zip" http://localhost:8000/api/PROJECT/VERSION
-```
-
-When you have multiple versions you may want to tag some version as **latest**:
-
-```sh
-# tag the version VERSION of project PROJECT as latest
-curl -X PUT http://localhost:8000/api/PROJECT/VERSION/tags/latest
-```
-
-Same thing with `docatl`:
-
-```sh
-# tag the version VERSION of project PROJECT as latest
-docatl tag --host http://localhost:8000 PROJECT VERSION latest
-```
-
-## Advanced Frontend `config.json`
-
-It is possible to configure some things after the fact.
-
-1. Create a `config.json` file
-2. Mount it inside your docker container `--volume /path/to/config.json:/var/docat/doc/config.json`
-
-Supported config options:
-
-- headerHTML
-
-## Advanced System Config
-
-Further proxy configurations can be done through the following environmental variables:
-| Variable | Default (Link to Definition) | Description |
-|---|---|---|
-| MAX_UPLOAD_SIZE | [100M](./Dockerfile) | Limits the size of individual archives posted to the API |

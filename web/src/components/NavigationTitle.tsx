@@ -1,6 +1,5 @@
 import { ArrowBackIos } from '@mui/icons-material'
 import { Link } from 'react-router-dom'
-import React from 'react'
 
 import styles from './../style/components/NavigationTitle.module.css'
 
