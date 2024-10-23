@@ -120,6 +120,11 @@ export default function Docs(): JSX.Element {
     document.title = newTitle
   }
 
+  // Keep compatibility with encoded page path
+  useEffect(() => {
+    updateUrl(version, hideUi)
+  }, [])
+
   const iFramePageChanged = (urlPage: string, urlHash: string, title?: string): void => {
     if (title != null && title !== document.title) {
       updateTitle(title)

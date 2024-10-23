@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router';
 
 import { Delete, ErrorOutline, FileUpload, KeyboardArrowDown, Lock } from '@mui/icons-material';
 import { useProjects } from '../data-providers/ProjectDataProvider';
@@ -19,6 +20,7 @@ import styles from './../style/pages/Home.module.css';
 
 
 export default function Home(): JSX.Element {
+  const navigate = useNavigate()
   const { loadingFailed } = useProjects()
   const { stats, loadingFailed: statsLoadingFailed } = useStats()
   const { filteredProjects: projects, query } = useSearch()
@@ -26,6 +28,11 @@ export default function Home(): JSX.Element {
   const [favoriteProjects, setFavoriteProjects] = useState<Project[]>([])
 
   document.title = 'Home | docat'
+
+  // Keep compatibility with hash-based URI
+  if (location.hash.startsWith('#/')) {
+    navigate(location.hash.replace('#', ''), { replace: true })
+  }
 
   const updateFavorites = (): void => {
     if (projects == null) return
