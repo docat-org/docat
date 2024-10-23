@@ -15,6 +15,7 @@ server {
 
     location /doc {
         root /var/docat;
+        absolute_redirect off;
     }
 
     location /api {
