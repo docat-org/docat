@@ -4,8 +4,9 @@ import { uniqueId } from 'lodash'
 import styles from '../style/components/IFrame.module.css'
 interface Props {
   src: string
-  onPageChanged: (page: string, hash: string) => void
+  onPageChanged: (page: string, hash: string, title?: string) => void
   onHashChanged: (hash: string) => void
+  onTitleChanged: (title: string) => void
   onNotFound: () => void
 }
 
@@ -69,6 +70,10 @@ export default function IFrame(props: Props): JSX.Element {
       'hashchange',
       hashChangeEventListener
     )
+    iFrameRef.current.contentWindow?.addEventListener(
+      'titlechange',
+      titleChangeEventListener
+    )
 
     const parts = url.split('/doc/').slice(1).join('/doc/').split('/')
     const urlPageAndHash = parts.slice(2).join('/')
@@ -77,8 +82,9 @@ export default function IFrame(props: Props): JSX.Element {
       : urlPageAndHash.length
     const urlPage = urlPageAndHash.slice(0, hashIndex)
     const urlHash = urlPageAndHash.slice(hashIndex)
+    const title = iFrameRef.current?.contentDocument?.title
 
-    props.onPageChanged(urlPage, urlHash)
+    props.onPageChanged(urlPage, urlHash, title)
   }
 
   const hashChangeEventListener = (): void => {
@@ -100,6 +106,20 @@ export default function IFrame(props: Props): JSX.Element {
     }
 
     props.onHashChanged(hash)
+  }
+
+  const titleChangeEventListener = (): void => {
+    if (iFrameRef.current == null) {
+      console.error('titleChangeEvent from iframe but iFrameRef is null')
+      return
+    }
+
+    const title = iFrameRef.current?.contentDocument?.title
+    if (title == null) {
+      return
+    }
+
+    props.onTitleChanged(title)
   }
 
   return (
