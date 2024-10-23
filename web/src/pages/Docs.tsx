@@ -20,8 +20,8 @@ export default function Docs(): JSX.Element {
   const [loadingFailed, setLoadingFailed] = useState<boolean>(false)
 
   const project = useRef(params.project ?? '')
-  const page = useRef(params.page ?? 'index.html')
-  const hash = useRef(location.hash.split('?')[0] ?? '')
+  const page = useRef(params['*'] ?? '')
+  const hash = useRef(location.hash)
 
   const [version, setVersion] = useState<string>(params.version ?? 'latest')
   const [hideUi, setHideUi] = useState<boolean>(
@@ -91,10 +91,9 @@ export default function Docs(): JSX.Element {
     })()
   }, [project])
 
-  /** Encodes the url for the current page, and escapes the path part to avoid
-   * redirecting to escapeSlashForDocsPath.
+  /** Encodes the url for the current page.
    * @example
-   * getUrl('project', 'version', 'path/to/page.html', '#hash', false) -> '#/project/version/path%2Fto%2Fpage.html#hash'
+   * getUrl('project', 'version', 'path/to/page.html', '#hash', false) -> '/project/version/path/to/page.html#hash'
    */
   const getUrl = (
     project: string,
@@ -103,7 +102,7 @@ export default function Docs(): JSX.Element {
     hash: string,
     hideUi: boolean
   ): string => {
-    return `/${project}/${version}/${encodeURIComponent(page)}${hash}${hideUi ? '?hide-ui=true' : ''}`
+    return `/${project}/${version}/${encodeURI(page)}${hash}${hideUi ? '?hide-ui=true' : ''}`
   }
 
   const updateUrl = (newVersion: string, hideUi: boolean): void => {
@@ -156,7 +155,7 @@ export default function Docs(): JSX.Element {
   useEffect(() => {
     const urlProject = params.project ?? ''
     const urlVersion = params.version ?? 'latest'
-    const urlPage = params.page ?? 'index.html'
+    const urlPage = params['*'] ?? 'index.html'
     const urlHash = location.hash.split('?')[0] ?? ''
     const urlHideUi =
       searchParams.get('hide-ui') === 'true' ||

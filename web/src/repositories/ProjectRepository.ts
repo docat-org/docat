@@ -4,34 +4,6 @@ import { type Project } from '../models/ProjectsResponse'
 
 const RESOURCE = 'doc'
 
-/**
- * Escapes all slashes in a url to the docs page from the point between the version and the path.
- * This is necessary because react-router thinks that the slashes are path separators.
- * The slashes are escaped to %2F and reverted back to slashes by react-router.
- * Example:
- *  /doc/project/1.0.0/path/to/page -> /doc/project/1.0.0/path%2Fto%2Fpage
- * @param pathname useLocation().pathname
- * @param search useLocation().search
- * @param hash useLocation().hash
- * @returns a url with escaped slashes
- */
-function escapeSlashesInUrl(
-  pathname: string,
-  search: string,
-  hash: string
-): string {
-  const url = pathname + hash + search
-  const projectAndVersion = url.split('/', 3).join('/')
-  let path = url.substring(projectAndVersion.length + 1)
-  path = path.replaceAll('/', '%2F')
-
-  if (path.length === 0) {
-    return projectAndVersion
-  }
-
-  return projectAndVersion + '/' + path
-}
-
 function dateTimeReviver(key: string, value: any) {
   if (key === 'timestamp') {
     return new Date(value)
@@ -273,7 +245,6 @@ function setFavorite(projectName: string, shouldBeFavorite: boolean): void {
 }
 
 const exp = {
-  escapeSlashesInUrl,
   getVersions,
   getLatestVersion,
   filterHiddenVersions,
