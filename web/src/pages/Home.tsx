@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router';
 
 import { Delete, ErrorOutline, FileUpload, KeyboardArrowDown, Lock } from '@mui/icons-material';
-import { useLocation } from 'react-router';
 import { useProjects } from '../data-providers/ProjectDataProvider';
 import { useSearch } from '../data-providers/SearchProvider';
 import { type Project } from '../models/ProjectsResponse';
@@ -20,26 +20,19 @@ import styles from './../style/pages/Home.module.css';
 
 
 export default function Home(): JSX.Element {
+  const navigate = useNavigate()
   const { loadingFailed } = useProjects()
   const { stats, loadingFailed: statsLoadingFailed } = useStats()
-  const { filteredProjects: projects, query, setQuery } = useSearch()
+  const { filteredProjects: projects, query } = useSearch()
   const [showAll, setShowAll] = useState(false);
   const [favoriteProjects, setFavoriteProjects] = useState<Project[]>([])
 
-  const location = useLocation()
-
   document.title = 'Home | docat'
 
-  // insert # into the url if it's missing
-  useEffect(() => {
-    const nonHostPart = window.location.href.replace(window.location.origin, '')
-
-    if (nonHostPart.startsWith('#') || nonHostPart.startsWith('/#')) {
-      return
-    }
-
-    window.location.replace(`/#${nonHostPart}`)
-  }, [location, setQuery, projects])
+  // Keep compatibility with hash-based URI
+  if (location.hash.startsWith('#/')) {
+    navigate(location.hash.replace('#', ''), { replace: true })
+  }
 
   const updateFavorites = (): void => {
     if (projects == null) return

@@ -160,7 +160,7 @@ def test_upload_rejects_forbidden_project_name(client_with_claimed_project):
     """
 
     with patch("docat.app.remove_docs") as remove_mock:
-        for project_name in ["upload", "claim", " Delete ", "help"]:
+        for project_name in ["upload", "claim", " Delete ", "help", "DOC"]:
             response = client_with_claimed_project.post(
                 f"/api/{project_name}/1.0.0", files={"file": ("index.html", io.BytesIO(b"<h1>Hello World</h1>"), "plain/text")}
             )
