@@ -19,10 +19,14 @@ export default function IFrame(props: Props): JSX.Element {
       return
     }
 
-    // remove the hashchange event listener to prevent memory leaks
+    // remove the event listeners to prevent memory leaks
     iFrameRef.current.contentWindow?.removeEventListener(
       'hashchange',
       hashChangeEventListener
+    )
+    iFrameRef.current.contentWindow?.removeEventListener(
+      'titlechange',
+      titleChangeEventListener
     )
 
     const url = iFrameRef.current?.contentDocument?.location.href
