@@ -116,6 +116,11 @@ export default function Docs(): JSX.Element {
     window.history.pushState(null, '', url)
   }
 
+  // Keep compatibility with encoded page path
+  useEffect(() => {
+    updateUrl(version, hideUi)
+  }, [])
+
   const iFramePageChanged = (urlPage: string, urlHash: string): void => {
     if (urlPage === page.current) {
       return
