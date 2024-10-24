@@ -14,7 +14,7 @@ export default function IFrame(props: Props): JSX.Element {
   const iFrameRef = useRef<HTMLIFrameElement>(null)
 
   const onIframeLoad = (): void => {
-    if (iFrameRef.current == null) {
+    if (iFrameRef.current === null) {
       console.error('iFrameRef is null')
       return
     }
@@ -92,7 +92,7 @@ export default function IFrame(props: Props): JSX.Element {
   }
 
   const hashChangeEventListener = (): void => {
-    if (iFrameRef.current == null) {
+    if (iFrameRef.current === null) {
       console.error('hashChangeEvent from iframe but iFrameRef is null')
       return
     }
@@ -113,7 +113,7 @@ export default function IFrame(props: Props): JSX.Element {
   }
 
   const titleChangeEventListener = (): void => {
-    if (iFrameRef.current == null) {
+    if (iFrameRef.current === null) {
       console.error('titleChangeEvent from iframe but iFrameRef is null')
       return
     }
