@@ -160,7 +160,7 @@ export default function Docs(): JSX.Element {
   useEffect(() => {
     const urlProject = params.project ?? ''
     const urlVersion = params.version ?? 'latest'
-    const urlPage = params['*'] ?? 'index.html'
+    const urlPage = params['*'] ?? ''
     const urlHash = location.hash.split('?')[0] ?? ''
     const urlHideUi =
       searchParams.get('hide-ui') === 'true' ||
