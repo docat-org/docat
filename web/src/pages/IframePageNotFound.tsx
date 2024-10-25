@@ -11,7 +11,7 @@ interface Props {
 }
 
 export default function IframeNotFound(props: Props): JSX.Element {
-  const link = `/${props.project}/${props.version}${props.hideUi ? '?hide-ui=true' : ''}`
+  const link = `/${props.project}/${props.version}${props.hideUi ? '?hide-ui' : ''}`
 
   return (
     <div className={styles['iframe-page-not-found']}>

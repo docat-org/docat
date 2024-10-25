@@ -24,7 +24,7 @@ export default function Docs(): JSX.Element {
   const hash = useRef(location.hash)
 
   const [version, setVersion] = useState<string>(params.version ?? 'latest')
-  const [hideUi, setHideUi] = useState<boolean>(searchParams.get('hide-ui') === 'true')
+  const [hideUi, setHideUi] = useState<boolean>(searchParams.get('hide-ui') === '' || searchParams.get('hide-ui') === 'true')
   const [iframeUpdateTrigger, setIframeUpdateTrigger] = useState<number>(0)
 
   // This provides the url for the iframe.
@@ -99,7 +99,7 @@ export default function Docs(): JSX.Element {
     hash: string,
     hideUi: boolean
   ): string => {
-    return `/${project}/${version}/${encodeURI(page)}${hash}${hideUi ? '?hide-ui=true' : ''}`
+    return `/${project}/${version}/${encodeURI(page)}${hash}${hideUi ? '?hide-ui' : ''}`
   }
 
   const updateUrl = (newVersion: string, hideUi: boolean): void => {
@@ -159,7 +159,7 @@ export default function Docs(): JSX.Element {
     const urlVersion = params.version ?? 'latest'
     const urlPage = params['*'] ?? ''
     const urlHash = location.hash
-    const urlHideUi = searchParams.get('hide-ui') === 'true'
+    const urlHideUi = searchParams.get('hide-ui') === '' || searchParams.get('hide-ui') === 'true'
 
     // update the state to the url params on first loadon
     if (urlProject !== project.current) {
