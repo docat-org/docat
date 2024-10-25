@@ -117,7 +117,14 @@ export default function Docs(): JSX.Element {
     window.history.pushState(null, '', url)
   }
 
-  const iFramePageChanged = (urlPage: string, urlHash: string): void => {
+  const updateTitle = (newTitle: string): void => {
+    document.title = newTitle
+  }
+
+  const iFramePageChanged = (urlPage: string, urlHash: string, title?: string): void => {
+    if (title != null && title !== document.title) {
+      updateTitle(title)
+    }
     if (urlPage === page.current) {
       return
     }
@@ -225,6 +232,7 @@ export default function Docs(): JSX.Element {
         src={iFrameSrc}
         onPageChanged={iFramePageChanged}
         onHashChanged={iFrameHashChanged}
+        onTitleChanged={updateTitle}
         onNotFound={iFrameNotFound}
       />
       {!hideUi && (
