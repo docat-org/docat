@@ -126,7 +126,7 @@ def is_forbidden_project_name(name: str) -> bool:
     a page on the docat website.
     """
     name = name.lower().strip()
-    return name in ["upload", "claim", "delete", "help"]
+    return name in ["upload", "claim", "delete", "help", "doc", "api"]
 
 
 UNITS_MAPPING = [

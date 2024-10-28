@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState, useRef } from 'react'
+import { useEffect, useMemo, useState, useRef } from 'react'
 import ProjectRepository from '../repositories/ProjectRepository'
 import type ProjectDetails from '../models/ProjectDetails'
 import LoadingPage from './LoadingPage'
@@ -11,7 +11,7 @@ import IframeNotFound from './IframePageNotFound'
 
 export default function Docs(): JSX.Element {
   const params = useParams()
-  const searchParams = useSearchParams()[0]
+  const [searchParams] = useSearchParams()
   const location = useLocation()
   const { showMessage, clearMessages } = useMessageBanner()
 
@@ -20,14 +20,11 @@ export default function Docs(): JSX.Element {
   const [loadingFailed, setLoadingFailed] = useState<boolean>(false)
 
   const project = useRef(params.project ?? '')
-  const page = useRef(params.page ?? 'index.html')
-  const hash = useRef(location.hash.split('?')[0] ?? '')
+  const page = useRef(params['*'] ?? '')
+  const hash = useRef(location.hash)
 
   const [version, setVersion] = useState<string>(params.version ?? 'latest')
-  const [hideUi, setHideUi] = useState<boolean>(
-    searchParams.get('hide-ui') === 'true' ||
-      location.hash.split('?')[1] === 'hide-ui=true'
-  )
+  const [hideUi, setHideUi] = useState<boolean>(searchParams.get('hide-ui') === '' || searchParams.get('hide-ui') === 'true')
   const [iframeUpdateTrigger, setIframeUpdateTrigger] = useState<number>(0)
 
   // This provides the url for the iframe.
@@ -91,10 +88,9 @@ export default function Docs(): JSX.Element {
     })()
   }, [project])
 
-  /** Encodes the url for the current page, and escapes the path part to avoid
-   * redirecting to escapeSlashForDocsPath.
+  /** Encodes the url for the current page.
    * @example
-   * getUrl('project', 'version', 'path/to/page.html', '#hash', false) -> '#/project/version/path%2Fto%2Fpage.html#hash'
+   * getUrl('project', 'version', 'path/to/page.html', '#hash', false) -> '/project/version/path/to/page.html#hash'
    */
   const getUrl = (
     project: string,
@@ -103,7 +99,7 @@ export default function Docs(): JSX.Element {
     hash: string,
     hideUi: boolean
   ): string => {
-    return `#/${project}/${version}/${encodeURIComponent(page)}${hash}${hideUi ? '?hide-ui=true' : ''}`
+    return `/${project}/${version}/${encodeURI(page)}${hash}${hideUi ? '?hide-ui' : ''}`
   }
 
   const updateUrl = (newVersion: string, hideUi: boolean): void => {
@@ -120,6 +116,11 @@ export default function Docs(): JSX.Element {
   const updateTitle = (newTitle: string): void => {
     document.title = newTitle
   }
+
+  // Keep compatibility with encoded page path
+  useEffect(() => {
+    updateUrl(version, hideUi)
+  }, [])
 
   const iFramePageChanged = (urlPage: string, urlHash: string, title?: string): void => {
     if (title != null && title !== document.title) {
@@ -156,11 +157,9 @@ export default function Docs(): JSX.Element {
   useEffect(() => {
     const urlProject = params.project ?? ''
     const urlVersion = params.version ?? 'latest'
-    const urlPage = params.page ?? 'index.html'
-    const urlHash = location.hash.split('?')[0] ?? ''
-    const urlHideUi =
-      searchParams.get('hide-ui') === 'true' ||
-      location.hash.split('?')[1] === 'hide-ui=true'
+    const urlPage = params['*'] ?? ''
+    const urlHash = location.hash
+    const urlHideUi = searchParams.get('hide-ui') === '' || searchParams.get('hide-ui') === 'true'
 
     // update the state to the url params on first loadon
     if (urlProject !== project.current) {

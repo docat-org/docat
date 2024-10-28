@@ -1,4 +1,4 @@
-import { createHashRouter, RouterProvider } from 'react-router-dom'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { ConfigDataProvider } from './data-providers/ConfigDataProvider'
 import { MessageBannerProvider } from './data-providers/MessageBannerProvider'
 import { ProjectDataProvider } from './data-providers/ProjectDataProvider'
@@ -7,14 +7,13 @@ import { StatsDataProvider } from './data-providers/StatsDataProvider'
 import Claim from './pages/Claim'
 import Delete from './pages/Delete'
 import Docs from './pages/Docs'
-import EscapeSlashForDocsPath from './pages/EscapeSlashForDocsPath'
 import Help from './pages/Help'
 import Home from './pages/Home'
 import NotFound from './pages/NotFound'
 import Upload from './pages/Upload'
 
 function App(): JSX.Element {
-  const router = createHashRouter([
+  const router = createBrowserRouter([
     {
       path: '/',
       errorElement: <NotFound />,
@@ -54,17 +53,8 @@ function App(): JSX.Element {
                   element: <Docs />
                 },
                 {
-                  path: ':page',
-                  children: [
-                    {
-                      path: '',
-                      element: <Docs />
-                    },
-                    {
-                      path: '*',
-                      element: <EscapeSlashForDocsPath />
-                    }
-                  ]
+                  path: '*',
+                  element: <Docs />
                 }
               ]
             }

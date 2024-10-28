@@ -41,8 +41,10 @@ export default function DocumentControlButtons(props: Props): JSX.Element {
       url = url.replace(props.version, 'latest')
     }
 
-    if (shareModalHideUi && !url.includes('?hide-ui=true')) {
-      url = `${url}?hide-ui=true`
+    if (shareModalHideUi) {
+      const urlObject = new URL(url)
+      urlObject.search = 'hide-ui'
+      url = urlObject.toString()
     }
 
     return url
