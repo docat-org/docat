@@ -48,10 +48,10 @@ docatl push docs.zip awesome-project 1.0.0 --host http://localhost:8000
 
 Any file type can be uploaded. To view an uploaded pdf, specify it's full path:
 
-`http://localhost:8000/#/awesome-project/1.0.0/my_awesome.pdf`
+`http://localhost:8000/awesome-project/1.0.0/my_awesome.pdf`
 
 You can also manually upload your documentation.
-A very simple web form can be found under [upload](#/upload).
+A very simple web form can be found under [upload](/upload).
 
 #### Tag documentation
 
