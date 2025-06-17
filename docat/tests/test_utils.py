@@ -2,7 +2,7 @@ from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import docat.app as docat
-from docat.utils import create_symlink, extract_archive, remove_docs
+from docat.utils import create_symlink, extract_archive, get_dir_size, remove_docs
 
 
 def test_symlink_creation():
@@ -86,3 +86,12 @@ def test_remove_symlink_version(temp_project_version):
     remove_docs(project, "latest", docat.DOCAT_UPLOAD_FOLDER)
 
     assert not symlink_to_latest.exists()
+
+
+def test_broken_symlinks_in_projects(temp_project_version):
+    project = "project"
+    docs = temp_project_version(project, "1.0")
+
+    create_symlink(docs / project / "broken", docs / project / "latest")
+
+    get_dir_size(docs / project)

@@ -172,7 +172,10 @@ def get_dir_size(path: Path) -> int:
     total = 0
     with os.scandir(path) as it:
         for entry in it:
-            if entry.is_file():
+            if entry.is_symlink():
+                # skip symlinks
+                pass
+            elif entry.is_file():
                 total += entry.stat().st_size
             elif entry.is_dir():
                 total += get_dir_size(entry.path)
@@ -186,7 +189,6 @@ def get_system_stats(upload_folder_path: Path) -> Stats:
 
     Results are cached (memoizing) by path.
     """
-
     dirs = 0
     versions = 0
     size = 0
