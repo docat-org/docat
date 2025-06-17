@@ -11,7 +11,7 @@ Install the dependencies and run the application:
 
 ```sh
 # install dependencies
-poetry install
+poetry install --all-groups
 # run the app
 [DOCAT_SERVE_FILES=1] [FLASK_DEBUG=1] [PORT=8888] poetry run python -m docat
 ```
