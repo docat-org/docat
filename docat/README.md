@@ -5,13 +5,13 @@ tag versions of the documentation.
 
 ## development enviroment
 
-You will need to install [poetry](https://python-poetry.org/docs/#installation) `pip install poetry==1.7.1`.
+You will need to install [poetry](https://python-poetry.org/docs/#installation) `pip install poetry==2.1.3`.
 
 Install the dependencies and run the application:
 
 ```sh
 # install dependencies
-poetry install
+poetry install --all-groups
 # run the app
 [DOCAT_SERVE_FILES=1] [FLASK_DEBUG=1] [PORT=8888] poetry run python -m docat
 ```

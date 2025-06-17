@@ -166,7 +166,7 @@ For local development, first configure and start the backend (inside the `docat/
 DEV_DOCAT_PATH="$(mktemp -d)"
 
 # install dependencies
-poetry install
+poetry install --all-groups
 
 # run the local development version
 DOCAT_SERVE_FILES=1 DOCAT_STORAGE_PATH="$DEV_DOCAT_PATH" poetry run python -m docat

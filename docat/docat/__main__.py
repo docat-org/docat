@@ -6,7 +6,7 @@ from docat.app import app
 
 if __name__ == "__main__":
     try:
-        port = int(os.environ.get("PORT", 5000))
+        port = int(os.environ.get("PORT", "5000"))
     except ValueError:
         port = 5000
 
