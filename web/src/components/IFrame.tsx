@@ -41,7 +41,7 @@ export default function IFrame(props: Props): JSX.Element {
     iFrameRef.current.contentDocument
       ?.querySelectorAll('a')
       .forEach((a: HTMLAnchorElement) => {
-        if (!a.href.startsWith(window.location.origin)) {
+        if (typeof a.href === 'string' && !a.href.startsWith(window.location.origin)) {
           a.setAttribute('target', '_blank')
           return
         }
