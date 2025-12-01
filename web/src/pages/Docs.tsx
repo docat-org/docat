@@ -42,6 +42,41 @@ export default function Docs(): JSX.Element {
   }, [version, iframeUpdateTrigger])
 
   useEffect(() => {
+    // Normalize version root URLs:
+    // Example: /Project/latest -> /Project/latest/
+    // This prevents the browser history from containing both
+    // /latest and /latest/, which breaks back navigation and
+    // reverse-proxy rewrite rules.
+    try {
+      const { pathname, search, hash } = window.location
+
+      // Detect if we are on the root of a version:
+      // - URL does not end with '/'
+      // - URL ends with '/<version>' (e.g. /project/latest)
+      if (
+        !pathname.endsWith('/') &&
+        typeof version === 'string' &&
+        pathname.endsWith(`/${version}`)
+      ) {
+        const newPathname = `${pathname}/`
+
+        // history.replaceState ensures that the canonical URL
+        // replaces the existing history entry instead of adding
+        // a new one. This keeps back navigation stable.
+        window.history.replaceState(
+          null,
+          '',
+          `${newPathname}${search ?? ''}${hash ?? ''}`
+        )
+
+        // Optional: early return to avoid processing based on the
+        // non-normalized URL. Current behavior works without it.
+        // return
+      }
+    } catch {
+      // Ignore in SSR or non-browser environments
+    }
+
     if (project.current === '') {
       return
     }
@@ -61,6 +96,7 @@ export default function Docs(): JSX.Element {
 
         const latestVersion =
           ProjectRepository.getLatestVersion(allVersions).name
+
         if (version === 'latest') {
           if (latestVersion === 'latest') {
             return
@@ -69,16 +105,16 @@ export default function Docs(): JSX.Element {
           return
         }
 
-        // custom version -> check if it exists
-        // if it does. do nothing, as it should be set already
+        // Custom version: verify if it exists either as a name or tag
         const versionsAndTags = allVersions
           .map((v) => [v.name, ...v.tags])
           .flat()
+
         if (versionsAndTags.includes(version)) {
           return
         }
 
-        // version does not exist -> fail
+        // Version does not exist \u2192 error state
         setLoadingFailed(true)
         console.error(`Version '${version}' doesn't exist`)
       } catch (e) {
