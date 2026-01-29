@@ -179,7 +179,7 @@ After this you need to start the frontend (inside the `web/` folder):
 yarn install --frozen-lockfile
 
 # run the web app
-yarn serve
+yarn start
 ```
 
 For more advanced options, have a look at the

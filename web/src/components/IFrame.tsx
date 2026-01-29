@@ -8,6 +8,7 @@ interface Props {
   onHashChanged: (hash: string) => void
   onTitleChanged: (title: string) => void
   onNotFound: () => void
+  onFaviconChanged?: (faviconUrl: string | null) => void
 }
 
 export default function IFrame(props: Props): JSX.Element {
@@ -89,6 +90,22 @@ export default function IFrame(props: Props): JSX.Element {
     const title = iFrameRef.current?.contentDocument?.title
 
     props.onPageChanged(urlPage, urlHash, title)
+
+    const favicon = extractFaviconUrl(iFrameRef.current.contentDocument)
+    props.onFaviconChanged?.(favicon)
+  }
+
+  const extractFaviconUrl = (doc: Document | null | undefined): string | null => {
+    if (doc == null) {
+      return null
+    }
+
+    let link = doc.querySelector('link[rel="icon"]') as HTMLLinkElement | null
+    if (!link?.href) {
+      return null
+    }
+
+    return link.href
   }
 
   const hashChangeEventListener = (): void => {
