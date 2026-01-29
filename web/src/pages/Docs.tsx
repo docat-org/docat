@@ -146,6 +146,14 @@ export default function Docs(): JSX.Element {
     setIframePageNotFound(true)
   }
 
+  const iFrameFaviconChanged = (faviconUrl: string | null): void => {
+    const favicon = document.querySelector('link[rel="icon"]') as HTMLLinkElement | null
+    if (favicon == null || faviconUrl == null) {
+      return
+    }
+    favicon.href = faviconUrl
+  }
+
   const onVersionChanged = (newVersion: string): void => {
     if (newVersion === version) {
       return
@@ -233,6 +241,7 @@ export default function Docs(): JSX.Element {
         onHashChanged={iFrameHashChanged}
         onTitleChanged={updateTitle}
         onNotFound={iFrameNotFound}
+        onFaviconChanged={iFrameFaviconChanged}
       />
       {!hideUi && (
         <DocumentControlButtons
