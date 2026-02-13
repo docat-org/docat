@@ -5,7 +5,7 @@ import ProjectDetails from '../../models/ProjectDetails'
 import { type Project } from '../../models/ProjectsResponse'
 import ProjectRepository from '../../repositories/ProjectRepository'
 const mockFetchData = (fetchData: any): void => {
-  global.fetch = vi.fn().mockImplementation(
+  globalThis.fetch = vi.fn().mockImplementation(
     async () =>
       await Promise.resolve({
         ok: true,
@@ -15,7 +15,7 @@ const mockFetchData = (fetchData: any): void => {
 }
 
 const mockFetchError = (errorMsg = 'Error'): void => {
-  global.fetch = vi.fn().mockImplementation(
+  globalThis.fetch = vi.fn().mockImplementation(
     async () =>
       await Promise.resolve({
         ok: false,
@@ -25,7 +25,7 @@ const mockFetchError = (errorMsg = 'Error'): void => {
 }
 
 const mockFetchStatus = (status: number, message?: string): void => {
-  global.fetch = vi.fn().mockImplementation(
+  globalThis.fetch = vi.fn().mockImplementation(
     async () =>
       await Promise.resolve({
         ok: false,
@@ -114,8 +114,8 @@ describe('upload', () => {
       body
     )
 
-    expect(global.fetch).toHaveBeenCalledTimes(1)
-    expect(global.fetch).toHaveBeenCalledWith(`/api/${project}/${version}`, {
+    expect(globalThis.fetch).toHaveBeenCalledTimes(1)
+    expect(globalThis.fetch).toHaveBeenCalledWith(`/api/${project}/${version}`, {
       body,
       method: 'POST'
     })
@@ -194,8 +194,8 @@ describe('claim project', () => {
 
     const respToken = await ProjectRepository.claim(project)
 
-    expect(global.fetch).toHaveBeenCalledTimes(1)
-    expect(global.fetch).toHaveBeenCalledWith(`/api/${project}/claim`)
+    expect(globalThis.fetch).toHaveBeenCalledTimes(1)
+    expect(globalThis.fetch).toHaveBeenCalledWith(`/api/${project}/claim`)
     expect(respToken.token).toEqual('test-token')
   })
 
@@ -230,8 +230,8 @@ describe('deleteDoc', () => {
 
     await ProjectRepository.deleteDoc(project, version, token)
 
-    expect(global.fetch).toHaveBeenCalledTimes(1)
-    expect(global.fetch).toHaveBeenCalledWith(`/api/${project}/${version}`, {
+    expect(globalThis.fetch).toHaveBeenCalledTimes(1)
+    expect(globalThis.fetch).toHaveBeenCalledWith(`/api/${project}/${version}`, {
       method: 'DELETE',
       headers: { 'Docat-Api-Key': token }
     })

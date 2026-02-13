@@ -28,7 +28,7 @@ export const Context = React.createContext<MessageBannerState>({
 
 export function MessageBannerProvider({ children }: any): JSX.Element {
   // We need to store the last timeout, so we can clear when a new message is shown
-  const [lastTimeout, setLastTimeout] = useState<NodeJS.Timeout>()
+  const [lastTimeout, setLastTimeout] = useState<ReturnType<typeof setTimeout>>()
   const [message, setMessage] = useState<Message>({
     content: undefined,
     type: 'success',
