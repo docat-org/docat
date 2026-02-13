@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /*
-  We need any, because we don't know the type of the children,
-  and we need the return those children again which is an "unsafe return"
+  We need any, because we don't know the type of the children
 */
 
 import React, { createContext, useContext, useEffect, useState } from 'react'
@@ -76,6 +75,7 @@ export function ProjectDataProvider({ children }: any): JSX.Element {
 
   useEffect(() => {
     loadData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return <Context.Provider value={state}>{children}</Context.Provider>

@@ -4,11 +4,11 @@ import { type Project } from '../models/ProjectsResponse'
 
 const RESOURCE = 'doc'
 
-function dateTimeReviver(key: string, value: any) {
+function dateTimeReviver(key: string, value: unknown) {
   if (key === 'timestamp') {
-    return new Date(value)
+    return new Date(value as string)
   }
-  return value;
+  return value
 }
 
 function filterHiddenVersions(allProjects: Project[]): Project[] {

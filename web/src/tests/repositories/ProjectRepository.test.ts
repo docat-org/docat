@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return, @typescript-eslint/require-await, @typescript-eslint/no-floating-promises */
-// -> we need any for our mocks, and we need to disable require-await because we need to mock async functions that throw errors
+/* eslint-disable @typescript-eslint/no-explicit-any */
+// -> we need any for our mocks
 
 import ProjectDetails from '../../models/ProjectDetails'
 import { type Project } from '../../models/ProjectsResponse'
