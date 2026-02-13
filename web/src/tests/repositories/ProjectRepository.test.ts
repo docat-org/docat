@@ -204,7 +204,7 @@ describe('claim project', () => {
 
     mockFetchStatus(409, `Project ${project} is already claimed!`)
 
-    expect(ProjectRepository.claim(project)).rejects.toThrow(
+    await expect(ProjectRepository.claim(project)).rejects.toThrow(
       `Project ${project} is already claimed!`
     )
   })
@@ -214,7 +214,7 @@ describe('claim project', () => {
 
     mockFetchStatus(504)
 
-    expect(ProjectRepository.claim(project)).rejects.toThrow(
+    await expect(ProjectRepository.claim(project)).rejects.toThrow(
       'Failed to claim project: Server unreachable'
     )
   })
@@ -244,7 +244,7 @@ describe('deleteDoc', () => {
 
     mockFetchStatus(401)
 
-    expect(
+    await expect(
       ProjectRepository.deleteDoc(project, version, token)
     ).rejects.toThrow('Failed to delete documentation: Invalid token')
   })
@@ -256,7 +256,7 @@ describe('deleteDoc', () => {
 
     mockFetchStatus(504)
 
-    expect(
+    await expect(
       ProjectRepository.deleteDoc(project, version, token)
     ).rejects.toThrow('Failed to delete documentation: Server unreachable')
   })
@@ -269,7 +269,7 @@ describe('deleteDoc', () => {
 
     mockFetchStatus(500, error)
 
-    expect(
+    await expect(
       ProjectRepository.deleteDoc(project, version, token)
     ).rejects.toThrow(`Failed to delete documentation: ${error}`)
   })
