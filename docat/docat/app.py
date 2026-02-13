@@ -14,7 +14,6 @@ import secrets
 import shutil
 from contextlib import asynccontextmanager
 from pathlib import Path
-from typing import Optional
 
 import magic
 from fastapi import APIRouter, Depends, FastAPI, File, Header, Response, UploadFile, status
@@ -102,7 +101,7 @@ def upload_icon(
     project: str,
     response: Response,
     file: UploadFile = File(...),
-    docat_api_key: Optional[str] = Header(None),
+    docat_api_key: str | None = Header(None),
     db: TinyDB = Depends(get_db),
 ):
     project_base_path = DOCAT_UPLOAD_FOLDER / project
@@ -146,7 +145,7 @@ def hide_version(
     project: str,
     version: str,
     response: Response,
-    docat_api_key: Optional[str] = Header(None),
+    docat_api_key: str | None = Header(None),
     db: TinyDB = Depends(get_db),
 ):
     project_base_path = DOCAT_UPLOAD_FOLDER / project
@@ -181,7 +180,7 @@ def show_version(
     project: str,
     version: str,
     response: Response,
-    docat_api_key: Optional[str] = Header(None),
+    docat_api_key: str | None = Header(None),
     db: TinyDB = Depends(get_db),
 ):
     project_base_path = DOCAT_UPLOAD_FOLDER / project
@@ -216,7 +215,7 @@ def upload(
     version: str,
     response: Response,
     file: UploadFile = File(...),
-    docat_api_key: Optional[str] = Header(None),
+    docat_api_key: str | None = Header(None),
     db: TinyDB = Depends(get_db),
 ):
     if is_forbidden_project_name(project):

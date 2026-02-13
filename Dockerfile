@@ -26,7 +26,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     POETRY_NO_INTERACTION=1
 
 RUN python -m pip install --upgrade pip
-RUN python -m pip install poetry==2.1.3
+RUN python -m pip install poetry==2.3.2
 COPY /docat/pyproject.toml /docat/poetry.lock /app/
 
 # Install the application
