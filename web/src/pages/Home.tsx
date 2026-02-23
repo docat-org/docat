@@ -48,6 +48,7 @@ export default function Home(): JSX.Element {
 
   useEffect(() => {
     updateFavorites()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projects])
 
   if (loadingFailed || statsLoadingFailed) {
@@ -128,10 +129,10 @@ export default function Home(): JSX.Element {
         { projects.length === 0 ?
           <>{ query !== "" ?
             <Box sx={{marginLeft: '24px', color: '#6e6e6e'}}>
-              Couldn't find any docs
+              Couldn&apos;t find any docs
             </Box> :
             <Box sx={{marginLeft: '24px'}}>
-              Looks like you don't have any docs yet.
+              Looks like you don&apos;t have any docs yet.
               <Button href="/help" onClick={() => onShowFavourites(true)}>
                 Get started now!
               </Button>

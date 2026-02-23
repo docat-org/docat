@@ -1,54 +1,42 @@
 import js from '@eslint/js'
-import pluginReact from 'eslint-plugin-react'
-import pluginPrettier from 'eslint-plugin-prettier'
-import pluginTypescriptEslint from '@typescript-eslint/eslint-plugin'
-import parserTypescriptEslint from '@typescript-eslint/parser'
-import { globalIgnores } from 'eslint/config'
+import globals from 'globals'
+import reactPlugin from 'eslint-plugin-react'
+import reactHooksPlugin from 'eslint-plugin-react-hooks'
+import tseslint from 'typescript-eslint'
+import eslintConfigPrettier from 'eslint-config-prettier'
 
-export default [
-  globalIgnores(['vite-env.d.ts', 'vite.config.ts', 'dist/**/*']),
-  js.configs.recommended,
+export default tseslint.config(
   {
-    files: ['*.ts', '*.tsx'],
-    languageOptions: {
-      parser: parserTypescriptEslint,
-      parserOptions: {
-        project: './tsconfig.json'
-      }
-    },
-    plugins: {
-      '@typescript-eslint': pluginTypescriptEslint
-    },
-    rules: {
-      ...pluginTypescriptEslint.configs['recommended'].rules,
-      ...pluginTypescriptEslint.configs['recommended-requiring-type-checking']
-        .rules,
-      '@typescript-eslint/space-before-function-paren': 'off',
-      '@typescript-eslint/no-extra-semi': 'off'
-    }
+    ignores: ['dist/**', 'vite-env.d.ts', 'vite.config.ts']
   },
+  js.configs.recommended,
+  ...tseslint.configs.recommended,
   {
-    files: ['*.js', '*.jsx', '*.ts', '*.tsx'],
-    plugins: {
-      react: pluginReact,
-      prettier: pluginPrettier
-    },
+    files: ['**/*.{ts,tsx}'],
     languageOptions: {
       ecmaVersion: 'latest',
       globals: {
-        window: 'readonly',
-        document: 'readonly',
-        navigator: 'readonly'
+        ...globals.browser
+      },
+      parserOptions: {
+        projectService: true,
+        tsconfigRootDir: import.meta.dirname
       }
     },
-    rules: {
-      ...pluginReact.configs.recommended.rules,
-      ...pluginPrettier.configs.recommended.rules
+    plugins: {
+      react: reactPlugin,
+      'react-hooks': reactHooksPlugin
     },
     settings: {
       react: {
         version: 'detect'
       }
+    },
+    rules: {
+      ...reactPlugin.configs.recommended.rules,
+      ...reactPlugin.configs['jsx-runtime'].rules,
+      ...reactHooksPlugin.configs.recommended.rules
     }
-  }
-]
+  },
+  eslintConfigPrettier
+)

@@ -100,7 +100,7 @@ export default function IFrame(props: Props): JSX.Element {
       return null
     }
 
-    let link = doc.querySelector('link[rel="icon"]') as HTMLLinkElement | null
+    const link = doc.querySelector('link[rel="icon"]') as HTMLLinkElement | null
     if (!link?.href) {
       return null
     }

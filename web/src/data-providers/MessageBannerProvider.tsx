@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /*
-  We need any, because we don't know the type of the children,
-  and we need the return those children again which is an "unsafe return"
+  We need any, because we don't know the type of the children
 */
 
 import React, { useState, useCallback, useContext } from 'react'
@@ -29,7 +28,7 @@ export const Context = React.createContext<MessageBannerState>({
 
 export function MessageBannerProvider({ children }: any): JSX.Element {
   // We need to store the last timeout, so we can clear when a new message is shown
-  const [lastTimeout, setLastTimeout] = useState<NodeJS.Timeout>()
+  const [lastTimeout, setLastTimeout] = useState<ReturnType<typeof setTimeout>>()
   const [message, setMessage] = useState<Message>({
     content: undefined,
     type: 'success',
@@ -58,6 +57,7 @@ export function MessageBannerProvider({ children }: any): JSX.Element {
     }, message.showMs)
 
     setLastTimeout(newTimeout)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const clearMessages = useCallback(() => {
@@ -70,6 +70,7 @@ export function MessageBannerProvider({ children }: any): JSX.Element {
       type: 'success',
       showMs: 6000
     })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (

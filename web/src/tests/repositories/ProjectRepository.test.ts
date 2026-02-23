@@ -1,11 +1,11 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return, @typescript-eslint/require-await, @typescript-eslint/no-floating-promises */
-// -> we need any for our mocks, and we need to disable require-await because we need to mock async functions that throw errors
+/* eslint-disable @typescript-eslint/no-explicit-any */
+// -> we need any for our mocks
 
 import ProjectDetails from '../../models/ProjectDetails'
 import { type Project } from '../../models/ProjectsResponse'
 import ProjectRepository from '../../repositories/ProjectRepository'
 const mockFetchData = (fetchData: any): void => {
-  global.fetch = vi.fn().mockImplementation(
+  globalThis.fetch = vi.fn().mockImplementation(
     async () =>
       await Promise.resolve({
         ok: true,
@@ -15,7 +15,7 @@ const mockFetchData = (fetchData: any): void => {
 }
 
 const mockFetchError = (errorMsg = 'Error'): void => {
-  global.fetch = vi.fn().mockImplementation(
+  globalThis.fetch = vi.fn().mockImplementation(
     async () =>
       await Promise.resolve({
         ok: false,
@@ -25,7 +25,7 @@ const mockFetchError = (errorMsg = 'Error'): void => {
 }
 
 const mockFetchStatus = (status: number, message?: string): void => {
-  global.fetch = vi.fn().mockImplementation(
+  globalThis.fetch = vi.fn().mockImplementation(
     async () =>
       await Promise.resolve({
         ok: false,
@@ -114,8 +114,8 @@ describe('upload', () => {
       body
     )
 
-    expect(global.fetch).toHaveBeenCalledTimes(1)
-    expect(global.fetch).toHaveBeenCalledWith(`/api/${project}/${version}`, {
+    expect(globalThis.fetch).toHaveBeenCalledTimes(1)
+    expect(globalThis.fetch).toHaveBeenCalledWith(`/api/${project}/${version}`, {
       body,
       method: 'POST'
     })
@@ -194,8 +194,8 @@ describe('claim project', () => {
 
     const respToken = await ProjectRepository.claim(project)
 
-    expect(global.fetch).toHaveBeenCalledTimes(1)
-    expect(global.fetch).toHaveBeenCalledWith(`/api/${project}/claim`)
+    expect(globalThis.fetch).toHaveBeenCalledTimes(1)
+    expect(globalThis.fetch).toHaveBeenCalledWith(`/api/${project}/claim`)
     expect(respToken.token).toEqual('test-token')
   })
 
@@ -204,7 +204,7 @@ describe('claim project', () => {
 
     mockFetchStatus(409, `Project ${project} is already claimed!`)
 
-    expect(ProjectRepository.claim(project)).rejects.toThrow(
+    await expect(ProjectRepository.claim(project)).rejects.toThrow(
       `Project ${project} is already claimed!`
     )
   })
@@ -214,7 +214,7 @@ describe('claim project', () => {
 
     mockFetchStatus(504)
 
-    expect(ProjectRepository.claim(project)).rejects.toThrow(
+    await expect(ProjectRepository.claim(project)).rejects.toThrow(
       'Failed to claim project: Server unreachable'
     )
   })
@@ -230,8 +230,8 @@ describe('deleteDoc', () => {
 
     await ProjectRepository.deleteDoc(project, version, token)
 
-    expect(global.fetch).toHaveBeenCalledTimes(1)
-    expect(global.fetch).toHaveBeenCalledWith(`/api/${project}/${version}`, {
+    expect(globalThis.fetch).toHaveBeenCalledTimes(1)
+    expect(globalThis.fetch).toHaveBeenCalledWith(`/api/${project}/${version}`, {
       method: 'DELETE',
       headers: { 'Docat-Api-Key': token }
     })
@@ -244,7 +244,7 @@ describe('deleteDoc', () => {
 
     mockFetchStatus(401)
 
-    expect(
+    await expect(
       ProjectRepository.deleteDoc(project, version, token)
     ).rejects.toThrow('Failed to delete documentation: Invalid token')
   })
@@ -256,7 +256,7 @@ describe('deleteDoc', () => {
 
     mockFetchStatus(504)
 
-    expect(
+    await expect(
       ProjectRepository.deleteDoc(project, version, token)
     ).rejects.toThrow('Failed to delete documentation: Server unreachable')
   })
@@ -269,7 +269,7 @@ describe('deleteDoc', () => {
 
     mockFetchStatus(500, error)
 
-    expect(
+    await expect(
       ProjectRepository.deleteDoc(project, version, token)
     ).rejects.toThrow(`Failed to delete documentation: ${error}`)
   })

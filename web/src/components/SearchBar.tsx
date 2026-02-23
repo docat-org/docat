@@ -37,6 +37,7 @@ export default function SearchBar(props: Props): JSX.Element {
       updateSearch(q)
     }
     setShowFavourites(props.showFavourites)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.showFavourites]);
 
   const onFavourites = (show: boolean): void => {

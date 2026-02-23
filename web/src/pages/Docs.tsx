@@ -39,6 +39,7 @@ export default function Docs(): JSX.Element {
       page.current,
       hash.current
     )
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [version, iframeUpdateTrigger])
 
   useEffect(() => {
@@ -86,6 +87,7 @@ export default function Docs(): JSX.Element {
         setLoadingFailed(true)
       }
     })()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project])
 
   /** Encodes the url for the current page.
@@ -120,6 +122,7 @@ export default function Docs(): JSX.Element {
   // Keep compatibility with encoded page path
   useEffect(() => {
     updateUrl(version, hideUi)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const iFramePageChanged = (urlPage: string, urlHash: string, title?: string): void => {
@@ -193,6 +196,7 @@ export default function Docs(): JSX.Element {
     }
 
     setIframePageNotFound(false)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location])
 
   useEffect(() => {
@@ -213,6 +217,7 @@ export default function Docs(): JSX.Element {
       type: 'warning',
       showMs: null
     })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [version, versions])
 
   if (loadingFailed || project.current === '') {

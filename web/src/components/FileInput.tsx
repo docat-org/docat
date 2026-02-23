@@ -85,7 +85,7 @@ export default function FileInput(props: Props): JSX.Element {
   const onButtonClick = (): void => {
     if (inputRef?.current != null) {
       // @ts-expect-error - the ref is not null, therefore the button should be able to be clicked
-      inputRef.current.click() // eslint-disable-line @typescript-eslint/no-unsafe-call
+      inputRef.current.click()
     }
   }
 

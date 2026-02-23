@@ -8,17 +8,17 @@ license = "MIT"
 [tool.poetry.dependencies]
 python = "^3.10"
 tinydb = "^4.8.2"
-fastapi = {version = "^0.115.13", extras = ["all"]}
+fastapi = {version = "^0.129.0", extras = ["all"]}
 python-multipart = "^0.0.20"
-uvicorn = "^0.34.3"
+uvicorn = "^0.40.0"
 python-magic = "^0.4.27"
 
 [tool.poetry.group.dev.dependencies]
-ruff = "^0.11.13"
-pytest = "^8.4.0"
-pytest-cov = "^6.2.1"
-requests = "^2.32.4"
-mypy = "^1.16.1"
+ruff = "^0.15.1"
+pytest = "^9.0.2"
+pytest-cov = "^7.0.0"
+requests = "^2.32.5"
+mypy = "^1.19.1"
 
 [tool.pytest.ini_options]
 minversion = "6.0"

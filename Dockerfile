@@ -1,5 +1,5 @@
 # building frontend
-FROM node:22-slim AS frontend
+FROM node:24-slim AS frontend
 WORKDIR /app/frontend
 
 COPY web/package.json web/yarn.lock ./
@@ -15,7 +15,7 @@ ENV VITE_DOCAT_VERSION=$DOCAT_VERSION
 RUN yarn build
 
 # setup Python
-FROM python:3.12-slim AS backend
+FROM python:3.14-slim AS backend
 
 # configure docker container
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -26,7 +26,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     POETRY_NO_INTERACTION=1
 
 RUN python -m pip install --upgrade pip
-RUN python -m pip install poetry==2.1.3
+RUN python -m pip install poetry==2.3.2
 COPY /docat/pyproject.toml /docat/poetry.lock /app/
 
 # Install the application
@@ -34,7 +34,7 @@ WORKDIR /app/docat
 RUN poetry install --no-root --no-ansi --only main
 
 # production
-FROM python:3.12-slim
+FROM python:3.14-slim
 
 # defaults
 ENV MAX_UPLOAD_SIZE=100M
