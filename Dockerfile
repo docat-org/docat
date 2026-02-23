@@ -18,20 +18,15 @@ RUN yarn build
 FROM python:3.14-slim AS backend
 
 # configure docker container
-ENV PYTHONDONTWRITEBYTECODE=1 \
-    # make poetry create the virtual environment in the project's root
-    # it gets named `.venv`
-    POETRY_VIRTUALENVS_IN_PROJECT=true \
-    # do not ask any interactive question
-    POETRY_NO_INTERACTION=1
+ENV PYTHONDONTWRITEBYTECODE=1
 
-RUN python -m pip install --upgrade pip
-RUN python -m pip install poetry==2.3.2
-COPY /docat/pyproject.toml /docat/poetry.lock /app/
+COPY --from=ghcr.io/astral-sh/uv:0.10.4 /uv /uvx /bin/
+
+COPY /docat/pyproject.toml /docat/uv.lock /app/
 
 # Install the application
 WORKDIR /app/docat
-RUN poetry install --no-root --no-ansi --only main
+RUN uv sync --no-install-project --no-dev --color never
 
 # production
 FROM python:3.14-slim

@@ -1,24 +1,33 @@
-[tool.poetry]
+[project]
 name = "docat"
 version = "0.0.0"
 description = "Host your docs. Simple. Versioned. Fancy."
-authors = ["Felix <hi@l33t.name>", "Benj <randombenj@gmail.com>"]
-license = "MIT"
+authors = [
+    { name = "Felix", email = "hi@l33t.name" },
+    { name = "Benj", email = "randombenj@gmail.com" }
+]
+license = { text = "MIT" }
+requires-python = ">=3.10"
+dependencies = [
+    "tinydb",
+    "fastapi[all]",
+    "uvicorn",
+    "python-multipart",
+    "python-magic",
+]
 
-[tool.poetry.dependencies]
-python = "^3.10"
-tinydb = "^4.8.2"
-fastapi = {version = "^0.129.0", extras = ["all"]}
-python-multipart = "^0.0.20"
-uvicorn = "^0.40.0"
-python-magic = "^0.4.27"
+[dependency-groups]
+dev = [
+    "ruff",
+    "pytest",
+    "pytest-cov",
+    "requests",
+    "mypy",
+]
 
-[tool.poetry.group.dev.dependencies]
-ruff = "^0.15.1"
-pytest = "^9.0.2"
-pytest-cov = "^7.0.0"
-requests = "^2.32.5"
-mypy = "^1.19.1"
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
 
 [tool.pytest.ini_options]
 minversion = "6.0"
@@ -26,10 +35,6 @@ addopts = "--ff -ra -v"
 testpaths = [
     "tests"
 ]
-
-[build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
 
 [[tool.mypy.overrides]]
 module = [

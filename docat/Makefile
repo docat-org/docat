@@ -2,11 +2,11 @@
 all: format lint typing pytest
 
 format:
-	poetry run ruff check --fix
-	poetry run ruff format
+	uv run ruff check --fix
+	uv run ruff format
 lint:
-	poetry run ruff check
+	uv run ruff check
 typing:
-	poetry run mypy .
+	uv run mypy .
 pytest:
-	poetry run pytest
+	uv run pytest
