@@ -166,10 +166,11 @@ For local development, first configure and start the backend (inside the `docat/
 DEV_DOCAT_PATH="$(mktemp -d)"
 
 # install dependencies
-poetry install --all-groups
+uv venv .venv
+uv sync
 
 # run the local development version
-DOCAT_SERVE_FILES=1 DOCAT_STORAGE_PATH="$DEV_DOCAT_PATH" poetry run python -m docat
+DOCAT_SERVE_FILES=1 DOCAT_STORAGE_PATH="$DEV_DOCAT_PATH" uv run python -m docat
 ```
 
 After this you need to start the frontend (inside the `web/` folder):

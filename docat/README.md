@@ -5,15 +5,17 @@ tag versions of the documentation.
 
 ## development enviroment
 
-You will need to install [poetry](https://python-poetry.org/docs/#installation) `pip install poetry==2.3.2`.
+You will need to install [uv](https://docs.astral.sh/uv/#installation) `curl -LsSf https://astral.sh/uv/install.sh | sh
+`.
 
 Install the dependencies and run the application:
 
 ```sh
 # install dependencies
-poetry install --all-groups
+uv venv .venv
+uv sync
 # run the app
-[DOCAT_SERVE_FILES=1] [FLASK_DEBUG=1] [PORT=8888] poetry run python -m docat
+[DOCAT_SERVE_FILES=1] [DOCAT_STORAGE_PATH=/tmp] [FLASK_DEBUG=1] [PORT=8888] uv run python -m docat
 ```
 
 ### Config Options

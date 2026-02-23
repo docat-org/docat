@@ -6,3 +6,4 @@ upload
 .coverage
 db.json
 .python-version
+docat.egg-info/
