@@ -1,5 +1,5 @@
 import { TextField } from '@mui/material'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import DataSelect from '../components/DataSelect'
 import PageLayout from '../components/PageLayout'
 import StyledForm from '../components/StyledForm'
@@ -16,7 +16,9 @@ export default function Claim(): JSX.Element {
 
   const [projectMissing, setProjectMissing] = useState<boolean | null>(null)
 
-  document.title = 'Claim Token | docat'
+  useEffect(() => {
+     document.title = 'Claim Token | docat'
+  }, []);
 
   const claim = async (): Promise<void> => {
     if (project == null || project === '' || project === 'none') {

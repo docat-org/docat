@@ -11,7 +11,9 @@ import LoadingPage from './LoadingPage'
 import styles from './../style/pages/Help.module.css'
 
 export default function Help(): JSX.Element {
-  document.title = 'Help | docat'
+  useEffect(() => {
+     document.title = 'Help | docat';
+  }, []);
 
   const [content, setContent] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(true)
