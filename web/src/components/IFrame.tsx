@@ -11,7 +11,7 @@ interface Props {
   onFaviconChanged?: (faviconUrl: string | null) => void
 }
 
-export default function IFrame(props: Props): JSX.Element {
+export default function IFrame(props: Props): React.JSX.Element {
   const iFrameRef = useRef<HTMLIFrameElement>(null)
 
   const onIframeLoad = (): void => {

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, useRef } from 'react'
+import { useEffect, useMemo, useState, useRef, JSX } from 'react'
 import ProjectRepository from '../repositories/ProjectRepository'
 import type ProjectDetails from '../models/ProjectDetails'
 import LoadingPage from './LoadingPage'

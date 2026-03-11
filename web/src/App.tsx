@@ -1,3 +1,4 @@
+import React from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { ConfigDataProvider } from './data-providers/ConfigDataProvider'
 import { MessageBannerProvider } from './data-providers/MessageBannerProvider'
@@ -12,7 +13,7 @@ import Home from './pages/Home'
 import NotFound from './pages/NotFound'
 import Upload from './pages/Upload'
 
-function App(): JSX.Element {
+function App(): React.JSX.Element {
   const router = createBrowserRouter([
     {
       path: '/',

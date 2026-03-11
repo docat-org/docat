@@ -1,10 +1,11 @@
+import React from 'react';
 import styles from './../style/components/StyledForm.module.css'
 
 interface Props {
-  children: JSX.Element[]
+  children: React.JSX.Element[]
 }
 
-export default function StyledForm(props: Props): JSX.Element {
+export default function StyledForm(props: Props): React.JSX.Element {
   if (props.children.length === 0) {
     return <></>
   }

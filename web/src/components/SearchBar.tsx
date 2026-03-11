@@ -12,12 +12,12 @@ interface Props {
   onShowFavourites: (all: boolean) => void
 }
 
-export default function SearchBar(props: Props): JSX.Element {
+export default function SearchBar(props: Props): React.JSX.Element {
   const [showFavourites, setShowFavourites] = useState(true);
   const [searchParams, setSearchParams] = useSearchParams();
 
   const { query, setQuery } = useSearch()
-  const [searchQuery, setSearchQuery] = React.useState<string>(query)
+  const [searchQuery, setSearchQuery] = useState<string>(query)
 
 
   const updateSearch = (q: string) => {

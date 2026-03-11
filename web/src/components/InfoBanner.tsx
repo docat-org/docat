@@ -1,18 +1,20 @@
 import { Alert, Snackbar } from '@mui/material'
 import { uniqueId } from 'lodash'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { type Message } from '../data-providers/MessageBannerProvider'
 
 interface Props {
   message: Message
 }
 
-export default function Banner(props: Props): JSX.Element {
+export default function Banner(props: Props): React.JSX.Element {
   const [show, setShow] = useState<boolean>(false)
+  const [prevMessage, setPrevMessage] = useState(props.message);
 
-  useEffect(() => {
-    setShow(true)
-  }, [props.message])
+  if (props.message !== prevMessage) {
+    setPrevMessage(props.message);
+    setShow(true);
+  }
 
   return (
     <Snackbar

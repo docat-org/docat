@@ -1,5 +1,5 @@
 import { Star, StarOutline } from '@mui/icons-material'
-import { useState } from 'react'
+import React, { useState } from 'react'
 import ProjectRepository from '../repositories/ProjectRepository'
 
 interface Props {
@@ -7,7 +7,7 @@ interface Props {
   onFavoriteChanged: () => void
 }
 
-export default function FavoriteStar(props: Props): JSX.Element {
+export default function FavoriteStar(props: Props): React.JSX.Element {
   const [isFavorite, setIsFavorite] = useState<boolean>(
     ProjectRepository.isFavorite(props.projectName)
   )

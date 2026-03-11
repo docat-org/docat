@@ -1,5 +1,5 @@
 import { TextField } from '@mui/material'
-import React, { useState } from 'react'
+import React, { useState, useEffect, JSX } from 'react'
 
 import FileInput from '../components/FileInput'
 import PageLayout from '../components/PageLayout'
@@ -26,7 +26,9 @@ const okFileTypes = [
 ]
 
 export default function Upload(): JSX.Element {
-  document.title = 'Upload | docat'
+  useEffect(() => {
+     document.title = 'Upload | docat';
+  }, []);
 
   const { reload: reloadProjects } = useProjects()
   const { showMessage } = useMessageBanner()
