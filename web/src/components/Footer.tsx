@@ -1,5 +1,5 @@
 import { Box } from '@mui/material'
-import { useState } from 'react'
+import { useState, JSX } from 'react'
 import { Link } from 'react-router-dom'
 import { useConfig } from '../data-providers/ConfigDataProvider'
 import styles from './../style/components/Footer.module.css'

@@ -3,7 +3,7 @@
   We need any, because we don't know the type of the children
 */
 
-import React, { useState, useCallback, useContext } from 'react'
+import React, { useState, useCallback, useContext, JSX } from 'react'
 import Banner from '../components/InfoBanner'
 
 export interface Message {

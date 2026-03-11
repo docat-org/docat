@@ -1,3 +1,4 @@
+import React from 'react';
 import Project from './Project'
 
 import { type Project as ProjectType } from '../models/ProjectsResponse'
@@ -8,7 +9,7 @@ interface Props {
   onFavoriteChanged: () => void
 }
 
-export default function ProjectList(props: Props): JSX.Element {
+export default function ProjectList(props: Props): React.JSX.Element {
   if (props.projects.length === 0) {
     return <></>
   }

@@ -1,3 +1,4 @@
+import React from 'react';
 import { Link } from 'react-router-dom'
 import { type Project as ProjectType } from '../models/ProjectsResponse'
 import ProjectRepository from '../repositories/ProjectRepository'
@@ -37,7 +38,7 @@ function timeSince(date: Date) {
   return Math.floor(seconds) + " seconds";
 }
 
-export default function Project(props: Props): JSX.Element {
+export default function Project(props: Props): React.JSX.Element {
   const latestVersion = ProjectRepository.getLatestVersion(props.project.versions)
 
   return (

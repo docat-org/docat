@@ -1,3 +1,4 @@
+import { JSX } from 'react'
 import styles from './../style/components/PageLayout.module.css'
 import Footer from './Footer'
 import Header from './Header'

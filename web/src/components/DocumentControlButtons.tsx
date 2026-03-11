@@ -9,7 +9,7 @@ import {
   Select,
   Tooltip
 } from '@mui/material'
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import type ProjectDetails from '../models/ProjectDetails'
 
@@ -21,7 +21,7 @@ interface Props {
   onVersionChange: (version: string) => void
 }
 
-export default function DocumentControlButtons(props: Props): JSX.Element {
+export default function DocumentControlButtons(props: Props): React.JSX.Element {
   const buttonStyle = { width: '25px', height: '25px' }
 
   const [shareModalOpen, setShareModalOpen] = useState<boolean>(false)

@@ -1,10 +1,10 @@
+import React from 'react'
 import { Link } from 'react-router-dom'
 import Footer from '../components/Footer'
 import Header from '../components/Header'
 import styles from './../style/pages/NotFound.module.css'
-import React from 'react'
 
-export default function NotFound(): JSX.Element {
+export default function NotFound(): React.JSX.Element {
   return (
     <div className={styles['not-found']}>
       <Header />

@@ -11,7 +11,7 @@ interface Props {
   isValid: (file: File) => boolean
 }
 
-export default function FileInput(props: Props): JSX.Element {
+export default function FileInput(props: Props): React.JSX.Element {
   const [fileName, setFileName] = useState<string>(
     props.file?.name !== undefined ? props.file.name : ''
   )

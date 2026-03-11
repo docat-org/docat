@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, JSX } from 'react';
 import { useNavigate } from 'react-router';
 
 import { Delete, ErrorOutline, FileUpload, KeyboardArrowDown, Lock } from '@mui/icons-material';

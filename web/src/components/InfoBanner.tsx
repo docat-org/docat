@@ -7,7 +7,7 @@ interface Props {
   message: Message
 }
 
-export default function Banner(props: Props): JSX.Element {
+export default function Banner(props: Props): React.JSX.Element {
   const [show, setShow] = useState<boolean>(false)
   const [prevMessage, setPrevMessage] = useState(props.message);
 

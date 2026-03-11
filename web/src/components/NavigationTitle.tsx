@@ -1,3 +1,4 @@
+import React from 'react';
 import { ArrowBackIos } from '@mui/icons-material'
 import { Link } from 'react-router-dom'
 
@@ -6,10 +7,10 @@ import styles from './../style/components/NavigationTitle.module.css'
 interface Props {
   title: string
   backLink?: string
-  description?: string | JSX.Element
+  description?: string | React.JSX.Element
 }
 
-export default function NavigationTitle(props: Props): JSX.Element {
+export default function NavigationTitle(props: Props): React.JSX.Element {
   return (
     <div className={styles['nav-title']}>
       <div className={styles['page-header']}>

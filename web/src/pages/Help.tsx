@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, JSX } from 'react'
 import ReactMarkdown from 'react-markdown'
 
 // @ts-expect-error ts can't read symbols from a md file
@@ -60,9 +60,11 @@ export default function Help(): JSX.Element {
   return (
     <>
       <Header />
-      <ReactMarkdown className={styles['markdown-container']}>
-        {content}
-      </ReactMarkdown>
+      <div className={styles['markdown-container']}>
+        <ReactMarkdown>
+          {content}
+        </ReactMarkdown>
+      </div>
       <Footer />
     </>
   )

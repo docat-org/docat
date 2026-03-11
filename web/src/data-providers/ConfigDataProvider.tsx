@@ -3,7 +3,7 @@
   We need any, because we don't know the type of the children
 */
 
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useState, JSX } from 'react'
 
 export interface Config {
   headerHTML?: string

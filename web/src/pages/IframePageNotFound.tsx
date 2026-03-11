@@ -10,7 +10,7 @@ interface Props {
   hideUi: boolean
 }
 
-export default function IframeNotFound(props: Props): JSX.Element {
+export default function IframeNotFound(props: Props): React.JSX.Element {
   const link = `/${props.project}/${props.version}${props.hideUi ? '?hide-ui' : ''}`
 
   return (
