@@ -1,13 +1,14 @@
-import { useEffect, useMemo, useState, useRef, JSX } from 'react'
+import { useEffect, useState, useRef, JSX } from 'react'
 import ProjectRepository from '../repositories/ProjectRepository'
-import type ProjectDetails from '../models/ProjectDetails'
-import LoadingPage from './LoadingPage'
+import type ProjectVersion from '../models/ProjectVersion'
 import NotFound from './NotFound'
 import DocumentControlButtons from '../components/DocumentControlButtons'
 import IFrame from '../components/IFrame'
 import { useLocation, useParams, useSearchParams } from 'react-router-dom'
 import { useMessageBanner } from '../data-providers/MessageBannerProvider'
-import IframeNotFound from './IframePageNotFound'
+import { useProjects } from '../data-providers/ProjectDataProvider'
+import LoadingPage from './LoadingPage'
+import { isProjectVersionEqual } from '../models/ProjectVersion'
 
 export default function Docs(): JSX.Element {
   const params = useParams()
@@ -15,14 +16,15 @@ export default function Docs(): JSX.Element {
   const location = useLocation()
   const { showMessage, clearMessages } = useMessageBanner()
 
-  const [iframePageNotFound, setIframePageNotFound] = useState<boolean>(false)
-  const [versions, setVersions] = useState<ProjectDetails[]>([])
-  const [loadingFailed, setLoadingFailed] = useState<boolean>(false)
+  const [versions, setVersions] = useState<ProjectVersion[]>([])
+  const [displayVersion, setDisplayVersion] = useState<ProjectVersion | null>(null)
+  const [notFound, setNotFound] = useState<boolean>(false)
+  const { state: { projects } } = useProjects()
 
-  const project = useRef(params.project ?? '')
   const page = useRef(params['*'] ?? '')
   const hash = useRef(location.hash)
 
+  const [project, setProject] = useState<string>(params.project ?? '')
   const [version, setVersion] = useState<string>(params.version ?? 'latest')
   const [hideUi, setHideUi] = useState<boolean>(searchParams.get('hide-ui') === '' || searchParams.get('hide-ui') === 'true')
   const [iframeUpdateTrigger, setIframeUpdateTrigger] = useState<number>(0)
@@ -32,98 +34,90 @@ export default function Docs(): JSX.Element {
   // as this memo will trigger a re-render of the iframe, which
   // is not needed when only the page or hash changes, because
   // the iframe keeps track of that itself.
-  const iFrameSrc = useMemo(() => {
-    return ProjectRepository.getProjectDocsURL(
-      project.current,
-      version,
-      page.current,
-      hash.current
-    )
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [version, iframeUpdateTrigger])
+  const [iFrameSrc, setIFrameSrc] = useState<{url: string, updateCounter: number}>({url: '', updateCounter: 0})
+  useEffect(() => {
+    if (displayVersion == null) {
+      setIFrameSrc({url: '', updateCounter: iframeUpdateTrigger})
+      return
+    }
+    const newUrl = ProjectRepository.getProjectDocsURL(project, displayVersion.name, page.current, hash.current)
+    setIFrameSrc({url: newUrl, updateCounter: iframeUpdateTrigger})
+  }, [displayVersion, project, iframeUpdateTrigger])
 
   useEffect(() => {
-    if (project.current === '') {
+    if (projects == null) {
+      return
+    }
+    const matchingProject = projects.find((p) => p.name === project)
+    if (matchingProject == null) {
+      setNotFound(true)
+      console.error(`Project '${project}' doesn't exist`)
+      return
+    }
+    if (ProjectRepository.isVersionListEqual(versions, matchingProject.versions)) {
+      return
+    }
+    setVersions(matchingProject.versions);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [project, projects, setVersions]);
+
+  const buildBrowserUrl = (project: string, version: string, page: string, hash: string, hideUi: boolean): string => {
+    return `/${project}/${version}/${page}${hideUi ? '?hide-ui' : ''}${hash}`
+  }
+
+  const getShareUrl = (options: { useLatest: boolean, hideUi: boolean }): string => {
+    return buildBrowserUrl(project, options.useLatest ? 'latest' : displayVersion?.name ?? 'latest', page.current, hash.current, options.hideUi)
+  }
+
+  const updateUrl = (newProject: string, newVersion: string, hideUi: boolean): void => {
+    window.history.pushState(null, '', buildBrowserUrl(newProject, newVersion, page.current, hash.current, hideUi))
+  }
+
+  useEffect(() => {
+    if (versions.length === 0) {
       return
     }
 
-    void (async (): Promise<void> => {
-      try {
-        let allVersions = await ProjectRepository.getVersions(project.current)
-        if (allVersions.length === 0) {
-          setLoadingFailed(true)
-          return
-        }
-
-        allVersions = allVersions.sort((a, b) =>
-          ProjectRepository.compareVersions(a, b)
-        )
-        setVersions(allVersions)
-
-        const latestVersion =
-          ProjectRepository.getLatestVersion(allVersions).name
-        if (version === 'latest') {
-          if (latestVersion === 'latest') {
-            return
-          }
-          setVersion(latestVersion)
-          return
-        }
-
-        // custom version -> check if it exists
-        // if it does. do nothing, as it should be set already
-        const versionsAndTags = allVersions
-          .map((v) => [v.name, ...v.tags])
-          .flat()
-        if (versionsAndTags.includes(version)) {
-          return
-        }
-
-        // version does not exist -> fail
-        setLoadingFailed(true)
-        console.error(`Version '${version}' doesn't exist`)
-      } catch (e) {
-        console.error(e)
-        setLoadingFailed(true)
+    if (version === 'latest') {
+      const latestVersion = ProjectRepository.getLatestVersion(versions)
+      if (isProjectVersionEqual(displayVersion, latestVersion)) {
+        return
       }
-    })()
+      setDisplayVersion(latestVersion)
+    } else {
+      const matchingVersion = versions.find((v) => v.name === version || v.tags.includes(version))
+      if (matchingVersion) {
+        if (isProjectVersionEqual(displayVersion, matchingVersion)) {
+          return
+        }
+        setDisplayVersion(matchingVersion)
+      } else {
+        setNotFound(true)
+        console.error(`Version '${version}' doesn't exist`)
+      }
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [project])
+  }, [versions, version])
 
-  /** Encodes the url for the current page.
-   * @example
-   * getUrl('project', 'version', 'path/to/page.html', '#hash', false) -> '/project/version/path/to/page.html#hash'
-   */
-  const getUrl = (
-    project: string,
-    version: string,
-    page: string,
-    hash: string,
-    hideUi: boolean
-  ): string => {
-    return `/${project}/${version}/${encodeURI(page)}${hash}${hideUi ? '?hide-ui' : ''}`
-  }
-
-  const updateUrl = (newVersion: string, hideUi: boolean): void => {
-    const url = getUrl(
-      project.current,
-      newVersion,
-      page.current,
-      hash.current,
-      hideUi
-    )
-    window.history.pushState(null, '', url)
-  }
+  useEffect(() => {
+    if (versions.length === 0) {
+      return
+    }
+    const latestVersion = ProjectRepository.getLatestVersion(versions)
+    if (isProjectVersionEqual(displayVersion, latestVersion)) {
+      clearMessages()
+    } else {
+      showMessage({
+        content: 'You are viewing an outdated version of the documentation.',
+        type: 'warning',
+        showMs: null
+      })
+    }
+  }, [displayVersion, versions, showMessage, clearMessages])
 
   const updateTitle = (newTitle: string): void => {
     document.title = newTitle
   }
-
-  // Keep compatibility with encoded page path
-  useEffect(() => {
-    updateUrl(version, hideUi)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   const iFramePageChanged = (urlPage: string, urlHash: string, title?: string): void => {
     if (title != null && title !== document.title) {
@@ -134,7 +128,7 @@ export default function Docs(): JSX.Element {
     }
     page.current = urlPage
     hash.current = urlHash
-    updateUrl(version, hideUi)
+    updateUrl(project, version, hideUi)
   }
 
   const iFrameHashChanged = (newHash: string): void => {
@@ -142,11 +136,11 @@ export default function Docs(): JSX.Element {
       return
     }
     hash.current = newHash
-    updateUrl(version, hideUi)
+    updateUrl(project, version, hideUi)
   }
 
   const iFrameNotFound = (): void => {
-    setIframePageNotFound(true)
+    setNotFound(true)
   }
 
   const iFrameFaviconChanged = (faviconUrl: string | null): void => {
@@ -157,14 +151,6 @@ export default function Docs(): JSX.Element {
     favicon.href = faviconUrl
   }
 
-  const onVersionChanged = (newVersion: string): void => {
-    if (newVersion === version) {
-      return
-    }
-    setVersion(newVersion)
-    updateUrl(newVersion, hideUi)
-  }
-
   useEffect(() => {
     const urlProject = params.project ?? ''
     const urlVersion = params.version ?? 'latest'
@@ -172,70 +158,28 @@ export default function Docs(): JSX.Element {
     const urlHash = location.hash
     const urlHideUi = searchParams.get('hide-ui') === '' || searchParams.get('hide-ui') === 'true'
 
-    // update the state to the url params on first loadon
-    if (urlProject !== project.current) {
-      setVersions([])
-      project.current = urlProject
-    }
-
-    if (urlVersion !== version) {
-      setVersion(urlVersion)
-    }
-
-    if (urlHideUi !== hideUi) {
-      setHideUi(urlHideUi)
-    }
+    // update the state to the url params on first load
+    setNotFound(false)
+    setProject(urlProject)
+    setVersion(urlVersion)
+    setHideUi(urlHideUi)
 
     if (urlPage !== page.current) {
       page.current = urlPage
-      setIframeUpdateTrigger((v) => v + 1)
     }
     if (urlHash !== hash.current) {
       hash.current = urlHash
-      setIframeUpdateTrigger((v) => v + 1)
     }
-
-    setIframePageNotFound(false)
+    setIframeUpdateTrigger((v) => v + 1)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location])
 
-  useEffect(() => {
-    // check every time the version changes whether the version
-    // is the latest version and if not, show a banner
-    if (versions.length === 0) {
-      return
-    }
-
-    const latestVersion = ProjectRepository.getLatestVersion(versions).name
-    if (version === latestVersion) {
-      clearMessages()
-      return
-    }
-
-    showMessage({
-      content: 'You are viewing an outdated version of the documentation.',
-      type: 'warning',
-      showMs: null
-    })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [version, versions])
-
-  if (loadingFailed || project.current === '') {
-    return <NotFound />
-  }
-
-  if (iframePageNotFound) {
-    return (
-      <IframeNotFound
-        project={project.current}
-        version={version}
-        hideUi={hideUi}
-      />
-    )
-  }
-
-  if (versions.length === 0) {
+  if (projects === null) {
     return <LoadingPage />
+  }
+
+  if (displayVersion == null || notFound) {
+    return <NotFound />
   }
 
   return (
@@ -250,9 +194,13 @@ export default function Docs(): JSX.Element {
       />
       {!hideUi && (
         <DocumentControlButtons
-          version={version}
+          version={displayVersion.name}
           versions={versions}
-          onVersionChange={onVersionChanged}
+          onVersionChange={(newVersion) => {
+            updateUrl(project, newVersion, hideUi)
+            setVersion(newVersion)
+          }}
+          getShareUrl={getShareUrl}
         />
       )}
     </>

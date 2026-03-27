@@ -11,14 +11,15 @@ import {
 } from '@mui/material'
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import type ProjectDetails from '../models/ProjectDetails'
+import type ProjectVersion from '../models/ProjectVersion'
 
 import styles from './../style/components/DocumentControlButtons.module.css'
 
 interface Props {
   version: string
-  versions: ProjectDetails[]
+  versions: ProjectVersion[]
   onVersionChange: (version: string) => void
+  getShareUrl: (options: { useLatest: boolean, hideUi: boolean }) => string
 }
 
 export default function DocumentControlButtons(props: Props): React.JSX.Element {
@@ -30,25 +31,6 @@ export default function DocumentControlButtons(props: Props): React.JSX.Element 
 
   // Cannot copy when page is served over HTTP
   const canCopy = navigator.clipboard !== undefined
-
-  const getShareUrl = (): string => {
-    // adapt the current URL so we can leave Docs.tsx's state as refs
-    // (which means if the page was passed down as a prop it wouldn't update correctly)
-
-    let url = window.location.href
-
-    if (shareModalUseLatest) {
-      url = url.replace(props.version, 'latest')
-    }
-
-    if (shareModalHideUi) {
-      const urlObject = new URL(url)
-      urlObject.search = 'hide-ui'
-      url = urlObject.toString()
-    }
-
-    return url
-  }
 
   return (
     <div className={styles.controls}>
@@ -111,14 +93,14 @@ export default function DocumentControlButtons(props: Props): React.JSX.Element 
       >
         <div className={styles['share-modal']}>
           <div className={styles['share-modal-link-container']}>
-            <p className={styles['share-modal-link']}>{getShareUrl()}</p>
+            <p className={styles['share-modal-link']}>{props.getShareUrl({ useLatest: shareModalUseLatest, hideUi: shareModalHideUi })}</p>
             {canCopy && (
               <div className={styles['share-modal-copy-container']}>
                 <button
                   className={styles['share-modal-copy']}
                   onClick={() => {
                     void (async () => {
-                      await navigator.clipboard.writeText(getShareUrl())
+                      await navigator.clipboard.writeText(props.getShareUrl({ useLatest: shareModalUseLatest, hideUi: shareModalHideUi }))
                     })()
                   }}
                 >

@@ -6,9 +6,10 @@ import StyledForm from '../components/StyledForm'
 import { useMessageBanner } from '../data-providers/MessageBannerProvider'
 import { useProjects } from '../data-providers/ProjectDataProvider'
 import ProjectRepository from '../repositories/ProjectRepository'
+import LoadingPage from './LoadingPage'
 
 export default function Claim(): JSX.Element {
-  const { projects, loadingFailed } = useProjects()
+  const { state: { projects, loadingFailed } } = useProjects()
 
   const { showMessage } = useMessageBanner()
   const [project, setProject] = useState<string>('none')
@@ -60,6 +61,10 @@ export default function Claim(): JSX.Element {
 
     setProject(p)
     setToken('')
+  }
+
+  if (project === null) {
+    return <LoadingPage />
   }
 
   return (

@@ -1,5 +1,5 @@
 import semver from 'semver'
-import type ProjectDetails from '../models/ProjectDetails'
+import ProjectVersion, { isProjectVersionEqual } from '../models/ProjectVersion'
 import { type Project } from '../models/ProjectsResponse'
 
 const RESOURCE = 'doc'
@@ -26,7 +26,7 @@ function filterHiddenVersions(allProjects: Project[]): Project[] {
  * Returns a list of all versions of a project.
  * @param {string} projectName Name of the project
  */
-async function getVersions(projectName: string): Promise<ProjectDetails[]> {
+async function getVersions(projectName: string): Promise<ProjectVersion[]> {
   const res = await fetch(`/api/projects/${projectName}?include_hidden=true`)
 
   if (!res.ok) {
@@ -35,7 +35,7 @@ async function getVersions(projectName: string): Promise<ProjectDetails[]> {
   }
 
   const json = (await res.json()) as {
-    versions: ProjectDetails[]
+    versions: ProjectVersion[]
   }
 
   return json.versions
@@ -46,7 +46,7 @@ async function getVersions(projectName: string): Promise<ProjectDetails[]> {
  * Order of precedence: latest, latest tag, latest version
  * @param versions all versions of a project
  */
-function getLatestVersion(versions: ProjectDetails[]): ProjectDetails {
+function getLatestVersion(versions: ProjectVersion[]): ProjectVersion {
   const latest = versions.find((v) => v.name.includes('latest'))
   if (latest != null) {
     return latest
@@ -223,6 +223,63 @@ function compareVersions(
 }
 
 /**
+ * Compare two lists of ProjectVersions if they are equal, meaning they contain
+ * the same versions with the same properties, regardless of order.
+ *
+ * @param {Object} versionsA first list of ProjectVersions to compare
+ * @param {Object} versionsB second list of ProjectVersions to compare
+ */
+function isVersionListEqual(versionsA: ProjectVersion[] | null, versionsB: ProjectVersion[] | null): boolean {
+  if (versionsA === null || versionsB === null) {
+    return versionsA === versionsB
+  }
+
+  if (versionsA.length !== versionsB.length) {
+    return false
+  }
+  const sortedVersionsA = versionsA.sort((v1, v2) => compareVersions(v1, v2))
+  const sortedVersionsB = versionsB.sort((v1, v2) => compareVersions(v1, v2))
+
+  for (let j = 0; j < sortedVersionsA.length; j++) {
+    if (!isProjectVersionEqual(sortedVersionsA[j], sortedVersionsB[j])) {
+      return false
+    }
+  }
+
+  return true
+}
+
+/**
+ * Compare two lists of Projects if they are equal, meaning they contain
+ * the same projects with the same properties, regardless of order.
+ *
+ * @param {Object} projectsA first list of Projects to compare
+ * @param {Object} projectsB second list of Projects to compare
+ */
+function isProjectListEqual(projectsA: Project[] | null, projectsB: Project[] | null): boolean {
+  if (projectsA === null || projectsB === null) {
+    return projectsA === projectsB
+  }
+
+  if (projectsA.length !== projectsB.length) {
+    return false
+  }
+
+  for (let i = 0; i < projectsA.length; i++) {
+    if (projectsA[i].name !== projectsB[i].name
+      || projectsA[i].logo !== projectsB[i].logo
+      || projectsA[i].storage !== projectsB[i].storage) {
+      return false
+    }
+
+    if (!isVersionListEqual(projectsA[i].versions, projectsB[i].versions)) {
+      return false
+    }
+  }
+  return true
+}
+
+/**
  * Returns boolean indicating if the project name is part of the favorites.
  * @param {string} projectName name of the project
  * @returns {boolean} - true is project is favorite
@@ -254,6 +311,8 @@ const exp = {
   claim,
   deleteDoc,
   compareVersions,
+  isVersionListEqual,
+  isProjectListEqual,
   isFavorite,
   setFavorite
 }

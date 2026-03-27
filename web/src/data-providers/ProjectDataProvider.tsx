@@ -3,24 +3,39 @@
   We need any, because we don't know the type of the children
 */
 
-import React, { createContext, useContext, useEffect, useState, JSX } from 'react'
+import { createContext, useContext, useEffect, useRef, useState, JSX } from 'react'
 import { type Project } from '../models/ProjectsResponse'
 import type ProjectsResponse from '../models/ProjectsResponse'
 import { useMessageBanner } from './MessageBannerProvider'
+import { useConfig } from './ConfigDataProvider'
+import ProjectRepository from '../repositories/ProjectRepository'
 
 interface ProjectState {
   projects: Project[] | null
   loadingFailed: boolean
-  reload: () => void
 }
 
-const Context = createContext<ProjectState>({
-  projects: null,
-  loadingFailed: false,
-  reload: (): void => {
+interface ProjectContext {
+  state: ProjectState
+  reload: () => Promise<void>
+}
+
+const Context = createContext<ProjectContext>({
+  state: {
+    projects: null,
+    loadingFailed: false
+  },
+  reload: async (): Promise<void> => {
     console.warn('ProjectDataProvider not initialized')
   }
 })
+
+
+enum LoadTrigger {
+  INITIAL_LOAD,
+  REQUESTED_RELOAD,
+  INTERVAL
+}
 
 /**
  * Provides the projects for the whole application,
@@ -31,23 +46,41 @@ const Context = createContext<ProjectState>({
  */
 export function ProjectDataProvider({ children }: any): JSX.Element {
   const { showMessage } = useMessageBanner()
+  const { reloadIntervalSeconds } = useConfig()
+  const reloadRef = useRef<{reload: (loadTrigger: LoadTrigger) => Promise<void>}>({
+    reload: async () => {
+      console.warn('ProjectDataProvider not initialized')
+    }
+  })
+  const intervalRef = useRef<number | null>(null)
 
-  const loadData = (): void => {
-    void (async (): Promise<void> => {
+  const [state, setState] = useState<ProjectState>({
+    projects: null,
+    loadingFailed: false,
+  })
+
+  useEffect(() => {
+    reloadRef.current.reload = async (loadTrigger: LoadTrigger): Promise<void> => {
       try {
         const response = await fetch('/api/projects?include_hidden=true')
 
         if (!response.ok) {
+          if (loadTrigger === LoadTrigger.INTERVAL) {
+            return
+          }
           throw new Error(
             `Failed to load projects, status code: ${response.status}`
           )
         }
 
         const data: ProjectsResponse = await response.json()
+        const orderedProjects = data.projects.sort((a, b) => a.name.localeCompare(b.name))
+        if (ProjectRepository.isProjectListEqual(state.projects, orderedProjects)) {
+          return
+        }
         setState({
-          projects: data.projects,
-          loadingFailed: false,
-          reload: loadData
+          projects: orderedProjects,
+          loadingFailed: false
         })
       } catch (e) {
         console.error(e)
@@ -60,25 +93,24 @@ export function ProjectDataProvider({ children }: any): JSX.Element {
 
         setState({
           projects: null,
-          loadingFailed: true,
-          reload: loadData
+          loadingFailed: true
         })
       }
-    })()
-  }
-
-  const [state, setState] = useState<ProjectState>({
-    projects: null,
-    loadingFailed: false,
-    reload: loadData
-  })
+    }
+  }, [showMessage, state.projects])
 
   useEffect(() => {
-    loadData()
+    reloadRef.current.reload(LoadTrigger.INITIAL_LOAD)
+    if (reloadIntervalSeconds) {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current)
+      }
+      intervalRef.current = setInterval((actions: any) => { actions.current.reload(LoadTrigger.INTERVAL) }, reloadIntervalSeconds * 1000, reloadRef)
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  return <Context.Provider value={state}>{children}</Context.Provider>
+  return <Context.Provider value={{ state: state, reload: async () => await reloadRef.current.reload(LoadTrigger.REQUESTED_RELOAD) }}>{children}</Context.Provider>
 }
 
-export const useProjects = (): ProjectState => useContext(Context)
+export const useProjects = (): ProjectContext => useContext(Context)

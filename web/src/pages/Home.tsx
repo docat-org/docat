@@ -21,8 +21,8 @@ import styles from './../style/pages/Home.module.css';
 
 export default function Home(): JSX.Element {
   const navigate = useNavigate()
-  const { loadingFailed } = useProjects()
-  const { stats, loadingFailed: statsLoadingFailed } = useStats()
+  const { state: { loadingFailed } } = useProjects()
+  const { state: { stats, loadingFailed: statsLoadingFailed } } = useStats()
   const { filteredProjects: projects, query } = useSearch()
   const [showAll, setShowAll] = useState(false);
   const [favoriteProjects, setFavoriteProjects] = useState<Project[]>([])
@@ -50,6 +50,10 @@ export default function Home(): JSX.Element {
     updateFavorites()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projects])
+
+  if (projects === null) {
+    return <LoadingPage />
+  }
 
   if (loadingFailed || statsLoadingFailed) {
     return (
@@ -99,8 +103,9 @@ export default function Home(): JSX.Element {
           <Box sx={{ display: 'flex' }}>
             <Tooltip title="Upload Documentation" placement="right" arrow>
               <IconButton
+                component={Link}
+                to="/upload"
                 sx={{ marginLeft: 2, height: '46px', width: '46px', marginTop: '2px'}}
-                href="/upload"
               >
                 <FileUpload></FileUpload>
               </IconButton>
@@ -108,8 +113,9 @@ export default function Home(): JSX.Element {
 
             <Tooltip title="Claim a Project" placement="right" arrow>
               <IconButton
+                component={Link}
+                to="/claim"
                 sx={{ marginLeft: 2, height: '46px', width: '46px', marginTop: '2px'}}
-                href="/claim"
               >
                 <Lock></Lock>
               </IconButton>
@@ -117,8 +123,9 @@ export default function Home(): JSX.Element {
 
             <Tooltip title="Delete a project version" placement="right" arrow>
               <IconButton
+                component={Link}
+                to="/delete"
                 sx={{ marginLeft: 2, height: '46px', width: '46px', marginTop: '2px'}}
-                href="/delete"
               >
                 <Delete></Delete>
               </IconButton>
@@ -133,7 +140,7 @@ export default function Home(): JSX.Element {
             </Box> :
             <Box sx={{marginLeft: '24px'}}>
               Looks like you don&apos;t have any docs yet.
-              <Button href="/help" onClick={() => onShowFavourites(true)}>
+              <Button component={Link} to="/help" onClick={() => onShowFavourites(true)}>
                 Get started now!
               </Button>
             </Box>
