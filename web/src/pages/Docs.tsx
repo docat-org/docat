@@ -1,12 +1,14 @@
-import { useEffect, useMemo, useState, useRef, JSX } from 'react'
+import { useEffect, useState, useRef, JSX } from 'react'
 import ProjectRepository from '../repositories/ProjectRepository'
-import type ProjectDetails from '../models/ProjectDetails'
-import LoadingPage from './LoadingPage'
+import type ProjectVersion from '../models/ProjectVersion'
 import NotFound from './NotFound'
 import DocumentControlButtons from '../components/DocumentControlButtons'
 import IFrame from '../components/IFrame'
 import { useLocation, useParams, useSearchParams } from 'react-router-dom'
 import { useMessageBanner } from '../data-providers/MessageBannerProvider'
+import { useProjects } from '../data-providers/ProjectDataProvider'
+import LoadingPage from './LoadingPage'
+import { isProjectVersionEqual } from '../models/ProjectVersion'
 
 export default function Docs(): JSX.Element {
   const params = useParams()
@@ -14,10 +16,10 @@ export default function Docs(): JSX.Element {
   const location = useLocation()
   const { showMessage, clearMessages } = useMessageBanner()
 
-  const [versions, setVersions] = useState<ProjectDetails[]>([])
-  const [displayVersion, setDisplayVersion] = useState<ProjectDetails | null>(null)
-  const [projectLoading, setProjectLoading] = useState<boolean>(true)
+  const [versions, setVersions] = useState<ProjectVersion[]>([])
+  const [displayVersion, setDisplayVersion] = useState<ProjectVersion | null>(null)
   const [notFound, setNotFound] = useState<boolean>(false)
+  const { state: { projects } } = useProjects()
 
   const page = useRef(params['*'] ?? '')
   const hash = useRef(location.hash)
@@ -32,36 +34,32 @@ export default function Docs(): JSX.Element {
   // as this memo will trigger a re-render of the iframe, which
   // is not needed when only the page or hash changes, because
   // the iframe keeps track of that itself.
-  const iFrameSrc = useMemo(() => {
-    if (!displayVersion) {
-      return ''
+  const [iFrameSrc, setIFrameSrc] = useState<{url: string, updateCounter: number}>({url: '', updateCounter: 0})
+  useEffect(() => {
+    if (displayVersion == null) {
+      setIFrameSrc({url: '', updateCounter: iframeUpdateTrigger})
+      return
     }
-    return ProjectRepository.getProjectDocsURL(
-      project,
-      displayVersion.name,
-      page.current,
-      hash.current
-    )
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [project, displayVersion, iframeUpdateTrigger])
+    const newUrl = ProjectRepository.getProjectDocsURL(project, displayVersion.name, page.current, hash.current)
+    setIFrameSrc({url: newUrl, updateCounter: iframeUpdateTrigger})
+  }, [displayVersion, project, iframeUpdateTrigger])
 
   useEffect(() => {
-    setProjectLoading(true)
-    const loadProject = async () => {
-      try {
-        let allVersions = await ProjectRepository.getVersions(project)
-        allVersions = allVersions.sort((a, b) =>
-          ProjectRepository.compareVersions(a, b)
-        )
-        setVersions(allVersions)
-      } catch (e) {
-        console.error(e)
-      }
+    if (projects == null) {
+      return
     }
-    loadProject().finally(() => {
-      setProjectLoading(false)
-    })
-  }, [project]);
+    const matchingProject = projects.find((p) => p.name === project)
+    if (matchingProject == null) {
+      setNotFound(true)
+      console.error(`Project '${project}' doesn't exist`)
+      return
+    }
+    if (ProjectRepository.isVersionListEqual(versions, matchingProject.versions)) {
+      return
+    }
+    setVersions(matchingProject.versions);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [project, projects, setVersions]);
 
   const buildBrowserUrl = (project: string, version: string, page: string, hash: string, hideUi: boolean): string => {
     return `/${project}/${version}/${page}${hideUi ? '?hide-ui' : ''}${hash}`
@@ -82,21 +80,31 @@ export default function Docs(): JSX.Element {
 
     if (version === 'latest') {
       const latestVersion = ProjectRepository.getLatestVersion(versions)
+      if (isProjectVersionEqual(displayVersion, latestVersion)) {
+        return
+      }
       setDisplayVersion(latestVersion)
     } else {
       const matchingVersion = versions.find((v) => v.name === version || v.tags.includes(version))
       if (matchingVersion) {
+        if (isProjectVersionEqual(displayVersion, matchingVersion)) {
+          return
+        }
         setDisplayVersion(matchingVersion)
       } else {
         setNotFound(true)
         console.error(`Version '${version}' doesn't exist`)
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [versions, version])
 
   useEffect(() => {
+    if (versions.length === 0) {
+      return
+    }
     const latestVersion = ProjectRepository.getLatestVersion(versions)
-    if (displayVersion === latestVersion) {
+    if (isProjectVersionEqual(displayVersion, latestVersion)) {
       clearMessages()
     } else {
       showMessage({
@@ -158,16 +166,15 @@ export default function Docs(): JSX.Element {
 
     if (urlPage !== page.current) {
       page.current = urlPage
-      setIframeUpdateTrigger((v) => v + 1)
     }
     if (urlHash !== hash.current) {
       hash.current = urlHash
-      setIframeUpdateTrigger((v) => v + 1)
     }
+    setIframeUpdateTrigger((v) => v + 1)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location])
 
-  if (projectLoading) {
+  if (projects === null) {
     return <LoadingPage />
   }
 

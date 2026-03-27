@@ -5,8 +5,10 @@ import ProjectRepository from '../repositories/ProjectRepository'
 import StyledForm from '../components/StyledForm'
 import PageLayout from '../components/PageLayout'
 import { useProjects } from '../data-providers/ProjectDataProvider'
-import type ProjectDetails from '../models/ProjectDetails'
+import { useStats } from '../data-providers/StatsDataProvider'
+import type ProjectVersion from '../models/ProjectVersion'
 import { useMessageBanner } from '../data-providers/MessageBannerProvider'
+import LoadingPage from './LoadingPage'
 
 interface Validation {
   projectMissing?: boolean
@@ -19,8 +21,9 @@ export default function Delete(): JSX.Element {
   const [project, setProject] = useState<string>('none')
   const [version, setVersion] = useState<string>('none')
   const [token, setToken] = useState<string>('')
-  const { projects, loadingFailed, reload } = useProjects()
-  const [versions, setVersions] = useState<ProjectDetails[]>([])
+  const { state: {projects, loadingFailed} , reload: reloadProjects } = useProjects()
+  const { reload: reloadStats } = useStats()
+  const [versions, setVersions] = useState<ProjectVersion[]>([])
   const [validation, setValidation] = useState<Validation>({})
 
   document.title = 'Delete Documentation | docat'
@@ -61,7 +64,8 @@ export default function Delete(): JSX.Element {
         setProject('none')
         setVersion('none')
         setToken('')
-        reload()
+        reloadProjects()
+        reloadStats()
       } catch (e) {
         console.error(e)
 
@@ -96,6 +100,10 @@ export default function Delete(): JSX.Element {
     }
 
     return versions.map((v) => v.name)
+  }
+
+  if (project === null) {
+    return <LoadingPage />
   }
 
   return (

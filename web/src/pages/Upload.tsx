@@ -10,6 +10,7 @@ import ProjectRepository from '../repositories/ProjectRepository'
 import LoadingPage from './LoadingPage'
 
 import styles from '../style/pages/Upload.module.css'
+import { useStats } from '../data-providers/StatsDataProvider'
 
 interface Validation {
   projectMsg?: string
@@ -31,6 +32,7 @@ export default function Upload(): JSX.Element {
   }, []);
 
   const { reload: reloadProjects } = useProjects()
+  const { reload: reloadStats } = useStats()
   const { showMessage } = useMessageBanner()
 
   const [project, setProject] = useState<string>('')
@@ -132,6 +134,7 @@ export default function Upload(): JSX.Element {
       })
 
       reloadProjects()
+      reloadStats()
       setIsUploading(false)
     })()
   }

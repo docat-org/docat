@@ -23,7 +23,7 @@ const Context = createContext<SearchState>({
 })
 
 export function SearchProvider({ children }: any): JSX.Element {
-  const { projects } = useProjects()
+  const { state: { projects } } = useProjects()
 
   const filterProjects = (query: string): Project[] | null => {
     if (projects == null) {
@@ -61,11 +61,11 @@ export function SearchProvider({ children }: any): JSX.Element {
   })
 
   useEffect(() => {
-    setState({
-      query: '',
-      filteredProjects: filterProjects(''),
+    setState((prevState) => ({
+      query: prevState.query,
+      filteredProjects: filterProjects(prevState.query),
       setQuery
-    })
+    }))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projects])
 

@@ -8,6 +8,7 @@ import { createContext, useContext, useEffect, useState, JSX } from 'react'
 export interface Config {
   headerHTML?: string
   footerHTML?: string
+  reloadIntervalSeconds?: number
 }
 
 const Context = createContext<Config>({})
@@ -17,7 +18,9 @@ const Context = createContext<Config>({})
  * so it can be used in every component without it being reloaded the whole time.
  */
 export const ConfigDataProvider = ({ children }: any): JSX.Element => {
-  const [config, setConfig] = useState<Config>({})
+  const [config, setConfig] = useState<Config>({
+    reloadIntervalSeconds: 30,
+  })
 
   useEffect(() => {
     void (async () => {

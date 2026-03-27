@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // -> we need any for our mocks
 
-import ProjectDetails from '../../models/ProjectDetails'
+import ProjectVersion from '../../models/ProjectVersion'
 import { type Project } from '../../models/ProjectsResponse'
 import ProjectRepository from '../../repositories/ProjectRepository'
 const mockFetchData = (fetchData: any): void => {
@@ -40,7 +40,7 @@ describe('get versions', () => {
     const projectName = 'test'
     const versions = ['1.0.0', '2.0.0']
     const responseData = versions.map(
-      (version) => new ProjectDetails(version, ['tag'], false, new Date())
+      (version) => new ProjectVersion(version, ['tag'], false, new Date())
     )
 
     mockFetchData({ versions: responseData })
@@ -335,14 +335,14 @@ describe('favories', () => {
 
 describe('filterHiddenVersions', () => {
   test('should remove hidden versions', () => {
-    const shownVersion: ProjectDetails = {
+    const shownVersion: ProjectVersion = {
       name: 'v-2',
       tags: ['stable'],
       hidden: false,
       timestamp: new Date()
     }
 
-    const hiddenVersion: ProjectDetails = {
+    const hiddenVersion: ProjectVersion = {
       name: 'v-1',
       tags: ['latest'],
       hidden: true,
@@ -394,7 +394,7 @@ describe('filterHiddenVersions', () => {
 
 describe('getLatestVersion', () => {
   test('should return latest version by name', () => {
-    const versions: ProjectDetails[] = [
+    const versions: ProjectVersion[] = [
       {
         name: '1.0.0',
         hidden: false,
@@ -414,7 +414,7 @@ describe('getLatestVersion', () => {
   })
 
   test('should return version with latest in name', () => {
-    const versions: ProjectDetails[] = [
+    const versions: ProjectVersion[] = [
       {
         name: '1.0.0',
         hidden: false,
@@ -434,7 +434,7 @@ describe('getLatestVersion', () => {
   })
 
   test('should return version with latest tag', () => {
-    const versions: ProjectDetails[] = [
+    const versions: ProjectVersion[] = [
       {
         name: '1.0.0',
         hidden: false,
@@ -454,7 +454,7 @@ describe('getLatestVersion', () => {
   })
 
   test('should prefer version with latest in name over latest tag', () => {
-    const versions: ProjectDetails[] = [
+    const versions: ProjectVersion[] = [
       {
         name: 'latest',
         hidden: false,

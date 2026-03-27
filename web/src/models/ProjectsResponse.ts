@@ -1,10 +1,10 @@
-import type ProjectDetails from './ProjectDetails'
+import type ProjectVersion from './ProjectVersion'
 
 export interface Project {
   name: string
   logo: boolean
   storage: string
-  versions: ProjectDetails[]
+  versions: ProjectVersion[]
 }
 
 export default interface ProjectsResponse {

@@ -1,9 +1,13 @@
-import React, { useRef } from 'react'
-import { uniqueId } from 'lodash'
+import React, { useEffect, useMemo, useRef } from 'react'
 
 import styles from '../style/components/IFrame.module.css'
+
+interface UrlWithUpdateCount {
+  url: string
+  updateCounter: number // Required to allow triggering an update to the same url, as a navigation inside the iframe doesn't change this State
+}
 interface Props {
-  src: string
+  src: UrlWithUpdateCount
   onPageChanged: (page: string, hash: string, title?: string) => void
   onHashChanged: (hash: string) => void
   onTitleChanged: (title: string) => void
@@ -13,6 +17,10 @@ interface Props {
 
 export default function IFrame(props: Props): React.JSX.Element {
   const iFrameRef = useRef<HTMLIFrameElement>(null)
+  const initialURL = useMemo(() => { // Fix Iframe URL because it cannot be changed this way without adding browser history entries
+    return props.src.url
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const onIframeLoad = (): void => {
     if (iFrameRef.current === null) {
@@ -143,12 +151,17 @@ export default function IFrame(props: Props): React.JSX.Element {
     props.onTitleChanged(title)
   }
 
+  useEffect(() => {
+    // Use location replace to prevent creating a new entry in the browser history
+    iFrameRef.current?.contentDocument?.location.replace(props.src.url)
+  }, [props.src])
+
   return (
     <iframe
       ref={iFrameRef}
-      key={uniqueId()}
+      key='documentation-iframe' // Prevent redrawing the iframe on props change
       className={styles['docs-iframe']}
-      src={props.src}
+      src={initialURL}
       title="docs"
       onLoad={onIframeLoad}
     />

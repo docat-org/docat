@@ -11,13 +11,13 @@ import {
 } from '@mui/material'
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import type ProjectDetails from '../models/ProjectDetails'
+import type ProjectVersion from '../models/ProjectVersion'
 
 import styles from './../style/components/DocumentControlButtons.module.css'
 
 interface Props {
   version: string
-  versions: ProjectDetails[]
+  versions: ProjectVersion[]
   onVersionChange: (version: string) => void
   getShareUrl: (options: { useLatest: boolean, hideUi: boolean }) => string
 }
