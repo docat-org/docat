@@ -11,7 +11,6 @@
     "@types/node": "^25.4.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "@vitejs/plugin-react-swc": "^4.2.3",
     "fuse.js": "^7.1.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
@@ -44,9 +43,10 @@
     ]
   },
   "devDependencies": {
-    "jsdom": "^28.1.0",
+    "@vitejs/plugin-react-swc": "^4.3.0",
     "@eslint/js": "^9.17.0",
     "@types/semver": "^7.7.1",
+    "jsdom": "^28.1.0",
     "eslint": "^9.17.0",
     "eslint-config-prettier": "^10.0.1",
     "eslint-plugin-react": "^7.37.3",
