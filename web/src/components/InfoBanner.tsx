@@ -1,7 +1,7 @@
 import { Alert, Snackbar } from '@mui/material'
-import { uniqueId } from 'lodash'
 import React, { useState } from 'react'
 import { type Message } from '../data-providers/MessageBannerProvider'
+import { generateKey } from '../data-providers/RandomId'
 
 interface Props {
   message: Message
@@ -18,7 +18,7 @@ export default function Banner(props: Props): React.JSX.Element {
 
   return (
     <Snackbar
-      key={uniqueId()}
+      key={generateKey()}
       open={show && props.message.content != null}
       autoHideDuration={props.message.showMs}
       onClose={() => {
