@@ -22,8 +22,7 @@
     "typescript": "^5.9.3",
     "vite": "^7.3.1",
     "vite-plugin-svgr": "^4.5.0",
-    "vitest": "^4.0.18",
-    "web-vitals": "^5.1.0"
+    "vitest": "^4.0.18"
   },
   "scripts": {
     "start": "VITE_DOCAT_VERSION=$(git describe --tags --always) vite",
