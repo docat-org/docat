@@ -1,5 +1,4 @@
 import React, { useRef } from 'react'
-import { uniqueId } from 'lodash'
 
 import styles from '../style/components/IFrame.module.css'
 interface Props {
@@ -146,7 +145,7 @@ export default function IFrame(props: Props): React.JSX.Element {
   return (
     <iframe
       ref={iFrameRef}
-      key={uniqueId()}
+      key={props.src}
       className={styles['docs-iframe']}
       src={props.src}
       title="docs"
