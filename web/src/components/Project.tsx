@@ -46,7 +46,7 @@ export default function Project(props: Props): React.JSX.Element {
 
         {props.project.logo ?
             <>
-              <Link to={`${props.project.name}/latest`}>
+              <Link to={`${props.project.name}/latest/`}>
                 <img
                   className={styles['project-logo']}
                   src={ProjectRepository.getProjectLogoURL(props.project.name)}
@@ -57,7 +57,7 @@ export default function Project(props: Props): React.JSX.Element {
         }
 
       <div className={styles['project-header']}>
-        <Link to={`${props.project.name}/latest`}>
+        <Link to={`${props.project.name}/latest/`}>
           <div className={styles['project-card-title']}>
             {props.project.name}{' '}
             <span className={styles['secondary-typography']}>
