@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import { ArrowBackIos } from '@mui/icons-material'
 import { Link } from 'react-router-dom'
 

@@ -12,8 +12,8 @@ import styles from './../style/pages/Help.module.css'
 
 export default function Help(): JSX.Element {
   useEffect(() => {
-     document.title = 'Help | docat';
-  }, []);
+    document.title = 'Help | docat'
+  }, [])
 
   const [content, setContent] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(true)
@@ -61,9 +61,7 @@ export default function Help(): JSX.Element {
     <>
       <Header />
       <div className={styles['markdown-container']}>
-        <ReactMarkdown>
-          {content}
-        </ReactMarkdown>
+        <ReactMarkdown>{content}</ReactMarkdown>
       </div>
       <Footer />
     </>

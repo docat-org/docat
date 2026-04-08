@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import styles from './../style/components/StyledForm.module.css'
 
 interface Props {

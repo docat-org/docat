@@ -21,7 +21,9 @@ interface Props {
   onVersionChange: (version: string) => void
 }
 
-export default function DocumentControlButtons(props: Props): React.JSX.Element {
+export default function DocumentControlButtons(
+  props: Props
+): React.JSX.Element {
   const buttonStyle = { width: '25px', height: '25px' }
 
   const [shareModalOpen, setShareModalOpen] = useState<boolean>(false)
@@ -61,12 +63,12 @@ export default function DocumentControlButtons(props: Props): React.JSX.Element 
       <FormControl>
         <Select
           sx={{
-            "&.MuiOutlinedInput-root": {
-              "&:hover fieldset": {
-                borderColor: "rgba(0, 0, 0, 0.33)"
+            '&.MuiOutlinedInput-root': {
+              '&:hover fieldset': {
+                borderColor: 'rgba(0, 0, 0, 0.33)'
               },
-              "&.Mui-focused fieldset": {
-                borderColor: "rgba(0, 0, 0, 0.33)"
+              '&.Mui-focused fieldset': {
+                borderColor: 'rgba(0, 0, 0, 0.33)'
               }
             }
           }}

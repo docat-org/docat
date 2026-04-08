@@ -115,10 +115,13 @@ describe('upload', () => {
     )
 
     expect(globalThis.fetch).toHaveBeenCalledTimes(1)
-    expect(globalThis.fetch).toHaveBeenCalledWith(`/api/${project}/${version}`, {
-      body,
-      method: 'POST'
-    })
+    expect(globalThis.fetch).toHaveBeenCalledWith(
+      `/api/${project}/${version}`,
+      {
+        body,
+        method: 'POST'
+      }
+    )
 
     expect(success).toEqual(true)
     expect(message).toEqual('Documentation was uploaded successfully')
@@ -231,10 +234,13 @@ describe('deleteDoc', () => {
     await ProjectRepository.deleteDoc(project, version, token)
 
     expect(globalThis.fetch).toHaveBeenCalledTimes(1)
-    expect(globalThis.fetch).toHaveBeenCalledWith(`/api/${project}/${version}`, {
-      method: 'DELETE',
-      headers: { 'Docat-Api-Key': token }
-    })
+    expect(globalThis.fetch).toHaveBeenCalledWith(
+      `/api/${project}/${version}`,
+      {
+        method: 'DELETE',
+        headers: { 'Docat-Api-Key': token }
+      }
+    )
   })
 
   test('should throw invalid token on 401 status code', async () => {
@@ -352,7 +358,7 @@ describe('filterHiddenVersions', () => {
     const allProjects: Project[] = [
       {
         name: 'test-project-1',
-        storage: "1 MB",
+        storage: '1 MB',
         versions: [shownVersion, hiddenVersion],
         logo: false
       }
@@ -361,7 +367,7 @@ describe('filterHiddenVersions', () => {
     const shownProjects: Project[] = [
       {
         name: 'test-project-1',
-        storage: "1 MB",
+        storage: '1 MB',
         versions: [shownVersion],
         logo: false
       }
@@ -374,7 +380,7 @@ describe('filterHiddenVersions', () => {
     const allProjects: Project[] = [
       {
         name: 'test-project-1',
-        storage: "1 MB",
+        storage: '1 MB',
         versions: [
           {
             name: 'v-1',

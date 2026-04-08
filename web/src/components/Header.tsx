@@ -6,7 +6,6 @@ import { useConfig } from '../data-providers/ConfigDataProvider'
 import docatLogo from '../assets/logo.png'
 import styles from './../style/components/Header.module.css'
 
-
 export default function Header(): JSX.Element {
   const defaultHeader = (
     <>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import { Link } from 'react-router-dom'
 import { type Project as ProjectType } from '../models/ProjectsResponse'
 import ProjectRepository from '../repositories/ProjectRepository'
@@ -13,48 +13,51 @@ interface Props {
 }
 
 function timeSince(date: Date) {
-  const seconds = Math.floor((new Date().getTime() - date.getTime()) / 1000);
-  let interval = seconds / 31536000;
+  const seconds = Math.floor((new Date().getTime() - date.getTime()) / 1000)
+  let interval = seconds / 31536000
 
   if (interval > 1) {
-    return Math.floor(interval) + " years";
+    return Math.floor(interval) + ' years'
   }
-  interval = seconds / 2592000;
+  interval = seconds / 2592000
   if (interval > 1) {
-    return Math.floor(interval) + " months";
+    return Math.floor(interval) + ' months'
   }
-  interval = seconds / 86400;
+  interval = seconds / 86400
   if (interval > 1) {
-    return Math.floor(interval) + " days";
+    return Math.floor(interval) + ' days'
   }
-  interval = seconds / 3600;
+  interval = seconds / 3600
   if (interval > 1) {
-    return Math.floor(interval) + " hours";
+    return Math.floor(interval) + ' hours'
   }
-  interval = seconds / 60;
+  interval = seconds / 60
   if (interval > 1) {
-    return Math.floor(interval) + " minutes";
+    return Math.floor(interval) + ' minutes'
   }
-  return Math.floor(seconds) + " seconds";
+  return Math.floor(seconds) + ' seconds'
 }
 
 export default function Project(props: Props): React.JSX.Element {
-  const latestVersion = ProjectRepository.getLatestVersion(props.project.versions)
+  const latestVersion = ProjectRepository.getLatestVersion(
+    props.project.versions
+  )
 
   return (
     <div className={styles['project-card']}>
-
-        {props.project.logo ?
-            <>
-              <Link to={`${props.project.name}/latest/`}>
-                <img
-                  className={styles['project-logo']}
-                  src={ProjectRepository.getProjectLogoURL(props.project.name)}
-                  alt={`${props.project.name} project logo`}
-                />
-              </Link>
-            </> : <></>
-        }
+      {props.project.logo ? (
+        <>
+          <Link to={`${props.project.name}/latest/`}>
+            <img
+              className={styles['project-logo']}
+              src={ProjectRepository.getProjectLogoURL(props.project.name)}
+              alt={`${props.project.name} project logo`}
+            />
+          </Link>
+        </>
+      ) : (
+        <></>
+      )}
 
       <div className={styles['project-header']}>
         <Link to={`${props.project.name}/latest/`}>
@@ -66,13 +69,23 @@ export default function Project(props: Props): React.JSX.Element {
           </div>
         </Link>
 
-        <Tooltip title={new Date(latestVersion.timestamp).toISOString().slice(0, -8).replace('T', ' ')} placement="left" arrow >
-          <Box sx={{
+        <Tooltip
+          title={new Date(latestVersion.timestamp)
+            .toISOString()
+            .slice(0, -8)
+            .replace('T', ' ')}
+          placement="left"
+          arrow
+        >
+          <Box
+            sx={{
               display: {
                 xs: 'none',
                 sm: 'inherit'
               }
-            }} className={styles['secondary-typography']}>
+            }}
+            className={styles['secondary-typography']}
+          >
             {timeSince(new Date(latestVersion.timestamp))} ago
           </Box>
         </Tooltip>
@@ -82,7 +95,14 @@ export default function Project(props: Props): React.JSX.Element {
           {props.project.versions.length === 1
             ? `${props.project.versions.length} version`
             : `${props.project.versions.length} versions`}
-            <Typography sx={{ marginLeft: 1.5 }} fontSize={'0.9em'} component={'span'} fontWeight={300}>{props.project.storage}</Typography>
+          <Typography
+            sx={{ marginLeft: 1.5 }}
+            fontSize={'0.9em'}
+            component={'span'}
+            fontWeight={300}
+          >
+            {props.project.storage}
+          </Typography>
         </div>
 
         <FavoriteStar

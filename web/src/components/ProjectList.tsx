@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import Project from './Project'
 
 import { type Project as ProjectType } from '../models/ProjectsResponse'

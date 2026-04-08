@@ -9,11 +9,11 @@ interface Props {
 
 export default function Banner(props: Props): React.JSX.Element {
   const [show, setShow] = useState<boolean>(false)
-  const [prevMessage, setPrevMessage] = useState(props.message);
+  const [prevMessage, setPrevMessage] = useState(props.message)
 
   if (props.message !== prevMessage) {
-    setPrevMessage(props.message);
-    setShow(true);
+    setPrevMessage(props.message)
+    setShow(true)
   }
 
   return (

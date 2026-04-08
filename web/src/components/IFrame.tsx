@@ -42,7 +42,10 @@ export default function IFrame(props: Props): React.JSX.Element {
     iFrameRef.current.contentDocument
       ?.querySelectorAll('a')
       .forEach((a: HTMLAnchorElement) => {
-        if (typeof a.href === 'string' && !a.href.startsWith(window.location.origin)) {
+        if (
+          typeof a.href === 'string' &&
+          !a.href.startsWith(window.location.origin)
+        ) {
           a.setAttribute('target', '_blank')
           return
         }
@@ -95,7 +98,9 @@ export default function IFrame(props: Props): React.JSX.Element {
     props.onFaviconChanged?.(favicon)
   }
 
-  const extractFaviconUrl = (doc: Document | null | undefined): string | null => {
+  const extractFaviconUrl = (
+    doc: Document | null | undefined
+  ): string | null => {
     if (doc == null) {
       return null
     }

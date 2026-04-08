@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { ConfigDataProvider } from './data-providers/ConfigDataProvider'
 import { MessageBannerProvider } from './data-providers/MessageBannerProvider'

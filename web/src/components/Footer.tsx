@@ -5,10 +5,7 @@ import { useConfig } from '../data-providers/ConfigDataProvider'
 import styles from './../style/components/Footer.module.css'
 
 export default function Footer(): JSX.Element {
-
-  const defaultFooter = (
-    <></>
-  )
+  const defaultFooter = <></>
 
   const [footer, setFooter] = useState<JSX.Element>(defaultFooter)
   const config = useConfig()
@@ -24,12 +21,20 @@ export default function Footer(): JSX.Element {
         HELP
       </Link>
 
-      <Box sx={{ fontSize: '1.05em', fontWeight: 300, opacity: 0.6, marginLeft: '8px', marginTop: 1 }}>
+      <Box
+        sx={{
+          fontSize: '1.05em',
+          fontWeight: 300,
+          opacity: 0.6,
+          marginLeft: '8px',
+          marginTop: 1
+        }}
+      >
         {footer}
       </Box>
 
       <div className={styles['version-info']}>
-        <Link to="https://github.com/docat-org/docat" target='_blank'>
+        <Link to="https://github.com/docat-org/docat" target="_blank">
           VERSION{'  '}
           {import.meta.env.VITE_DOCAT_VERSION ?? 'unknown'}
         </Link>

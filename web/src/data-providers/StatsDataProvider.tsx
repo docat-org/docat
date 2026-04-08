@@ -6,7 +6,6 @@
 import { createContext, useContext, useEffect, useState, JSX } from 'react'
 import { useMessageBanner } from './MessageBannerProvider'
 
-
 type Stats = {
   n_projects: number
   n_versions: number

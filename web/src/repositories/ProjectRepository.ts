@@ -13,7 +13,10 @@ function dateTimeReviver(key: string, value: unknown) {
 
 function filterHiddenVersions(allProjects: Project[]): Project[] {
   // create deep-copy first
-  const projects = JSON.parse(JSON.stringify(allProjects), dateTimeReviver) as Project[]
+  const projects = JSON.parse(
+    JSON.stringify(allProjects),
+    dateTimeReviver
+  ) as Project[]
 
   projects.forEach((p) => {
     p.versions = p.versions.filter((v) => !v.hidden)

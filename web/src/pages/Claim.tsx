@@ -17,8 +17,8 @@ export default function Claim(): JSX.Element {
   const [projectMissing, setProjectMissing] = useState<boolean | null>(null)
 
   useEffect(() => {
-     document.title = 'Claim Token | docat'
-  }, []);
+    document.title = 'Claim Token | docat'
+  }, [])
 
   const claim = async (): Promise<void> => {
     if (project == null || project === '' || project === 'none') {

@@ -3,7 +3,13 @@
   We need any, because we don't know the type of the children
 */
 
-import React, { createContext, useContext, useEffect, useState, JSX } from 'react'
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  JSX
+} from 'react'
 import { type Project } from '../models/ProjectsResponse'
 import { useProjects } from './ProjectDataProvider'
 import Fuse from 'fuse.js'

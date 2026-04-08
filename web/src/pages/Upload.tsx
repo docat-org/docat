@@ -27,8 +27,8 @@ const okFileTypes = [
 
 export default function Upload(): JSX.Element {
   useEffect(() => {
-     document.title = 'Upload | docat';
-  }, []);
+    document.title = 'Upload | docat'
+  }, [])
 
   const { reload: reloadProjects } = useProjects()
   const { showMessage } = useMessageBanner()
