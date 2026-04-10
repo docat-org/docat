@@ -42,7 +42,6 @@ export default function Docs(): JSX.Element {
       page.current,
       hash.current
     )
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project, displayVersion, iframeUpdateTrigger])
 
   useEffect(() => {
@@ -164,7 +163,6 @@ export default function Docs(): JSX.Element {
       hash.current = urlHash
       setIframeUpdateTrigger((v) => v + 1)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location])
 
   if (projectLoading) {

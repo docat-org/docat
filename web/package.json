@@ -45,13 +45,12 @@
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "jsdom": "^28.1.0",
-    "eslint": "^9.17.0",
+    "eslint": "^10.2.0",
     "eslint-config-prettier": "^10.0.1",
-    "eslint-plugin-react": "^7.37.3",
-    "eslint-plugin-react-hooks": "^7.0.1",
+    "@eslint-react/eslint-plugin": "^4.2.3",
     "globals": "^17.4.0",
     "prettier": "^3.8.1",
-    "typescript-eslint": "^8.57.0",
+    "typescript-eslint": "^8.58.1",
     "vitest": "^4.0.18"
   }
 }

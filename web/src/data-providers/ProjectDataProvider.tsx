@@ -75,7 +75,6 @@ export function ProjectDataProvider({ children }: any): JSX.Element {
 
   useEffect(() => {
     loadData()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return <Context.Provider value={state}>{children}</Context.Provider>

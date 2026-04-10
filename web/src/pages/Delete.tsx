@@ -32,7 +32,6 @@ export default function Delete(): JSX.Element {
     }
 
     setVersions(projects?.find((p) => p.name === project)?.versions ?? [])
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project])
 
   const validate = (

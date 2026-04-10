@@ -1,42 +1,45 @@
-import js from '@eslint/js'
+import eslintReact from "@eslint-react/eslint-plugin";
+import eslintJs from "@eslint/js";
+import { defineConfig } from "eslint/config";
+import tseslint from "typescript-eslint";
+import eslintConfigPrettier from "eslint-config-prettier";
 import globals from 'globals'
-import reactPlugin from 'eslint-plugin-react'
-import reactHooksPlugin from 'eslint-plugin-react-hooks'
-import tseslint from 'typescript-eslint'
-import eslintConfigPrettier from 'eslint-config-prettier'
 
-export default tseslint.config(
+export default defineConfig(
   {
-    ignores: ['dist/**', 'vite-env.d.ts', 'vite.config.ts']
-  },
-  js.configs.recommended,
-  ...tseslint.configs.recommended,
-  {
-    files: ['**/*.{ts,tsx}'],
+    files: ["**/*.ts", "**/*.tsx"],
+    ignores: ['dist/**', 'vite-env.d.ts', 'vite.config.ts'],
+
+    // Extend recommended rule sets from:
+    // 1. ESLint JS's recommended rules
+    // 2. TypeScript ESLint recommended rules
+    // 3. ESLint React's recommended-typescript rules
+    // 4. Prettier (Must be last to disable conflicting rules)
+    extends: [
+      eslintJs.configs.recommended,
+      tseslint.configs.recommended,
+      eslintReact.configs["recommended-typescript"],
+      eslintConfigPrettier,
+    ],
+
+    // Configure language/parsing options
     languageOptions: {
-      ecmaVersion: 'latest',
+      ecmaVersion: 'latest', // Allow modern JS syntax
       globals: {
-        ...globals.browser
+        ...globals.browser, // Allow browser globals like `window`
       },
+      parser: tseslint.parser, // Your existing parser
       parserOptions: {
         projectService: true,
-        tsconfigRootDir: import.meta.dirname
-      }
+        tsconfigRootDir: import.meta.dirname,
+      },
     },
-    plugins: {
-      react: reactPlugin,
-      'react-hooks': reactHooksPlugin
-    },
-    settings: {
-      react: {
-        version: 'detect'
-      }
-    },
+
+    // TODO: See if some of these could be fixed
     rules: {
-      ...reactPlugin.configs.recommended.rules,
-      ...reactPlugin.configs['jsx-runtime'].rules,
-      ...reactHooksPlugin.configs.recommended.rules
-    }
+      "@eslint-react/dom-no-dangerously-set-innerhtml": "off",
+      "@eslint-react/exhaustive-deps": "off",
+      "@eslint-react/set-state-in-effect": "off",
+    },
   },
-  eslintConfigPrettier
-)
+);

@@ -57,7 +57,6 @@ export function MessageBannerProvider({ children }: any): JSX.Element {
     }, message.showMs)
 
     setLastTimeout(newTimeout)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const clearMessages = useCallback(() => {
@@ -70,7 +69,6 @@ export function MessageBannerProvider({ children }: any): JSX.Element {
       type: 'success',
       showMs: 6000
     })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (

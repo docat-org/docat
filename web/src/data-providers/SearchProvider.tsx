@@ -66,7 +66,6 @@ export function SearchProvider({ children }: any): JSX.Element {
       filteredProjects: filterProjects(''),
       setQuery
     })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projects])
 
   return <Context.Provider value={state}>{children}</Context.Provider>
