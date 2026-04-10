@@ -3,7 +3,7 @@
   We need any, because we don't know the type of the children
 */
 
-import React, { createContext, useContext, useEffect, useState, JSX } from 'react'
+import React, { createContext, use, useEffect, useState, JSX } from 'react'
 import { type Project } from '../models/ProjectsResponse'
 import { useProjects } from './ProjectDataProvider'
 import Fuse from 'fuse.js'
@@ -68,7 +68,7 @@ export function SearchProvider({ children }: any): JSX.Element {
     })
   }, [projects])
 
-  return <Context.Provider value={state}>{children}</Context.Provider>
+  return <Context value={state}>{children}</Context>
 }
 
-export const useSearch = (): SearchState => useContext(Context)
+export const useSearch = (): SearchState => use(Context)
