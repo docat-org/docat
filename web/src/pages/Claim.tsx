@@ -97,12 +97,12 @@ export default function Claim(): JSX.Element {
         <button
           type="submit"
           disabled={token !== ''}
-          onClick={() => {
-            ;(async () => {
-              await claim()
-            })().catch((e) => {
-              console.error(e)
-            })
+          onClick={async () => {
+            try {
+              await claim();
+            } catch (e) {
+              console.error(e);
+            }
           }}
         >
           Claim

@@ -48,7 +48,6 @@ export default function Home(): JSX.Element {
 
   useEffect(() => {
     updateFavorites()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projects])
 
   if (loadingFailed || statsLoadingFailed) {

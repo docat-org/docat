@@ -3,7 +3,7 @@
   We need any, because we don't know the type of the children
 */
 
-import React, { createContext, useContext, useEffect, useState, JSX } from 'react'
+import React, { createContext, use, useEffect, useState, JSX } from 'react'
 import { type Project } from '../models/ProjectsResponse'
 import type ProjectsResponse from '../models/ProjectsResponse'
 import { useMessageBanner } from './MessageBannerProvider'
@@ -75,10 +75,9 @@ export function ProjectDataProvider({ children }: any): JSX.Element {
 
   useEffect(() => {
     loadData()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  return <Context.Provider value={state}>{children}</Context.Provider>
+  return <Context value={state}>{children}</Context>
 }
 
-export const useProjects = (): ProjectState => useContext(Context)
+export const useProjects = (): ProjectState => use(Context)

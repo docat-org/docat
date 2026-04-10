@@ -3,7 +3,7 @@
   We need any, because we don't know the type of the children
 */
 
-import { createContext, useContext, useEffect, useState, JSX } from 'react'
+import { createContext, use, useEffect, useState, JSX } from 'react'
 
 export interface Config {
   headerHTML?: string
@@ -31,7 +31,7 @@ export const ConfigDataProvider = ({ children }: any): JSX.Element => {
     })()
   }, [])
 
-  return <Context.Provider value={config}>{children}</Context.Provider>
+  return <Context value={config}>{children}</Context>
 }
 
-export const useConfig = (): Config => useContext(Context)
+export const useConfig = (): Config => use(Context)

@@ -3,7 +3,7 @@
   We need any, because we don't know the type of the children
 */
 
-import { createContext, useContext, useEffect, useState, JSX } from 'react'
+import { createContext, use, useEffect, useState, JSX } from 'react'
 import { useMessageBanner } from './MessageBannerProvider'
 
 
@@ -77,10 +77,9 @@ export function StatsDataProvider({ children }: any): JSX.Element {
 
   useEffect(() => {
     loadData()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  return <Context.Provider value={state}>{children}</Context.Provider>
+  return <Context value={state}>{children}</Context>
 }
 
-export const useStats = (): StatsState => useContext(Context)
+export const useStats = (): StatsState => use(Context)

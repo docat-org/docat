@@ -3,7 +3,7 @@
   We need any, because we don't know the type of the children
 */
 
-import React, { useState, useCallback, useContext, JSX } from 'react'
+import React, { useState, useCallback, use, JSX } from 'react'
 import Banner from '../components/InfoBanner'
 
 export interface Message {
@@ -57,7 +57,6 @@ export function MessageBannerProvider({ children }: any): JSX.Element {
     }, message.showMs)
 
     setLastTimeout(newTimeout)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const clearMessages = useCallback(() => {
@@ -70,15 +69,14 @@ export function MessageBannerProvider({ children }: any): JSX.Element {
       type: 'success',
       showMs: 6000
     })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
-    <Context.Provider value={{ showMessage, clearMessages }}>
+    <Context value={{ showMessage, clearMessages }}>
       <Banner message={message} />
       {children}
-    </Context.Provider>
+    </Context>
   )
 }
 
-export const useMessageBanner = (): MessageBannerState => useContext(Context)
+export const useMessageBanner = (): MessageBannerState => use(Context)

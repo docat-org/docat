@@ -19,8 +19,8 @@ export default function Docs(): JSX.Element {
   const [projectLoading, setProjectLoading] = useState<boolean>(true)
   const [notFound, setNotFound] = useState<boolean>(false)
 
-  const page = useRef(params['*'] ?? '')
-  const hash = useRef(location.hash)
+  const pageRef = useRef(params['*'] ?? '')
+  const hashRef = useRef(location.hash)
 
   const [project, setProject] = useState<string>(params.project ?? '')
   const [version, setVersion] = useState<string>(params.version ?? 'latest')
@@ -39,10 +39,9 @@ export default function Docs(): JSX.Element {
     return ProjectRepository.getProjectDocsURL(
       project,
       displayVersion.name,
-      page.current,
-      hash.current
+      pageRef.current,
+      hashRef.current
     )
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project, displayVersion, iframeUpdateTrigger])
 
   useEffect(() => {
@@ -68,11 +67,11 @@ export default function Docs(): JSX.Element {
   }
 
   const getShareUrl = (options: { useLatest: boolean, hideUi: boolean }): string => {
-    return buildBrowserUrl(project, options.useLatest ? 'latest' : displayVersion?.name ?? 'latest', page.current, hash.current, options.hideUi)
+    return buildBrowserUrl(project, options.useLatest ? 'latest' : displayVersion?.name ?? 'latest', pageRef.current, hashRef.current, options.hideUi)
   }
 
   const updateUrl = (newProject: string, newVersion: string, hideUi: boolean): void => {
-    window.history.pushState(null, '', buildBrowserUrl(newProject, newVersion, page.current, hash.current, hideUi))
+    window.history.pushState(null, '', buildBrowserUrl(newProject, newVersion, pageRef.current, hashRef.current, hideUi))
   }
 
   useEffect(() => {
@@ -115,19 +114,19 @@ export default function Docs(): JSX.Element {
     if (title != null && title !== document.title) {
       updateTitle(title)
     }
-    if (urlPage === page.current) {
+    if (urlPage === pageRef.current) {
       return
     }
-    page.current = urlPage
-    hash.current = urlHash
+    pageRef.current = urlPage
+    hashRef.current = urlHash
     updateUrl(project, version, hideUi)
   }
 
   const iFrameHashChanged = (newHash: string): void => {
-    if (newHash === hash.current) {
+    if (newHash === hashRef.current) {
       return
     }
-    hash.current = newHash
+    hashRef.current = newHash
     updateUrl(project, version, hideUi)
   }
 
@@ -156,15 +155,14 @@ export default function Docs(): JSX.Element {
     setVersion(urlVersion)
     setHideUi(urlHideUi)
 
-    if (urlPage !== page.current) {
-      page.current = urlPage
+    if (urlPage !== pageRef.current) {
+      pageRef.current = urlPage
       setIframeUpdateTrigger((v) => v + 1)
     }
-    if (urlHash !== hash.current) {
-      hash.current = urlHash
+    if (urlHash !== hashRef.current) {
+      hashRef.current = urlHash
       setIframeUpdateTrigger((v) => v + 1)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location])
 
   if (projectLoading) {

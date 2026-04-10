@@ -98,10 +98,12 @@ export default function DocumentControlButtons(props: Props): React.JSX.Element 
               <div className={styles['share-modal-copy-container']}>
                 <button
                   className={styles['share-modal-copy']}
-                  onClick={() => {
-                    void (async () => {
-                      await navigator.clipboard.writeText(props.getShareUrl({ useLatest: shareModalUseLatest, hideUi: shareModalHideUi }))
-                    })()
+                  onClick={async () => {
+                    const url = props.getShareUrl({
+                      useLatest: shareModalUseLatest,
+                      hideUi: shareModalHideUi
+                    });
+                    await navigator.clipboard.writeText(url);
                   }}
                 >
                   Copy
