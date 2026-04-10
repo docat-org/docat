@@ -16,7 +16,7 @@
     "react-router-dom": "^7.13.1",
     "semver": "^7.7.4",
     "typescript": "^5.9.3",
-    "vite": "^7.3.1"
+    "vite": "^8.0.8"
   },
   "scripts": {
     "start": "VITE_DOCAT_VERSION=$(git describe --tags --always) vite",
@@ -38,7 +38,7 @@
     ]
   },
   "devDependencies": {
-    "@vitejs/plugin-react-swc": "^4.3.0",
+    "@vitejs/plugin-react": "^6.0.1",
     "@eslint/js": "^9.17.0",
     "@types/semver": "^7.7.1",
     "@types/node": "^25.4.0",
