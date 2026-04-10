@@ -83,8 +83,10 @@ export default function Claim(): JSX.Element {
           <TextField
             fullWidth
             label="Token"
-            inputProps={{
-              readOnly: true
+            slotProps={{
+              input: {
+                readOnly: true,
+              },
             }}
             value={token}
           >
