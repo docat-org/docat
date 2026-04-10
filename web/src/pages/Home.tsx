@@ -1,7 +1,7 @@
 import { useEffect, useState, JSX } from 'react';
 import { useNavigate } from 'react-router';
 
-import { Delete, ErrorOutline, FileUpload, KeyboardArrowDown, Lock } from '@mui/icons-material';
+import { Delete, ErrorOutlined, FileUpload, KeyboardArrowDown, Lock } from '@mui/icons-material';
 import { useProjects } from '../data-providers/ProjectDataProvider';
 import { useSearch } from '../data-providers/SearchProvider';
 import { type Project } from '../models/ProjectsResponse';
@@ -55,7 +55,7 @@ export default function Home(): JSX.Element {
       <div className={styles.home}>
         <Header />
         <div className={styles['loading-error']}>
-          <ErrorOutline color="error" />
+          <ErrorOutlined color="error" />
           <div>Failed to load projects</div>
         </div>
         <Footer />
@@ -147,7 +147,7 @@ export default function Home(): JSX.Element {
             />
             :
             <>
-              <Typography sx={{ marginLeft: '24px', marginBottom: 1.5 }} fontWeight={300} fontSize={20}>FAVOURITES</Typography>
+              <Typography sx={{ marginLeft: '24px', marginBottom: 1.5, fontSize: 20, fontWeight: 300 }}>FAVOURITES</Typography>
               { (favoriteProjects.length === 0) ?
                 <Box sx={{marginLeft: '24px'}}>
                   No docs favourited at the moment, search for docs or
@@ -168,7 +168,7 @@ export default function Home(): JSX.Element {
                     opacity: 0.8,
                   }, }}>
                     <Link to={''} onClick={() => onShowFavourites(true)} >
-                      <Typography fontWeight={'300'} fontSize={'1.1em'} component={'span'}>SHOW ALL DOCS </Typography>
+                      <Typography component={'span'} sx={{ fontSize: '1.1em', fontWeight: 300 }}>SHOW ALL DOCS </Typography>
                       <KeyboardArrowDown sx={{ marginBottom: -0.6, marginLeft: 1 }} />
                     </Link>
                   </Box>
@@ -191,21 +191,21 @@ export default function Home(): JSX.Element {
           marginTop: 15,
            width: '400px'
         }}>
-          <Typography sx={{display: 'inline-block'}} fontWeight={300} fontSize={'1.1em'} component={'span'}>INSTANCE STATS</Typography>
+          <Typography component={'span'} sx={{display: 'inline-block', fontSize: '1.1em', fontWeight: 300}}>INSTANCE STATS</Typography>
           <Box />
 
-          <Typography fontSize={'1em'} fontWeight={200} sx={{ opacity: 0.8 }} component={'span'}># </Typography>
-          <Typography sx={{width: 100, display: 'inline-block', marginTop: 1}} fontWeight={300} fontSize={'1em'} component={'span'}>DOCS </Typography>
-          <Typography fontSize={'1em'} fontWeight={200} sx={{ opacity: 0.8 }} component={'span'}>{stats.n_projects}</Typography>
+          <Typography component={'span'} sx={{opacity: 0.8, fontSize: '1em', fontWeight: 200}}># </Typography>
+          <Typography component={'span'} sx={{width: 100, display: 'inline-block', marginTop: 1, fontSize: '1em', fontWeight: 300}}>DOCS </Typography>
+          <Typography component={'span'} sx={{opacity: 0.8, fontSize: '1em', fontWeight: 200}} >{stats.n_projects}</Typography>
 
           <Box />
-          <Typography fontSize={'1em'} fontWeight={200} sx={{ opacity: 0.8 }} component={'span'}># </Typography>
-          <Typography sx={{width: 100, display: 'inline-block',  marginTop: 0.4}} fontWeight={300} fontSize={'1em'} component={'span'}>VERSIONS </Typography>
-          <Typography fontSize={'1em'} fontWeight={200} sx={{ opacity: 0.8 }} component={'span'}>{stats.n_versions}</Typography>
+          <Typography component={'span'} sx={{opacity: 0.8, fontSize: '1em', fontWeight: 200 }}># </Typography>
+          <Typography component={'span'} sx={{width: 100, display: 'inline-block',  marginTop: 0.4, fontSize: '1em', fontWeight: 300}}>VERSIONS </Typography>
+          <Typography component={'span'} sx={{opacity: 0.8, fontSize: '1em', fontWeight: 200 }} >{stats.n_versions}</Typography>
 
           <Box />
-          <Typography sx={{width: 115, display: 'inline-block',  marginTop: 0.4}} fontWeight={300} fontSize={'1em'} component={'span'}>STORAGE </Typography>
-          <Typography fontSize={'1em'} fontWeight={200} sx={{ opacity: 0.8 }} component={'span'}>{stats.storage}</Typography>
+          <Typography component={'span'} sx={{width: 115, display: 'inline-block',  marginTop: 0.4, fontSize: '1em', fontWeight: 300}}>STORAGE </Typography>
+          <Typography component={'span'} sx={{opacity: 0.8, fontSize: '1em', fontWeight: 200 }} >{stats.storage}</Typography>
         </Box>
       </div>
       <Footer />

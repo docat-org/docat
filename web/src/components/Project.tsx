@@ -82,7 +82,7 @@ export default function Project(props: Props): React.JSX.Element {
           {props.project.versions.length === 1
             ? `${props.project.versions.length} version`
             : `${props.project.versions.length} versions`}
-            <Typography sx={{ marginLeft: 1.5 }} fontSize={'0.9em'} component={'span'} fontWeight={300}>{props.project.storage}</Typography>
+            <Typography component={'span'} sx={{ marginLeft: 1.5, fontSize: '0.9em', fontWeight: 300 }}>{props.project.storage}</Typography>
         </div>
 
         <FavoriteStar
