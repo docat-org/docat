@@ -38,17 +38,17 @@
     ]
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^6.0.1",
+    "@eslint-react/eslint-plugin": "^4.2.3",
     "@eslint/js": "^10.0.1",
-    "@types/semver": "^7.7.1",
     "@types/node": "^25.6.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "jsdom": "^29.0.2",
+    "@types/semver": "^7.7.1",
+    "@vitejs/plugin-react": "^6.0.1",
     "eslint": "^10.2.0",
     "eslint-config-prettier": "^10.1.8",
-    "@eslint-react/eslint-plugin": "^4.2.3",
     "globals": "^17.4.0",
+    "jsdom": "^29.0.2",
     "prettier": "^3.8.2",
     "typescript-eslint": "^8.58.1",
     "vitest": "^4.1.4"
