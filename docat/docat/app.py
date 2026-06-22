@@ -228,7 +228,7 @@ def upload(
 
     project_base_path = DOCAT_UPLOAD_FOLDER / project
     base_path = project_base_path / version
-    target_file = base_path / str(file.filename)
+    target_file = base_path / Path(file.filename).name
 
     if base_path.is_symlink():
         # disallow overwriting of tags (symlinks) with new uploads
