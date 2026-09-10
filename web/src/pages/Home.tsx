@@ -27,12 +27,16 @@ export default function Home(): JSX.Element {
   const [showAll, setShowAll] = useState(false);
   const [favoriteProjects, setFavoriteProjects] = useState<Project[]>([])
 
-  document.title = 'Home | docat'
+  useEffect(() => {
+    document.title = 'Home | docat';
+  }, []);
 
-  // Keep compatibility with hash-based URI
-  if (location.hash.startsWith('#/')) {
-    navigate(location.hash.replace('#', ''), { replace: true })
-  }
+  // Keep compatibility with hash-based URI safely
+  useEffect(() => {
+    if (window.location.hash.startsWith('#/')) {
+      navigate(window.location.hash.replace('#', ''), { replace: true });
+    }
+  }, [navigate]);
 
   const updateFavorites = (): void => {
     if (projects == null) return
