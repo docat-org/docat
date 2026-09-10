@@ -16,7 +16,7 @@
     "react-router-dom": "^7.14.0",
     "semver": "^7.7.4",
     "typescript": "^6.0.2",
-    "vite": "^8.0.8"
+    "vite": "^8.2.2"
   },
   "scripts": {
     "start": "VITE_DOCAT_VERSION=$(git describe --tags --always) vite",
@@ -51,6 +51,6 @@
     "jsdom": "^29.0.2",
     "prettier": "^3.8.2",
     "typescript-eslint": "^8.58.1",
-    "vitest": "^4.1.4"
+    "vitest": "^5.0.0"
   }
 }
