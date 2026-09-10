@@ -49,7 +49,7 @@ line-length = 140
 # Rule descriptions: https://docs.astral.sh/ruff/rules/
 lint.select = ["I", "E", "B", "F", "W", "N", "C4", "C90", "ARG", "PL", "RUF", "UP"]
 # TODO: Should be reduct to no global exceptions
-lint.ignore = ["B008", "N806", "PLR0911", "PLR0913"]
+lint.ignore = ["B008", "N806", "PLR0911", "PLR0913", "PLR0917"]
 
 [tool.ruff.lint.per-file-ignores]
 # Ignore for all tests (Magic value used in comparison)
