@@ -1,4 +1,5 @@
-import { Star, StarOutlined } from '@mui/icons-material'
+import StarIcon from '@mui/icons-material/Star';
+import StarBorderIcon from '@mui/icons-material/StarBorder';
 import React, { useState } from 'react'
 import ProjectRepository from '../repositories/ProjectRepository'
 
@@ -20,7 +21,7 @@ export default function FavoriteStar(props: Props): React.JSX.Element {
     props.onFavoriteChanged()
   }
 
-  const StarType = isFavorite ? Star : StarOutlined
+  const StarType = isFavorite ? StarIcon : StarBorderIcon
 
   return (
     <StarType
