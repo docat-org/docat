@@ -1,5 +1,5 @@
 import { useEffect, useState, JSX } from 'react';
-import { useNavigate } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import { Delete, ErrorOutlined, FileUpload, KeyboardArrowDown, Lock } from '@mui/icons-material';
 import { useProjects } from '../data-providers/ProjectDataProvider';
