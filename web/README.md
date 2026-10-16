@@ -67,9 +67,4 @@ sudo docker run \
 
 ## Errors
 
-If you get a 403 response when trying to read a version,
-try changing the permissions of your docs folder on your host.
-
-```sh
-sudo chmod 777 /path/to/doc -r
-```
+If you get a 403 response when trying to read a version, ensure the identity serving the files can read them and traverse their parent directories. For a bind mount, check the host-side permissions and the container's serving identity. Avoid making the files world-writable.
