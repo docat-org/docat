@@ -273,6 +273,10 @@ def tag(project: str, version: str, new_tag: str, response: Response):
     destination = DOCAT_UPLOAD_FOLDER / project / new_tag
     source = DOCAT_UPLOAD_FOLDER / project / version
 
+    if new_tag == version:
+        response.status_code = status.HTTP_409_CONFLICT
+        return ApiResponse(message=f"Tag {new_tag} cannot point to itself!")
+
     if not source.exists():
         response.status_code = status.HTTP_404_NOT_FOUND
         return ApiResponse(message=f"Version {version} not found")
