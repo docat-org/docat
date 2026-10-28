@@ -200,7 +200,8 @@ def get_system_stats(upload_folder_path: Path) -> Stats:
                 dirs += 1
                 with os.scandir(f.path) as project:
                     for v in project:
-                        if v.is_dir() and not v.is_symlink():
+                        # check symlink first: DirEntry.is_dir() raises on symlink loops
+                        if not v.is_symlink() and v.is_dir():
                             size += get_dir_size(v.path)
                             versions += 1
 
