@@ -1,4 +1,5 @@
 import io
+import time
 from datetime import datetime
 from unittest.mock import patch
 
@@ -28,6 +29,16 @@ def test_get_stats(_, project_config, n_projects, n_versions, storage, client_wi
             assert create_response.status_code == 201
 
     # get system stats
-    hide_response = client_with_claimed_project.get("/api/stats")
-    assert hide_response.status_code == 200
-    assert hide_response.json() == {"n_projects": n_projects, "n_versions": n_versions, "storage": storage}
+    # the first call returns a dummy response and refreshes the cache in the background
+    dummy_response = client_with_claimed_project.get("/api/stats")
+    assert dummy_response.status_code == 200
+    assert dummy_response.json() == {"n_projects": 0, "n_versions": 0, "storage": "0 bytes"}
+
+    expected = {"n_projects": n_projects, "n_versions": n_versions, "storage": storage}
+    for _ in range(100):
+        response = client_with_claimed_project.get("/api/stats")
+        assert response.status_code == 200
+        if response.json() == expected:
+            break
+        time.sleep(0.05)
+    assert response.json() == expected

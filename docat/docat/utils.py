@@ -3,8 +3,10 @@ docat utilities
 """
 
 import hashlib
+import logging
 import os
 import shutil
+import threading
 from datetime import datetime
 from functools import cache
 from pathlib import Path
@@ -182,12 +184,9 @@ def get_dir_size(path: Path) -> int:
     return total
 
 
-@cache
-def get_system_stats(upload_folder_path: Path) -> Stats:
+def _compute_system_stats(upload_folder_path: Path) -> Stats:
     """
-    Return all docat statistics.
-
-    Results are cached (memoizing) by path.
+    Calculate all docat statistics (slow for large upload folders).
     """
     dirs = 0
     versions = 0
@@ -210,6 +209,58 @@ def get_system_stats(upload_folder_path: Path) -> Stats:
         n_versions=versions,
         storage=readable_size(size),
     )
+
+
+_stats_lock = threading.Lock()
+# path -> (stats, generation the stats were computed for)
+_stats_cache: dict[Path, tuple[Stats, int]] = {}
+_stats_refreshing: set[Path] = set()
+_stats_generation = 0
+
+
+def _refresh_system_stats(upload_folder_path: Path) -> None:
+    """Background worker: compute the stats and store them in the cache."""
+    with _stats_lock:
+        generation = _stats_generation
+    try:
+        stats = _compute_system_stats(upload_folder_path)
+    except Exception:
+        logging.getLogger(__name__).exception("Failed to refresh system stats")
+        stats = None
+    with _stats_lock:
+        _stats_refreshing.discard(upload_folder_path)
+        if stats is not None:
+            # if the cache was invalidated meanwhile, this is still stale
+            # (but newer than what we had) and gets refreshed on the next request
+            _stats_cache[upload_folder_path] = (stats, generation)
+
+
+def get_system_stats(upload_folder_path: Path) -> Stats:
+    """
+    Return all docat statistics.
+
+    Never blocks on the slow calculation: if the cached stats are missing or
+    outdated, a refresh is started in the background. Outdated stats are
+    returned while refreshing, a dummy response if nothing is cached yet.
+    """
+    with _stats_lock:
+        entry = _stats_cache.get(upload_folder_path)
+        if entry is not None and entry[1] == _stats_generation:
+            return entry[0]
+        if upload_folder_path not in _stats_refreshing:
+            _stats_refreshing.add(upload_folder_path)
+            threading.Thread(target=_refresh_system_stats, args=(upload_folder_path,), daemon=True).start()
+        if entry is not None:
+            return entry[0]
+
+    return Stats(n_projects=0, n_versions=0, storage=readable_size(0))
+
+
+def clear_system_stats_cache() -> None:
+    """Mark the cached statistics as outdated (they are refreshed on the next request)."""
+    global _stats_generation
+    with _stats_lock:
+        _stats_generation += 1
 
 
 def get_all_projects(upload_folder_path: Path, include_hidden: bool) -> Projects:

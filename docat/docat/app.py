@@ -26,6 +26,7 @@ from docat.utils import (
     DB_PATH,
     UPLOAD_FOLDER,
     calculate_token,
+    clear_system_stats_cache,
     create_symlink,
     extract_archive,
     get_all_projects,
@@ -134,7 +135,7 @@ def upload_icon(
         shutil.copyfileobj(file.file, buffer)
 
     # force cache revalidation
-    get_system_stats.cache_clear()
+    clear_system_stats_cache()
     get_dir_size.cache_clear()
 
     return ApiResponse(message="Icon successfully uploaded")
@@ -259,7 +260,7 @@ def upload(
         return ApiResponse(message="Cannot extract zip file.")
 
     # force cache revalidation
-    get_system_stats.cache_clear()
+    clear_system_stats_cache()
     get_dir_size.cache_clear()
 
     if not (base_path / "index.html").exists():
@@ -367,7 +368,7 @@ def delete(
         return ApiResponse(message=message)
 
     # force cache revalidation
-    get_system_stats.cache_clear()
+    clear_system_stats_cache()
     get_dir_size.cache_clear()
 
     return ApiResponse(message=f"Successfully deleted version '{version}'")
