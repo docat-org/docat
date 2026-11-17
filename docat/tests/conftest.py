@@ -20,8 +20,11 @@ def setup_docat_paths():
     docat.DOCAT_DB_PATH = Path(temp_dir.name) / "db.json"
     docat.DOCAT_UPLOAD_FOLDER = Path(temp_dir.name) / "doc"
 
+    docat.app.state.stats = None
+
     yield
 
+    docat.app.state.stats = None
     temp_dir.cleanup()
 
 

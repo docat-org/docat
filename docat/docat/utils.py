@@ -182,12 +182,9 @@ def get_dir_size(path: Path) -> int:
     return total
 
 
-@cache
 def get_system_stats(upload_folder_path: Path) -> Stats:
     """
-    Return all docat statistics.
-
-    Results are cached (memoizing) by path.
+    Calculate all docat statistics (walks the upload folder, can be slow).
     """
     dirs = 0
     versions = 0

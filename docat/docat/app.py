@@ -8,11 +8,12 @@ Host your docs. Simple. Versioned. Fancy.
 :license: MIT, see LICENSE for more details.
 """
 
+import asyncio
 import logging
 import os
 import secrets
 import shutil
-from contextlib import asynccontextmanager
+from contextlib import asynccontextmanager, suppress
 from pathlib import Path
 
 import magic
@@ -33,6 +34,7 @@ from docat.utils import (
     get_project_details,
     get_system_stats,
     is_forbidden_project_name,
+    readable_size,
     remove_docs,
 )
 
@@ -42,12 +44,38 @@ DOCAT_UPLOAD_FOLDER = DOCAT_STORAGE_PATH / UPLOAD_FOLDER
 
 logger = logging.getLogger(__name__)
 
+STATS_REFRESH_INTERVAL_SECONDS = 10 * 60
+EMPTY_STATS = Stats(n_projects=0, n_versions=0, storage=readable_size(0))
+
+
+def refresh_stats() -> Stats:
+    """Recalculate the project stats and store them."""
+    stats = get_system_stats(DOCAT_UPLOAD_FOLDER)
+    app.state.stats = stats
+    return stats
+
+
+async def stats_refresh_loop() -> None:
+    """Refresh the stats immediately and then every STATS_REFRESH_INTERVAL_SECONDS."""
+    while True:
+        try:
+            await asyncio.to_thread(refresh_stats)
+        except Exception:
+            logger.exception("Failed to refresh stats")
+        await asyncio.sleep(STATS_REFRESH_INTERVAL_SECONDS)
+
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
     # Create the folders if they don't exist
     DOCAT_UPLOAD_FOLDER.mkdir(parents=True, exist_ok=True)
-    yield
+    refresh_task = asyncio.create_task(stats_refresh_loop())
+    try:
+        yield
+    finally:
+        refresh_task.cancel()
+        with suppress(asyncio.CancelledError):
+            await refresh_task
 
 
 def get_db() -> TinyDB:
@@ -55,7 +83,6 @@ def get_db() -> TinyDB:
     return TinyDB(DOCAT_DB_PATH)
 
 
-#: Holds the FastAPI application
 app = FastAPI(
     title="docat",
     description="API for docat, https://github.com/docat-org/docat",
@@ -64,14 +91,17 @@ app = FastAPI(
     redoc_url="/api/redoc",
     lifespan=lifespan,
 )
+
+app.state.stats = None
 router = APIRouter()
 
 
 @router.get("/api/stats", response_model=Stats, status_code=status.HTTP_200_OK)
 def get_stats():
-    if not DOCAT_UPLOAD_FOLDER.exists():
-        return Projects(projects=[])
-    return get_system_stats(DOCAT_UPLOAD_FOLDER)
+    """Project stats get calculated in the background."""
+    if app.state.stats is None:
+        return EMPTY_STATS
+    return app.state.stats
 
 
 @router.get("/api/projects", response_model=Projects, status_code=status.HTTP_200_OK)
@@ -134,7 +164,6 @@ def upload_icon(
         shutil.copyfileobj(file.file, buffer)
 
     # force cache revalidation
-    get_system_stats.cache_clear()
     get_dir_size.cache_clear()
 
     return ApiResponse(message="Icon successfully uploaded")
@@ -259,7 +288,6 @@ def upload(
         return ApiResponse(message="Cannot extract zip file.")
 
     # force cache revalidation
-    get_system_stats.cache_clear()
     get_dir_size.cache_clear()
 
     if not (base_path / "index.html").exists():
@@ -367,7 +395,6 @@ def delete(
         return ApiResponse(message=message)
 
     # force cache revalidation
-    get_system_stats.cache_clear()
     get_dir_size.cache_clear()
 
     return ApiResponse(message=f"Successfully deleted version '{version}'")
