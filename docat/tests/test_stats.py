@@ -1,8 +1,12 @@
 import io
+import time
 from datetime import datetime
 from unittest.mock import patch
 
 import pytest
+from fastapi.testclient import TestClient
+
+import docat.app as docat
 
 
 @patch("docat.utils.get_version_timestamp", return_value=datetime(2000, 1, 1, 1, 1, 0))
@@ -27,7 +31,36 @@ def test_get_stats(_, project_config, n_projects, n_versions, storage, client_wi
             )
             assert create_response.status_code == 201
 
+    # stats are served from the cache, which the background task normally refreshes
+    docat.refresh_stats()
+
     # get system stats
     hide_response = client_with_claimed_project.get("/api/stats")
     assert hide_response.status_code == 200
     assert hide_response.json() == {"n_projects": n_projects, "n_versions": n_versions, "storage": storage}
+
+
+def test_get_stats_before_first_refresh(client_with_claimed_project):
+    """
+    Until the first background refresh finished, empty dummy stats are returned.
+    """
+    assert docat.app.state.stats is None
+
+    response = client_with_claimed_project.get("/api/stats")
+
+    assert response.status_code == 200
+    assert response.json() == {"n_projects": 0, "n_versions": 0, "storage": "0 bytes"}
+    assert docat.app.state.stats is None
+
+
+def test_stats_refreshed_on_startup():
+    """
+    The lifespan starts a background task which computes the stats initially.
+    """
+    docat.DOCAT_UPLOAD_FOLDER.mkdir(parents=True, exist_ok=True)
+    with TestClient(docat.app):
+        for _ in range(100):
+            if docat.app.state.stats is not None:
+                break
+            time.sleep(0.05)
+        assert docat.app.state.stats is not None
