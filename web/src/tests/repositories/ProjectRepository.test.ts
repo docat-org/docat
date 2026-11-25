@@ -352,7 +352,6 @@ describe('filterHiddenVersions', () => {
     const allProjects: Project[] = [
       {
         name: 'test-project-1',
-        storage: "1 MB",
         versions: [shownVersion, hiddenVersion],
         logo: false
       }
@@ -361,7 +360,6 @@ describe('filterHiddenVersions', () => {
     const shownProjects: Project[] = [
       {
         name: 'test-project-1',
-        storage: "1 MB",
         versions: [shownVersion],
         logo: false
       }
@@ -374,7 +372,6 @@ describe('filterHiddenVersions', () => {
     const allProjects: Project[] = [
       {
         name: 'test-project-1',
-        storage: "1 MB",
         versions: [
           {
             name: 'v-1',

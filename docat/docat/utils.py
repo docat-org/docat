@@ -237,7 +237,6 @@ def get_all_projects(upload_folder_path: Path, include_hidden: bool) -> Projects
                 name=project_name,
                 logo=project_has_logo,
                 versions=details.versions,
-                storage=readable_size(get_dir_size(upload_folder_path / project)),
             )
         )
 
@@ -270,7 +269,6 @@ def get_project_details(upload_folder_path: Path, project_name: str, include_hid
 
     return ProjectDetail(
         name=project_name,
-        storage=readable_size(get_dir_size(docs_folder)),
         versions=sorted(
             [
                 ProjectVersion(
