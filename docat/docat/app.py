@@ -16,7 +16,7 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 
 import magic
-from fastapi import APIRouter, Depends, FastAPI, File, Header, Response, UploadFile, status
+from fastapi import APIRouter, BackgroundTasks, Depends, FastAPI, File, Header, Request, Response, UploadFile, status
 from fastapi.staticfiles import StaticFiles
 from starlette.responses import JSONResponse
 from tinydb import Query, TinyDB
@@ -44,9 +44,10 @@ logger = logging.getLogger(__name__)
 
 
 @asynccontextmanager
-async def lifespan(_: FastAPI):
+async def lifespan(app: FastAPI):
     # Create the folders if they don't exist
     DOCAT_UPLOAD_FOLDER.mkdir(parents=True, exist_ok=True)
+    app.state.server_stats = EmptyStats
     yield
 
 
@@ -67,11 +68,17 @@ app = FastAPI(
 router = APIRouter()
 
 
+def update_stats():
+    app.state.server_stats = get_system_stats(DOCAT_UPLOAD_FOLDER)
+
+
 @router.get("/api/stats", response_model=Stats, status_code=status.HTTP_200_OK)
-def get_stats():
+def get_stats(request: Request, background_tasks: BackgroundTasks):
     if not DOCAT_UPLOAD_FOLDER.exists():
         return EmptyStats
-    return get_system_stats(DOCAT_UPLOAD_FOLDER)
+
+    background_tasks.add_task(update_stats)
+    return request.app.state.server_stats
 
 
 @router.get("/api/projects", response_model=Projects, status_code=status.HTTP_200_OK)
