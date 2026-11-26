@@ -20,7 +20,7 @@ FROM python:3.15-slim AS backend
 # configure docker container
 ENV PYTHONDONTWRITEBYTECODE=1
 
-COPY --from=ghcr.io/astral-sh/uv:0.10.4 /uv /uvx /bin/
+COPY --from=ghcr.io/astral-sh/uv:0.13.10 /uv /uvx /bin/
 
 COPY /docat/pyproject.toml /docat/uv.lock /app/
 
