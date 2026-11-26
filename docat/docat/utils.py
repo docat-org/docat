@@ -99,7 +99,7 @@ def remove_docs(project: str, version: str, upload_folder_path: Path):
 
         # remove empty projects
         if not [d for d in docs.parent.iterdir() if d.is_dir()]:
-            docs.parent.rmdir()
+            shutil.rmtree(docs.parent)
             nginx_config = NGINX_CONFIG_PATH / f"{project}-doc.conf"
             if nginx_config.exists():
                 nginx_config.unlink()

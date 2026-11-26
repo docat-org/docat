@@ -241,7 +241,10 @@ def upload(
             response.status_code = status.HTTP_401_UNAUTHORIZED
             return ApiResponse(message=token_status.reason)
 
-        remove_docs(project, version, DOCAT_UPLOAD_FOLDER)
+        # replace the version in place: removing it like a delete would also drop
+        # its tags and, for the only version, the project with its logo
+        shutil.rmtree(base_path)
+        (project_base_path / ".size").unlink(missing_ok=True)
 
     # ensure directory for the uploaded doc exists
     base_path.mkdir(parents=True, exist_ok=True)
