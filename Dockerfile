@@ -15,7 +15,7 @@ ENV VITE_DOCAT_VERSION=$DOCAT_VERSION
 RUN yarn build
 
 # setup Python
-FROM python:3.14-slim AS backend
+FROM python:3.15-slim AS backend
 
 # configure docker container
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -29,7 +29,7 @@ WORKDIR /app/docat
 RUN uv sync --no-install-project --no-dev --color never
 
 # production
-FROM python:3.14-slim
+FROM python:3.15-slim
 
 # defaults
 ENV MAX_UPLOAD_SIZE=100M

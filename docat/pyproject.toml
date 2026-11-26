@@ -7,7 +7,7 @@ authors = [
     { name = "Benj", email = "randombenj@gmail.com" }
 ]
 license = { text = "MIT" }
-requires-python = ">=3.10"
+requires-python = ">=3.12"
 dependencies = [
     "tinydb",
     "fastapi[all]",
