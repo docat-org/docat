@@ -12,16 +12,17 @@ import logging
 import os
 import secrets
 import shutil
+import time
 from contextlib import asynccontextmanager
 from pathlib import Path
 
 import magic
-from fastapi import APIRouter, Depends, FastAPI, File, Header, Response, UploadFile, status
+from fastapi import APIRouter, BackgroundTasks, Depends, FastAPI, File, Header, Request, Response, UploadFile, status
 from fastapi.staticfiles import StaticFiles
 from starlette.responses import JSONResponse
 from tinydb import Query, TinyDB
 
-from docat.models import ApiResponse, ClaimResponse, ProjectDetail, Projects, Stats, TokenStatus
+from docat.models import ApiResponse, ClaimResponse, EmptyStats, ProjectDetail, Projects, Stats, TokenStatus
 from docat.utils import (
     DB_PATH,
     UPLOAD_FOLDER,
@@ -39,14 +40,18 @@ from docat.utils import (
 DOCAT_STORAGE_PATH = Path(os.getenv("DOCAT_STORAGE_PATH", Path("/var/docat")))
 DOCAT_DB_PATH = DOCAT_STORAGE_PATH / DB_PATH
 DOCAT_UPLOAD_FOLDER = DOCAT_STORAGE_PATH / UPLOAD_FOLDER
+STATS_REFRESH_INTERVAL_SECONDS = 10 * 60
+
 
 logger = logging.getLogger(__name__)
 
 
 @asynccontextmanager
-async def lifespan(_: FastAPI):
+async def lifespan(app: FastAPI):
     # Create the folders if they don't exist
     DOCAT_UPLOAD_FOLDER.mkdir(parents=True, exist_ok=True)
+    app.state.server_stats = EmptyStats
+    app.state.stats_last_scheduled = None
     yield
 
 
@@ -67,11 +72,23 @@ app = FastAPI(
 router = APIRouter()
 
 
+# In the future this would make sense to share between workers
+def update_stats():
+    app.state.server_stats = get_system_stats(DOCAT_UPLOAD_FOLDER)
+
+
 @router.get("/api/stats", response_model=Stats, status_code=status.HTTP_200_OK)
-def get_stats():
+def get_stats(request: Request, background_tasks: BackgroundTasks):
     if not DOCAT_UPLOAD_FOLDER.exists():
-        return Projects(projects=[])
-    return get_system_stats(DOCAT_UPLOAD_FOLDER)
+        return EmptyStats
+
+    last = getattr(request.app.state, "stats_last_scheduled", None)
+    now = time.monotonic()
+    if last is None or now - last >= STATS_REFRESH_INTERVAL_SECONDS:
+        request.app.state.stats_last_scheduled = now
+        background_tasks.add_task(update_stats)
+
+    return request.app.state.server_stats
 
 
 @router.get("/api/projects", response_model=Projects, status_code=status.HTTP_200_OK)

@@ -162,7 +162,6 @@ def test_get_project_recongizes_icon(_, client_with_claimed_project):
             {
                 "name": "some-project",
                 "logo": False,
-                "storage": "20 bytes",
                 "versions": [{"name": "1.0.0", "timestamp": "2000-01-01T01:01:00", "tags": [], "hidden": False}],
             }
         ]
@@ -181,7 +180,6 @@ def test_get_project_recongizes_icon(_, client_with_claimed_project):
             {
                 "name": "some-project",
                 "logo": True,
-                "storage": "103 bytes",
                 "versions": [{"name": "1.0.0", "timestamp": "2000-01-01T01:01:00", "tags": [], "hidden": False}],
             }
         ]

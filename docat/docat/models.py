@@ -28,7 +28,6 @@ class ProjectVersion(BaseModel):
 class Project(BaseModel):
     name: str
     logo: bool
-    storage: str
     versions: list[ProjectVersion]
 
 
@@ -42,7 +41,9 @@ class Stats(BaseModel):
     storage: str
 
 
+EmptyStats = Stats(n_projects=0, n_versions=0, storage="0 bytes")
+
+
 class ProjectDetail(BaseModel):
     name: str
-    storage: str
     versions: list[ProjectVersion]

@@ -6,6 +6,7 @@ from fastapi.testclient import TestClient
 from tinydb import TinyDB
 
 import docat.app as docat
+from docat.models import EmptyStats
 from docat.utils import create_symlink
 
 
@@ -19,6 +20,7 @@ def setup_docat_paths():
     docat.DOCAT_STORAGE_PATH = Path(temp_dir.name)
     docat.DOCAT_DB_PATH = Path(temp_dir.name) / "db.json"
     docat.DOCAT_UPLOAD_FOLDER = Path(temp_dir.name) / "doc"
+    docat.DOCAT_UPLOAD_FOLDER.mkdir(parents=True, exist_ok=True)
 
     yield
 
@@ -28,10 +30,13 @@ def setup_docat_paths():
 @pytest.fixture
 def client():
     docat.db = TinyDB(docat.DOCAT_DB_PATH)
+    docat.app.state.server_stats = EmptyStats
+    docat.app.state.stats_last_scheduled = None
 
     yield TestClient(docat.app)
 
     docat.app.db = None
+    docat.app.state.server_stats = None
 
 
 @pytest.fixture

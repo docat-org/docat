@@ -26,7 +26,6 @@ def test_project_api(_, temp_project_version):
                 {
                     "name": "different-project",
                     "logo": False,
-                    "storage": "0 bytes",
                     "versions": [
                         {"name": "1.0", "timestamp": "2000-01-01T01:01:00", "tags": ["latest"], "hidden": False},
                     ],
@@ -34,7 +33,6 @@ def test_project_api(_, temp_project_version):
                 {
                     "name": "project",
                     "logo": False,
-                    "storage": "0 bytes",
                     "versions": [
                         {"name": "1.0", "timestamp": "2000-01-01T01:01:00", "tags": ["latest"], "hidden": False},
                     ],
@@ -63,7 +61,6 @@ def test_project_details_api(_, temp_project_version):
         assert response.status_code == httpx.codes.OK
         assert response.json() == {
             "name": "project",
-            "storage": "0 bytes",
             "versions": [{"name": "1.0", "timestamp": "2000-01-01T01:01:00", "tags": ["latest"], "hidden": False}],
         }
 
@@ -90,7 +87,6 @@ def test_get_project_details_with_hidden_versions(_, client_with_claimed_project
     details = get_project_details(docat.DOCAT_UPLOAD_FOLDER, "some-project", include_hidden=True)
     assert details == ProjectDetail(
         name="some-project",
-        storage="20 bytes",
         versions=[ProjectVersion(name="1.0.0", timestamp=datetime(2000, 1, 1, 1, 1, 0), tags=[], hidden=False)],
     )
 
@@ -103,7 +99,6 @@ def test_get_project_details_with_hidden_versions(_, client_with_claimed_project
     details = get_project_details(docat.DOCAT_UPLOAD_FOLDER, "some-project", include_hidden=True)
     assert details == ProjectDetail(
         name="some-project",
-        storage="20 bytes",
         versions=[ProjectVersion(name="1.0.0", timestamp=datetime(2000, 1, 1, 1, 1, 0), tags=[], hidden=True)],
     )
 
@@ -123,7 +118,6 @@ def test_project_details_without_hidden_versions(_, client_with_claimed_project)
     details = get_project_details(docat.DOCAT_UPLOAD_FOLDER, "some-project", include_hidden=False)
     assert details == ProjectDetail(
         name="some-project",
-        storage="20 bytes",
         versions=[ProjectVersion(name="1.0.0", timestamp=datetime(2000, 1, 1, 1, 1, 0), tags=[], hidden=False)],
     )
 
@@ -134,7 +128,7 @@ def test_project_details_without_hidden_versions(_, client_with_claimed_project)
 
     # check hidden
     details = get_project_details(docat.DOCAT_UPLOAD_FOLDER, "some-project", include_hidden=False)
-    assert details == ProjectDetail(name="some-project", storage="20 bytes", versions=[])
+    assert details == ProjectDetail(name="some-project", versions=[])
 
 
 @patch("docat.utils.get_version_timestamp", return_value=datetime(2000, 1, 1, 1, 1, 0))
@@ -156,7 +150,6 @@ def test_include_hidden_parameter_for_get_projects(_, client_with_claimed_projec
             {
                 "name": "some-project",
                 "logo": False,
-                "storage": "20 bytes",
                 "versions": [{"name": "1.0.0", "timestamp": "2000-01-01T01:01:00", "tags": [], "hidden": False}],
             }
         ]
@@ -170,7 +163,6 @@ def test_include_hidden_parameter_for_get_projects(_, client_with_claimed_projec
             {
                 "name": "some-project",
                 "logo": False,
-                "storage": "20 bytes",
                 "versions": [{"name": "1.0.0", "timestamp": "2000-01-01T01:01:00", "tags": [], "hidden": False}],
             }
         ]
@@ -194,7 +186,6 @@ def test_include_hidden_parameter_for_get_projects(_, client_with_claimed_projec
             {
                 "name": "some-project",
                 "logo": False,
-                "storage": "20 bytes",
                 "versions": [{"name": "1.0.0", "timestamp": "2000-01-01T01:01:00", "tags": [], "hidden": True}],
             }
         ]
@@ -217,7 +208,6 @@ def test_include_hidden_parameter_for_get_project_details(_, client_with_claimed
     assert get_projects_response.status_code == 200
     assert get_projects_response.json() == {
         "name": "some-project",
-        "storage": "20 bytes",
         "versions": [{"name": "1.0.0", "timestamp": "2000-01-01T01:01:00", "tags": [], "hidden": False}],
     }
 
@@ -226,7 +216,6 @@ def test_include_hidden_parameter_for_get_project_details(_, client_with_claimed
     assert get_projects_response.status_code == 200
     assert get_projects_response.json() == {
         "name": "some-project",
-        "storage": "20 bytes",
         "versions": [{"name": "1.0.0", "timestamp": "2000-01-01T01:01:00", "tags": [], "hidden": False}],
     }
 
@@ -240,7 +229,6 @@ def test_include_hidden_parameter_for_get_project_details(_, client_with_claimed
     assert get_projects_response.status_code == 200
     assert get_projects_response.json() == {
         "name": "some-project",
-        "storage": "20 bytes",
         "versions": [],
     }
 
@@ -249,6 +237,5 @@ def test_include_hidden_parameter_for_get_project_details(_, client_with_claimed
     assert get_projects_response.status_code == 200
     assert get_projects_response.json() == {
         "name": "some-project",
-        "storage": "20 bytes",
         "versions": [{"name": "1.0.0", "timestamp": "2000-01-01T01:01:00", "tags": [], "hidden": True}],
     }
