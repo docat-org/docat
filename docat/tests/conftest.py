@@ -31,6 +31,7 @@ def setup_docat_paths():
 def client():
     docat.db = TinyDB(docat.DOCAT_DB_PATH)
     docat.app.state.server_stats = EmptyStats
+    docat.app.state.stats_last_scheduled = None
 
     yield TestClient(docat.app)
 

@@ -44,3 +44,19 @@ def test_background_start(client):
 
     assert response.status_code == 200
     mock_update.assert_called_once_with()
+
+
+def test_background_refresh_is_throttled(client):
+    with patch("docat.app.update_stats") as mock_update:
+        client.get("/api/stats")
+        client.get("/api/stats")
+
+    mock_update.assert_called_once_with()
+
+
+def test_background_refresh_after_interval(client):
+    with patch("docat.app.update_stats") as mock_update, patch("docat.app.STATS_REFRESH_INTERVAL_SECONDS", 0):
+        client.get("/api/stats")
+        client.get("/api/stats")
+
+    assert mock_update.call_count == 2
