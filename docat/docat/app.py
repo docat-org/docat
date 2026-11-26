@@ -21,7 +21,7 @@ from fastapi.staticfiles import StaticFiles
 from starlette.responses import JSONResponse
 from tinydb import Query, TinyDB
 
-from docat.models import ApiResponse, ClaimResponse, ProjectDetail, Projects, Stats, TokenStatus
+from docat.models import ApiResponse, ClaimResponse, EmptyStats, ProjectDetail, Projects, Stats, TokenStatus
 from docat.utils import (
     DB_PATH,
     UPLOAD_FOLDER,
@@ -70,7 +70,7 @@ router = APIRouter()
 @router.get("/api/stats", response_model=Stats, status_code=status.HTTP_200_OK)
 def get_stats():
     if not DOCAT_UPLOAD_FOLDER.exists():
-        return Projects(projects=[])
+        return EmptyStats
     return get_system_stats(DOCAT_UPLOAD_FOLDER)
 
 
