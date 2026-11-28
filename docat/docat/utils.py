@@ -72,13 +72,15 @@ def extract_archive(target_file, destination):
         target_file.unlink()  # remove the zip file
 
 
-def remove_docs(project: str, version: str, upload_folder_path: Path):
+def remove_docs(project: str, version: str, upload_folder_path: Path, overwrite: bool = False):
     """
     Delete documentation
 
     Args:
         project (str): name of the project
         version (str): project version
+        overwrite (bool): the version is about to be uploaded again, so keep its
+            tags and the project (with its logo) even if no other version is left
     """
     docs = upload_folder_path / project / version
     if docs.exists():
@@ -89,17 +91,20 @@ def remove_docs(project: str, version: str, upload_folder_path: Path):
         else:
             shutil.rmtree(docs)
 
+        # remove size info
+        (upload_folder_path / project / ".size").unlink(missing_ok=True)
+
+        if overwrite:
+            return
+
         # remove dead symlinks
         for link in (s for s in docs.parent.iterdir() if s.is_symlink()):
             if not link.resolve().exists():
                 link.unlink()
 
-        # remove size info
-        (upload_folder_path / project / ".size").unlink(missing_ok=True)
-
         # remove empty projects
         if not [d for d in docs.parent.iterdir() if d.is_dir()]:
-            docs.parent.rmdir()
+            shutil.rmtree(docs.parent)
             nginx_config = NGINX_CONFIG_PATH / f"{project}-doc.conf"
             if nginx_config.exists():
                 nginx_config.unlink()

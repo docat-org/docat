@@ -16,22 +16,41 @@ def test_successfully_upload(client):
 
 
 def test_successfully_override(client_with_claimed_project):
-    with patch("docat.app.remove_docs") as remove_mock:
-        response = client_with_claimed_project.post(
-            "/api/some-project/1.0.0", files={"file": ("index.html", io.BytesIO(b"<h1>Hello World</h1>"), "plain/text")}
-        )
-        assert response.status_code == 201
+    response = client_with_claimed_project.post(
+        "/api/some-project/1.0.0", files={"file": ("index.html", io.BytesIO(b"<h1>Old</h1>"), "plain/text")}
+    )
+    assert response.status_code == 201
 
-        response = client_with_claimed_project.post(
-            "/api/some-project/1.0.0",
-            files={"file": ("index.html", io.BytesIO(b"<h1>Hello World</h1>"), "plain/text")},
-            headers={"Docat-Api-Key": "1234"},
-        )
-        response_data = response.json()
+    response = client_with_claimed_project.post(
+        "/api/some-project/1.0.0",
+        files={"file": ("index.html", io.BytesIO(b"<h1>New</h1>"), "plain/text")},
+        headers={"Docat-Api-Key": "1234"},
+    )
+    response_data = response.json()
 
-        assert response.status_code == 201
-        assert response_data["message"] == "Documentation uploaded successfully"
-        assert remove_mock.mock_calls == [call("some-project", "1.0.0", docat.DOCAT_UPLOAD_FOLDER)]
+    assert response.status_code == 201
+    assert response_data["message"] == "Documentation uploaded successfully"
+    assert (docat.DOCAT_UPLOAD_FOLDER / "some-project" / "1.0.0" / "index.html").read_bytes() == b"<h1>New</h1>"
+
+
+def test_override_keeps_tags_and_icon(client_with_claimed_project):
+    project = docat.DOCAT_UPLOAD_FOLDER / "some-project"
+    response = client_with_claimed_project.post(
+        "/api/some-project/1.0.0", files={"file": ("index.html", io.BytesIO(b"<h1>Old</h1>"), "plain/text")}
+    )
+    assert response.status_code == 201
+    assert client_with_claimed_project.put("/api/some-project/1.0.0/tags/latest").status_code == 201
+    (project / "logo").write_bytes(b"icon")
+
+    response = client_with_claimed_project.post(
+        "/api/some-project/1.0.0",
+        files={"file": ("index.html", io.BytesIO(b"<h1>New</h1>"), "plain/text")},
+        headers={"Docat-Api-Key": "1234"},
+    )
+
+    assert response.status_code == 201
+    assert (project / "latest" / "index.html").read_bytes() == b"<h1>New</h1>"
+    assert (project / "logo").read_bytes() == b"icon"
 
 
 def test_tags_are_not_overwritten_without_api_key(client_with_claimed_project):

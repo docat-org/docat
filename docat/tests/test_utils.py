@@ -77,6 +77,18 @@ def test_remove_version(temp_project_version):
     assert not (docs / "project").exists()
 
 
+def test_remove_version_for_overwrite_keeps_tags_and_project(temp_project_version):
+    project = "project"
+    docs = temp_project_version(project, "1.0")
+    (docs / project / "logo").write_bytes(b"icon")
+
+    remove_docs(project, "1.0", docat.DOCAT_UPLOAD_FOLDER, overwrite=True)
+
+    assert not (docs / project / "1.0").exists()
+    assert (docs / project / "latest").is_symlink()
+    assert (docs / project / "logo").exists()
+
+
 def test_remove_symlink_version(temp_project_version):
     project = "project"
     docs = temp_project_version(project, "1.0")
